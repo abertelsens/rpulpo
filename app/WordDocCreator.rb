@@ -1,7 +1,5 @@
 require 'caracal'
 
-LINE_HEIGHT = 24
-
 class WordDocCreator
     
     def initialize()
@@ -50,7 +48,6 @@ class WordDocCreator
                 docx.p "Sic me Deus adiuvet et sancta Dei Evangelia, quae manibus meis tango."
                 docx.page if index+1<settings[:people].size
             end
-            
         end
         return File.new(settings[:path])
     end

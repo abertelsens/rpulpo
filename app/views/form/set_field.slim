@@ -24,17 +24,16 @@ turbo-frame id="peopleset_view"
 						input.u-full-width type="text" name="group" value="" style="display:none"
 						
 						select.u-full-width name="lives" style="display:none" 
-								option value=1 = "cavabianca"
-								option value=2 = "ctr dependiente"
-								option value=3 = "no ha llegado"
+							- Person::LIVES_OPTIONS.each do |opt| 
+								option selected=(@person && @person.lives==opt) value=opt = opt
+
 						select.u-full-width name="status" style="display:none" 
-							option value=Person::LAICO = "laico"
-							option value=Person::DIACONO = "diácono"
-							option value=Person::SACERDOTE = "sacd"
+							- Person::STATUS_OPTIONS.each do |opt| 
+								option selected=(@person && @person.status==opt) value=opt = opt
 
 						select.u-full-width name="n_agd" style="display:none" 
-							option value=Person::NUMERARIO = "n"
-							option value=Person::AGREGADO = "agd"
+							- Person::N_AGD_OPTIONS.each do |opt| 
+								option selected=(@person && @person.n_agd==opt) value=opt = opt
 							
 					/----------------------------------------------------------------------------------------------------------------
 					//BUTTONS

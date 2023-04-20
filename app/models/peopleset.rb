@@ -47,7 +47,7 @@ class Peopleset < ActiveRecord::Base
     end
 
     def self.get_all
-        Peopleset.all()
+        Peopleset.all().order(status: :desc, name: :asc)
     end
     
     def can_be_deleted?

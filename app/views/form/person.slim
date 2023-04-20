@@ -13,7 +13,7 @@ turbo-frame id="people_frame"
 
 						.row.header 
 							.columns.twelve.u-text-center
-								h4 = (@person ? @person.full_info: "Nueva Ficha")
+								h4 = (@person ? @person.short_name: "Nueva Ficha")
 						
 						.row  
 
@@ -25,12 +25,12 @@ turbo-frame id="people_frame"
 								a#ccard_btn.button.tab-item.tab-item-right class=(active_object=="crs+" ? "active" : "") data-tabgroup-target="crs_btn" data-action="tabgroup#activate" = "crs+" 
 					
 					.columns.two.u-text-right 
-						input accept=".jpg" type="file" style="display:none" name="photo_file" id="photo_file" data-attachment-target="photo_file" data-attachment-id-param=@person.id data-action="change->attachment#load_image"
-						- if File.exist?("app/public/photos/#{@person.id}.jpg")
+						input accept=".jpg" type="file" style="display:none" name="photo_file" id="photo_file" data-attachment-target="photo_file" data-attachment-id-param=(@person ? @person.id : "") data-action="change->attachment#load_image"
+						- if @person && File.exist?("app/public/photos/#{@person.id}.jpg")
 							img id="photo_image" width="80px" style="cursor: pointer; border-radius: 5%; object-fit: cover;" src= "photos/#{@person.id}.jpg" data-attachment-target= "photo_image" data-attachment-id-param=@person.id data-action="click->attachment#select_image"
 							
 						- else
-							img id="photo_image" width="80px" style="cursor: pointer; border-radius: 5%; object-fit: cover;" src= "photos/avatar.jpg" data-attachment-target= "photo_image" data-attachment-id-param=@person.id data-action="click->attachment#select_image"
+							img id="photo_image" width="80px" style="cursor: pointer; border-radius: 5%; object-fit: cover;" src= "photos/avatar.jpg" data-attachment-target= "photo_image" data-attachment-id-param=(@person ? @person.id : "") data-action="click->attachment#select_image"
 							
 								
 							//input type="button" id="photo_button" value="Choose Photo..." data-attachment-target="photo_btn" data-attachment-id-param=@person.id data-action="click->attachment#select_image"
@@ -140,33 +140,44 @@ turbo-frame id="people_frame"
 								<i class="fa-sharp fa-regular fa-circle-question"></i>
 								<span class="tooltiptext">(sacerdote, laico o diácono)</span>
 							select.u-full-width name="status"
-								option value=Person::LAICO selected=(@person && @person.status==Person::LAICO) = "laico"
-								option value=Person::DIACONO selected=(@person && @person.status==Person::DIACONO) = "diácono"
-								option value=Person::SACERDOTE selected=(@person && @person.status==Person::SACERDOTE) = "sacd"
+								- Person::STATUS_OPTIONS.each do |opt| 
+									option selected=(@person && @person.status==opt) value=opt = opt
+						
 								
 						.columns.one
 							label.tooltip for="family_name" n/agd 
 								<i class="fa-sharp fa-regular fa-circle-question"></i>
 								<span class="tooltiptext">(numerario o agregado)</span>
 							select.u-full-width name="n_agd" 
-								option value=Person::NUMERARIO selected=(@person && @person.n_agd==Person::NUMERARIO) = "n"
-								option value=Person::AGREGADO selected=(@person && @person.n_agd==Person::AGREGADO) = "agd"
-						.columns.one
-							label.tooltip for="family_name" grupo 
-								<i class="fa-sharp fa-regular fa-circle-question"></i>
-								<span class="tooltiptext">(1, 2, 3, 4, dir)</span>
-							&text.u-full-width name="group" value=(@person ? @person.group: "")
-						.columns.two
-							label for="teacher" status
-							select.u-full-width name="teacher"
-								option selected=(@person && @person.teacher) value=true = "profesor"
-								option selected=(@person && !@person.teacher) value=false = "alumno"
+								- Person::N_AGD_OPTIONS.each do |opt| 
+									option selected=(@person && @person.n_agd==opt) value=opt = opt
+						
 						.columns.two
 							label for="lives" vive en
 							select.u-full-width name="lives"
-								option selected=(@person && @person.lives==1) value=1 = "cavabianca"
-								option selected=(@person && @person.lives==2) value=2 = "ctr dependiente"
-								option selected=(@person && @person.lives==3) value=3 = "no ha llegado"
+								- Person::LIVES_OPTIONS.each do |opt| 
+									option selected=(@person && @person.lives==opt) value=opt = opt
+						.columns.one
+							label.tooltip for="group" grupo 
+								<i class="fa-sharp fa-regular fa-circle-question"></i>
+								<span class="tooltiptext">(1, 2, 3, 4, dir)</span>
+							&text.u-full-width name="group" value=(@person ? @person.group: "")
+						.columns.one
+							label.tooltip for="año" año
+								<i class="fa-sharp fa-regular fa-circle-question"></i>
+								<span class="tooltiptext">(1, 2, 3, 4, ...)</span>
+							&text.u-full-width name="year" value=(@person ? @person.year: "")
+						//.columns.two
+						//	label for="teacher" status
+						//	select.u-full-width name="teacher"
+						//		option selected=(@person && @person.teacher) value=true = "profesor"
+						//		option selected=(@person && !@person.teacher) value=false = "alumno"
+						
+						.columns.one
+							label.tooltip for="ropa" ropa
+								<i class="fa-sharp fa-regular fa-circle-question"></i>
+								<span class="tooltiptext">(número de ropa)</span>
+							&text.u-full-width name="clothes" value=(@person ? @person.clothes: "")
 						.columns.two
 							label.tooltip for="telephone" phone
 								<i class="fa-sharp fa-regular fa-circle-question"></i>

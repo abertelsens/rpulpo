@@ -24,7 +24,7 @@ turbo-frame id="people_table" data-turbo-frame="person_view"
             .row.row-link class=(!@peopleset.nil? && !@peopleset_ids.empty? && @peopleset_ids.include?(object.id) ? "row-selected" : "") style="display: block;" data-peopletable-target="row" data-id="#{object.id}" data-num="#{index}"
               input style="display:none; pointer-events: none" type="checkbox" checked=false name="person_id[#{object.id}]" data-peopletable-target="checkbox"
               .six.columns style="pointer-events: none" = object.short_name
-              .three.columns style="pointer-events: none" = object.group
+              .three.columns style="pointer-events: none" = object.get_lives
                 
                   
               

@@ -40,7 +40,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_18_085039) do
     t.string "accussative"
     t.string "full_info"
     t.string "group"
-    t.integer "lives", default: 1
     t.boolean "arrived", default: true
     t.boolean "cavabianca", default: true
     t.date "arrival"
@@ -52,8 +51,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_18_085039) do
     t.string "phone"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.integer "n_agd"
-    t.integer "status"
+    t.string "n_agd"
+    t.string "status"
+    t.string "clothes"
+    t.string "year"
+    t.string "lives"
     t.index ["first_name", "family_name"], name: "index_people_on_first_name_and_family_name", unique: true
   end
 

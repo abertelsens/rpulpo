@@ -14,7 +14,6 @@ require_relative 'excel_exporter'
 require_relative 'WordDocCreator'
 require_relative 'PDFReport'
 require_relative 'WordDocCreator'
-require_relative 'PandocManager'
 
 #include Utils
 include ActiveRecord
@@ -284,6 +283,6 @@ end
 
 
 Peopleset.where(status: Peopleset::TEMPORARY).destroy_all
-
+#Person.update_full_info
 
 #Excelimporter::import
