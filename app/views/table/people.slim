@@ -1,0 +1,33 @@
+turbo-frame id="people_table" data-turbo-frame="person_view" 
+  div.container 
+
+    
+    form data-peopletable-target="form" method="POST" data-turbo-frame="person_view" 
+      
+      .row
+        .columns.five.container.offset-by-seven.u-text-right style="padding-right:0" data-controller="tabgroup"
+          button.tab-button data-action="click->peopletable#select_all" data-turbo-frame="peopleset_view"
+            i.fa-regular.fa-user-plus style="font-size:x-small"
+            |&nbspselect all
+          button.tab-button data-action="click->peopletable#clear_all" data-turbo-frame="peopleset_view"
+            i.fa-regular.fa-user-minus style="font-size:x-small"
+            |&nbspclear all 
+              
+
+      .row.row-head
+        .six.columns = "name"
+        .three.columns = "group"
+      .row.scrollable
+        - @objects.each.with_index do |object, index|
+          //turbo-frame id="people_#{object.id}"
+          a style="display: block;" href="/peopleset/#{@peopleset.id}/toggle/#{object.id}" data-turbo-frame="peopleset_view" data-id="#{object.id}" data-num="#{index}" data-peopletable-target="link" data-action="click->peopletable#toggle_row"
+            .row.row-link class=(!@peopleset.nil? && !@peopleset_ids.empty? && @peopleset_ids.include?(object.id) ? "row-selected" : "") style="display: block;" data-peopletable-target="row" data-id="#{object.id}" data-num="#{index}"
+              input style="display:none; pointer-events: none" type="checkbox" checked=false name="person_id[#{object.id}]" data-peopletable-target="checkbox"
+              .six.columns style="pointer-events: none" = object.short_name
+              .three.columns style="pointer-events: none" = object.group
+                
+                  
+              
+
+        
+        

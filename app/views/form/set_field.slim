@@ -1,0 +1,49 @@
+turbo-frame id="peopleset_view" 
+  form action="/people/peopleset/#{@peopleset.id}/edit_field" method="POST" data-report-target="form" data-controller="setfield"
+		.columns.eight.offset-by-two
+			.container.container-frame.form-container.centered-form
+				.row.u-text-center
+					.columns.twelve
+						h4 = "#{@report} Edit: #{@peopleset.get_name}"
+						//p style="margin-bottom:20px" = ""
+
+				.row
+					.columns.eight.offset-by-two
+						label for="date" field
+						select.u-full-width name="att_name" data-setfield-target="att_name" data-action="change->setfield#update"
+							- Person.get_set_edit_attributes.each do |att|
+								option value=att[:att_symb] = att[:name]
+
+					//.columns.eight.offset-by-two
+					//	input.u-full-width type="text" name="att_value"
+					
+					.columns.eight.offset-by-two
+						label value
+						input.u-full-width type="text" name="title" value="" style="display:none"
+
+						input.u-full-width type="text" name="group" value="" style="display:none"
+						
+						select.u-full-width name="lives" style="display:none" 
+								option value=1 = "cavabianca"
+								option value=2 = "ctr dependiente"
+								option value=3 = "no ha llegado"
+						select.u-full-width name="status" style="display:none" 
+							option value=Person::LAICO = "laico"
+							option value=Person::DIACONO = "diácono"
+							option value=Person::SACERDOTE = "sacd"
+
+						select.u-full-width name="n_agd" style="display:none" 
+							option value=Person::NUMERARIO = "n"
+							option value=Person::AGREGADO = "agd"
+							
+					/----------------------------------------------------------------------------------------------------------------
+					//BUTTONS
+					//----------------------------------------------------------------------------------------------------------------
+				 
+				.row
+					.columns.eight.offset-by-two
+						button#save_btn.button-success.u-full-width type="submit" name="commit" value="save" save
+				
+				.row	
+					.columns.eight.offset-by-two
+						a.button.button-secondary.u-full-width formnovalidate="true" data-report-target="cancel_btn" href="/peopleset/#{@peopleset.id}/view" cancel 

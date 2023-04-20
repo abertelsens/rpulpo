@@ -1,0 +1,67 @@
+/!=============================================================================
+/! FONTS
+/!=============================================================================
+
+link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,300' rel='stylesheet' type='text/css'
+
+/!=============================================================================
+/! JSCRIPTS
+/!=============================================================================
+script type="module"
+  | import hotwiredTurbo from 'https://cdn.skypack.dev/@hotwired/turbo@7.1.0';
+
+script type="module" src="javascript/application.js"
+
+/! Load all Stimulus Controllers
+- Dir.glob("app/public/javascript/controllers/*.js").each do |controller|  
+  - controller.slice!("app/public/")
+  script type="module" src=controller
+
+//script src="javascript/highcharts.js"
+//script src="javascript/chartkick.js"
+
+/! Load Fontawesome
+script src="https://kit.fontawesome.com/4f55c9eacf.js" crossorigin="anonymous"
+
+
+
+html
+  head
+    meta charset="utf-8"
+    meta http-equiv="x-ua-compatible" content="ie=edge"
+    title Pulpo Cavabianca
+    meta name="description" content=""
+    meta name="viewport" content="width=device-width, initial-scale=1"
+
+    //==================================================================================================
+    //STYLESHEETS
+    //==================================================================================================
+    link rel="stylesheet" href="/css/normalize.css"
+    link rel="stylesheet" href="/css/skeleton.css"
+    link rel="stylesheet" href="/css/menu_styles.css"
+    link rel="stylesheet" href="/css/saxum-suppliers.css"
+    
+    //link rel="stylesheet" href="/css/print.css"
+    
+  body style="height:100%"
+    
+    //==================================================================================================
+    // NAVIGATION BAR
+    //==================================================================================================
+    turbo-frame#whole_screen
+    
+      div.row.nav-bar class="nav-bar"
+        .columns.eight
+          a.button.menu-item data-turbo-frame="people_frame" href='/people/frame' 
+            i.fa-solid.fa-gear
+            | &nbspPeople
+        
+        .columns.two.offset-by-two.u-text-right
+          - if @user!=nil
+            a.button.menu-item.user-name href="/" = @user.name
+
+      div.container
+        div.row
+          div.columns.twelve
+            turbo-frame#people_frame src="/people/frame"
+            

@@ -1,0 +1,56 @@
+turbo-frame id="peopleset_view"
+	.container 
+		.row
+			.columns.twelve.u-text-center
+				- if @peopleset
+					h5 = "#{@peopleset.get_name}"
+				- else 
+					h6 = "unsaved list (#{@people.size()} people)"
+		.row
+			- if @people.empty?
+				.columns.twelve.u-text-center
+					h6 = "No people selected"
+			- else
+				.row
+
+					.columns.ten.offset-by-one		
+						table style="width:100%"
+							tr
+								td style="width:30%; vertical-align:top"
+									h6
+										i.fa-regular.fa-file-excel
+										|&nbspExport
+								td style="vertical-align:top"
+									.row style="margin-top:4px"
+										a.row-link href="/people/peopleset/#{@peopleset.id}/export/excel" target="_blank" Excel
+							tr
+								td style="width:30%; vertical-align:top"
+									h6
+										i.fa-solid.fa-gear
+										|&nbspOperations
+								td style="vertical-align:top"
+									.row style="margin-top:4px"
+										a.row-link href="/people/peopleset/#{@peopleset.id}/edit_field" Edit Field
+							tr
+								td style="width:30%; vertical-align:top"
+									h6
+										i.fa-regular.fa-file
+										|&nbspDocuments	
+								td style="vertical-align:top"
+									.row style="margin-top:4px"
+										a.row-link href="/people/peopleset/#{@peopleset.id}/report/C38" target="_blank" C38
+									.row
+										a.row-link href="/people/peopleset/#{@peopleset.id}/report/F28/form" F28 (pdf)
+									.row
+										a.row-link href="/people/peopleset/#{@peopleset.id}/report/F21/form" F21 (professio fidei)
+									
+							tr	style="width:30%; vertical-align:top"
+								td style="vertical-align:top"
+									h6 
+										i.fa-regular.fa-user
+										|&nbspPeople (#{@people.size()})
+								td style="vertical-align:top"
+									- @people.each do |person|
+										.row style="margin-top:4px"
+												a.row-link  style="font-size:.9em" href="/people/#{person.id}/form" data-turbo-frame="people_frame" = person.short_name
+			

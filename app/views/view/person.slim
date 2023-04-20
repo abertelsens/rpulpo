@@ -1,0 +1,17 @@
+turbo-frame id="person_view"
+	.container 
+		.row
+			.columns.eight.offset-by-two.u-text-center     
+				- if File.exist?("app/public/photos/#{@person.id}.jpg")
+					img width="80px" style="cursor: pointer; border-radius: 5%; object-fit: cover;" src="photos/#{@person.id}.jpg"
+		.row 
+			.columns.eight.offset-by-two.u-text-center style="padding-top:10px"
+				h5 = @person.full_name
+				- if !@person.email.blank? 
+					p style="padding-top:5px" = @person.email
+				- if !@person.phone.blank? 
+					p style="padding-top:5px" = "tel: #{@person.phone}" 
+		.row
+			.columns.twelve.u-text-center style="margin-top:10px"
+				a.button.button-secondary style="margin:5px" href="people/#{@person.id}/form" data-turbo-frame="people_frame" edit
+				a.button.button-secondary style="margin:5px"  href="people/#{@person.id}/c38" target="_blank" C38

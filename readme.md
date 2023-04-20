@@ -1,0 +1,127 @@
+
+# DB Management
+
+ bundle exec rake db:setup
+ bundle exec rake db:migrate
+ 
+ bundle exec rake db:create_migration NAME=requestpayments
+ bundle exebundle exec rake db:migrate:up VERSION=20230227091407
+ bundle exebundle exec rake db:migrate:down VERSION=20230227091407
+
+## Local Postgres Database 
+### General
+```
+db name: saxum_suppliers_db
+user name: ale
+```
+
+**Start Postgres server**
+```
+pg_ctl -D /usr/local/var/postgres start
+```
+
+**Stop the server**
+```
+pg_ctl -D /usr/local/var/postgres stop
+```
+Esto también ha funcionado
+```
+brew services list
+brew services restart postgresql@14
+```
+**Create a Database**
+```
+createdb saxum_sup_db
+```
+
+**Delete DB**
+```
+dropdb saxum_act_sup
+```
+Open Postgress CLI utilities (CTRL + d to exit)
+```
+psql saxum_sup_db
+```
+
+
+### Local Backup
+To create a **backup of the local db** run
+```
+pg_dump -Fc --no-acl --no-owner -h localhost -U ale saxum_act_db > saxum_act_db.dump
+```
+
+To restore the local DB from a backup run:
+```
+psql template1 -c 'drop database saxum_act_db;'
+psql template1 -c 'create database saxum_act_db with owner ale';
+pg_restore -d saxum_act_db saxum_act_db.dump -U ale
+```
+where ```saxum_act_db.dump``` is the backup file
+
+## Heroku
+[https://dashboard.heroku.com/apps/](https://dashboard.heroku.com/apps/)
+
+```
+uname: 	abs@saxum.org
+pass: 	beTurco2000!
+```	
+
+### Uploading a DB backup to Heroku
+
+After dumping the DB and creating a backup file. In order to upload it to hereku we need to move it somewhere heroku can have access. 
+
+1. Upload it to **Dropbox Public Folder**
+2. **Get the download link**. It is necessary to get the real accesible link (download the file and get it from the browser). It should look something like 
+	
+	```
+	https://uc916a76095e0c8933a6a36f94f6.dl.dropboxusercontent.com/cd/0/get/BJ746Wo_wcVk54WCLWpuKdFpQagpP0pqH47gnh3q7HDX9wgkauvtZ75zM4K8fiJSuRRBCTtAWmd7l9X4BVvB7kcWV02dgrp8CLrAtcIKKlZ33DEbJD446IiBth5art-RgiU/file#
+	```
+
+3. **Upload to heroku** using:
+	```
+	heroku pg:backups:restore '$DROPBOX_PATH' DATABASE_URL --app saxumactivities
+	```
+* Heroku might prompt for a confirmation.
+
+## Git Hub
+
+```
+github token: baacdb70d7a3b36ce1ea2c764f881aadfc1ccea7
+```
+
+Make sure we are in the right folder of the repository. It is called ```saxum_rep```
+
+**update in git**
+```
+git add .
+git commit -m "lots of changes"
+```
+**pushing to GitHub and to Heroku**
+```
+git push heroku main
+git push origin main 
+```
+
+
+## Running Locally
+Make sure you are in ```saxum_rep```
+```
+bundle exec ruby app/saxum_act.rb
+```
+
+## Other Resources
+### Bundler
+- Deploying: [https://bundler.io/v1.0/deploying.html](https://bundler.io/v1.0/deploying.html)
+-[https://bundler.io/guides/using_bundler_in_applications.html](https://bundler.io/guides/using_bundler_in_applications.html)
+
+### Datamapper
+- [http://stensi.com/datamapper/pages/gettingstarted.html](http://stensi.com/datamapper/pages/gettingstarted.html)
+
+### Sinatra
+
+-  [Sinatra File Structure](https://medium.com/@orkunsalam/my-sinatra-project-21237f5c25d2)
+- [Using sinatra with multiple files for large projects](http://www.itgo.me/a/1046081731997675638/using-sinatra-for-larger-projects-via-multiple-files)
+
+### Deploying to Heroku
+- [Deploying a sinatra-postgres app to heroku](https://medium.com/@dmccoy/deploying-a-simple-sinatra-app-with-postgres-to-heroku-c4a883d3f19e)
+

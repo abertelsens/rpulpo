@@ -1,0 +1,33 @@
+link rel="stylesheet" href="/css/bulma.css"
+turbo-frame id="people_frame"
+  form#personForm action=(@peopleset ? "/people/peopleset/#{@peopleset.id}/save" : "/people/peopleset/new/save") method="POST"
+		.columns.four.offset-by-four
+			.container.container-frame.form-container.centered-form
+				.row
+					.columns.twelve
+					- if @peopleset.nil? || @peopleset.temporary?
+						h4.u-text-center
+							i.fa-solid.fa-pen-to-square
+							|&nbspNew List of People
+					- else
+            			h4.u-text-center 	
+							i.fa-solid.fa-pen-to-square
+							|&nbspEdit List Name
+				.row
+					.columns.twelve
+						label for="name" nombre
+						&text.u-full-width name="name" value=(@peopleset ? @peopleset.name : "")
+					
+					/----------------------------------------------------------------------------------------------------------------
+					//BUTTONS
+					//----------------------------------------------------------------------------------------------------------------
+					
+				.row
+					.columns.four
+						button#save_btn.u-full-width disabled=(@peopleset.temporary?) type="submit" name="commit" value="delete" data-validate-target="submit_btn" delete  
+					
+					.columns.four
+						button#save_btn.button-success.u-full-width type="submit" name="commit" value="save" data-validate-target="submit_btn" save  
+					
+					.columns.four
+						a.button.button-secondary.u-full-width formnovalidate="true" href="/people/frame" cancel 
