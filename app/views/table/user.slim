@@ -1,0 +1,15 @@
+turbo-frame id="users_table" data-turbo-frame="users_view" 
+  .row.scrollable
+    - @objects.each.with_index do |object, index|
+      //turbo-frame id="people_#{object.id}"
+      a style="display: block;" href="/user/#{object.id}" data-turbo-frame="main_frame" 
+        .row.row-link style="display: block;" data-peopletable-target="row" data-id="#{object.id}" data-num="#{index}"
+          .three.columns.row-field style="pointer-events: none" = object.uname
+          .three.columns.row-field style="pointer-events: none" = object.password
+          .six.columns.row-field style="pointer-events: none" = object.usertype
+              
+                  
+              
+
+        
+        

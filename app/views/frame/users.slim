@@ -1,0 +1,24 @@
+turbo-frame id="main_frame" 
+  
+  .container.container-frame
+    .row
+      
+      //LEFT PANE
+      .columns.six.offset-by-three 
+        .row.header-frame
+          .columns.four.offset-by-four.u-text-center
+            h4 = "USERS"
+          .columns.two.u-full-width.offset-by-one
+            a.button.button-primary.u-full-width href="/user/new" data-turbo-frame="main_frame"
+                i.fa-solid.fa-plus style="font-size:small"
+                |&nbspadd
+
+        .row
+          .columns.ten.offset-by-one.u-full-width
+            div.container.table-container   
+              .row.row-head
+                .three.columns.row-label = "name"
+                .three.columns.row-label = "password"
+                .six.columns.row-label = "type"
+                
+            turbo-frame id="users_table" data-people-target="users_table" src="/users/table"

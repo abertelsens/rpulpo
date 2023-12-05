@@ -5,7 +5,8 @@
 ###########################################################################################
 
 module Utils
-
+	
+	MONTHS_LATIN = ["Ianuarius", "Februarius", "Martius", "Aprilis", "Maius", "Iunius", "Iulius", "Augustus", "September", "October", "November", "December"]
 	NIS_UNICODE = "\u20AA"
 	USD_UNICODE = "\u0024"
 	EUR_UNICODE = "\u20AC"
@@ -69,4 +70,10 @@ module Utils
 	def columns(col, val)
 		return "two.columns = val"
 	end
+
+	def latin_date(date)
+        date_array = date.split("-")
+        "#{date_array[2]} #{MONTHS_LATIN[date_array[1].to_i-1]} #{date_array[0]}"
+    end
+
 end

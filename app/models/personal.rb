@@ -20,7 +20,7 @@ class Personal < ActiveRecord::Base
 	
 	def self.prepare_params(params)
         {
-			photo_path: params[:photo_path].blank? ? nil : params[:photo_path],
+			person_id: 			params[:person_id],
 			region_of_origin: 	params[:region_of_origin],
 			region: 			params[:region],
 			city: 				params[:city],

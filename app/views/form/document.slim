@@ -1,0 +1,65 @@
+/***************************************************************************************************** 
+// FORM for Personal Information about a person
+/*****************************************************************************************************
+
+turbo-frame id="main_frame"
+  	
+	form action="/document/#{(@object.nil? ? "new" : @object.id)}" enctype="multipart/form-data" method="POST" data-controller="mdfile" data-attachment-target="form"
+	
+		.container.full-screen-form.screen-box style="max-width:800px"
+			
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM HEADER
+			//----------------------------------------------------------------------------------------------------------------
+			.row.u-text-center
+				h3 = (@object.nil? ? "NEW DOCUMENT" : "DOCUMENT: #{@object.name}")
+				
+			/----------------------------------------------------------------------------------------------------------------
+			//DOCUMENT FRAME
+			//----------------------------------------------------------------------------------------------------------------
+			.row
+		
+				.columns.six
+					label for="name" name
+					&text.u-full-width name="name" required="true" value=@object&.name
+				
+				.columns.six
+					label for="name" module
+					select.u-full-width name="module"
+						- PulpoModule.all.each do |m|
+							option selected=(@object&.pulpo_module_id==m.id) value=m.id = m.name
+			.row		
+				.columns.three
+					label for="engine" engine
+					select.u-full-width name="engine" data-mdfile-target="engine_select" data-action="change->mdfile#select_engine"
+						- Document.engines.each do |engine|
+							option selected=(@object&.engine==engine[0]) value=engine[0] = engine[0]
+
+				.columns.nine
+					label for="description" description
+					&text.u-full-width name="description" value=@object&.description
+			
+			.row data-mdfile-target="templateframe"
+				.columns.six
+					label for="path" template path
+					&text.u-full-width name="path" disabled="true" data-mdfile-target="path" value=@object&.path
+				
+				.columns.three
+					label data-mdfile-target="pathlabel" &nbsp 
+					label.button.button-success.u-full-width data-mdfile-target="mdfile_btn" data-action="click->mdfile#select_file" = (@object&.path.blank? ? "load" : "change")
+					input accept=".md, .xlsx" style="display:none" data-mdfile-target="mdfile" type="file" name="template" data-action="change->mdfile#load_file"
+				
+				.columns.three
+					label &nbsp 
+					- if @object
+						a.button.button-secondary.u-full-width data-mdfile-target="viewbtn" target="_blank" href=(@object&.path&.blank? ? "#" : "/document/#{@object.id}/viewtemplate") view
+					
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM BUTTONS
+			//----------------------------------------------------------------------------------------------------------------
+			.row.center-align
+					- if (!@object.nil?) 
+						button type="submit" name="commit" value="delete" delete  
+					button.button-primary type="submit" name="commit" value="save" save  
+					a.button.button-secondary formnovalidate="true" href="/documents/frame" cancel
+					

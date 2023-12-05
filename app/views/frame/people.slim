@@ -1,44 +1,37 @@
-turbo-frame id="people_frame" 
+turbo-frame id="main_frame" 
+  
   .container.container-frame data-controller="people peopletable"
-    
-    .row data-people-target="people_screen"
-      
-      //LEFT PANE
-      .columns.six 
-        .row
-          .row
-            .columns.five 
-              h4
-                i.fa-regular.fa-users
-                |&nbspPeople
+    form.form-inline method="GET" action="/people/search" data-controller="search" data-turbo-frame="people_table" aria-label="Search" name="q" data-action="input->searchfield#submit"  
             
-            .columns.four
-              select.u-full-width id="peopleset" name="peopleset" data-people-target="peopleset_select" data-action="change->people#select_set"
-                - Peopleset.get_all.each do |set|
-                  option selected=(set.id == @peopleset.id) value=set.id = set.get_name
-
-            .columns.three
-                a.button.u-full-width data-people-target="editset_btn" href="people/peopleset/#{@peopleset.id}/edit" data-turbo-frame="people_frame"
-                  i.fa-solid.fa-pen-to-square style="font-size:small"
-                  |&nbspedit list
+      .row data-people-target="people_screen"
+        
+        //LEFT PANE
+        .columns.twelve 
+          .row.header-frame
+            
+            .columns.four.offset-by-four.u-text-center
+              h3 = "PERSONAS"
+            .columns.one.u-full-width
+              
           
-            
-          .row
-            
-            .columns.nine 
-              form.form-inline method="GET" action="/people/search" data-controller="searchfield" data-turbo-frame="people_table"     
-                input#search_string.u-full-width autofocus="autofocus" type="search" autocomplete="off" placeholder="search" aria-label="Search" name="q" data-action="input->searchfield#submit"
-            
-          
-            .columns.three
-              a.button.button-primary.u-full-width href="/people/new/form" data-turbo-frame="editor_frame"
+          .row 
+            .columns.four.offset-by-four.u-full-width
+              input#search_string.u-full-width autofocus="autofocus" type="search" autocomplete="off" placeholder="search" aria-label="Search" name="q" data-action="input->search#submit"
+              input#sort_order type="hidden" name="sort_order" data-search-target="sort_order"
+            .columns.one
+              a.button.button-primary.u-full-width href="/person/new/general" data-turbo-frame="editor_frame"
                 i.fa-solid.fa-plus style="font-size:small"
-                |&nbspadd person
-          
-        .row
-          turbo-frame id="people_table" data-people-target="people_table" src="/people/peopleset/#{@peopleset.id}/table"
-      
-      //RIGHT PANE
-      .columns.six
-        turbo-frame id="peopleset_view" data-peopletable-target="peopleset_view" data-people-target="peopleset_view" src="/people/peopleset/#{@peopleset.id}/view"
-          
+                |&nbspadd
+
+          .row
+            .columns.ten.offset-by-one.u-full-width
+              div.container.table-container   
+                .row.row-head
+                  #family_name.four.columns.row-label.clickable data-search-target-="family_name_label" data-action="click->search#sort_by_label" = "nombre"
+                  #status.one.columns.row-label.clickable data-action="click->search#sort_by_label" = "status" 
+                  #year.one.columns.row-label.clickable data-action="click->search#sort_by_label"= "año"
+                  #ctr.one.columns.row-label.clickable  data-search-target-="ctr_label" data-action="click->search#sort_by_label"= "ctr"
+                  #group.one.columns.row-label.clickable data-search-target-="group_label" data-action="click->search#sort_by_label"= "group"
+                  #clothes.one.columns.row-label.clickable data-search-target-="clothes_label" data-action="click->search#sort_by_label"= "ropa"
+                  .two.columns.row-label  = "habitacion"
+              turbo-frame id="people_table" data-people-target="people_table" src="/people/table"

@@ -1,0 +1,42 @@
+/***************************************************************************************************** 
+// FORM for a Module
+/*****************************************************************************************************
+
+turbo-frame id="main_frame"
+  	
+	form action="/module/#{(@object.nil? ? "new" : @object.id)}" method="POST"
+	
+		.container.full-screen-form.screen-box style="max-width:800px"
+			
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM HEADER
+			//----------------------------------------------------------------------------------------------------------------
+			.row.u-text-center
+				h3 = (@object.nil? ? "NEW MODULE" : "MODULE: #{@object.name}")
+						
+			/----------------------------------------------------------------------------------------------------------------
+			//DOCUMENT FRAME
+			//----------------------------------------------------------------------------------------------------------------
+			.row
+				
+				.columns.six
+					label for="name" module identifier
+					&text.u-full-width required="true" name="identifier" value=@object&.identifier
+				
+				.columns.six
+					label for="name" module name
+					&text.u-full-width required="true" name="name" value=@object&.name
+				
+				.columns.twelve
+					label for="name" description
+					&text.u-full-width name="description" value=@object&.description
+
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM BUTTONS
+			//----------------------------------------------------------------------------------------------------------------
+			.row.center-align
+					- if (!@object.nil?) 
+						button type="submit" name="commit" value="delete" delete  
+					button.button-primary type="submit" name="commit" value="save" save  
+					a.button.button-secondary formnovalidate="true" href="/modules/frame" cancel
+					

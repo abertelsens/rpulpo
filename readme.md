@@ -3,16 +3,27 @@
 
  bundle exec rake db:setup
  bundle exec rake db:migrate
+ bundle exec rake db:drop
  
  bundle exec rake db:create_migration NAME=requestpayments
  bundle exebundle exec rake db:migrate:up VERSION=20230227091407
  bundle exebundle exec rake db:migrate:down VERSION=20230227091407
 
+
+ db:migrate runs (single) migrations that have not run yet.
+ db:create creates the database
+ db:drop deletes the database
+ db:schema:load creates tables and columns within the existing database following schema.rb. This will delete existing data.
+ db:setup does db:create, db:schema:load, db:seed
+ db:reset does db:drop, db:setup
+ db:migrate:reset does db:drop, db:create, db:migrate
+
+
 ## Local Postgres Database 
 ### General
 ```
-db name: saxum_suppliers_db
-user name: ale
+db name: rpulpo_db
+user name: alejandro
 ```
 
 **Start Postgres server**
@@ -31,16 +42,16 @@ brew services restart postgresql@14
 ```
 **Create a Database**
 ```
-createdb saxum_sup_db
+createdb rpulpo_db
 ```
 
 **Delete DB**
 ```
-dropdb saxum_act_sup
+dropdb rpulpo_db
 ```
 Open Postgress CLI utilities (CTRL + d to exit)
 ```
-psql saxum_sup_db
+psql rpulpo_db
 ```
 
 

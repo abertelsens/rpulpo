@@ -22,65 +22,65 @@ module Excelimporter
 
     data.each do |row| 
         h_people = {
-            first_name: row["Nombre completo"].split(",")[1],
-            family_name: row["Nombre completo"].split(",")[0],
+            first_name: row["nombre completo"].split(",")[1],
+            family_name: row["nombre completo"].split(",")[0],
             cavabianca:  row["Vive en CB"]=="VERDADERO",
-            short_name: row["Nombre completo"].split(",")[1] + " " +row["Nombre completo"].split(",")[0],
-            full_name: row["Nombre completo"].split(",")[1] + " " +row["Nombre completo"].split(",")[0],
-            nominative: row["Nominativo"],
-            accussative: row["Acusativo"],
-            lives:    (row["Ha llegado"]=="VERDADERO" ? 1 : 2), #si ha llegado suponemos que está en cb sino en un ctr dependiente
-            arrived: row["Ha llegado"]=="VERDADERO",
-            teacher: row["Profesor"]=="VERDADERO",
-            arrival: row["Llegada"],
+            short_name: row["nombre completo"].split(",")[1] + " " +row["nombre completo"].split(",")[0],
+            full_name: row["nombre completo"].split(",")[1] + " " +row["nombre completo"].split(",")[0],
+            nominative: row["nominativo"],
+            accussative: row["acusativo"],
+            ctr: (row["vive en CB"]==1 ? 0 : 3), #si ha llegado suponemos que está en cb.
+            arrival: row["llegada"],
             departure: row["salida"],
-            birth: row["Fecha de nacimiento"],
-            celebration_info: row["Celebra"],
+            birth: row["nacimiento"],
+            celebration_info: row["celebra"],
+            status: (row["presbiterado"].blank? ? (row["diaconado"].blank? ? 0 : 1): 2),	
         }
+        puts "vive en CB #{row["vive en CB"]}"
         person = Person.create h_people
-        padres = row["Padres"].gsub!("Padres:", "").split(" y ")
+        padres = row["familia"].gsub!("Padres:", "").split(" y ")
         
         h_personal =
         {
             person_id: person.id,
             photo_path: row["foto"],
-            region_of_origin: row["Region de origen"],
-            region: (row["Region"]=="" ? row["Region de origen"] : row["Region"]==""),
-            city: row["Ciudad"],
-            languages: row["Idiomas"],
+            region_of_origin: row["region_origen"],
+            region: (row["region"]=="" ? row["region_origen"] : row["region"]==""),
+            city: row["ciudad"],
+            languages: row["idiomas"],
             father_name: padres[0],
             mother_name: padres[1],
-            parents_address: row["Domicilio"].gsub!("Domicilio: ",""),
-            parents_work: row["Informacion"],
-            parents_info: row["Datos"],
-            siblings_info: row["Hermanos"],
-            economic_info: row["Posicion"],
-            medical_info: row["Ant. medicos"],
-            notes: row["Observaciones"]
+            parents_address: row["domicilio"].gsub!("Domicilio: ",""),
+            parents_work: row["info"],
+            parents_info: row["datos"],
+            siblings_info: row["hermanos"],
+            economic_info: row["situacion"],
+            medical_info: row["ant_medicos"],
+            notes: row["observaciones"]
         }
         Personal.create h_personal
         h_studies =
         {
             person_id: person.id,
-            civil_studies: row["Estudios civiles"],
-            studies_name: row["Carrera"],
-            degree: row["Titulo"],
-            profesional_experience: row["Otros"],
-            year_of_studies: row["Situacion academica"], 
-            faculty: row["Facultad"],
-            status: row["Estudios institucionales"],
-            licence: row["Año licenciatura"],
-            doctorate: row["Doctorado"],
-            thesis: row["Tesis"]
+            civil_studies: row["estudios civiles"],
+            studies_name: row["carrera"],
+            degree: row["titulo"],
+            profesional_experience: row["otros"],
+            year_of_studies: row["situacion academica"], 
+            faculty: row["facultad"],
+            status: row["estudios institucionales"],
+            licence: row["licenciatura"],
+            doctorate: row["doctorado"],
+            thesis: row["tesis"]
         }
         Study.create h_studies
         h_crs =
         {
             person_id: person.id,
-            classnumber: row["Promocion"],
+            classnumber: row["promocion"],
             pa: row["pa"],
             admision: row["ad"],
-            oblacion: row["p"],
+            oblacion: row["o"],
             fidelidad: row["fl"],
             letter: row["carta"],
             admissio: row["admissio"],
@@ -95,4 +95,3 @@ module Excelimporter
     end
 
 end
-#Nominativo	Acusativo	Ha llegado	Vive en CB	Profesor	Llegada	salida	Promoción	Región de origen	Región	Ciudad	Fecha de nacimiento	Situación académica	Estudios civiles	Carrera	Título	pa	ad	o	fl	carta	admissio	presbiterado	diaconado	acolitado	lectorado	cipna	foto	Facultad	Estudios institucionales	Año licenciatura	Doctorado	Tesis	Idiomas	Padres	Domicilio	Hermanos	Datos	Información	Posición	Ant. médicos	Observaciones	Celebra	Actual	Otros	Nombre completo	Nombre breve

@@ -7,12 +7,11 @@ MONTHS_LATIN = ["Ianuarius", "Februarius", "Martius", "Aprilis", "Maius", "Iuniu
 class PDFReport
     
     def initialize(settings)
+        puts "prawn report initializing with settings #{settings}"
         @people = settings[:people]
-        @doc_type = settings[:document_type]
+        @doc_type = settings[:doc_type]
         case @doc_type
             when "C38" then self.create_C38(settings[:people])
-            when "F28" then self.create_F28(settings[:people], settings[:date])
-            when "F21" then self.create_F21(settings[:people],settings[:date])
         end
     end
     
@@ -23,62 +22,7 @@ class PDFReport
     def write_file(path)
         @pdf.render_file path
     end
-    #=====================================================================================================================
-    # F21
-    #=====================================================================================================================
     
-    def create_F21(people,date)
-        @pdf = Prawn::Document.new(:page_size => 'A4', :margin => [150,114,114,114])
-        people.each_with_index do |person, index|
-            f21_page(person,date)
-            @pdf.start_new_page if index+1 < people.size()
-        end
-    end
-    
-    def f21_page(person,date)
-        @pdf.font_families.update('Palatino' => {normal: "app/resources/fonts/Palatino.ttc"})
-        @pdf.font('Palatino', size: 16)
-        add_title title: "PROFESSIO FIDEI", indent: 40, height: 100
-        
-        @pdf.font('Palatino', size: 12)
-        add_paragraph "Ego #{person.first_name} #{person.family_name} firma fide credo et profíteor ómnia et síngula quae continéntur in Symbolo fídei, vidélicet:"
-        add_paragraph "Credo in unum Deum Patrem omnipoténtem, factórem coeli et terrae, visibilium ómnium et invisibílium et in unum Dóminum Iesum Christum, Fílium Dei unigénitum, et ex Patre natum ante ómnia saécula, Deum de Deo, lumen de lúmine, Deum verum de Deo vero, génitum non factum, consubstantiálem Patri per quem ómnia facta sunt, qui propter nos hómines et propter nostram salútem descéndit de coelis, et incarnátus est de Spíritu Sancto, ex María Vírgine, et homo factus est; crucifixus etiam pro nobis sub Póntio Piláto, passus et sepúltus est; et resurréxit tértia die secúndum Scriptúras, et ascéndit in coelum, sedet ad déxteram Patris, et íterum venturus est cum glória iudicáre vivos et mórtuos, cuius regni non erit finis; et in Spíritum Sanctum Dóminum et vivificántem, qui ex Patre Filióque procédit; qui cum Patre et Fílio simul adorátur et conglorificátur qui locútus est per Prophétas; et unam sanctam cathólicam et apostólicam Ecclésiam. Confíteor unum baptísma in remissiónem peccatórum, et exspécto resurrectiónem mortuórum, et vitam ventúri saéculi. Amen."
-        add_paragraph "Firma fide quoque credo ea ómnia quae in verbo Dei scripto vel trádito continentur et ab Ecclésia sive sollémni iudício sive ordinário et universáli Magistério tamquam divínitus reveláta credénda proponúntur."
-        add_paragraph "Fírmiter etiam ampléctor ac retíneo ómnia et síngula quae circa doctrínam de fide vel móribus ab eádem definitíve proponuntur."
-        add_paragraph "Insuper religióso voluntátis et intelléctus obséquio doctrínis adhaéreo quas sive Románus Póntifex sive Collégium episcopórum enuntiant cum Magistérium authenticum exércent etsi non definitívo actu eásdem proclamáre inténdant."
-        add_document_date date
-        add_document_number "F 21"
-    end
-
-    #=====================================================================================================================
-    # F28
-    #=====================================================================================================================
-    
-    def create_F28(people,date)
-        @pdf = Prawn::Document.new(:page_size => 'A4', :margin => [150,114,114,114])
-        people.each_with_index do |person, index|
-            f28_page(person,date) 
-            @pdf.start_new_page if index+1 < people.size()
-        end
-    end
-
-    def f28_page(person,date)
-        @pdf.font_families.update('Palatino' => {normal: "app/resources/fonts/Palatino.ttc"})
-        @pdf.font('Palatino', size: 14)
-        add_title title: "IUISUIURANDUM FIDELITATIS IN SUSCIPIENDO OFFICIO NOMINE ECCLESIAE EXERCENDO", indent: 40, height: 120
-
-        @pdf.font('Palatino', size: 12)
-        add_paragraph "Ego #{person.first_name} #{person.family_name} in suscipiendo officio promitto me cum catholica Ecclesia communionem semper servaturum, sive verbis a me prolatis, sive mea agendi ratione."
-        add_paragraph "Magna cum diligentia et fidelitate onera explebo quibus teneor erga Ecclesiam, tum universam, tum particularem, in qua ad meum servitium, secundum iuris praescripta, exercendum vocatus sum."
-        add_paragraph "In munere meo adimplendo, quod Ecclesiae nomine mihi commissum est, fidei depositum integrum servabo, fideliter tradam et illustrabo; quascumque igitur doctrinas iisdem contrarias devitabo."
-        add_paragraph "Disciplinam cunctae Ecclesiae communem sequar et fovebo observantiamque cunctarum legum ecclesiasticarum, earum imprimis quae in Codice Iuris Canonici continentur, servabo."
-        add_paragraph "Christiana oboedientia prosequar quae sacri Pastores, tamquam authentici fidei doctores et magistri declarant aut tamquam Ecclesiae rectores statuunt, atque Episcopis dioecesanis fideliter auxilium dabo, ut actio apostolica, nomine et mandato Ecclesiae exercenda, in eiusdem Ecclesiae communione peragatur."
-        add_paragraph "Sic me Deus adiuvet et sancta Dei Evangelia, quae manibus meis tango."
-        add_document_date date
-        add_document_number "F 28"
-    end
-
-
     #=====================================================================================================================
     # C38
     #=====================================================================================================================
@@ -102,7 +46,7 @@ class PDFReport
 
         @pdf.bounding_box([0, @pdf.cursor], width: 110, height: 135) do
             #@pdf.stroke_bounds
-            @pdf.image "app/public/photos/#{@person.id}.jpg", position: :left, :width => 110 if File.exists?("app/public/photos/#{@person.id}.jpg")
+            @pdf.image "app/public/photos/#{@person.id}.jpg", position: :left, :height => 135 if File.file?("app/public/photos/#{@person.id}.jpg")
         end
         
         @pdf.bounding_box([135, @pdf.cursor+135], width: 388, height: 155) do

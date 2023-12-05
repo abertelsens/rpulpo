@@ -11,7 +11,7 @@ FONT_SIZE = 11
 HEADER_COLOR= 'e6f2ff'
 HEADER_BORDER= 'thin'
 
-class Excelexporter
+class Excelexport
 
     def initialize(people)
         @workbook = RubyXL::Workbook.new

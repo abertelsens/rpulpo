@@ -17,7 +17,7 @@ helpers do
     def check_update_result(result)
         if !result
             puts "error while updating".yellow
-            puts @person.error_messages.yellow
+            puts result.error_messages.yellow
         else
             puts "success when updating".yellow
         end
@@ -32,9 +32,9 @@ helpers do
         return @auth
       end
 
-    def get_user()
-        puts "asking for user. got #{User.get_user(session[:current_user_id])}"
-        return User.get_user(session[:current_user_id])
+    def get_current_user()
+        #ADMIN_USER
+        session[:current_user_id].nil? ? nil : User.find(session[:current_user_id])
     end
 
     #checks if the edit/new/delete action produced any errors and redirects to the 

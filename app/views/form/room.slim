@@ -1,0 +1,69 @@
+/***************************************************************************************************** 
+// FORM for Personal Information about a person
+/*****************************************************************************************************
+
+turbo-frame id="main_frame"
+  	
+	form action="/room/#{(@object.nil? ? "new" : @object.id)}"  method="POST"
+	
+		.container.full-screen-form.screen-box style="max-width:600px"
+			
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM HEADER
+			//----------------------------------------------------------------------------------------------------------------
+			.row.u-text-center
+				h3 = (@object.nil? ? "NEW ROOM" : "ROOM: #{@object.name}")
+				
+			/----------------------------------------------------------------------------------------------------------------
+			//DOCUMENT FRAME
+			//----------------------------------------------------------------------------------------------------------------
+			.row
+		
+				.columns.six
+					label for="house" house
+					select.u-full-width name="house"
+						- Room.houses.each do |house|
+							option selected=(@object&.house==house[0]) value=house[0] = house[0].humanize
+			
+				.columns.six
+					label for="name" name
+					&text.u-full-width name="name" value=@object&.name
+
+				.columns.twelve
+					label for="name" person
+					select.u-full-width name="person"
+						option selected=(@object&.person_id.blank?) value="" = "empty room"
+						- Person.all.each do |person|
+							option selected=(@object&.person_id==person.id) value=person.id = person.full_name
+
+			.row
+				.columns.six
+					label for="bed" bed
+					select.u-full-width name="bed"
+						- Room.beds.each do |bed|
+							option selected=(@object&.bed==bed[0]) value=bed[0] = bed[0].humanize
+
+				.columns.six
+					label for="matress" matress
+					&text.u-full-width name="matress" value=@object&.matress
+
+				.columns.six
+					label for="bathroom" bathroom
+					select.u-full-width name="bathroom"
+						- Room.bathrooms.each do |bath|
+							option selected=(@object&.bathroom==bath[0]) value=bath[0] = bath[0].humanize
+
+
+				.columns.six
+					label for="phone" phone
+					&text.u-full-width name="phone" value=@object&.phone
+
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM BUTTONS
+			//----------------------------------------------------------------------------------------------------------------
+			.row.center-align
+					- if (!@object.nil?) 
+						button type="submit" name="commit" value="delete" delete  
+					button.button-primary type="submit" name="commit" value="save" save  
+					a.button.button-secondary formnovalidate="true" href="/rooms/frame" cancel
+					

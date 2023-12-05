@@ -1,0 +1,15 @@
+turbo-frame id="modules_table"
+  .row.scrollable
+    - @objects.each.with_index do |object, index|
+      //turbo-frame id="people_#{object.id}"
+      a style="display: block;" href="/module/#{object.id}" data-turbo-frame="main_frame" 
+        .row.row-link style="display: block;" data-peopletable-target="row" data-id="#{object.id}" data-num="#{index}"
+          .two.columns.row-field style="pointer-events: none" = object.identifier
+          .two.columns.row-field style="pointer-events: none" = object.name
+          .eight.columns.row-field style="pointer-events: none" = object.description
+              
+                  
+              
+
+        
+        

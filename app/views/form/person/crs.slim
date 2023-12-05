@@ -1,0 +1,79 @@
+/***************************************************************************************************** 
+// FORM for Personal Information about a person
+/*****************************************************************************************************
+
+turbo-frame id="main_frame"
+  	
+	form#personForm action="/person/#{@person.id}/crs" method="POST"
+	
+		.container.full-screen-form.screen-box
+			
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM HEADER
+			//----------------------------------------------------------------------------------------------------------------
+			.row.u-text-center
+				h3 = "#{@person.short_name} - crs+"
+						
+				
+			/----------------------------------------------------------------------------------------------------------------
+			//PERSONAL FRAME
+			//----------------------------------------------------------------------------------------------------------------
+			.row
+				&hidden name="crs_id" value=(@crs.nil? ? "new" : @crs.id)
+				&hidden name="person_id" value=@person.id
+				
+			.row	
+				.columns.two.offset-by-two
+					label for="pa" pa
+					&date.u-full-width name="pa" value=@crs&.pa
+				.columns.two
+					label for="admision" ad
+					&date.u-full-width name="admision" value=@crs&.admision
+				.columns.two
+					label for="oblacion" o
+					&date.u-full-width name="oblacion" value=@crs&.oblacion
+				.columns.two
+					label for="fidelidad" fl
+					&date.u-full-width name="fidelidad" value=@crs&.fidelidad
+				
+			.row
+				.columns.two.offset-by-two
+					label for="letter" carta
+					&date.u-full-width name="letter" value=@crs&.letter
+
+				.columns.two
+					label for="admissio" admissio
+					&date.u-full-width name="admissio" value=@crs&.admissio
+				.columns.two
+					label for="lectorado" lectorado
+					&date.u-full-width name="lectorado" value=@crs&.lectorado
+				.columns.two
+					label for="acolitado" acolitado
+					&date.u-full-width name="acolitado" value=@crs&.acolitado
+				
+				
+			.row
+				.columns.two.offset-by-two
+					label.tooltip for="classnumber" promoción
+						<i class="fa-sharp fa-regular fa-circle-question"></i>
+						<span class="tooltiptext">Ej: LXXVII</span>
+					&text.u-full-width name="classnumber" value=@crs&.classnumber
+				.columns.two
+					label for="cipna" cipna
+					&text.u-full-width name="cipna" value=@crs&.cipna
+				
+				.columns.two
+					label for="diaconado" diaconado
+					&date.u-full-width name="diaconado" value=@crs&.diaconado
+				.columns.two
+					label for="presbiterado" presbiterado
+					&date.u-full-width name="presbiterado" value=@crs&.presbiterado
+		
+
+				/----------------------------------------------------------------------------------------------------------------
+				// FORM BUTTONS
+				//----------------------------------------------------------------------------------------------------------------
+			row.center-align
+				button#save_btn.button-primary type="submit" name="commit" value="save" data-validate-target="submit_btn" save  
+				a.button.button-secondary formnovalidate="true" href=(@person ? "/person/#{@person.id}" : "/people/frame") cancel 	
+				

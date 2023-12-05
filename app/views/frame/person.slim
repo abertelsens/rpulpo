@@ -1,0 +1,62 @@
+turbo-frame id="main_frame" 
+  
+  .container.screen-box.vertical-align
+    .columns.two.offset-by-one 
+      div.row
+        div.row
+          a.button.link-button href="/person/#{@person.id}/general" general info  
+        div.row
+          a.button.link-button href="/person/#{@person.id}/personal" datos familiares
+        div.row
+          a.button.link-button href="/person/#{@person.id}/study" estudios
+        div.row
+          a.button.link-button href="/person/#{@person.id}/crs+" crs+
+      
+    .columns.four.offset-by-one
+      .row.u-text-center
+        - if @person && File.exist?("app/public/photos/#{@person.id}.jpg")
+          img.person-photo id="photo_image"  width="120px" src= "photos/#{@person.id}.jpg"
+        - else
+          img.person-photo id="photo_image" width="120px" src= "photos/avatar.jpg"
+      .row
+          .columns.twelve.u-text-center
+            h3 = "#{@person.short_name}"
+
+      /----------------------------------------------------------------------------------------------------------------
+      //GENERAL FRAME
+      //----------------------------------------------------------------------------------------------------------------
+      
+      .row.u-text-center 
+          - if @person.ctr==0
+            h6 = "#{@person.get_ctr} - habitacion"
+          - else
+            h6 = "#{@person.get_ctr}"
+      .row
+        .columns.two 
+          p = "email:"
+        .columns.six
+          p = "#{@person.email}"
+      .row  
+        .columns.two 
+          p = "telefono:"
+        .columns.six
+          p = "#{@person.phone}"
+      .row  
+        .columns.two 
+          p = "grupo:"
+        .columns.six
+          p = "#{@person.group}"
+      .row  
+        .columns.two 
+          p = "año:"
+        .columns.two
+          p = "#{@person.year}"
+    
+      .row.u-text-center 
+        - if !@person.celebration_info.blank?    
+          p = "celebra #{@person.celebration_info}"
+        
+          
+      .row.text-center 
+        .columns.six.offset-by-three style="margin-top:20px"
+          a.button.button-secondary.u-full-width href="/people/frame" OK

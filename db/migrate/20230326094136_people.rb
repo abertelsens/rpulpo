@@ -11,7 +11,11 @@ class People < ActiveRecord::Migration[7.0]
       p.string :accussative        
       p.string :full_info  
       p.string :group
-      p.integer :lives,       default: 1      #cavabianca
+      p.string :clothes
+      p.string :year
+      p.integer :ctr,       default: 1        # cavabianca
+      p.integer :n_agd,       default: 0      # n
+      p.integer :status,       default: 0     # laico
       p.boolean :arrived,     default: true
       p.boolean :cavabianca,  default: true
       p.date :arrival
@@ -23,7 +27,6 @@ class People < ActiveRecord::Migration[7.0]
       p.string :phone
       p.timestamps default: -> { 'CURRENT_TIMESTAMP' }
     end
-    add_index :people, [:first_name, :family_name], unique: true
   end
 
 end

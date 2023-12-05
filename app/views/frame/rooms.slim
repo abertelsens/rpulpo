@@ -1,0 +1,36 @@
+turbo-frame id="main_frame" 
+  
+  .container.container-frame style="margin-left:40px; margin-right:40px;" data-controller="search"
+    form.form-inline method="GET" action="/rooms/search" data-controller="search" data-turbo-frame="rooms_table" aria-label="Search" name="q" data-action="input->searchfield#submit"  
+      .row
+        .columns.three
+          //RIGHT PANE
+          .columns.twelve style="background-color:red"
+
+        .columns.eight
+          .columns.twelve 
+            .row.header-frame
+              .columns.four.offset-by-four.u-text-center
+                h3 = "ROOMS"
+            
+            .row 
+              .columns.six.offset-by-three.u-text-center
+                input#search_string.u-full-width autofocus="autofocus" type="search" autocomplete="off" placeholder="search" aria-label="Search" name="q" data-action="input->search#submit"
+                input#sort_order type="hidden" name="sort_order" data-search-target="sort_order"
+              
+              .columns.two.u-full-width
+                a.button.button-primary.u-full-width href="/room/new" data-turbo-frame="editor_frame"
+                    i.fa-solid.fa-plus style="font-size:small"
+                    |&nbspadd room
+
+            .row
+              .columns.ten.offset-by-one.u-full-width
+                div.container.table-container   
+                  .row.row-head
+                    .two.columns.row-label = "casa"
+                    .two.columns.row-label = "nombre"
+                    .four.columns.row-label = "persona"
+                    .two.columns.row-label = "baño"
+                    .two.columns.row-label = "cama"
+                    
+                turbo-frame id="rooms_table" src="/rooms/table"

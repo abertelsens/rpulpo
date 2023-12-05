@@ -1,0 +1,89 @@
+/***************************************************************************************************** 
+// FORM for Personal Information about a person
+/*****************************************************************************************************
+
+turbo-frame id="main_frame"
+  	
+	form#personForm action="/person/#{@person.id}/study" method="POST"
+	
+		.container.full-screen-form.screen-box
+			
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM HEADER
+			//----------------------------------------------------------------------------------------------------------------
+			.row.u-text-center
+				h3 = "#{@person.short_name} - Estudios"
+						
+				
+			/----------------------------------------------------------------------------------------------------------------
+			//PERSONAL FRAME
+			//----------------------------------------------------------------------------------------------------------------
+			.row
+				&hidden name="studies_id" value=(@study.nil? ? "new" : @study.id)
+				&hidden name="person_id" value=@person.id
+				
+			.row
+				.columns.two
+					h6 = "Civiles"
+				.columns.ten
+					.row
+						.columns.eight
+							label.tooltip for="civil_studies" estudios civiles
+								<i class="fa-sharp fa-regular fa-circle-question"></i>
+								<span class="tooltiptext">Ej: Licenciatura Química (Federal University of Technology, Minna)</span>
+							&text.u-full-width name="civil_studies" value=@study&.civil_studies
+							
+						.columns.four
+							label.tooltip for="studies_name" carrera
+								<i class="fa-sharp fa-regular fa-circle-question"></i>
+								<span class="tooltiptext">Ej: Matemáticas</span>
+							&text.u-full-width name="studies_name" value=@study&.studies_name
+					.row
+						.columns.six
+							label.tooltip for="degree" título
+								<i class="fa-sharp fa-regular fa-circle-question"></i>
+								<span class="tooltiptext">Ej: Abogado, Ingeniero Mecánico</span>
+							&text.u-full-width name="degree" value=@study&.degree
+						.columns.six
+							label.tooltip for="profesional_experience" experiencia profesional y en la labor
+								<i class="fa-sharp fa-regular fa-circle-question"></i>
+								<span class="tooltiptext">Ej: Trabajó 3 años en una revista y ha sido sd de un ctr de sr</span>
+							&text.u-full-width name="profesional_experience" value=@study&.profesional_experience
+			.row
+				.columns.two
+					h6 = "Eclesiásticos"
+				.columns.ten
+					.row
+						.columns.two
+							label.tooltip for="year_of_studies" año
+								<i class="fa-sharp fa-regular fa-circle-question"></i>
+								<span class="tooltiptext">Ej: 1T, 2C, DT</span>
+							&text.u-full-width name="year_of_studies" value=@study&.year_of_studies
+						.columns.two
+							label.tooltip for="faculty" facultad
+								<i class="fa-sharp fa-regular fa-circle-question"></i>
+								<span class="tooltiptext">Ej: Teología, Filosofía</span>
+							&text.u-full-width name="faculty" value=@study&.faculty
+						.columns.four
+							label.tooltip for="study_status" status
+								<i class="fa-sharp fa-regular fa-circle-question"></i>
+								<span class="tooltiptext">Ej: Acabados (uden 2020)</span>
+							&text.u-full-width name="study_status" value=@study&.status
+						.columns.two	
+							label for="licence" licenciatura (año)
+							&text.u-full-width name="licence" value=@study&.licence
+						.columns.two
+							label for="doctorate" doctorado (año)
+							&text.u-full-width name="doctorate" value=@study&.doctorate
+					.row
+						.columns.twelve
+							label for="thesis" título tesis doctoral
+							&text.u-full-width name="thesis" value=@study&.thesis
+
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM BUTTONS
+			//----------------------------------------------------------------------------------------------------------------
+			.row.center-align
+				button#save_btn.button-primary type="submit" name="commit" value="save" data-validate-target="submit_btn" save  
+				a.button.button-secondary formnovalidate="true" href=(@person ? "/person/#{@person.id}" : "/people/frame") cancel 	
+				

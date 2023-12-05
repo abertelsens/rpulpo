@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_18_085039) do
+ActiveRecord::Schema[7.0].define(version: 2023_12_01_080000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -28,6 +28,21 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_18_085039) do
     t.date "acolitado"
     t.date "lectorado"
     t.string "cipna"
+    t.index ["person_id"], name: "index_crs_on_person_id"
+  end
+
+  create_table "documents", force: :cascade do |t|
+    t.string "name"
+    t.integer "pulpo_module_id"
+    t.string "description"
+    t.integer "engine"
+    t.string "path"
+  end
+
+  create_table "module_users", force: :cascade do |t|
+    t.integer "pulpo_module_id"
+    t.integer "user_id"
+    t.integer "modulepermission"
   end
 
   create_table "people", force: :cascade do |t|
@@ -40,6 +55,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_18_085039) do
     t.string "accussative"
     t.string "full_info"
     t.string "group"
+    t.string "clothes"
+    t.string "year"
+    t.integer "ctr", default: 1
+    t.integer "n_agd", default: 0
+    t.integer "status", default: 0
     t.boolean "arrived", default: true
     t.boolean "cavabianca", default: true
     t.date "arrival"
@@ -51,12 +71,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_18_085039) do
     t.string "phone"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.string "n_agd"
-    t.string "status"
-    t.string "clothes"
-    t.string "year"
-    t.string "lives"
-    t.index ["first_name", "family_name"], name: "index_people_on_first_name_and_family_name", unique: true
   end
 
   create_table "peoplesets", force: :cascade do |t|
@@ -80,12 +94,29 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_18_085039) do
     t.string "economic_info"
     t.string "medical_info"
     t.string "notes"
+    t.index ["person_id"], name: "index_personals_on_person_id"
   end
 
   create_table "personsets", force: :cascade do |t|
     t.integer "peopleset_id"
     t.integer "person_id"
     t.index ["peopleset_id", "person_id"], name: "index_personsets_on_peopleset_id_and_person_id", unique: true
+  end
+
+  create_table "pulpo_modules", force: :cascade do |t|
+    t.string "name"
+    t.string "identifier"
+    t.string "description"
+  end
+
+  create_table "rooms", force: :cascade do |t|
+    t.integer "house"
+    t.string "name"
+    t.integer "person_id"
+    t.integer "bed"
+    t.string "matress"
+    t.integer "bathroom"
+    t.integer "phone"
   end
 
   create_table "studies", force: :cascade do |t|
@@ -100,6 +131,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_18_085039) do
     t.string "licence"
     t.string "doctorate"
     t.string "thesis"
+    t.index ["person_id"], name: "index_studies_on_person_id"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "uname"
+    t.string "password"
+    t.integer "usertype"
   end
 
 end

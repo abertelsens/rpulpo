@@ -1,0 +1,17 @@
+turbo-frame id="rooms_table"
+  .row.scrollable
+    - @objects.each.with_index do |object, index|
+      //turbo-frame id="people_#{object.id}"
+      a style="display: block;" href="/room/#{object.id}" data-turbo-frame="main_frame" 
+        .row.row-link style="display: block;" data-peopletable-target="row" data-id="#{object.id}" data-num="#{index}"
+          .two.columns.row-field style="pointer-events: none" = object.house&.humanize
+          .two.columns.row-field style="pointer-events: none" = object.name
+          .four.columns.row-field style="pointer-events: none" = object.person&.full_name
+          .two.columns.row-field style="pointer-events: none" = object.bathroom
+          .two.columns.row-field style="pointer-events: none" = object.bed
+              
+                  
+              
+
+        
+        

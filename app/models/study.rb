@@ -19,6 +19,7 @@ class Study < ActiveRecord::Base
 	# Chashbox overrides this method.
 	def self.prepare_params(params)
         {
+			person_id: 				params[:person_id],
 			civil_studies: 			params[:civil_studies],
 			studies_name: 			params[:studies_name],
 			degree: 				params[:degree],

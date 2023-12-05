@@ -9,7 +9,7 @@ html
   head
     meta charset="utf-8"
     meta http-equiv="x-ua-compatible" content="ie=edge"
-    title Saxum Suppliers
+    title Pulpo Cavabianca
     meta name="description" content=""
     meta name="viewport" content="width=device-width, initial-scale=1"
 
@@ -18,36 +18,37 @@ html
     //==================================================================================================
     link rel="stylesheet" href="/css/normalize.css"
     link rel="stylesheet" href="/css/skeleton.css"
+    link rel="stylesheet" href="/css/pulpo.css"
     link rel="stylesheet" href="/css/menu_styles.css"
-    link rel="stylesheet" href="/css/saxum-suppliers.css"
     
   body
 
 
-    turbo-frame id="screen" target="whole_screen" 
+    turbo-frame id="whole_screen" target="whole_screen" 
       form#loginForm action="/login" method="POST"
+        
         .container.u-text-center.center-frame.login-screen
         
-          .four.columns.offset-by-four.form-container.login-section style="background-color:white; opacity: 1; padding-bottom:50px;"
-            .twelve.columns
-              .row.u-text-center
-                img.u-text-center src="img/saxum-logo-big.png" style="width: 250px"
+          .login-box
+  
+            .row.u-text-center
+              img.u-text-center src="img/cb_icon.jpg" style="width: 50px"
+              h3 PULPO CAVABIANCA
             
-            .eight.columns.offset-by-two 
-              .row.u-text-center 
-                label for="email" user name or email
-                input.input-block type="text" name="email" required="true" id="email"
+            .row.u-text-center 
+              label for="uname" user name
+              input#uname.login-field.u-full-width type="text" required="true" name="uname"
 
+            .row.u-text-center
+              label for="password" password
+              input#password.login-field.u-full-width type="password" name="password"
+    
+            .row.u-text-center 
+              button.login-field.button-success.u-full-width type="submit" name="commit" value="login" login
+          
+            - if @auth_error
               .row.u-text-center
-                label for="pass" password
-                input.input-block type="password" id="pass" name="pass"
-      
-              .row.u-text-center 
-                button.button-success.u-full-width type="submit" name="commit" value="login" login
-            
-              - if @auth_error
-                .row.u-text-center
-                  .alert.alert-error id="errorBox" LOGIN FAILED!
+                .alert.alert-error id="errorBox" LOGIN FAILED!
           
                 
                   

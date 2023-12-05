@@ -20,6 +20,7 @@ class Crs < ActiveRecord::Base
 	
 	def self.prepare_params(params)
         {
+            person_id: 		params[:person_id],
             classnumber:   	params[:classnumber],
             pa:    		 	params[:pa].blank? ? nil : Date.parse(params[:pa]),
             admision:    	params[:admision].blank? ? nil : Date.parse(params[:admision]),

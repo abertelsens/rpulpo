@@ -4,6 +4,9 @@
 
 link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,300' rel='stylesheet' type='text/css'
 
+/! Load Fontawesome
+script src="https://kit.fontawesome.com/4f55c9eacf.js" crossorigin="anonymous"
+
 /!=============================================================================
 /! JSCRIPTS
 /!=============================================================================
@@ -20,11 +23,6 @@ script type="module" src="javascript/application.js"
 //script src="javascript/highcharts.js"
 //script src="javascript/chartkick.js"
 
-/! Load Fontawesome
-script src="https://kit.fontawesome.com/4f55c9eacf.js" crossorigin="anonymous"
-
-
-
 html
   head
     meta charset="utf-8"
@@ -39,29 +37,42 @@ html
     link rel="stylesheet" href="/css/normalize.css"
     link rel="stylesheet" href="/css/skeleton.css"
     link rel="stylesheet" href="/css/menu_styles.css"
-    link rel="stylesheet" href="/css/saxum-suppliers.css"
-    
-    //link rel="stylesheet" href="/css/print.css"
-    
-  body style="height:100%"
+    link rel="stylesheet" href="/css/pulpo.css"
+  
+  body
     
     //==================================================================================================
     // NAVIGATION BAR
     //==================================================================================================
     turbo-frame#whole_screen
     
-      div.row.nav-bar class="nav-bar"
+      div.row.nav-bar
         .columns.eight
-          a.button.menu-item data-turbo-frame="people_frame" href='/people/frame' 
-            i.fa-solid.fa-gear
+          a.button.menu-item data-turbo-frame="main_frame" href='/people/frame' 
+            i.fa-solid.fa-user
             | &nbspPeople
+          a.button.menu-item data-turbo-frame="main_frame" href='/lists/frame' 
+            i.fa-solid.fa-list
+            | &nbspListas
+          a.button.menu-item data-turbo-frame="main_frame" href='/rooms/frame' 
+            i.fa-solid.fa-list
+            | &nbspRooms
+          
         
-        .columns.two.offset-by-two.u-text-right
-          - if @user!=nil
-            a.button.menu-item.user-name href="/" = @user.name
+        .columns.four.u-text-right
+          - if get_current_user.admin?  
+            a.button.menu-item data-turbo-frame="main_frame" href='/documents/frame' 
+              i.fa-solid.fa-file
+              | &nbspDocuments
+            a.button.menu-item data-turbo-frame="main_frame" href='/users/frame' 
+              i.fa-solid.fa-users
+              | &nbspUsers
+            a.button.menu-item data-turbo-frame="main_frame" href='/modules/frame' 
+              i.fa-solid.fa-gear
+              | &nbspModules
+          a.button.menu-item.user-name href="/logout" = @user.uname
 
-      div.container
-        div.row
-          div.columns.twelve
-            turbo-frame#people_frame src="/people/frame"
+      div.row
+        div.container
+          turbo-frame#main_frame src="/people/frame"
             
