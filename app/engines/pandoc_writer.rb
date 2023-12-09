@@ -4,19 +4,21 @@ require 'combine_pdf'
 
 class Pandoc_Writer
     
-    MONTHS_LATIN = ["Ianuarius", "Februarius", "Martius", "Aprilis", "Maius", "Iunius", "Iulius", "Augustus", "September", "October", "November", "December"]
-    SOURCE_DIR = 'app/pandoc'
-    DEFAULT_TEX_TEMPLATE = "#{SOURCE_DIR}/simple_template.tex"
+    PANDOC_TEMPLATES_DIR ="app/engines-templates/pandoc"
+
+    DEFAULT_TEX_TEMPLATE = "#{PANDOC_TEMPLATES_DIR}/simple_template.tex"
     PDF_ENGINE = 'xelatex'
+    
+    MONTHS_LATIN = ["Ianuarius", "Februarius", "Martius", "Aprilis", "Maius", "Iunius", "Iulius", "Augustus", "September", "October", "November", "December"]
     LATEX_IMPRESO = "\\AddToHookNext{shipout/background}{\\put(1cm,-1\\paperheight+1cm){\\smallfont{$impreso$}}}"
     LATEX_DATE = "\\begin{flushright}$date$\\end{flushright}"
     LATEX_PAGE_BREAK = "\\pagebreak"
     
-    def initialize(src_path,people)
-
-        @source = File.read(src_path)
-        @target_path = "#{SOURCE_DIR}/#{File.basename(src_path, ".md")}.pdf"
-        @md_target_path = "#{SOURCE_DIR}/#{File.basename(src_path, ".md")}_output.md"
+    
+    def initialize(document,people)
+        @document = document
+        @source = File.read "#{PANDOC_TEMPLATES_DIR}/#{@document.path}"
+        @target_path = "#{PANDOC_TEMPLATES_DIR}/#{File.basename(@source, ".md")}.pdf"
         @people = people
     
         # scan the file contents for all variables of type $variable_name$
@@ -31,7 +33,6 @@ class Pandoc_Writer
         
         # if there is no template set in the yaml preamble we assign the default template    
         @template = (@metadata["template"].nil? ? DEFAULT_TEX_TEMPLATE : @metadata["template"]) 
-        
     end
 
     
@@ -51,7 +52,7 @@ class Pandoc_Writer
         
         # write the file
         @pdf = PandocRuby.new(pandoc_src, "--pdf-engine=#{PDF_ENGINE} --template=#{@template}", :standalone).to_pdf
-        @pdf    #File.open(@target_path, 'w') { |file| file.write(@pdf) }
+        @pdf
     end
 
     # processes the preamble variables making changes in the source accordingly.
@@ -71,7 +72,7 @@ class Pandoc_Writer
     def get_variable_value(var,person)
         # clean the $ characters and parse the variable.
         variable_identifier = var.gsub("$","")
-        variable_array= variable_identifier.split(".")
+        variable_array = variable_identifier.split(".")
         db_variable = !variable_array[1].nil?
         if db_variable
             return person.get_attribute(variable_identifier)

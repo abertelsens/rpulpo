@@ -114,6 +114,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_080000) do
     t.string "name"
     t.integer "person_id"
     t.integer "bed"
+    t.string "floor"
     t.string "matress"
     t.integer "bathroom"
     t.integer "phone"

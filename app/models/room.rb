@@ -32,6 +32,7 @@ class Room < ActiveRecord::Base
             person_id:              params[:person].blank? ? nil : params[:person],
             house:                  params[:house],
             name:                   params[:name],
+            floor:                  params[:floor],
             bed:                    params[:bed],
             matress:                params[:matress],
             bathroom:               params[:bathroom],
@@ -44,7 +45,15 @@ class Room < ActiveRecord::Base
         puts "SELECT * from rooms WHERE rooms.name ILIKE '%#{@search_string}%'"
         return Room.find_by_sql("SELECT * from rooms WHERE rooms.name ILIKE '%#{search_string}%'")
         #query.status ? Person.include.find_by_sql(query.to_sql) : []
-        
     end
+
+    def self.get_empty_rooms_by_house()
+        houses.map {|house| {house: house[0].humanize, occupied:Room.where(house: house).where.not(person_id: nil).size, empty: Room.where(house: house, person_id: nil).size}}
+    end
+
+    def self.get_empty_rooms()
+        {occupied:Room.where.not(person_id: nil).size, empty: Room.where(person_id: nil).size }
+    end
+
 
 end     #class end

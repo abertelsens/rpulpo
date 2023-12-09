@@ -16,10 +16,10 @@ helpers do
 
     def check_update_result(result)
         if !result
-            puts "error while updating".yellow
-            puts result.error_messages.yellow
+            puts Rainbow("error while updating").yellow
+            puts Rainbow(result.error_messages).yellow
         else
-            puts "success when updating".yellow
+            puts Rainbow("success when updating").yellow
         end
     end
     
@@ -32,9 +32,14 @@ helpers do
         return @auth
       end
 
+    #def get_current_user()
+        #ADMIN_USER
+    #    session[:current_user_id].nil? ? nil : User.find(session[:current_user_id])
+    #end
+
     def get_current_user()
         #ADMIN_USER
-        session[:current_user_id].nil? ? nil : User.find(session[:current_user_id])
+        cookies[:current_user_id].nil? ? nil : User.find(cookies[:current_user_id])
     end
 
     #checks if the edit/new/delete action produced any errors and redirects to the 
@@ -42,43 +47,20 @@ helpers do
     def error_screen(object)
         partial "screen/error", locals: {error: object.error}
     end
-
-    def get_screen(object_type)
-        case object_type 
-            when "settings" then partial :"screen/settings"
-            when "transactions" then partial :"screen/transactions"
-            when "reports" then partial :"screen/reports"
-            when "shop" then partial :"screen/shop"
-            when "regular_supplier" then partial :"screen/regular_supplier"
-            when "user", "department", "budget_item", "ccard", "cashbox" then partial :"screen/settings", locals: {active_object: object_type}
-            when "payment", "pending_request", "paid_request", "payment_request", "request" then partial :"screen/transactions", locals: {active_object: object_type}
-            when "ccard_report", "cashbox_report" then partial :"screen/reports", locals: {active_object: object_type}
-        end
-    end
-
-
-    def get_viewer object_name
-        case object_name
-        when "movement", "shop", "regular_supplier", "ccard_report", "cashbox_report"
-            partial :"view/#{object_name}"  #if viewer
-        else
-            redirect "#{object_name}/table"
-        end
-    end
     
     def print_controller_log()
         case SINATRA_LOG_LEVEL
             when 1 
-                puts "--------------------------------------------".red
-                puts "route: #{request.fullpath}".red
-                puts "route: #{request.request.path_info}".red
-                puts "--------------------------------------------".red
+                puts Rainbow("--------------------------------------------").red
+                puts Rainbow("#{request.fullpath}").red
+                puts Rainbow("route: #{request.path_info}").red
+                puts Rainbow("--------------------------------------------").red
             when 2
-                puts "--------------------------------------------".red
-                puts "#{request.fullpath}".red
-                puts "route: #{request.path_info}".red
-                puts "params: #{params}".yellow
-                puts "--------------------------------------------".red
+                puts Rainbow("--------------------------------------------").red
+                puts Rainbow("#{request.fullpath}").red
+                puts Rainbow("route: #{request.path_info}").red
+                puts Rainbow("params: #{params}").yellow
+                puts Rainbow("--------------------------------------------").red
         end
     end
 

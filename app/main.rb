@@ -1,22 +1,17 @@
-require 'colorize'
+require 'os'
+require 'rainbow'
 require 'sinatra'
+require 'sinatra/cookies'
 require 'sinatra/flash'
 require "sinatra/activerecord"
 require 'slim/include'
 require 'sinatra/partial'
 require 'sinatra/reloader' if development?
-require 'require_all'
-require 'prawn'
-require 'prawn/table'
 require_relative 'sinatra_helpers'  #helpers for the sinatra controllers
+require 'require_all'
 require_rel 'models'
 require_rel 'routes'
-
-#require_relative 'excel_importer'
-require_relative 'excel_room_importer'
-#require_relative 'excel_exporter'
-
-require_relative 'pandoc_writer'
+require_rel 'importers-exporters'
 
 include ActiveRecord
 include ExcelRoomImporter
@@ -26,8 +21,8 @@ include ExcelRoomImporter
 ########################################################################################
 
 DB_NAME = 'rpulpo_db'
-LOCAL_DB_PATH = "postgres://alejandro@localhost/#{DB_NAME}" 
 
+LOCAL_DB_PATH = "postgres://alejandro@localhost/#{DB_NAME}" if OS.mac?
 
 # if running in a remote environment look for the DB URL in the enviroment. If the ENV variable is not
 # found then it means we are running locally, so use the LOCAL_DB_PATH
@@ -46,6 +41,7 @@ end
 configure :production do
     set :database, {adapter: 'postgresql',  encoding: 'utf8', host: db.host, database: DB_NAME, pool: 2, username: db.user}
 end
+
 ########################################################################################
 # SINATRA SETUP
 ########################################################################################
@@ -64,41 +60,42 @@ Slim::Engine.disable_option_validator!
 Slim::Engine.set_options shortcut: {'&' => {tag: 'input', attr: 'type'}, '#' => {attr: 'id'}, '.' => {attr: 'class'}}
 set :partial_template_engine, :slim
 
-
-
 ########################################################################################
 # LOGIN
 ########################################################################################
 
 ADMIN_USER = User.find_by(uname: "ale")
-# renders the main page
-get '/' do
+
+# actons performed before any route.
+before '/*' do
     print_controller_log
-    @user = get_current_user()
-    @user ? (partial :"home") : (partial :"login")
-    #partial :"home"
 end
 
 # renders the main page
+get '/' do
+    @user = get_current_user()
+    @user ? (partial :"home") : (partial :"login")
+end
+
+# renders the login page
 get '/login' do
     partial :"login"
 end
 
 get '/logout' do
-    print_controller_log
-    session[:current_user_id] = nil
+    #session[:current_user_id] = nil     #resets the current_user_id cooky
+    cookies[:current_user_id] = nil 
     redirect '/'
 end
 
 post '/login' do
     puts "POST LOGIN>>>>>"
-    print_controller_log
     @user = User.authenticate(params[:uname],params[:password])
     @auth_error = @user==false
     #set the current session id
     if @user
         puts "got user id #{@user.id}"
-        session[:current_user_id] = @user.id    #sets the current_user_id in the session
+        cookies[:current_user_id] = @user.id    #sets the current_user_id in the session
         redirect '/'
     else
         partial :"login" if !@user
@@ -108,7 +105,6 @@ end
 
 # adds or removes all the visible people on a table from the current set.
 post '/people/:action' do
-    print_controller_log
     @peopleset = get_current_peopleset
     case params[:action]
         when "select" then @peopleset.add_people params[:person_id].keys
@@ -117,8 +113,6 @@ post '/people/:action' do
     redirect "/people/peopleset/#{@peopleset.id}/view"
 end
 #User.create(uname: "ale",password: "ale", usertype: "admin");
-#Peopleset.where(status: Peopleset::TEMPORARY).destroy_all
-#Person.update_full_info
 p = Person.find(1)
 puts "Atrribute #{p.family_name}"
 #Excelimporter::import
@@ -127,3 +121,5 @@ puts "Atrribute #{p.family_name}"
 #pw.convert
 
 #puts "found variables: #{pw.get_variables()}"
+
+puts Room.get_empty_rooms

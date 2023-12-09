@@ -5,10 +5,11 @@ turbo-frame id="rooms_table"
       a style="display: block;" href="/room/#{object.id}" data-turbo-frame="main_frame" 
         .row.row-link style="display: block;" data-peopletable-target="row" data-id="#{object.id}" data-num="#{index}"
           .two.columns.row-field style="pointer-events: none" = object.house&.humanize
+          .one.columns.row-field style="pointer-events: none" = object.floor
           .two.columns.row-field style="pointer-events: none" = object.name
           .four.columns.row-field style="pointer-events: none" = object.person&.full_name
           .two.columns.row-field style="pointer-events: none" = object.bathroom
-          .two.columns.row-field style="pointer-events: none" = object.bed
+          .one.columns.row-field style="pointer-events: none" = object.bed
               
                   
               

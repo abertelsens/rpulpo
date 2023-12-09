@@ -8,7 +8,6 @@
 
 # renders the lists frame after setting the current peopleset
 get '/lists/frame' do
-    print_controller_log
     @peopleset = get_current_peopleset
     partial :"frame/lists"
 end
@@ -17,7 +16,6 @@ end
 # @objects the people that will be shown in the table
 # @peopleset_ids: an array of ids that is used to highlight the people that belong to the set
 get '/people/peopleset/:id/table' do
-    print_controller_log
     @peopleset = Peopleset.find(params[:id])
     set_current_peopleset @peopleset
     @peopleset_ids = @peopleset.get_people.map {|p| p.id }
@@ -27,7 +25,7 @@ end
 
 # renders the table of after perfroming a search.
 get '/people/peopleset/search' do
-    print_controller_log
+    
     @peopleset = get_current_peopleset
     @peopleset_ids = @peopleset.get_people.map {|p| p.id }
     @objects = Person.search(params[:q],params[:sort_order])
@@ -36,7 +34,7 @@ end
 
 # renders the viewer of the set
 get '/people/peopleset/:id/view' do
-    print_controller_log
+    
     set_current_peopleset = params[:id].to_i
     @peopleset = Peopleset.find(params[:id])
     @people = @peopleset.get_people
@@ -51,7 +49,7 @@ end
 
 # saves the people set, updates the currnet set to the new saved one and reloads all the frame to correctly reflect the changes
 post '/people/peopleset/:id/save' do
-    print_controller_log
+    
     @peopleset = Peopleset.find(params[:id])
     if params[:commit]=="save" && @peopleset.temporary?
         @peopleset.update(name: params[:name], status:Peopleset::SAVED)     #saves the current set 
@@ -69,7 +67,7 @@ end
 
 # shows the edit form to create or edit a set
 get '/people/peopleset/:id/edit' do
-    print_controller_log
+    
     @peopleset = Peopleset.find(params[:id])
     partial :"form/peopleset"
 end
@@ -96,7 +94,7 @@ end
 # word. 
 # TODO
 get '/people/current_set/F28' do
-    print_controller_log
+    
     content_type 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     @people = get_current_peopleset.get_people()
     puts "Current dir #{Dir.pwd}"
@@ -108,14 +106,14 @@ end
 
 # exports the set to excel
 get '/people/peopleset/:id/export/excel' do
-    print_controller_log
+    
     exporter = Excelexporter.new(Peopleset.find(params[:id]).get_people)
     send_file exporter.get_file_path, :disposition => 'attachment', :type => 'application/excel', :filename => "lista_alumnos.xlsx"
 end
 
 # renders the form for the reports that do not need additional info
 get '/people/peopleset/:id/report/:report' do
-    print_controller_log
+    
     content_type 'application/pdf'
     people = Peopleset.find(params[:id]).get_people
     PDFReport.new(people: people, document_type: params[:report]).render
@@ -123,7 +121,7 @@ end
 
 # renders the form for the reports that need some info to be rendered
 get '/people/peopleset/:id/report/:report/form' do
-    print_controller_log
+    
     @peopleset = Peopleset.find(params[:id])
     @report = params[:report]
     partial :"form/report"
@@ -131,7 +129,7 @@ end
 
 # renders a pdf with the params received.
 get '/people/peopleset/:set_id/document/:doc_id' do
-    print_controller_log
+    
     @peopleset = Peopleset.find(params[:set_id])
     @people = @peopleset.get_people
     @document = Document.find(params[:doc_id])
@@ -143,7 +141,7 @@ get '/people/peopleset/:set_id/document/:doc_id' do
             body @document.render(@people)
         when "excel"
             headers 'content-type' => "html"
-            body @document.render(@people)
+            send_file @document.render(@people), :filename => "#{@document.name}.xlsx"
         end
     
 end
@@ -151,7 +149,7 @@ end
 
 # renders a pdf with the params received.
 post '/people/peopleset/:id/report/:report/form' do
-    print_controller_log
+    
     @peopleset = Peopleset.find(params[:id])
     @people = @peopleset.get_people
     content_type 'application/pdf'
@@ -160,7 +158,7 @@ end
 
 # toggles a person from the set.
 get '/peopleset/:set_id/toggle/:person_id' do
-    print_controller_log
+    
     puts "got current set: #{get_current_peopleset.get_name}".yellow
     @peopleset = Peopleset.find(params[:set_id])
     @peopleset.toggle Person.find(params[:person_id])

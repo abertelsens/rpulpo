@@ -1,0 +1,27 @@
+#########################################
+# EXCEL EXPORT SETTINGS FILE
+#########################################
+workbook: 'numeros de ropa.xlsx'    # name of the workbook to be generated
+worksheets:
+  - name: 'ropa'                          # name of the wroksheet to be generated
+    fields:                         # fields.   Each field defines a column. The identifier of the filed must match
+      - field:
+        value: person.id                  #           the identifier of an attribute in the DB.  
+        name: id                    # name to be used as the header.
+      - field:
+        value: person.full_name
+        name: 'Nombre Completo'
+      - field: 
+        value: person.clothes
+        name: 'Número de Ropa'
+  - name: 'ropa2'                           # name of the wroksheet to be generated
+    fields:                                 # fields. Each field defines a column. The identifier of the filed must match
+      - field:
+        value: person.id                    # the identifier of an attribute in the DB.  
+        name: ids                           # name to be used as the header.
+      - field:
+        value: person.full_name
+        name: 'Nombre Completo'
+      - field: 
+        value: crs.admissio
+        name: 'Admissio'

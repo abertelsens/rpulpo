@@ -3,14 +3,13 @@
 # A class defininign a Document object.
 ###########################################################################################
 
-require_relative '../excel_document'
-require_relative '../PDFReport'
+require_rel '../engines'
 
 #A class containing the Users data
 class Document < ActiveRecord::Base
 
-    PANDOC_TEMPLATES_DIR = "app/pandoc"
-    EXCEL_TEMPLATES_DIR = "app/excel"
+    PANDOC_TEMPLATES_DIR = "app/engines-templates/pandoc"
+    EXCEL_TEMPLATES_DIR = "app/engines-templates/excel"
 
     belongs_to 	    :pulpo_module    
     enum engine:    {pandoc: 0, prawn: 1, excel:2} 
@@ -32,7 +31,7 @@ class Document < ActiveRecord::Base
             if params[:template].nil?  #no new file was provided. We change the name of the current file
                 case engine
                     when "pandoc"  then FileUtils.mv self.get_full_path, "#{PANDOC_TEMPLATES_DIR}/#{params[:name]}.md"
-                    when "excel"  then FileUtils.mv self.get_full_path, "#{EXCEL_TEMPLATES_DIR}/#{params[:name]}.xlsx"
+                    when "excel"  then FileUtils.mv self.get_full_path, "#{EXCEL_TEMPLATES_DIR}/#{params[:name]}.yaml"
                 end
             end
         end
@@ -48,9 +47,10 @@ class Document < ActiveRecord::Base
 
     def self.prepare_params(params)
         case params[:engine]
-            when "pandoc" then file_suffix = ".md"
-            when "excel" then file_suffix = "xlsx"
-        end
+            when "pandoc" then file_suffix = "md"
+            when "excel" then file_suffix = "yaml"
+            end
+        
         {
             pulpo_module_id:        params[:module],
             name:                   params[:name],
@@ -67,7 +67,7 @@ class Document < ActiveRecord::Base
     def get_full_path
         case engine
             when "pandoc" then "#{PANDOC_TEMPLATES_DIR}/#{self.name}.md"
-            when "excel" then "#{EXCEL_TEMPLATES_DIR}/#{self.name}.xlsx"
+            when "excel" then "#{EXCEL_TEMPLATES_DIR}/#{self.name}.yaml"
             else "unknown engine"
         end
     end
@@ -76,13 +76,13 @@ class Document < ActiveRecord::Base
         puts "found engine #{engine} with path #{path}"
         case engine
             when "pandoc"
-                pw = Pandoc_Writer.new(get_full_path, people)
+                pw = Pandoc_Writer.new(self, people)
                 pw.convert
             when "prawn"
                 pdfreport = PDFReport.new(people: people, doc_type: name)
                 pdfreport.render
             when "excel"
-                excelreport = ExcelDocument.new(get_full_path, people)
+                excelreport = ExcelWriter.new(self, people)
                 excelreport.render
         end
     end

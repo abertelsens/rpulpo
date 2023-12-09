@@ -3,18 +3,16 @@ turbo-frame id="main_frame"
   .container.container-frame style="margin-left:40px; margin-right:40px;" data-controller="search"
     form.form-inline method="GET" action="/rooms/search" data-controller="search" data-turbo-frame="rooms_table" aria-label="Search" name="q" data-action="input->searchfield#submit"  
       .row
-        .columns.three
-          //RIGHT PANE
-          .columns.twelve style="background-color:red"
 
-        .columns.eight
+            
+        .columns.twelve
           .columns.twelve 
             .row.header-frame
-              .columns.four.offset-by-four.u-text-center
+              .columns.twelve.u-text-center
                 h3 = "ROOMS"
             
             .row 
-              .columns.six.offset-by-three.u-text-center
+              .columns.five.offset-by-four.u-text-center
                 input#search_string.u-full-width autofocus="autofocus" type="search" autocomplete="off" placeholder="search" aria-label="Search" name="q" data-action="input->search#submit"
                 input#sort_order type="hidden" name="sort_order" data-search-target="sort_order"
               
@@ -24,13 +22,36 @@ turbo-frame id="main_frame"
                     |&nbspadd room
 
             .row
-              .columns.ten.offset-by-one.u-full-width
+              .columns.three style="min-width:100px; padding-right:30px"
+                .container.table-container
+                  .row.row-head
+                    .columns.six.row-label = "casa"
+                    .columns.two.row-label style="text-align:center" = "ocup"
+                    .columns.two.row-label style="text-align:center" = "libres"
+                    .columns.two.row-label style="text-align:center" = "total"
+                  .row.scrollable
+                    - Room.get_empty_rooms_by_house.each do |house|
+                      .columns.five.row-field = house[:house] 
+                      .columns.two.row-field style="text-align:right" = house[:occupied]
+                      .columns.two.row-field style="text-align:right" = house[:empty]
+                      .columns.two.row-field style="text-align:right" = house[:empty]+house[:occupied]
+                  .row.scrollable.row-head
+                    - data = Room.get_empty_rooms
+                    .columns.six.row-label  = "total"
+                    .columns.two.row-label style="font-size: .7em; text-align:center"  = data[:occupied]
+                    .columns.two.row-label style="font-size: .7em; text-align:center" = data[:empty]
+                    .columns.two.row-label style="font-size: .7em; text-align:center" = data[:empty]+data[:occupied]  
+                    
+
+
+              .columns.eight.u-full-width
                 div.container.table-container   
                   .row.row-head
                     .two.columns.row-label = "casa"
+                    .one.columns.row-label = "planta"
                     .two.columns.row-label = "nombre"
                     .four.columns.row-label = "persona"
                     .two.columns.row-label = "baño"
-                    .two.columns.row-label = "cama"
+                    .one.columns.row-label = "cama"
                     
                 turbo-frame id="rooms_table" src="/rooms/table"

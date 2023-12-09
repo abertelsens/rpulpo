@@ -6,7 +6,7 @@ turbo-frame id="main_frame"
   	
 	form action="/room/#{(@object.nil? ? "new" : @object.id)}"  method="POST"
 	
-		.container.full-screen-form.screen-box style="max-width:600px"
+		.container.full-screen-form.screen-box style="max-width:800px"
 			
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM HEADER
@@ -19,44 +19,50 @@ turbo-frame id="main_frame"
 			//----------------------------------------------------------------------------------------------------------------
 			.row
 		
-				.columns.six
+				.columns.four
 					label for="house" house
 					select.u-full-width name="house"
 						- Room.houses.each do |house|
 							option selected=(@object&.house==house[0]) value=house[0] = house[0].humanize
 			
+				.columns.two
+					label for="floor" floor
+					&text.u-full-width name="floor" value=@object&.floor
+
 				.columns.six
 					label for="name" name
 					&text.u-full-width name="name" value=@object&.name
 
-				.columns.twelve
+				.columns.six
 					label for="name" person
 					select.u-full-width name="person"
 						option selected=(@object&.person_id.blank?) value="" = "empty room"
 						- Person.all.each do |person|
 							option selected=(@object&.person_id==person.id) value=person.id = person.full_name
 
-			.row
 				.columns.six
+					label for="phone" phone
+					&text.u-full-width name="phone" value=@object&.phone
+			
+			.row
+				.columns.four
 					label for="bed" bed
 					select.u-full-width name="bed"
 						- Room.beds.each do |bed|
 							option selected=(@object&.bed==bed[0]) value=bed[0] = bed[0].humanize
 
-				.columns.six
+				.columns.four
 					label for="matress" matress
 					&text.u-full-width name="matress" value=@object&.matress
 
-				.columns.six
+				.columns.four
 					label for="bathroom" bathroom
 					select.u-full-width name="bathroom"
 						- Room.bathrooms.each do |bath|
 							option selected=(@object&.bathroom==bath[0]) value=bath[0] = bath[0].humanize
 
 
-				.columns.six
-					label for="phone" phone
-					&text.u-full-width name="phone" value=@object&.phone
+			
 
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM BUTTONS

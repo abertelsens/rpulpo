@@ -4,14 +4,12 @@
 
 # renders the people frame
 get '/documents/frame' do
-    print_controller_log
     partial :"frame/documents"
 end
 
 # renders the table of people
 # @objects the people that will be shown in the table
 get '/documents/table' do
-    print_controller_log
     @objects = Document.get_docs_of_user get_current_user
     partial :"table/documents"
 end
@@ -34,7 +32,6 @@ end
 # POST ROUTES
 ########################################################################################
 post '/document/:id' do
-    print_controller_log
     @document = (params[:id]=="new" ? nil : Document.find(params[:id]))
     case params[:commit]
         when "save"     

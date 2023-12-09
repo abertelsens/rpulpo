@@ -5,6 +5,7 @@ class Rooms < ActiveRecord::Migration[7.0]
       r.string    :name
       r.integer   :person_id
       r.integer   :bed
+      r.string    :floor
       r.string    :matress
       r.integer   :bathroom
       r.integer   :phone
