@@ -8,20 +8,6 @@ turbo-frame id="main_frame"
       .columns.six style="padding:20px"
         .row.header-frame
           turbo-frame id="list_header_frame" src="people/peopleset/#{@peopleset.id}/header"
-            .columns.six 
-              h4
-                i.fa-regular.fa-users
-                |&nbspListas
-            
-            .columns.three
-              select.u-full-width id="peopleset" name="peopleset" data-people-target="peopleset_select" data-action="change->people#select_set"
-                - Peopleset.get_all.each do |set|
-                  option selected=(set.id == @peopleset.id) value=set.id = set.get_name
-            
-            .columns.three
-              a.button.u-full-width data-people-target="editset_btn" href="people/peopleset/#{@peopleset.id}/edit" data-turbo-frame="list_header_frame"
-                i.fa-solid.fa-pen-to-square style="font-size:small"
-                |&nbspedit list
               
         .row
           .columns.eight.u-full-width
@@ -31,14 +17,13 @@ turbo-frame id="main_frame"
 
           .columns.two.u-full-width data-controller="tabgroup"
             button.tab-button.u-full-width data-action="click->peopletable#select_all" data-turbo-frame="peopleset_view"
-              i.fa-regular.fa-user-plus style="font-size:x-small"
+              i.fa-solid.fa-user-plus style="font-size:x-small"
               |&nbspsel all
           
           .columns.two.u-full-width data-controller="tabgroup"
             button.tab-button.u-full-width data-action="click->peopletable#clear_all" data-turbo-frame="peopleset_view"
-              i.fa-regular.fa-user-minus style="font-size:x-small"
+              i.fa-solid.fa-user-minus style="font-size:x-small"
               |&nbspclear all 
-
 
         .row
           div.container.table-container   

@@ -6,15 +6,14 @@ require 'sinatra/flash'
 require "sinatra/activerecord"
 require 'slim/include'
 require 'sinatra/partial'
-require 'sinatra/reloader' if development?
+require 'sinatra/reloader'
 require_relative 'sinatra_helpers'  #helpers for the sinatra controllers
 require 'require_all'
 require_rel 'models'
 require_rel 'routes'
-require_rel 'importers-exporters'
 
 include ActiveRecord
-include ExcelRoomImporter
+#include ExcelRoomImporter
 
 ########################################################################################
 # DB SETUP
@@ -22,7 +21,7 @@ include ExcelRoomImporter
 
 DB_NAME = 'rpulpo_db'
 
-LOCAL_DB_PATH = "postgres://alejandro@localhost/#{DB_NAME}" if OS.mac?
+LOCAL_DB_PATH = "postgres://alejandro@localhost/#{DB_NAME}"
 
 # if running in a remote environment look for the DB URL in the enviroment. If the ENV variable is not
 # found then it means we are running locally, so use the LOCAL_DB_PATH
@@ -95,7 +94,7 @@ post '/login' do
     #set the current session id
     if @user
         puts "got user id #{@user.id}"
-        cookies[:current_user_id] = @user.id    #sets the current_user_id in the session
+        cookies[:current_user_id] = @user.id    #sets the current_user_id in the cookies
         redirect '/'
     else
         partial :"login" if !@user
@@ -122,4 +121,4 @@ puts "Atrribute #{p.family_name}"
 
 #puts "found variables: #{pw.get_variables()}"
 
-puts Room.get_empty_rooms
+#puts Room.get_empty_rooms

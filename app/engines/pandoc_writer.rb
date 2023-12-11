@@ -51,7 +51,7 @@ class Pandoc_Writer
         end
         
         # write the file
-        @pdf = PandocRuby.new(pandoc_src, "--pdf-engine=#{PDF_ENGINE} --template=#{@template}", :standalone).to_pdf
+        @pdf = PandocRuby.new(pandoc_src, "-o --pdf-engine=#{PDF_ENGINE} --template=#{@template}", :standalone).to_pdf
         @pdf
     end
 

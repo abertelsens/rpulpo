@@ -6,7 +6,7 @@ EXCEL_TEMPLATES_DIR ="app/engines-templates/excel"
 
     def initialize(document, people)
         @document = document
-				@people = people
+	    @people = people
         @workbook = RubyXL::Workbook.new    #   creates the workbook
         parse_yaml "#{EXCEL_TEMPLATES_DIR}/#{@document.path}"
         write_excel
@@ -22,8 +22,8 @@ EXCEL_TEMPLATES_DIR ="app/engines-templates/excel"
     end
 
     def write_excel
-        @workbook.worksheets.delete @workbook[0]										# deletes the first worksheet which is created automatically.
-        @worksheets_names.each {|wn| @workbook.add_worksheet wn }   #  adds all the worksheets
+        @workbook.worksheets.delete @workbook[0]					# deletes the first worksheet which is created automatically.
+        @worksheets_names.each {|wn| @workbook.add_worksheet wn }   # adds all the worksheets
         @worksheets_settings.each_with_index do |ws,index|
 					write_headers(@workbook[index], ws.map{ |field| field[:column_name] })
 					write_data(@workbook[index], ws.map{ |field| field[:id]} , @people)

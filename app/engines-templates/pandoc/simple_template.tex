@@ -102,11 +102,11 @@ $endif$
 
 % Font:
 % If the mainfont variable is set we use it, otherwise the default will be Times Roman.
-$if(mainfont)$
-    \setmainfont[]{$mainfont$}
-$else$
-    \setmainfont{Times Roman}
-$endif$
+%$if(mainfont)$
+%    \setmainfont[]{$mainfont$}
+%$else$
+%    \setmainfont{Times Roman}
+%$endif$
 
 
 
@@ -122,8 +122,8 @@ $endif$
 
 % Properly one should specify a sanserif font and a monospace font
 % see e.g. the example of Kieran Healy:
-\setromanfont[Mapping=tex-text,Numbers=OldStyle]{$mainfont$} 
-\setsansfont[Mapping=tex-text]{Minion Pro} 
+%\setromanfont[Mapping=tex-text,Numbers=OldStyle]{$mainfont$} 
+%\setsansfont[Mapping=tex-text]{Minion Pro} 
 
 % But I hate sanserif fonts, and anyway there are defaults.
 

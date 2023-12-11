@@ -55,12 +55,15 @@ GEM
       ruby2_keywords (~> 0.0.1)
     nokogiri (1.14.3-arm64-darwin)
       racc (~> 1.4)
+    nokogiri (1.14.3-x64-mingw-ucrt)
+      racc (~> 1.4)
     nokogiri (1.14.3-x86_64-darwin)
       racc (~> 1.4)
     os (1.1.4)
     pandoc-ruby (2.1.7)
     pdf-core (0.9.0)
     pg (1.4.6)
+    pg (1.4.6-x64-mingw-ucrt)
     prawn (2.4.0)
       pdf-core (~> 0.9.0)
       ttfunk (~> 1.7)
@@ -113,6 +116,7 @@ GEM
 
 PLATFORMS
   arm64-darwin-22
+  x64-mingw-ucrt
   x86_64-darwin-20
 
 DEPENDENCIES

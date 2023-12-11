@@ -63,9 +63,9 @@ pg_dump -Fc --no-acl --no-owner -h localhost -U ale saxum_act_db > saxum_act_db.
 
 To restore the local DB from a backup run:
 ```
-psql template1 -c 'drop database saxum_act_db;'
-psql template1 -c 'create database saxum_act_db with owner ale';
-pg_restore -d saxum_act_db saxum_act_db.dump -U ale
+psql template1 -c 'drop database rpulpo_db'
+psql template1 -c 'create database saxum_act_db with owner alejandro';
+pg_restore -d rpulpo_db rpulpo_db.dump -U alejandro
 ```
 where ```saxum_act_db.dump``` is the backup file
 
