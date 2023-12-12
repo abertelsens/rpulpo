@@ -1,17 +1,16 @@
 require 'prawn'
+require 'prawn/table'
 
 LINE_HEIGHT = 24
 MONTHS_LATIN = ["Ianuarius", "Februarius", "Martius", "Aprilis", "Maius", "Iunius", "Iulius", "Augustus", "September", "October", "November", "December"]
  
 
-class PDFReport
+class PrawnWriter  < DocumentWriter
     
-    def initialize(settings)
-        puts "prawn report initializing with settings #{settings}"
-        @people = settings[:people]
-        @doc_type = settings[:doc_type]
-        case @doc_type
-            when "C38" then self.create_C38(settings[:people])
+    def initialize(document, people)
+        @people = people
+        case document.name
+            when "C38" then self.create_C38(people)
         end
     end
     
@@ -123,7 +122,7 @@ class PDFReport
         @pdf.move_down LINE_HEIGHT
 
         add_label("Hizo la Admisión", 0, @pdf.cursor+LINE_HEIGHT,135,LINE_HEIGHT)
-        add_field("#{@crs.admision.strftime("%d-%m-%Y")}" ,335 , @pdf.cursor+LINE_HEIGHT, 120, LINE_HEIGHT) unless @crs.admision.nil?
+        add_field("#{@crs.admision.strftime("%d-%m-%Y")}" ,135 , @pdf.cursor+LINE_HEIGHT, 120, LINE_HEIGHT) unless @crs.admision.nil?
         
         add_label("Hizo la Fidelidad", 255, @pdf.cursor+LINE_HEIGHT,80,LINE_HEIGHT)
         add_field("#{@crs.fidelidad.strftime("%d-%m-%Y")}" ,335 , @pdf.cursor+LINE_HEIGHT, 188, LINE_HEIGHT) unless @crs.fidelidad.nil?
@@ -233,10 +232,10 @@ class PDFReport
         @pdf.bounding_box([x, y], width: width, height: height) do 
             #@pdf.stroke_bounds
             @pdf.font('Helvetica', size: 9)
-            @pdf.text text, valign: :bottom, :style => :bold, align: :left
+            @pdf.text (text.encode("Windows-1252", invalid: :replace, undef: :replace, replace: '')), valign: :bottom, :style => :bold, align: :left
+            
         end
     end
-
 
 end
  

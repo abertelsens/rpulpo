@@ -12,7 +12,7 @@ class Document < ActiveRecord::Base
     EXCEL_TEMPLATES_DIR = "app/engines-templates/excel"
 
     belongs_to 	    :pulpo_module    
-    enum engine:    {pandoc: 0, prawn: 1, excel:2} 
+    enum engine:    {pandoc: 0, prawn: 1, excel:2, typst:3} 
 
     # if a set is destroyed all the related records in the personsets are destroyed
 	before_destroy do |doc|
@@ -49,6 +49,7 @@ class Document < ActiveRecord::Base
         case params[:engine]
             when "pandoc" then file_suffix = "md"
             when "excel" then file_suffix = "yaml"
+            when "typst" then file_suffix = "typ"
             end
         
         {
@@ -72,18 +73,13 @@ class Document < ActiveRecord::Base
         end
     end
     
-    def render(people)
+    def get_writer(people, output_type=nil)
         puts "found engine #{engine} with path #{path}"
-        case engine
-            when "pandoc"
-                pw = Pandoc_Writer.new(self, people)
-                pw.convert
-            when "prawn"
-                pdfreport = PDFReport.new(people: people, doc_type: name)
-                pdfreport.render
-            when "excel"
-                excelreport = ExcelWriter.new(self, people)
-                excelreport.render
+        writer = case engine
+            when "pandoc" then Pandoc_Writer.new(self, people)
+            when "prawn" then PrawnWriter.new(self, people)
+            when "excel" then ExcelWriter.new(self, people)
+            when "typst" then TypstWriter.new(self, people)
         end
     end
 end

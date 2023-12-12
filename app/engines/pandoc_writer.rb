@@ -2,7 +2,7 @@ require 'pandoc-ruby'
 require 'combine_pdf'
 
 
-class Pandoc_Writer
+class Pandoc_Writer  < DocumentWriter
     
     PANDOC_TEMPLATES_DIR ="app/engines-templates/pandoc"
 
@@ -37,7 +37,7 @@ class Pandoc_Writer
 
     
     # convert the file to a PDF
-    def convert()
+    def render()
         
         # changes the source according to the variables present in the preamble. For example if the variable impreso
         # is present a latex command to print the impreso will be added to the source.

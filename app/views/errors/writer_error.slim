@@ -1,0 +1,39 @@
+/!=============================================================================
+/! FONTS
+/!=============================================================================
+
+link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,300' rel='stylesheet' type='text/css'
+
+/! Load Fontawesome
+script src="https://kit.fontawesome.com/4f55c9eacf.js" crossorigin="anonymous"
+
+
+html
+  head
+    meta charset="utf-8"
+    meta http-equiv="x-ua-compatible" content="ie=edge"
+    title Pulpo Cavabianca
+    meta name="description" content=""
+    meta name="viewport" content="width=device-width, initial-scale=1"
+
+    //==================================================================================================
+    //STYLESHEETS
+    //==================================================================================================
+    link rel="stylesheet" href="/css/normalize.css"
+    link rel="stylesheet" href="/css/skeleton.css"
+    link rel="stylesheet" href="/css/menu_styles.css"
+    link rel="stylesheet" href="/css/pulpo.css"
+  
+  body
+    
+    //==================================================================================================
+    // NAVIGATION BAR
+    //==================================================================================================
+    turbo-frame#whole_screen
+    
+      div.row.u-text-center style="margin-top: 100px"
+        div.columns.six.offset-by-three
+          img src="/img/darth_vader_error.png" style="width: 200px"
+            h2 = "This should not be happening!"
+            h4 = "Error" 
+            p = @writer.message

@@ -2,7 +2,6 @@ require 'os'
 require 'rainbow'
 require 'sinatra'
 require 'sinatra/cookies'
-require 'sinatra/flash'
 require "sinatra/activerecord"
 require 'slim/include'
 require 'sinatra/partial'

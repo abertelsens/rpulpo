@@ -29,7 +29,7 @@ class Peopleset < ActiveRecord::Base
     # returns a temporary set, if it does not exist, we create it.
     def self.get_temporary_set()
         set = Peopleset.where(status: TEMPORARY)
-        set.empty? ? Peopleset.create({status: TEMPORARY}) : set[0]
+        set.empty? ? Peopleset.create({status: TEMPORARY}) : set.first
     end
 
 
@@ -38,10 +38,12 @@ class Peopleset < ActiveRecord::Base
 	##########################################################################################
 	
     def get_people()
+        puts "-------------------------------"
+        puts "Getting people from set"
         Person.joins("INNER JOIN personsets ON people.id = personsets.person_id AND personsets.peopleset_id = '#{self.id}'").order(family_name: :asc)
     end
 
-    # chechs wheter the set contains a person
+    # chechs whether the set contains a specific person
     def contains?(person)
         Personset.where(person_id: person.id, peopleset_id: self.id).size>0
     end

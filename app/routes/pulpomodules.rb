@@ -5,14 +5,14 @@
 
 # renders the people frame after setting the current peopleset
 get '/modules/frame' do
-    print_controller_log
+    
     partial :"frame/modules"
 end
 
 # renders the table of people
 # @objects the people that will be shown in the table
 get '/modules/table' do
-    print_controller_log
+    
     @objects = PulpoModule.all.order(name: :asc)
     partial :"table/modules"
 end
@@ -29,7 +29,7 @@ end
 # POST ROUTES
 ########################################################################################
 post '/module/:id' do
-    print_controller_log
+    
     @module = (params[:id]=="new" ? nil : PulpoModule.find(params[:id]))
     case params[:commit]
         when "save"     

@@ -47,7 +47,7 @@ turbo-frame id="main_frame"
 				.columns.three
 					label data-mdfile-target="pathlabel" &nbsp 
 					label.button.button-success.u-full-width data-mdfile-target="mdfile_btn" data-action="click->mdfile#select_file" = (@object&.path.blank? ? "load" : "change")
-					input accept=".md, .yaml" style="display:none" data-mdfile-target="mdfile" type="file" name="template" data-action="change->mdfile#load_file"
+					input accept=".md, .yaml, .typ" style="display:none" data-mdfile-target="mdfile" type="file" name="template" data-action="change->mdfile#load_file"
 				
 				.columns.three
 					label &nbsp 

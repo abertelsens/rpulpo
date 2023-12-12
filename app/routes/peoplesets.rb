@@ -127,22 +127,27 @@ get '/people/peopleset/:id/report/:report/form' do
     partial :"form/report"
 end
 
-# renders a pdf with the params received.
+# renders a pdf or an excel file with the params received.
 get '/people/peopleset/:set_id/document/:doc_id' do
     
     @peopleset = Peopleset.find(params[:set_id])
-    @people = @peopleset.get_people
     @document = Document.find(params[:doc_id])
-    ##pw = Pandoc_Writer.new("app/pandoc/#{@document.path}", @people)
-    status 200
+    @writer = @document.get_writer @peopleset.get_people       
+    case @writer.status
+        when DocumentWriter::WARNING
+            puts Rainbow(@writer.message).orange
+        when DocumentWriter::FATAL
+            puts Rainbow(@writer.message).red
+            return partial :"errors/writer_error"
+    end
     case @document.engine
-        when "pandoc"
-            headers 'content-type' => "application/pdf"
-            body @document.render(@people)
-        when "excel"
-            headers 'content-type' => "html"
-            send_file @document.render(@people), :filename => "#{@document.name}.xlsx"
-        end
+    when "prawn", "pandoc", "typst" 
+        headers 'content-type' => "application/pdf"
+        body @writer.render
+    when "excel" 
+        headers 'content-type' => "html"
+        send_file @writer.render(), :filename => "#{@document.name}.xlsx"
+    end
     
 end
 
@@ -159,7 +164,7 @@ end
 # toggles a person from the set.
 get '/peopleset/:set_id/toggle/:person_id' do
     
-    puts "got current set: #{get_current_peopleset.get_name}".yellow
+    puts "got current set: #{get_current_peopleset.get_name}"
     @peopleset = Peopleset.find(params[:set_id])
     @peopleset.toggle Person.find(params[:person_id])
     @people = @peopleset.get_people
