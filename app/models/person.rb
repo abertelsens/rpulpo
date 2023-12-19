@@ -86,16 +86,26 @@ class Person < ActiveRecord::Base
     def get_attribute(attribute_string)
         att_array = attribute_string.split(".")
         table, attribute = att_array[0], att_array[1]
-        case table
-            when "person" then res = self[attribute.to_sym]
-            when "study" then res = self.study[attribute.to_sym]
-            when "personal" then res = self.personal[attribute.to_sym]
-            when "crs" then res = self.crs[attribute.to_sym]
-            when "room" then res = self.room[attribute.to_sym]
+        res = case table
+            when "person"   then self[attribute.to_sym]
+            when "study"    then self.study[attribute.to_sym]
+            when "personal" then self.personal[attribute.to_sym]
+            when "crs"      then self.crs[attribute.to_sym]
+            when "room"     then self.room[attribute.to_sym]
         end
         res.is_a?(Date) ? res.to_s : res
     end
 
+    def self.get_editable_attributes()
+    [
+        {name: "group",          value: "string",    description: "group in cavabianca"},
+        {name: "ctr",            value: "options",   description: "ctr donde vive"},
+        {name: "status",         value: "options",   description:  "laico/diácono/sacerdote"},
+        {name: "n/agd",          value: "options",   description:  "n/agd"},
+        {name: "year",           value: "string",    description:  "año en cavabianca"},
+    ]
+    end    
+    
     def get_attributes(attributes)
         attributes.map {|att| {att => self.get_attribute(att)} }
     end

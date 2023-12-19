@@ -9,7 +9,7 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
     }
 
     initialize() {
-      this.active_field_name = "title"
+      this.active_field_name = "group"
       var field = document.getElementsByName(this.active_field_name)[0]
       field.style.display="block"
     }
@@ -23,7 +23,6 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
       console.log("field")
       console.log(field)
       field.style.display="block"
-      
       var old_field = document.getElementsByName(this.active_field_name)[0]
       old_field.style.display="none"
       this.active_field_name = field.name

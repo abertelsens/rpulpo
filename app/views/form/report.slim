@@ -1,25 +1,59 @@
-turbo-frame id="peopleset_view"
-  form action="/people/peopleset/#{@peopleset.id}/document/#{@document.id}" method="POST"
-		.columns.eight.offset-by-two
-			.container
-				.row.u-text-center
-					.columns.twelve
-						h4 = "#{@report} Report"
-						p style="margin-bottom:20px" = "The Report will open in a new window. You might need to disable a popup blocker"
-				.row.u-text-center
-					- @template_variables.each do |var|
-						.columns.eight.offset-by-two.u-text-center
-							label = var
-							input.u-full-width  type="text" required=true name=var
-					
-					/----------------------------------------------------------------------------------------------------------------
-					//BUTTONS
-					//----------------------------------------------------------------------------------------------------------------
-				 
-				.row
-					.columns.eight.offset-by-two
-						button#save_btn.button-success.u-full-width type="submit" name="commit" value="save" data-report-target="submit_btn" data-action="click->report#submit" create report  
-				
-				.row	
-					.columns.eight.offset-by-two
-						a.button.button-secondary.u-full-width formnovalidate="true" data-report-target="cancel_btn" href="/people/peopleset/#{@peopleset.id}/view" cancel 
+/!=============================================================================
+/! FONTS
+/!=============================================================================
+
+link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,300' rel='stylesheet' type='text/css'
+
+/! Load Fontawesome
+script src="https://kit.fontawesome.com/4f55c9eacf.js" crossorigin="anonymous"
+
+html
+  head
+    meta charset="utf-8"
+    meta http-equiv="x-ua-compatible" content="ie=edge"
+    title Pulpo Cavabianca
+    meta name="description" content=""
+    meta name="viewport" content="width=device-width, initial-scale=1"
+
+    //==================================================================================================
+    //STYLESHEETS
+    //==================================================================================================
+    link rel="stylesheet" href="/css/normalize.css"
+    link rel="stylesheet" href="/css/skeleton.css"
+    link rel="stylesheet" href="/css/menu_styles.css"
+    link rel="stylesheet" href="/css/pulpo.css"
+  
+  body
+    
+    //==================================================================================================
+    // NAVIGATION BAR
+    //==================================================================================================
+    turbo-frame#whole_screen
+    
+      div.row.u-text-center style="margin-top: 100px"
+
+				form action="/people/peopleset/#{@peopleset.id}/document/#{@document.id}" method="POST"
+					.columns.four.offset-by-four
+						.container
+							.row.u-text-center
+								.columns.twelve
+									h4 style="margin-bottom:30px" "DOCUMENT: #{@document.name}"
+									p = "We need some additonal values to produce the documents."
+									p = "Fill in the information below"
+							.row.u-text-center style="margin-top:30px"
+								- @template_variables.each do |var|
+									.columns.eight.offset-by-two.u-text-center
+										label = var
+										input.u-full-width  type="text" required=true name=var
+								
+								/----------------------------------------------------------------------------------------------------------------
+								//BUTTONS
+								//----------------------------------------------------------------------------------------------------------------
+							
+							row.center-align
+								button#save_btn.button-primary type="submit" name="commit" value="save" data-validate-target="submit_btn" Submit  			
+								a.button.button-secondary formnovalidate="true" data-report-target="cancel_btn" onClick="javascript:window.close('','_parent','');" CLOSE
+
+
+
+

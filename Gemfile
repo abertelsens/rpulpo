@@ -1,5 +1,5 @@
 source 'https://rubygems.org'
-
+require 'os'
 ruby '3.2.2' 
 gem 'sinatra',            '2.1.0'
 #gem 'sinatra-flash'
@@ -9,7 +9,8 @@ gem 'slim',               '3.0.8'
 gem 'thin',               '1.8.1'
 gem 'iso_country_codes'
 gem 'pg'
-gem 'typst'
+gem 'rb_sys'
+gem 'typst' if OS.mac? 
 gem 'activerecord-postgresql-adapter'
 #gem 'chartkick'
 gem 'groupdate'

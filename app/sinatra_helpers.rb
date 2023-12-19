@@ -40,7 +40,7 @@ helpers do
     def get_current_user()
         #ADMIN_USER
         #return User.find(1)
-        cookies[:current_user_id]&.blank? ? nil : User.find(cookies[:current_user_id])
+        (cookies[:current_user_id].nil? || cookies[:current_user_id]&.blank?) ? nil : User.find(cookies[:current_user_id])
     end
 
     #checks if the edit/new/delete action produced any errors and redirects to the 

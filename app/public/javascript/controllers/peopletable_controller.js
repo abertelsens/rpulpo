@@ -27,7 +27,7 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
         
         for (i in this.rowTargets) {
           this.rowTargets[i].classList.remove('row-selected')
-          this.checkboxTargets[i].checked=true
+          this.checfilekboxTargets[i].checked=true
         }
         this.submit_form("clear")
       }

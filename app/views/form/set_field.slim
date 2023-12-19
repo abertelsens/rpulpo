@@ -11,29 +11,29 @@ turbo-frame id="peopleset_view"
 					.columns.eight.offset-by-two
 						label for="date" field
 						select.u-full-width name="att_name" data-setfield-target="att_name" data-action="change->setfield#update"
-							- Person.get_set_edit_attributes.each do |att|
-								option value=att[:att_symb] = att[:name]
+							- Person.get_editable_attributes.each do |att|
+								option value=att[:name] = att[:name]
 
 					//.columns.eight.offset-by-two
 					//	input.u-full-width type="text" name="att_value"
 					
 					.columns.eight.offset-by-two
 						label value
-						input.u-full-width type="text" name="title" value="" style="display:none"
-
 						input.u-full-width type="text" name="group" value="" style="display:none"
+						input.u-full-width type="text" name="year" value="" style="display:none"
 						
-						select.u-full-width name="lives" style="display:none" 
-							- Person::LIVES_OPTIONS.each do |opt| 
-								option selected=(@person && @person.lives==opt) value=opt = opt
 
+						select.u-full-width name="ctr" style="display:none" 
+							- Person.ctrs.each do |st| 
+								option selected=(@person&.ctr==st[0]) value=st[0] = st[0].humanize(capitalize: false) 
+						
 						select.u-full-width name="status" style="display:none" 
-							- Person::STATUS_OPTIONS.each do |opt| 
-								option selected=(@person && @person.status==opt) value=opt = opt
+							- Person.statuses.each do |st| 
+								option selected=(@person&.status==st[0]) value=st[0] = st[0]
 
-						select.u-full-width name="n_agd" style="display:none" 
-							- Person::N_AGD_OPTIONS.each do |opt| 
-								option selected=(@person && @person.n_agd==opt) value=opt = opt
+						select.u-full-width name="n/agd" style="display:none" 
+							- Person.n_agds.each do |st| 
+								option selected=(@person&.n_agd==st[0]) value=st[0] = st[0]
 							
 					/----------------------------------------------------------------------------------------------------------------
 					//BUTTONS

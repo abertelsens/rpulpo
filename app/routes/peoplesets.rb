@@ -34,7 +34,6 @@ end
 
 # renders the viewer of the set
 get '/people/peopleset/:id/view' do
-    
     set_current_peopleset = params[:id].to_i
     @peopleset = Peopleset.find(params[:id])
     @people = @peopleset.get_people
@@ -84,46 +83,11 @@ get '/people/peopleset/:id/edit_field' do
 end
 
 post '/people/peopleset/:id/edit_field' do
-    puts "got params #{params}".yellow
+    puts Rainbow("got params #{params}").yellow
     @peopleset = Peopleset.find(params[:id])
     @people = @peopleset.get_people
     @peopleset.edit(params[:att_name], params[params[:att_name]])
     partial :"view/peopleset"
-end
-
-# word. 
-# TODO
-get '/people/current_set/F28' do
-    content_type 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-    @people = get_current_peopleset.get_people()
-    puts "Current dir #{Dir.pwd}"
-    file = WordDocCreator.F28 ({path: "tmp/F28.docx", people: @people})
-    puts "pwd: #{Dir.pwd}"
-    puts "filepath: #{file.path}"
-    send_file file.path, disposition: 'attachment'#, filename: "F28.docx"
-end
-
-# exports the set to excel
-get '/people/peopleset/:id/export/excel' do
-    
-    exporter = Excelexporter.new(Peopleset.find(params[:id]).get_people)
-    send_file exporter.get_file_path, :disposition => 'attachment', :type => 'application/excel', :filename => "lista_alumnos.xlsx"
-end
-
-# renders the form for the reports that do not need additional info
-get '/people/peopleset/:id/report/:report' do
-    
-    content_type 'application/pdf'
-    people = Peopleset.find(params[:id]).get_people
-    PDFReport.new(people: people, document_type: params[:report]).render
-end
-
-# renders the form for the reports that need some info to be rendered
-get '/people/peopleset/:id/report/:report/form' do
-    
-    @peopleset = Peopleset.find(params[:id])
-    @report = params[:report]
-    partial :"form/report"
 end
 
 # renders a pdf or an excel file with the params received.
@@ -131,61 +95,45 @@ get '/people/peopleset/:set_id/document/:doc_id' do
     @peopleset = Peopleset.find(params[:set_id])
     @document = Document.find(params[:doc_id])
     @writer = @document.get_writer @peopleset.get_people
-    if @document.has_template_variables?
-        puts "\n\n\nDocument has template varibales #{@document.get_template_variables}\n\n\n"
-        @template_variables = @document.get_template_variables
-        return partial :'form/report' 
-    end
-    case @writer.status
-        when DocumentWriter::WARNING
-            puts Rainbow(@writer.message).orange
-        when DocumentWriter::FATAL
-            puts Rainbow(@writer.message).red
-            return partial :"errors/writer_error"
-    end
     case @document.engine
-        when "prawn", "pandoc", "typst"
-            headers 'content-type' => "application/pdf"
-            body @writer.render
-        when "excel" 
-            send_file @writer.render(), :filename => "#{@document.name}.xlsx"
-        end
-    
+		when "prawn"
+			headers 'content-type' => "application/pdf"	
+			body @writer.render
+		when "excel" 
+			send_file @writer.render(), :filename => "#{@document.name}.xlsx"
+		when "typst"
+			if @document.has_template_variables?
+					@template_variables = @document.get_template_variables
+					return partial :'form/report' 
+			end
+			case @writer.status
+				when DocumentWriter::WARNING
+					puts Rainbow(@writer.message).orange
+				when DocumentWriter::FATAL
+					puts Rainbow(@writer.message).red
+					return partial :"errors/writer_error"
+			end
+    OS.windows? ?	(send_file @writer.render) : (body @writer.render)
+		end
 end
-
 
 post '/people/peopleset/:set_id/document/:doc_id' do
-    @peopleset = Peopleset.find(params[:set_id])
-    @document = Document.find(params[:doc_id])
-    @writer = @document.get_writer(@peopleset.get_people, params)
-    case @writer.status
-        when DocumentWriter::WARNING
-            puts Rainbow(@writer.message).orange
-        when DocumentWriter::FATAL
-            puts Rainbow(@writer.message).red
-            return partial :"errors/writer_error"
-    end 
-    puts "going to "
-    #headers 'content-type' => "application/pdf"
-    #body @writer.render#, disposition: 'attachment'#, filename: "F28.docx"
-    send_file @writer.render(), disposition: 'attachment', :filename => "pepe.pdf"
-    #redirect "/people/peopleset/#{@peopleset.id}/view"
-    
-end
-
-
-# renders a pdf with the params received.
-post '/people/peopleset/:id/report/:report/form' do
-    
-    @peopleset = Peopleset.find(params[:id])
-    @people = @peopleset.get_people
-    content_type 'application/pdf'
-    PDFReport.new(people: @people, date: params[:date], document_type: params[:report]).render
+	headers 'content-type' => "application/pdf"
+	@peopleset = Peopleset.find(params[:set_id])
+	@document = Document.find(params[:doc_id])
+	@writer = @document.get_writer(@peopleset.get_people, params)
+	case @writer.status
+			when DocumentWriter::WARNING
+					puts Rainbow(@writer.message).orange
+			when DocumentWriter::FATAL
+					puts Rainbow(@writer.message).red
+					return partial :"errors/writer_error"
+	end 
+	OS.windows? ? (send_file @writer.render) : (body @writer.render)
 end
 
 # toggles a person from the set.
 get '/peopleset/:set_id/toggle/:person_id' do
-    
     puts "got current set: #{get_current_peopleset.get_name}"
     @peopleset = Peopleset.find(params[:set_id])
     @peopleset.toggle Person.find(params[:person_id])
