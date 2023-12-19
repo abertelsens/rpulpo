@@ -6,6 +6,7 @@ class Documents < ActiveRecord::Migration[7.0]
       p.string        :description
       p.integer       :engine
       p.string        :path
+      p.boolean       :template_variables
     end
   end
 end

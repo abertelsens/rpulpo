@@ -94,7 +94,6 @@ end
 # word. 
 # TODO
 get '/people/current_set/F28' do
-    
     content_type 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     @people = get_current_peopleset.get_people()
     puts "Current dir #{Dir.pwd}"
@@ -129,10 +128,14 @@ end
 
 # renders a pdf or an excel file with the params received.
 get '/people/peopleset/:set_id/document/:doc_id' do
-    
     @peopleset = Peopleset.find(params[:set_id])
     @document = Document.find(params[:doc_id])
-    @writer = @document.get_writer @peopleset.get_people       
+    @writer = @document.get_writer @peopleset.get_people
+    if @document.has_template_variables?
+        puts "\n\n\nDocument has template varibales #{@document.get_template_variables}\n\n\n"
+        @template_variables = @document.get_template_variables
+        return partial :'form/report' 
+    end
     case @writer.status
         when DocumentWriter::WARNING
             puts Rainbow(@writer.message).orange
@@ -141,13 +144,32 @@ get '/people/peopleset/:set_id/document/:doc_id' do
             return partial :"errors/writer_error"
     end
     case @document.engine
-    when "prawn", "pandoc", "typst" 
-        headers 'content-type' => "application/pdf"
-        body @writer.render
-    when "excel" 
-        headers 'content-type' => "html"
-        send_file @writer.render(), :filename => "#{@document.name}.xlsx"
-    end
+        when "prawn", "pandoc", "typst"
+            headers 'content-type' => "application/pdf"
+            body @writer.render
+        when "excel" 
+            send_file @writer.render(), :filename => "#{@document.name}.xlsx"
+        end
+    
+end
+
+
+post '/people/peopleset/:set_id/document/:doc_id' do
+    @peopleset = Peopleset.find(params[:set_id])
+    @document = Document.find(params[:doc_id])
+    @writer = @document.get_writer(@peopleset.get_people, params)
+    case @writer.status
+        when DocumentWriter::WARNING
+            puts Rainbow(@writer.message).orange
+        when DocumentWriter::FATAL
+            puts Rainbow(@writer.message).red
+            return partial :"errors/writer_error"
+    end 
+    puts "going to "
+    #headers 'content-type' => "application/pdf"
+    #body @writer.render#, disposition: 'attachment'#, filename: "F28.docx"
+    send_file @writer.render(), disposition: 'attachment', :filename => "pepe.pdf"
+    #redirect "/people/peopleset/#{@peopleset.id}/view"
     
 end
 

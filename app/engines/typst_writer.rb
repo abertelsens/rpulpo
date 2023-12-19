@@ -4,7 +4,8 @@
 # The class relies on the typst gem (https://github.com/actsasflinn/typst-rb)
 ###########################################################################################
 
-require "typst"
+require 'os'
+require 'typst' if OS.mac? 
 
 class TypstWriter < DocumentWriter
 
@@ -15,7 +16,7 @@ class TypstWriter < DocumentWriter
     TYPST_PAGE_BREAK = "\n#pagebreak()\n"
     TYPST_PREAMBLE_SEPARATOR = "//CONTENTS"
 
-    def initialize(document,people)
+    def initialize(document,people, template_variables=nil)
         @status = true
         @error_msg = ""
         @document = document    
@@ -28,8 +29,6 @@ class TypstWriter < DocumentWriter
             return
         end
         
-        # strores an array of all the variables found in the template.
-        @variables = @template_source.scan(/\$\S*\$/)
         
         template_source = @template_source.split(TYPST_PREAMBLE_SEPARATOR)
         
@@ -41,6 +40,12 @@ class TypstWriter < DocumentWriter
             @template_contents = template_source[1]
         end
 
+        # strores an array of all the variables found in the template.
+        @variables = @template_source.scan(/\$\S*\$/)
+        
+        if template_variables
+            template_variables.each {|var| @template_preamble.gsub!("$#{var[0]}$",var[1])}
+        end
         # process each person.
         # replace the variables in the md file with the values retrieved from the DB
         @typst_src = @template_preamble << (@people.map { |person| replace_variables(@template_contents,person) }).join(TYPST_PAGE_BREAK)
@@ -69,10 +74,29 @@ class TypstWriter < DocumentWriter
 
     def render(output_type="pdf")
         begin
-            Typst::Pdf.from_s(@typst_src).document
+
+            #Typst::Pdf.from_s(@typst_src).document
+            #typst compile test.typ
+            if OS.windows? 
+                puts "executing: typst compile #{TYPST_TEMPLATES_DIR}/#{@document.path}"
+                res =  system("typst compile #{TYPST_TEMPLATES_DIR}/#{@document.path} #{TYPST_TEMPLATES_DIR}/#{@document.name}.pdf")
+                if res 
+                    contents = File.read "#{TYPST_TEMPLATES_DIR}/#{@document.name}.pdf"
+                    File.delete("#{TYPST_TEMPLATES_DIR}/#{@document.name}.pdf")
+                    return contents
+                else
+                    set_error(FATAL, "Typst Writer: failed to convert document: #{error.message}")
+                    return 
+                end
+            else
+                puts "running via typst gem"
+                Typst::Pdf.from_s(@typst_src).document
+            end    
         rescue => error
             set_error(FATAL, "Typst Writer: failed to convert document: #{error.message}")
         end
     end    
+
+    
 
 end #class end

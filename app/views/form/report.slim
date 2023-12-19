@@ -1,16 +1,16 @@
-turbo-frame id="peopleset_view" 
-  form action="/people/peopleset/#{@peopleset.id}/report/#{@report}/form" method="POST" data-report-target="form" data-controller="report"
+turbo-frame id="peopleset_view"
+  form action="/people/peopleset/#{@peopleset.id}/document/#{@document.id}" method="POST"
 		.columns.eight.offset-by-two
-			.container.container-frame.form-container.centered-form
+			.container
 				.row.u-text-center
 					.columns.twelve
 						h4 = "#{@report} Report"
 						p style="margin-bottom:20px" = "The Report will open in a new window. You might need to disable a popup blocker"
-
-				.row
-					.columns.eight.offset-by-two
-						label for="date" date
-						input.u-full-width  id="date" type="date" required=true name="date" value=Date.today()
+				.row.u-text-center
+					- @template_variables.each do |var|
+						.columns.eight.offset-by-two.u-text-center
+							label = var
+							input.u-full-width  type="text" required=true name=var
 					
 					/----------------------------------------------------------------------------------------------------------------
 					//BUTTONS

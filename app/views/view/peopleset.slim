@@ -38,7 +38,7 @@ turbo-frame id="peopleset_view"
 								td style="vertical-align:top"
 									- (Document.get_docs_of_user get_current_user).each do |doc|
 										.row style="margin-top:4px"
-											a.row-link href="/people/peopleset/#{@peopleset.id}/document/#{doc.id}" target=(doc.engine=="excel" ? "_self" : "_blank") = "#{doc.pulpo_module.name} - #{doc.name}"
+											a.row-link href="/people/peopleset/#{@peopleset.id}/document/#{doc.id}" target=( (doc.engine=="excel" || doc.has_template_variables?) ? "self" : "_blank") = "#{doc.pulpo_module.name} - #{doc.name}"
 
 							tr	style="width:30%; vertical-align:top"
 								td style="vertical-align:top"

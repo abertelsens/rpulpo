@@ -1,4 +1,4 @@
-// ================================================================
+// =================================================================
 // TYPST TEMPLATE FOR IMPRESO F21
 // =================================================================
 // The template has two parts. A preamble in which we define some variables, 
@@ -11,9 +11,9 @@
 // enclosed in $ signs.
 
 
-#let date = "$date$"
+#let date = "date"
 #let impreso = "F21"
-#let rector = "$rector$\nRector"
+#let rector = "rector\nRector"
 
 //=================================================================
 //FUNCTIONS 
@@ -43,22 +43,23 @@ pad(x:7cm, y: 2cm)[
 // =================================================================
 
 #set page("a4",
-margin: (top:5cm, bottom:2.5cm, x:3cm),
-footer: [#pad(x:-2.3cm, y: .9cm, text(size: 9pt, [#impreso]))]
+margin: (top:6cm, bottom:3cm, x:3cm),
+footer: [#pad(x:-2.3cm, y: 1.2cm, text(size: 9pt, [#impreso]))]
 )
 
 #set text(
   font: "Minion Pro",
-  size: 11pt
+  size: 12pt
 )
 
 #set par(justify: true, first-line-indent: 0cm)
+
 //DO NOT DELETE THE LINE BELOW
 //CONTENTS
 
 = Professio Fidei
 
-Ego $person.first_name$ $person.family_name$ firma fide credo et profíteor ómnia et síngula quae continéntur in Symbolo fídei, vidélicet:
+Ego person.first_name person.family_name firma fide credo et profíteor ómnia et síngula quae continéntur in Symbolo fídei, vidélicet:
 
 Credo in unum Deum Patrem omnipoténtem, factórem coeli et terrae, visibilium ómnium et invisibílium et in unum Dóminum Iesum Christum, Fílium Dei unigénitum, et ex Patre natum ante ómnia saécula, Deum de Deo, lumen de lúmine, Deum verum de Deo vero, génitum non factum, consubstantiálem Patri per quem ómnia facta sunt, qui propter nos hómines et propter nostram salútem descéndit de coelis, et incarnátus est de Spíritu Sancto, ex María Vírgine, et homo factus est; crucifixus etiam pro nobis sub Póntio Piláto, passus et sepúltus est; et resurréxit tértia die secúndum Scriptúras, et ascéndit in coelum, sedet ad déxteram Patris, et íterum venturus est cum glória iudicáre vivos et mórtuos, cuius regni non erit finis; et in Spíritum Sanctum Dóminum et vivificántem, qui ex Patre Filióque procédit; qui cum Patre et Fílio simul adorátur et conglorificátur qui locútus est per Prophétas; et unam sanctam cathólicam et apostólicam Ecclésiam. Confíteor unum baptísma in remissiónem peccatórum, et exspécto resurrectiónem mortuórum, et vitam ventúri saéculi. Amen.
 
@@ -70,4 +71,5 @@ Insuper religióso voluntátis et intelléctus obséquio doctrínis adhaéreo qu
 
 
 #show_date[#date]
-#show_signature[#rector]
+#show_signature(rector)
+

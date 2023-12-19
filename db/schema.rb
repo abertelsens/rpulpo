@@ -37,6 +37,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_01_080000) do
     t.string "description"
     t.integer "engine"
     t.string "path"
+    t.boolean "template_variables"
   end
 
   create_table "module_users", force: :cascade do |t|
