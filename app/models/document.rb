@@ -16,8 +16,10 @@ class Document < ActiveRecord::Base
 
   # if a document is destroyed then we delete the associated file
 	before_destroy do |doc|
-		full_path = doc.get_full_path
-		FileUtils.rm full_path if File.file? full_path
+		if doc.engine!="prawn"
+            full_path = doc.get_full_path
+		    FileUtils.rm full_path if File.file? full_path
+        end
 	end
 
 	def self.create_from_params(params)

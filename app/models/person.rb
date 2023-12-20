@@ -73,6 +73,7 @@ class Person < ActiveRecord::Base
     # prepares the parameters received from the form to aupdate/create the person object.
     def self.prepare_params(params)
         params.delete("commit")     #get rid of the commint parameter
+        params.delete("id")
         return params
     end
 

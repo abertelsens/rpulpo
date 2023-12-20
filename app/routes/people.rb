@@ -45,9 +45,9 @@ post '/person/:id/general' do
 	case params[:commit]
 		when "save"     
 			if @person.nil? 
-				@person = Person.create (Person.prepare_params params)
+				@person = Person.create_from_params params
 			else
-				check_update_result (@person.update Person.prepare_params params)
+				check_update_result (@person.update_from_params params)
 			end
 		# if a person was deleted we go back to the screen fo the people table
 		when "delete" 
