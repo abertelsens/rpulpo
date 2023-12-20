@@ -38,8 +38,6 @@ class Peopleset < ActiveRecord::Base
 	##########################################################################################
 	
     def get_people()
-        puts "-------------------------------"
-        puts "Getting people from set"
         Person.joins("INNER JOIN personsets ON people.id = personsets.person_id AND personsets.peopleset_id = '#{self.id}'").order(family_name: :asc)
     end
 

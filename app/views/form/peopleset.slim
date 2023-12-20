@@ -2,7 +2,7 @@ turbo-frame id="list_header_frame"
   form#personForm action="/people/peopleset/#{@peopleset ? @peopleset.id : "new"}/save" method="POST"
 		
 		.columns.six
-			&text.u-full-width name="name" value=@peopleset&.name placeholder="enter name of the list"
+			&text.u-full-width name="name" required="true" value=@peopleset&.name placeholder="enter name of the list"
 		
 		/----------------------------------------------------------------------------------------------------------------
 		//BUTTONS

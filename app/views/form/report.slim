@@ -37,12 +37,12 @@ html
 						.container
 							.row.u-text-center
 								.columns.twelve
-									h4 style="margin-bottom:30px" "DOCUMENT: #{@document.name}"
+									h4 style="margin-bottom:30px" = "DOCUMENT: #{@document.name}"
 									p = "We need some additonal values to produce the documents."
 									p = "Fill in the information below"
 							.row.u-text-center style="margin-top:30px"
 								- @template_variables.each do |var|
-									.columns.eight.offset-by-two.u-text-center
+									.columns.six.offset-by-three.u-text-center
 										label = var
 										input.u-full-width  type="text" required=true name=var
 								

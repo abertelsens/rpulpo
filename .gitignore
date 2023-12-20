@@ -1,6 +1,4 @@
 # ignore ALL files in ANY directory 
-zoho/
-zoho_files/
 app/public/tmp
 tmp/
 

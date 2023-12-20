@@ -12,7 +12,7 @@ require_rel 'models'
 require_rel 'routes'
 
 include ActiveRecord
-#include ExcelRoomImporter
+include ExcelRoomImporter
 
 ########################################################################################
 # DB SETUP
@@ -71,7 +71,7 @@ end
 
 # renders the main page
 get '/' do
-    @user = get_current_user()
+    @user = get_current_user
     @user ? (partial :"home") : (partial :"login")
 end
 
@@ -81,22 +81,19 @@ get '/login' do
 end
 
 get '/logout' do
-    #session[:current_user_id] = nil     #resets the current_user_id cooky
     cookies[:current_user_id] = nil 
     redirect '/'
 end
 
 post '/login' do
-    puts "POST LOGIN>>>>>"
     @user = User.authenticate(params[:uname],params[:password])
     @auth_error = @user==false
     #set the current session id
     if @user
-        puts "got user id #{@user.id}"
         cookies[:current_user_id] = @user.id    #sets the current_user_id in the cookies
         redirect '/'
     else
-        partial :"login" if !@user
+        partial :"login"
     end
 end
 
@@ -110,9 +107,14 @@ post '/people/:action' do
     end
     redirect "/people/peopleset/#{@peopleset.id}/view"
 end
+
+#Person.all.each do |person|
+#    person.update(celebration_info: person[:celebration_info].gsub("Celebra ",""))
+#end
+
 #User.create(uname: "ale",password: "ale", usertype: "admin");
-p = Person.find(1)
-puts "Atrribute #{p.family_name}"
+#p = Person.find(1)
+#puts "Atrribute #{p.family_name}"
 #Excelimporter::import
 #ExcelRoomImporter::import
 #pw = Pandoc_Writer.new('app/pandoc/F21.md', Person.all)

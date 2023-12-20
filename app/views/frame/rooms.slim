@@ -25,22 +25,19 @@ turbo-frame id="main_frame"
               .columns.three style="min-width:100px; padding-right:30px"
                 .container.table-container
                   .row.row-head
-                    .columns.six.row-label = "casa"
-                    .columns.two.row-label style="text-align:center" = "ocup"
+                    .columns.eight.row-label = "casa"
                     .columns.two.row-label style="text-align:center" = "libres"
                     .columns.two.row-label style="text-align:center" = "total"
                   .row.scrollable
                     - Room.get_empty_rooms_by_house.each do |house|
-                      .columns.five.row-field = house[:house] 
-                      .columns.two.row-field style="text-align:right" = house[:occupied]
-                      .columns.two.row-field style="text-align:right" = house[:empty]
-                      .columns.two.row-field style="text-align:right" = house[:empty]+house[:occupied]
-                  .row.scrollable.row-head
-                    - data = Room.get_empty_rooms
-                    .columns.six.row-label  = "total"
-                    .columns.two.row-label style="font-size: .7em; text-align:center"  = data[:occupied]
-                    .columns.two.row-label style="font-size: .7em; text-align:center" = data[:empty]
-                    .columns.two.row-label style="font-size: .7em; text-align:center" = data[:empty]+data[:occupied]  
+                      .columns.eight.row-field = house[:house] 
+                      .columns.two.row-field style="text-align:center" = house[:empty]
+                      .columns.two.row-field style="text-align:center" = house[:empty]+house[:occupied]
+                  //.row.scrollable.row-head
+                  //  - data = Room.get_empty_rooms
+                  //  .columns.eight.row-field  = "total"
+                  //   .columns.two.row-field style="font-size: .7em; text-align:center" = data[:empty]
+                  //  .columns.two.row-field style="font-size: .7em; text-align:center" = data[:empty]+data[:occupied]  
                     
 
 
