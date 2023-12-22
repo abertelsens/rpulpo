@@ -45,7 +45,7 @@ class Person < ActiveRecord::Base
 	
 	before_save do |person|
 		self.full_info = "#{(title.nil? ? "" : title+" ")}#{first_name} #{family_name} #{group}"
-        self.full_name = "#{family_name} #{first_name}"
+        self.full_name = "#{family_name}, #{first_name}"
 	end
 
     before_destroy do |person|
@@ -74,6 +74,7 @@ class Person < ActiveRecord::Base
     def self.prepare_params(params)
         params.delete("commit")     #get rid of the commint parameter
         params.delete("id")
+        params.delete("photo_file")
         return params
     end
 
@@ -85,14 +86,16 @@ class Person < ActiveRecord::Base
 
     # retrieves an attribute of the form "person.att_name"
     def get_attribute(attribute_string)
+        puts "asking for attribute"
+        puts attribute_string
         att_array = attribute_string.split(".")
         table, attribute = att_array[0], att_array[1]
         res = case table
             when "person"   then self[attribute.to_sym]
-            when "study"    then self.study[attribute.to_sym]
-            when "personal" then self.personal[attribute.to_sym]
-            when "crs"      then self.crs[attribute.to_sym]
-            when "room"     then self.room[attribute.to_sym]
+            when "study"    then (self.study.nil? ? "" : self.study[attribute.to_sym])
+            when "personal" then (self.personal.nil? ? "" : self.personal[attribute.to_sym])
+            when "crs"      then (self.crs.nil? ? "" : self.crs[attribute.to_sym])
+            when "room"     then (self.room.nil? ? "" : self.room[attribute.to_sym])
         end
         res.is_a?(Date) ? res.to_s : res
     end

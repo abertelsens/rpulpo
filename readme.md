@@ -1,4 +1,6 @@
 
+bundle exec ruby .\app\main.rb -o 0.0.0.0 -e production
+
 # DB Management
 
  bundle exec rake db:setup

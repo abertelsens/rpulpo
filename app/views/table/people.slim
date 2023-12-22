@@ -8,7 +8,7 @@ turbo-frame id="people_table" data-turbo-frame="person_view"
           .four.columns.row-field style="pointer-events: none" = object.short_name
           .one.columns.row-field style="pointer-events: none" = object.status
           .one.columns.row-field style="text-align:center; pointer-events: none" = object.year
-          .one.columns.row-field style="pointer-events: none" = object.ctr.humanize
+          .two.columns.row-field style="pointer-events: none" = object.ctr.humanize
           .one.columns.row-field style="text-align:center; pointer-events: none" = object.group
           .one.columns.row-field style="text-align:center; pointer-events: none" = object.clothes
           .two.columns.row-field style="pointer-events: none" = (object.room.nil? ? "" : "#{object.room&.name} (#{object.room&.house})")

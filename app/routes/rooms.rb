@@ -10,8 +10,8 @@ end
 # renders the table of people
 # @objects the people that will be shown in the table
 get '/rooms/table' do
-    @objects = Room.all.order(house: :asc)
-    partial :"table/rooms"
+	@objects = Room.includes(:person).all.order(house: :asc, name: :asc)
+	partial :"table/rooms"
 end
 
 # renders a single document view

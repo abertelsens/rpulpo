@@ -7,7 +7,8 @@ gem 'sinatra',            '2.1.0'
 gem 'sinatra-partial'
 gem 'sinatra-reloader'
 gem 'slim',               '3.0.8'
-gem 'thin',               '1.8.1'
+#gem 'thin',               '1.8.1'
+gem 'puma'
 gem 'pg'
 gem 'rb_sys'
 gem 'typst' if OS.mac? 
@@ -27,4 +28,7 @@ gem 'bidi'
 gem 'rubyXL'
 gem 'pandoc-ruby'
 gem 'os'
+gem 'github-markup'
+gem 'commonmarker'
+
 

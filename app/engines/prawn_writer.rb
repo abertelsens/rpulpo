@@ -59,119 +59,120 @@ class PrawnWriter  < DocumentWriter
 			
 			@pdf.move_down LINE_HEIGHT
 			add_label("Alumno del Colegio desde",0,@pdf.cursor+LINE_HEIGHT,160,LINE_HEIGHT)
-			add_field("#{@person.arrival.strftime("%m-%d-%Y")}" ,160 , @pdf.cursor+LINE_HEIGHT, 80, LINE_HEIGHT) unless @person.arrival.nil?
+			add_field("#{@person.arrival&.strftime("%m-%d-%Y")}" ,160 , @pdf.cursor+LINE_HEIGHT, 80, LINE_HEIGHT) unless @person.nil?
 
 			add_label("hasta",240,@pdf.cursor+LINE_HEIGHT,80,LINE_HEIGHT)
-			add_field("#{@person.departure.strftime("%d-%m-%Y")}" ,320 , @pdf.cursor+LINE_HEIGHT, 68, LINE_HEIGHT) unless @person.departure.nil?
+			add_field("#{@person.departure&.strftime("%d-%m-%Y")}" ,320 , @pdf.cursor+LINE_HEIGHT, 68, LINE_HEIGHT) unless @person.nil?
 			@pdf.move_down LINE_HEIGHT
 
 			add_label("Promoción no.",0,@pdf.cursor+LINE_HEIGHT,160,LINE_HEIGHT)
-			add_field("#{@crs.classnumber}" ,160 , @pdf.cursor+LINE_HEIGHT, 228, LINE_HEIGHT)
+			add_field("#{@crs&.classnumber}" ,160 , @pdf.cursor+LINE_HEIGHT, 228, LINE_HEIGHT)
 			@pdf.move_down LINE_HEIGHT
 			
 			add_label("Región de Origen",0,@pdf.cursor+LINE_HEIGHT,160,LINE_HEIGHT)
-			add_field("#{@personal.region_of_origin}" ,160 , @pdf.cursor+LINE_HEIGHT, 80, LINE_HEIGHT)
+			add_field("#{@personal.region_of_origin}" ,160 , @pdf.cursor+LINE_HEIGHT, 80, LINE_HEIGHT)  unless @personal.nil?
 			
 			add_label("Región",240,@pdf.cursor+LINE_HEIGHT,80,LINE_HEIGHT)
-			add_field("#{@personal.region}" ,320 , @pdf.cursor+LINE_HEIGHT, 68, LINE_HEIGHT)
+			add_field("#{@personal.region}" ,320 , @pdf.cursor+LINE_HEIGHT, 68, LINE_HEIGHT) unless @personal.nil?
 			@pdf.move_down LINE_HEIGHT
 
 			add_label("Alumno del Colegio Mayor Aralar",0,@pdf.cursor+LINE_HEIGHT,160,LINE_HEIGHT)
-			add_field("#{@crs.cipna}" ,160 , @pdf.cursor+LINE_HEIGHT, 228, LINE_HEIGHT)
+			add_field("#{@crs&.cipna}" ,160 , @pdf.cursor+LINE_HEIGHT, 228, LINE_HEIGHT) unless @crs.nil?
 			@pdf.move_down LINE_HEIGHT
 			
 			add_label("Lugar y Fecha de Nacimiento",0,@pdf.cursor+LINE_HEIGHT,160,LINE_HEIGHT)
-			add_field("#{@person.birth.strftime("%d-%m-%Y")}" ,160 , @pdf.cursor+LINE_HEIGHT, 228, LINE_HEIGHT) unless @person.birth.nil?
+			add_field("#{@person.birth&.strftime("%d-%m-%Y")}" ,160 , @pdf.cursor+LINE_HEIGHT, 228, LINE_HEIGHT) unless @person.nil?
 		end
 
 		@pdf.move_down LINE_HEIGHT
 
 		add_label("Estudios Institucionales", 0,@pdf.cursor+LINE_HEIGHT,135,LINE_HEIGHT)
-		add_field("#{@study.status}" ,135 , @pdf.cursor+LINE_HEIGHT, 388, LINE_HEIGHT)
+		add_field("#{@study.status}" ,135 , @pdf.cursor+LINE_HEIGHT, 388, LINE_HEIGHT) unless @study.nil?
+
 		@pdf.move_down LINE_HEIGHT
 		
 		add_label("Estudios Civiles", 0,@pdf.cursor+LINE_HEIGHT,135,LINE_HEIGHT)
-		add_field("#{@study.civil_studies}" ,135 , @pdf.cursor+LINE_HEIGHT, 388, LINE_HEIGHT)        
+		add_field("#{@study.civil_studies}" ,135 , @pdf.cursor+LINE_HEIGHT, 388, LINE_HEIGHT) unless @study.nil?         
 		@pdf.move_down LINE_HEIGHT
 
 		add_label("Facultad Eclesiástica", 0,@pdf.cursor+LINE_HEIGHT,135,LINE_HEIGHT)
-		add_field("#{@study.faculty}" ,135 , @pdf.cursor+LINE_HEIGHT, 120, LINE_HEIGHT)
+		add_field("#{@study.faculty}" ,135 , @pdf.cursor+LINE_HEIGHT, 120, LINE_HEIGHT) unless @study.nil?
 		
 		add_label("Licenciatura", 255, @pdf.cursor+LINE_HEIGHT,80,LINE_HEIGHT)
-		add_field("#{@study.licence}" ,335 , @pdf.cursor+LINE_HEIGHT, 60, LINE_HEIGHT) unless @study.licence.nil?
+		add_field("#{@study.licence}" ,335 , @pdf.cursor+LINE_HEIGHT, 60, LINE_HEIGHT) unless @study.nil?
 		
 		add_label("Doctorado", 395, @pdf.cursor+LINE_HEIGHT,80,LINE_HEIGHT)
-		add_field("#{@study.doctorate}" ,475 , @pdf.cursor+LINE_HEIGHT, 48, LINE_HEIGHT) unless @study.doctorate.nil?
+		add_field("#{@study.doctorate}" ,475 , @pdf.cursor+LINE_HEIGHT, 48, LINE_HEIGHT) unless @study.nil?
 		@pdf.move_down LINE_HEIGHT
 
 		add_label("Tesis Doctoral", 0, @pdf.cursor+LINE_HEIGHT,135,LINE_HEIGHT)
-		add_field("#{@study.thesis}" ,135 , @pdf.cursor+2*LINE_HEIGHT, 388, 2*LINE_HEIGHT)
+		add_field("#{@study.thesis}" ,135 , @pdf.cursor+2*LINE_HEIGHT, 388, 2*LINE_HEIGHT) unless @study.nil?
 		@pdf.move_down LINE_HEIGHT
 
 		add_label("Idiomas", 0, @pdf.cursor+LINE_HEIGHT,135,LINE_HEIGHT)
-		add_field("#{@personal.languages}" ,135 , @pdf.cursor+LINE_HEIGHT, 388, LINE_HEIGHT) 
+		add_field("#{@personal.languages}" ,135 , @pdf.cursor+LINE_HEIGHT, 388, LINE_HEIGHT) unless @study.nil?
 		@pdf.move_down LINE_HEIGHT
 
 		add_label("Pidió la admisión", 0, @pdf.cursor+LINE_HEIGHT,135,LINE_HEIGHT)
-		add_field("#{@crs.pa.strftime("%d-%m-%Y")}" ,135 , @pdf.cursor+LINE_HEIGHT, 120, LINE_HEIGHT) unless @crs.pa.nil?
+		add_field("#{@crs.pa&.strftime("%d-%m-%Y")}" ,135 , @pdf.cursor+LINE_HEIGHT, 120, LINE_HEIGHT) unless @crs.nil?
 
 		add_label("Hizo la Oblación", 255, @pdf.cursor+LINE_HEIGHT,80,LINE_HEIGHT)
-		add_field("#{@crs.oblacion.strftime("%d-%m-%Y")}" ,335 , @pdf.cursor+LINE_HEIGHT, 188, LINE_HEIGHT) unless @crs.oblacion.nil?
+		add_field("#{@crs.oblacion&.strftime("%d-%m-%Y")}" ,335 , @pdf.cursor+LINE_HEIGHT, 188, LINE_HEIGHT) unless @crs.nil?
 		@pdf.move_down LINE_HEIGHT
 
 		add_label("Hizo la Admisión", 0, @pdf.cursor+LINE_HEIGHT,135,LINE_HEIGHT)
-		add_field("#{@crs.admision.strftime("%d-%m-%Y")}" ,135 , @pdf.cursor+LINE_HEIGHT, 120, LINE_HEIGHT) unless @crs.admision.nil?
+		add_field("#{@crs.admision&.strftime("%d-%m-%Y")}" ,135 , @pdf.cursor+LINE_HEIGHT, 120, LINE_HEIGHT) unless @crs.nil?
 		
 		add_label("Hizo la Fidelidad", 255, @pdf.cursor+LINE_HEIGHT,80,LINE_HEIGHT)
-		add_field("#{@crs.fidelidad.strftime("%d-%m-%Y")}" ,335 , @pdf.cursor+LINE_HEIGHT, 188, LINE_HEIGHT) unless @crs.fidelidad.nil?
+		add_field("#{@crs.fidelidad&.strftime("%d-%m-%Y")}" ,335 , @pdf.cursor+LINE_HEIGHT, 188, LINE_HEIGHT) unless @crs.nil?
 
 		@pdf.start_new_page
 		@pdf.move_down LINE_HEIGHT
 
 		add_label("Ha manifestado su disposición de ser sacerdote", 0, @pdf.cursor+LINE_HEIGHT,235,LINE_HEIGHT)
-		add_field("#{@crs.letter.strftime("%d-%m-%Y")}" ,235 , @pdf.cursor+LINE_HEIGHT, 100, LINE_HEIGHT) unless @crs.letter.nil?
+		add_field("#{@crs.letter&.strftime("%d-%m-%Y")}" ,235 , @pdf.cursor+LINE_HEIGHT, 100, LINE_HEIGHT) unless @crs.nil?
 		
 		add_label("Hizo la Admissio", 335, @pdf.cursor+LINE_HEIGHT,100,LINE_HEIGHT)
-		add_field("#{@crs.admissio.strftime("%d-%m-%Y")}" ,435 , @pdf.cursor+LINE_HEIGHT, 85, LINE_HEIGHT) unless @crs.admissio.nil?
+		add_field("#{@crs.admissio&.strftime("%d-%m-%Y")}" ,435 , @pdf.cursor+LINE_HEIGHT, 85, LINE_HEIGHT) unless @crs.nil?
 		@pdf.move_down LINE_HEIGHT
 
 
 		add_label("Recibió el Lectorado", 0, @pdf.cursor+LINE_HEIGHT,235,LINE_HEIGHT)
-		add_field("#{@crs.lectorado.strftime("%d-%m-%Y")}" ,235 , @pdf.cursor+LINE_HEIGHT, 100, LINE_HEIGHT) unless @crs.lectorado.nil?
+		add_field("#{@crs.lectorado&.strftime("%d-%m-%Y")}" ,235 , @pdf.cursor+LINE_HEIGHT, 100, LINE_HEIGHT) unless @crs.nil?
 		
 		add_label("Recibió el Acolitado", 335, @pdf.cursor+LINE_HEIGHT,100,LINE_HEIGHT)
-		add_field("#{@crs.acolitado.strftime("%d-%m-%Y")}" ,435 , @pdf.cursor+LINE_HEIGHT, 85, LINE_HEIGHT) unless @crs.acolitado.nil?
+		add_field("#{@crs.acolitado&.strftime("%d-%m-%Y")}" ,435 , @pdf.cursor+LINE_HEIGHT, 85, LINE_HEIGHT) unless @crs.nil?
 		@pdf.move_down LINE_HEIGHT
 
 		add_label("Ordenado Diácono", 0, @pdf.cursor+LINE_HEIGHT,235,LINE_HEIGHT)
-		add_field("#{@crs.diaconado.strftime("%d-%m-%Y")}" ,235 , @pdf.cursor+LINE_HEIGHT, 100, LINE_HEIGHT) unless @crs.diaconado.nil?
+		add_field("#{@crs.diaconado&.strftime("%d-%m-%Y")}" ,235 , @pdf.cursor+LINE_HEIGHT, 100, LINE_HEIGHT) unless @crs.nil?
 		
 		add_label("Ordenado Sacerdote", 335, @pdf.cursor+LINE_HEIGHT,100,LINE_HEIGHT)
-		add_field("#{@crs.presbiterado.strftime("%d-%m-%Y")}" ,435 , @pdf.cursor+LINE_HEIGHT, 85, LINE_HEIGHT) unless @crs.presbiterado.nil?
+		add_field("#{@crs.presbiterado&.strftime("%d-%m-%Y")}" ,435 , @pdf.cursor+LINE_HEIGHT, 85, LINE_HEIGHT) unless @crs.nil?
 		@pdf.move_down LINE_HEIGHT
 
 		add_label("Datos y Circunstacias Familiares", 0, @pdf.cursor+LINE_HEIGHT,235,LINE_HEIGHT)
 		@pdf.move_down LINE_HEIGHT
-		add_field("Padres: #{@personal.father_name} y #{@personal.mother_name}" ,60 , @pdf.cursor+LINE_HEIGHT, 460, LINE_HEIGHT) unless @personal.father_name.nil?
+		add_field("Padres: #{@personal.father_name} y #{@personal.mother_name}" ,60 , @pdf.cursor+LINE_HEIGHT, 460, LINE_HEIGHT) unless @personal.nil?
 		@pdf.move_down LINE_HEIGHT
-		add_field("Domicilio: #{@personal.parents_address}" ,60 , @pdf.cursor+LINE_HEIGHT, 460, LINE_HEIGHT)
+		add_field("Domicilio: #{@personal.parents_address}" ,60 , @pdf.cursor+LINE_HEIGHT, 460, LINE_HEIGHT) unless @personal.nil?
 		@pdf.move_down LINE_HEIGHT
-		add_field("#{@personal.siblings_info}" ,60 , @pdf.cursor+LINE_HEIGHT, 460, LINE_HEIGHT)
+		add_field("#{@personal.siblings_info}" ,60 , @pdf.cursor+LINE_HEIGHT, 460, LINE_HEIGHT) unless @personal.nil?
 		@pdf.move_down LINE_HEIGHT
-		add_field("#{@personal.parents_info}" ,60 , @pdf.cursor+LINE_HEIGHT, 460, LINE_HEIGHT) 
+		add_field("#{@personal.parents_info}" ,60 , @pdf.cursor+LINE_HEIGHT, 460, LINE_HEIGHT) unless @personal.nil?
 		@pdf.move_down LINE_HEIGHT
-		add_field("#{@personal.parents_work}" ,60 , @pdf.cursor+LINE_HEIGHT, 460, LINE_HEIGHT) 
+		add_field("#{@personal.parents_work}" ,60 , @pdf.cursor+LINE_HEIGHT, 460, LINE_HEIGHT) unless @personal.nil?
 		@pdf.move_down LINE_HEIGHT
-		add_field("#{@personal.economic_info}" ,60 , @pdf.cursor+LINE_HEIGHT, 460, LINE_HEIGHT)
+		add_field("#{@personal.economic_info}" ,60 , @pdf.cursor+LINE_HEIGHT, 460, LINE_HEIGHT) unless @personal.nil?
 		
 		@pdf.move_down LINE_HEIGHT
 		
 		add_label("Antecedentes Médicos", 0, @pdf.cursor+LINE_HEIGHT,140,LINE_HEIGHT)    
-		add_field("#{@personal.medical_info}" ,140 , @pdf.cursor+1.5*LINE_HEIGHT, 385, 1.5*LINE_HEIGHT)
+		add_field("#{@personal.medical_info}" ,140 , @pdf.cursor+1.5*LINE_HEIGHT, 385, 1.5*LINE_HEIGHT) unless @personal.nil?
 		@pdf.move_down LINE_HEIGHT
 		
 		add_label("Observaciones", 0, @pdf.cursor+LINE_HEIGHT,140,1.5*LINE_HEIGHT)    
-		add_field("#{@personal.notes}" ,140 , @pdf.cursor+1.5*LINE_HEIGHT, 385, 1.5*LINE_HEIGHT)
+		add_field("#{@personal.notes}" ,140 , @pdf.cursor+1.5*LINE_HEIGHT, 385, 1.5*LINE_HEIGHT) unless @personal.nil?
 		
 		@pdf.move_down 1.5*LINE_HEIGHT
 		

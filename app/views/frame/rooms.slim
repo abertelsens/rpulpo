@@ -29,10 +29,10 @@ turbo-frame id="main_frame"
                     .columns.two.row-label style="text-align:center" = "libres"
                     .columns.two.row-label style="text-align:center" = "total"
                   .row.scrollable
-                    - Room.get_empty_rooms_by_house.each do |house|
-                      .columns.eight.row-field = house[:house] 
-                      .columns.two.row-field style="text-align:center" = house[:empty]
-                      .columns.two.row-field style="text-align:center" = house[:empty]+house[:occupied]
+                    - Room.get_rooms_count_by_house.each do |house|
+                      .columns.eight.row-field = house["name"].humanize
+                      .columns.two.row-field style="text-align:center" = house["empty"]
+                      .columns.two.row-field style="text-align:center" = house["total"]
                   //.row.scrollable.row-head
                   //  - data = Room.get_empty_rooms
                   //  .columns.eight.row-field  = "total"

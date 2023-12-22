@@ -7,13 +7,13 @@ turbo-frame id="main_frame"
       - get_current_user().get_allowed_modules.each do |mod|
         div.row
           a.button.link-button href="/person/#{@person.id}/#{mod.identifier}" = mod.name
-      
-    .columns.four.offset-by-one
+    .columns.two
       .row.u-text-center
         - if @person && File.exist?("app/public/photos/#{@person.id}.jpg")
-          img.person-photo id="photo_image"  width="80px" src= "photos/#{@person.id}.jpg"
+          img.person-photo id="photo_image"  width="200px" src= "photos/#{@person.id}.jpg"
         - else
-          img.person-photo id="photo_image" width="80px" src= "photos/avatar.jpg"
+          img.person-photo id="photo_image" width="200px" src= "photos/avatar.jpg"
+    .columns.four.offset-by-one
       .row
           .columns.twelve.u-text-center
             h3 = "#{@person.short_name}"
@@ -28,24 +28,24 @@ turbo-frame id="main_frame"
           - else
             h6 = "#{@person.ctr.humanize(capitalize: false)}"
       .row
-        .columns.two 
+        .columns.three 
           p = "email:"
-        .columns.six
+        .columns.nine
           p = "#{@person.email}"
       .row  
-        .columns.two 
+        .columns.three 
           p = "telefono:"
-        .columns.six
+        .columns.nine
           p = "#{@person.phone}"
       .row  
-        .columns.two 
+        .columns.three 
           p = "grupo:"
-        .columns.six
+        .columns.nine
           p = "#{@person.group}"
       .row  
-        .columns.two 
+        .columns.three 
           p = "año:"
-        .columns.two
+        .columns.nine
           p = "#{@person.year}"
     
       .row.u-text-center 

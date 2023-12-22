@@ -8,6 +8,8 @@ require 'sinatra/partial'
 require 'sinatra/reloader'
 require_relative 'sinatra_helpers'  #helpers for the sinatra controllers
 require 'require_all'
+require 'github/markup'
+require 'commonmarker'
 require_rel 'models'
 require_rel 'routes'
 
@@ -108,8 +110,27 @@ post '/people/:action' do
     redirect "/people/peopleset/#{@peopleset.id}/view"
 end
 
+# adds or removes all the visible people on a table from the current set.
+get '/help' do
+    @user = get_current_user
+    partial :"help"
+end
+
+# adds or removes all the visible people on a table from the current set.
+get '/help/:page' do  
+    file_body = GitHub::Markup.render("{params[:page].md", File.read("app/views/help/#{params[:page]}.md"))
+    "<turbo-frame id=\"help_frame\" target=\"help_frame\">
+    #{file_body}
+    </turbo-frame>"
+end
+
+
+
+
 #Person.all.each do |person|
-#    person.update(celebration_info: person[:celebration_info].gsub("Celebra ",""))
+#    person.update(first_name: person.first_name.strip)
+#    person.update(family_name: person.family_name.strip)
+#    person.update(full_name: "#{person.family_name.strip}, #{person.first_name.strip}")
 #end
 
 #User.create(uname: "ale",password: "ale", usertype: "admin");

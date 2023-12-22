@@ -102,5 +102,5 @@ end
 
 # uploads an image
 post '/people/:id/image' do
-    FileUtils.mv(params[:file][:tempfile], "app/public/photos/#{params[:id]}.jpg")
+    FileUtils.cp(params[:file][:tempfile], "app/public/photos/#{params[:id]}.jpg")
 end

@@ -18,10 +18,10 @@ turbo-frame id="main_frame"
 					// Image of the Person
 					input accept=".jpg" type="file" style="display:none" name="photo_file" id="photo_file" data-attachment-target="photo_file" data-attachment-id-param=(@person ? @person.id : "") data-action="change->attachment#load_image"
 						- if @person && File.exist?("app/public/photos/#{@person.id}.jpg")
-							img.person-photo id="photo_image"  width="80px" src= "photos/#{@person.id}.jpg" data-attachment-target= "photo_image" data-attachment-id-param=@person.id data-action="click->attachment#select_image"
+							img.person-photo id="photo_image"  width="140px" src= "photos/#{@person.id}.jpg" data-attachment-target= "photo_image" data-attachment-id-param=@person.id data-action="click->attachment#select_image"
 							
 						- else
-							img.person-photo id="photo_image" width="80px" src= "photos/avatar.jpg" data-attachment-target= "photo_image" data-attachment-id-param=(@person ? @person.id : "") data-action="click->attachment#select_image"
+							img.person-photo id="photo_image" width="140px" src= "photos/avatar.jpg" data-attachment-target= "photo_image" data-attachment-id-param=(@person ? @person.id : "") data-action="click->attachment#select_image"
 	
 					h3 = (@person ? @person.short_name: "Nueva Ficha")
 						

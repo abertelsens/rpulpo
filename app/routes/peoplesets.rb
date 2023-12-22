@@ -89,7 +89,16 @@ end
 get '/people/peopleset/:set_id/document/:doc_id' do
 	@peopleset = Peopleset.find(params[:set_id])
 	@document = Document.find(params[:doc_id])
+	puts "found document #{@document.to_s}"
 	@writer = @document.get_writer @peopleset.get_people
+	case @writer.status
+		when DocumentWriter::WARNING
+			puts Rainbow(@writer.message).orange
+		when DocumentWriter::FATAL
+			puts Rainbow(@writer.message).red
+			return partial :"errors/writer_error"
+	end
+	puts "found writer #{@writer.to_s}"
 	case @document.engine
 	when "prawn"
 		headers 'content-type' => "application/pdf"	

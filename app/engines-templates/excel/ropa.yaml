@@ -13,6 +13,12 @@ worksheets:
       - field: 
         value: person.clothes
         name: 'Número de Ropa'
+      - field: 
+        value: room.house
+        name: 'Casa'
+      - field: 
+        value: room.name
+        name: 'Habitación'
   - name: 'ropa2'                           # name of the wroksheet to be generated
     fields:                                 # fields. Each field defines a column. The identifier of the filed must match
       - field:
