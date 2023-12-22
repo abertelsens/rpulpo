@@ -47,7 +47,7 @@ html
     turbo-frame#whole_screen
     
       div.row.nav-bar
-        .columns.seven
+        .columns.six
           a.button.menu-item data-turbo-frame="main_frame" href='/people/frame' 
             i.fa-solid.fa-user
             | &nbspPeople
@@ -59,7 +59,7 @@ html
             | &nbspRooms
           
         
-        .columns.five.u-text-right
+        .columns.six.u-text-right
           - if get_current_user.admin?  
             a.button.menu-item data-turbo-frame="main_frame" href='/documents/frame' 
               i.fa-solid.fa-file
