@@ -9,7 +9,7 @@ turbo-frame id="people_table" data-turbo-frame="person_view"
             .six.columns.row-field style="pointer-events: none" = object.short_name
             .two.columns.row-field style="pointer-events: none" = object.year
             .two.columns.row-field style="pointer-events: none" = object.group
-            .two.columns.row-field style="pointer-events: none" = "---"
+            .two.columns.row-field style="pointer-events: none" = (object.room.nil? ? "" : "#{object.room&.name} (#{object.room&.house})")
                 
                   
               
