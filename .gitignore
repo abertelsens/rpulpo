@@ -3,3 +3,5 @@ app/public/tmp
 tmp/
 app/public/photos
 .DS_Store
+
+*.pdf
