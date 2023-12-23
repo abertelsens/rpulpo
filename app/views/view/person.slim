@@ -1,0 +1,50 @@
+turbo-frame id="main_frame" 
+  
+  .container.screen-box.vertical-align
+    .columns.two.offset-by-one 
+      div.row
+        a.button.link-button href="/person/#{@person.id}/general" = "general"
+      - get_current_user().get_allowed_modules.each do |mod|
+        div.row
+          a.button.link-button href="/person/#{@person.id}/#{mod.identifier}" = mod.name
+    .columns.two
+      .row.u-text-center
+        - if @person && File.exist?("app/public/photos/#{@person.id}.jpg")
+          img.person-photo id="photo_image"  width="200px" src= "photos/#{@person.id}.jpg"
+        - else
+          img.person-photo id="photo_image" width="200px" src= "photos/avatar.jpg"
+    .columns.four.offset-by-one
+      .row
+          .columns.twelve.u-text-center
+            h3 style="margin-bottom:0px" = "#{@person.short_name}"
+
+      /----------------------------------------------------------------------------------------------------------------
+      //GENERAL FRAME
+      //----------------------------------------------------------------------------------------------------------------
+      
+      .row.u-text-center style="margin-bottom:10px"
+          - if @person.ctr==0
+            h6 = "#{@person.get.ctr.humanize(capitalize: false)} - habitacion"
+          - else
+            h6 = "#{@person.ctr.humanize(capitalize: false)} - #{@person.room.name} (#{@person.room.house})"
+      .row
+        .columns.three style="padding-bottom:6px; color:gray; color:#555; font-weight: 600; font-size: 1rem" = "email:"
+        .columns.nine style="padding-bottom:6px; color:gray;  color:#555; font-weight: 600; font-size: 1rem" = "#{@person.email}"
+      .row  
+        .columns.three style="padding-bottom:6px; color:gray; color:#555; font-weight: 600; font-size: 1rem" = "telefono:"
+        .columns.nine style="padding-bottom:6px; color:gray;  color:#555; font-weight: 600; font-size: 1rem" = "#{@person.phone}"
+      .row  
+        .columns.three style="padding-bottom:6px; color:gray;  color:#555; font-weight: 600; font-size: 1rem" = "grupo:"
+        .columns.nine style="padding-bottom:6px; color:gray;  color:#555; font-weight: 600; font-size: 1rem" = "#{@person.group}"
+      .row  
+        .columns.three style="padding-bottom:6px; color:gray;  color:#555; font-weight: 600; font-size: 1rem" = "año:"
+        .columns.nine style="padding-bottom:6px; color:gray;  color:#555; font-weight: 600; font-size: 1rem" = "#{@person.year}"
+    
+      .row.u-text-center 
+        - if !@person.celebration_info.blank?    
+          .columns.nine.offset-by-three style="text-align: left;" = "celebra #{@person.celebration_info}"
+        
+          
+      .row.text-center 
+        .columns.six.offset-by-three style="margin-top:20px"
+          a.button.button-primary.u-full-width href="/people/frame" OK

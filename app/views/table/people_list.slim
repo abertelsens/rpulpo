@@ -1,0 +1,18 @@
+turbo-frame id="people_table" data-turbo-frame="person_view" 
+  .row.scrollable
+    form data-peopletable-target="form" method="POST" data-turbo-frame="person_view" 
+      - @objects.each.with_index do |object, index|
+        //turbo-frame id="people_#{object.id}"
+        a style="display: block;" href="/peopleset/#{@peopleset.id}/toggle/#{object.id}" data-turbo-frame="peopleset_view" data-id="#{object.id}" data-num="#{index}" data-peopletable-target="link" data-action="click->peopletable#toggle_row"
+          .row.row-link class=(!@peopleset.nil? && !@peopleset_ids.empty? && @peopleset_ids.include?(object.id) ? "row-selected" : "") style="display: block;" data-peopletable-target="row" data-id="#{object.id}" data-num="#{index}"
+            input style="display:none; pointer-events: none" type="checkbox" checked=false name="person_id[#{object.id}]" data-peopletable-target="checkbox"
+            .six.columns.row-field style="pointer-events: none" = object.short_name
+            .two.columns.row-field style="pointer-events: none" = object.year
+            .two.columns.row-field style="pointer-events: none" = object.group
+            .two.columns.row-field style="pointer-events: none" = (object.room.nil? ? "" : "#{object.room&.name} (#{object.room&.house})")
+                
+                  
+              
+
+        
+        
