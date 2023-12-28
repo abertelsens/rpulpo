@@ -1,37 +1,21 @@
-turbo-frame id="main_frame" 
+turbo-frame id="main_frame" data-people-target="people_screen"
   
   .container.container-frame data-controller="people peopletable"
     form.form-inline method="GET" action="/people/search" data-controller="search" data-turbo-frame="people_table" aria-label="Search" name="q" data-action="input->searchfield#submit"  
             
-      .row data-people-target="people_screen"
         
-        //LEFT PANE
-        .columns.twelve 
-          .row.header-frame
-            
-            .columns.four.offset-by-four.u-text-center
-              h3 = "PERSONAS"
-            .columns.one.u-full-width
-              
-          
-          .row 
-            .columns.four.offset-by-four.u-full-width
-              input#search_string.u-full-width autofocus="autofocus" type="search" autocomplete="off" placeholder="search" aria-label="Search" name="q" data-action="input->search#submit"
-              input#sort_order type="hidden" name="sort_order" data-search-target="sort_order"
-            .columns.one
-              a.button.button-primary.u-full-width href="/person/new/general" data-turbo-frame="editor_frame"
-                i.fa-solid.fa-plus style="font-size:small"
-                |&nbspadd
+      .row.header-frame.u-text-center
+        h3 = "PERSONAS"          
+      .row 
+        .columns.four.offset-by-four.u-full-width
+          input#search_string.u-full-width autofocus="autofocus" type="search" autocomplete="off" placeholder="search" aria-label="Search" name="q" data-action="input->search#submit"
+          input#sort_order type="hidden" name="sort_order" data-search-target="sort_order"
+        .columns.one
+          a.button.button-primary.u-full-width href="/person/new/general" data-turbo-frame="editor_frame"
+            i.fa-solid.fa-plus style="font-size:small"
+            |&nbspadd
+        .columns.one
+          a.button.button-secondary.u-full-width href="/people/table/settings" data-turbo-frame="editor_frame" edit table
 
-          .row
-            .columns.ten.offset-by-one.u-full-width
-              div.container.table-container   
-                .row.row-head
-                  #family_name.four.columns.row-label.clickable data-search-target-="family_name_label" data-action="click->search#sort_by_label" = "nombre"
-                  #status.one.columns.row-label.clickable data-action="click->search#sort_by_label" = "status" 
-                  #year.one.columns.row-label.clickable data-action="click->search#sort_by_label" style="text-align:center"= "año"
-                  #ctr.two.columns.row-label.clickable  data-search-target-="ctr_label" data-action="click->search#sort_by_label"= "ctr"
-                  #group.one.columns.row-label.clickable data-search-target-="group_label" data-action="click->search#sort_by_label" style="text-align:center"= "group"
-                  #clothes.one.columns.row-label.clickable data-search-target-="clothes_label" data-action="click->search#sort_by_label" style="text-align:center" = "ropa"
-                  .two.columns.row-label style="text-align:center" = "habitacion"
-              turbo-frame id="people_table" data-people-target="people_table" src="/people/table"
+      .row
+        turbo-frame id="people_table" data-people-target="people_table" src="/people/table"

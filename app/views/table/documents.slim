@@ -1,16 +1,22 @@
-turbo-frame id="documents_table" data-turbo-frame="documents_view" 
-  .row.scrollable
-    - @objects.each.with_index do |object, index|
-      //turbo-frame id="people_#{object.id}"
-      a style="display: block;" href="/document/#{object.id}" data-turbo-frame="main_frame" 
-        .row.row-link style="display: block;" data-peopletable-target="row" data-id="#{object.id}" data-num="#{index}"
-          input style="display:none; pointer-events: none" type="checkbox" checked=false name="person_id[#{object.id}]" data-peopletable-target="checkbox"
-          .two.columns.row-field style="pointer-events: none" = object.name
-          .two.columns.row-field style="pointer-events: none" = object.pulpo_module.name
-          .four.columns.row-field style="pointer-events: none" = object.description
-          .two.columns.row-field style="pointer-events: none" = object.engine
-          .two.columns.row-field style="pointer-events: none" = object.path
-              
+turbo-frame id="documents_table" data-turbo-frame="documents_view"
+  div.table-container
+    div.table-table  
+      div.table-row-head
+        div.table-cell-head.long-field = "nombre"
+        div.table-cell-head.medium-field = "module"
+        div.table-cell-head.long-field = "descripción"
+        div.table-cell-head.medium-field = "engine"
+        div.table-cell-head.medium-field = "path"
+
+      - @objects.each.with_index do |object, index|
+        //turbo-frame id="people_#{object.id}"
+        a.table-row-body href="/document/#{object.id}" data-turbo-frame="main_frame"  style="cursor:pointer;"
+          div.table-cell-body.medium-field  = object.name
+          div.table-cell-body.medium-field  = object.pulpo_module.name
+          div.table-cell-body.medium-field  = object.description
+          div.table-cell-body.medium-field  = object.engine
+          div.table-cell-body.medium-field  = object.path
+            
                   
               
 

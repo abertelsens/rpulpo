@@ -44,8 +44,13 @@ end
 
     # renders the table of after perfroming a search.
     get '/rooms/search' do
-        
         @objects = Room.search(params[:q],params[:sort_order])
+        partial :"table/rooms"
+    end
+    
+    # renders the table of after perfroming a search.
+    get '/rooms/house/:house_name' do
+        @objects = Room.where(house: params[:house_name]).order(name: :asc)
         partial :"table/rooms"
     end
     

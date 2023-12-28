@@ -14,13 +14,4 @@ turbo-frame id="main_frame"
                 |&nbspadd document
 
         .row
-          .columns.ten.offset-by-one.u-full-width
-            div.container.table-container   
-              .row.row-head
-                .two.columns.row-label = "nombre"
-                .two.columns.row-label = "module"
-                .four.columns.row-label = "descripción"
-                .two.columns.row-label = "engine"
-                .two.columns.row-label = "path"
-                
-            turbo-frame id="documents_table" data-people-target="documents_table" src="/documents/table"
+          turbo-frame id="documents_table" data-people-target="documents_table" src="/documents/table"

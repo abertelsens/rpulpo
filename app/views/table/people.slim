@@ -1,14 +1,12 @@
-turbo-frame id="people_table" data-turbo-frame="person_view" 
-  .row.scrollable
-    - @objects.each.with_index do |object, index|
-      //turbo-frame id="people_#{object.id}"
-      a style="display: block;" href="/person/#{object.id}" data-turbo-frame="main_frame" 
-        .row.row-link style="display: block;" data-peopletable-target="row" data-id="#{object.id}" data-num="#{index}"
-          input style="display:none; pointer-events: none" type="checkbox" checked=false name="person_id[#{object.id}]" data-peopletable-target="checkbox"
-          .four.columns.row-field style="pointer-events: none" = object.short_name
-          .one.columns.row-field style="pointer-events: none" = object.status
-          .one.columns.row-field style="text-align:center; pointer-events: none" = object.year
-          .two.columns.row-field style="pointer-events: none" = object.ctr.humanize
-          .one.columns.row-field style="text-align:center; pointer-events: none" = object.group
-          .one.columns.row-field style="text-align:center; pointer-events: none" = object.clothes
-          .two.columns.row-field style="pointer-events: none" = (object.room.nil? ? "" : "#{object.room&.name} (#{object.room&.house})")
+turbo-frame id="people_table" data-turbo-frame="person_view"
+  div.table-container 
+    div.table-table  
+      div.table-row-head
+        - @columns = @table_settings.get_columns 
+        - @columns.each do |col|
+          div.table-cell-head class=col[:class] style="pointer-events: none" = col[:field].split(".")[1].humanize(capitalize: false)  
+      - @objects.each.with_index do |object, index|  
+        a.table-row-body href="/person/#{object.id}" data-turbo-frame="main_frame"  style="cursor:pointer;"
+          - @columns.each do |col|
+            - value = object.get_attribute col[:field]
+            div.table-cell-body class=col[:class] = col[:type]=="enum" ? value.humanize : value

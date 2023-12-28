@@ -14,11 +14,4 @@ turbo-frame id="main_frame"
                 |&nbspadd
 
         .row
-          .columns.ten.offset-by-one.u-full-width
-            div.container.table-container   
-              .row.row-head
-                .three.columns.row-label = "name"
-                .three.columns.row-label = "password"
-                .six.columns.row-label = "type"
-                
-            turbo-frame id="users_table" data-people-target="users_table" src="/users/table"
+          turbo-frame id="users_table" data-people-target="users_table" src="/users/table"

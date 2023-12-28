@@ -1,5 +1,9 @@
 
 bundle exec ruby .\app\main.rb -o 0.0.0.0 -e production
+http://localhost:4567/
+
+
+git branch test
 
 # DB Management
 

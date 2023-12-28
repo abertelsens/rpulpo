@@ -1,12 +1,17 @@
 turbo-frame id="modules_table"
-  .row.scrollable
-    - @objects.each.with_index do |object, index|
-      //turbo-frame id="people_#{object.id}"
-      a style="display: block;" href="/module/#{object.id}" data-turbo-frame="main_frame" 
-        .row.row-link style="display: block;" data-peopletable-target="row" data-id="#{object.id}" data-num="#{index}"
-          .two.columns.row-field style="pointer-events: none" = object.identifier
-          .two.columns.row-field style="pointer-events: none" = object.name
-          .eight.columns.row-field style="pointer-events: none" = object.description
+  div.table-container
+    div.table-table  
+      div.table-row-head
+        div.table-cell-head.medium-field = "identifier"
+        div.table-cell-head.medium-field = "name"
+        div.table-cell-head.xlong-field = "description"
+
+      - @objects.each.with_index do |object, index|
+        a.table-row-body href="/module/#{object.id}" data-turbo-frame="main_frame"  style="cursor:pointer;"
+          div.table-cell-body  = object.identifier
+          div.table-cell-body = object.name
+          div.table-cell-body  = object.description
+
               
                   
               

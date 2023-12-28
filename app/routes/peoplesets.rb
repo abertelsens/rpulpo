@@ -17,6 +17,7 @@ end
 # @peopleset_ids: an array of ids that is used to highlight the people that belong to the set
 get '/people/peopleset/:id/table' do
 	@peopleset = Peopleset.find(params[:id])
+	@table_settings = PeopleTable.new(table: :small)
 	set_current_peopleset @peopleset
 	@peopleset_ids = @peopleset.get_people.map {|p| p.id }
 	@objects = Person.all.order(full_name: :asc)
@@ -28,6 +29,7 @@ get '/people/peopleset/search' do
 	@peopleset = get_current_peopleset
 	@peopleset_ids = @peopleset.get_people.map {|p| p.id }
 	@objects = Person.search(params[:q],params[:sort_order])
+	@table_settings = PeopleTable.new(table: :small)
 	partial :"table/people_list"
 end
 

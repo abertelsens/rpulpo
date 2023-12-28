@@ -10,13 +10,30 @@ end
 # renders the table of people
 # @objects the people that will be shown in the table
 get '/people/table' do
-  @objects = Person.includes(:room).all.order(full_name: :asc)
-  partial :"table/people"
+  @objects = Person.includes(:room).all.order(full_name: :asc) 
+  @table_settings = PeopleTable.new(table: :default)  
+ partial :"table/people"
 end
+
+
+# toggles a person from the set.
+get '/people/table/settings' do
+		@table_settings = PeopleTable.new(table: :default)  
+    partial :"form/table_settings"
+end
+
+# toggles a person from the set.
+post '/people/table/settings' do
+	puts "HERE"
+	ts = PeopleTable.create_from_params params
+	partial :"frame/people"
+end
+
 
 # renders the table of after perfroming a search.
 get '/people/search' do
   @objects = Person.includes(:room).search(params[:q],params[:sort_order])
+  @table_settings = PeopleTable.new(table: :default)  
   partial :"table/people"
 end
 

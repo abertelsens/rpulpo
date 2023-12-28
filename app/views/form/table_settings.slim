@@ -1,0 +1,50 @@
+/***************************************************************************************************** 
+// FORM for Personal Information about a person
+/*****************************************************************************************************
+
+turbo-frame id="main_frame"
+  	
+	form action="/people/table/settings" method="POST" data-controller="tablesettings"
+	
+		.container
+			
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM HEADER
+			//----------------------------------------------------------------------------------------------------------------
+			.row.u-text-center
+				.columns.twelve
+					h3 = "TABLE SETTINGS"
+			.row.u-text-center
+				.columns.twelve
+					p = "Select the fields you would like to see and the order in which the records will be shown."	
+			/----------------------------------------------------------------------------------------------------------------
+			//DOCUMENT FRAME
+			//----------------------------------------------------------------------------------------------------------------
+			.row
+				.columns.twelve style="display: flex; justify-content: center;"
+					table
+						tr 
+							- PeopleTable.get_attributes.each do |table|
+								td style="vertical-align: top"
+									.row style="text-align: center"
+										h5 = table[:table].upcase	
+									- table[:attributes].each do |att|		
+										.row.u-full-width
+											.columns.eight 
+												a.button.button-seconday.u-full-width data-tablesettings-target="att_button" data-tablesettings-id-param=att[:field] data-action="click->tablesettings#update" = name=att[:field].split(".")[1].humanize
+											.columns.four
+												select name="#{att[:field]}.order"      
+													option value="NONE" = "NO ORDER"
+													option value="ASC" = "ASC"
+													option value="DESC" = "DESC"
+											&text.u-full-width data-tablesettings-target="att_field" name=att[:field] value=@table_settings.get_setting(att[:field])
+							
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM BUTTONS
+			//----------------------------------------------------------------------------------------------------------------
+			.row.center-align
+					- if (!@object.nil?) 
+						button type="submit" name="commit" value="delete" delete  
+					button.button-primary type="submit" name="commit" value="save" save  
+					a.button.button-secondary formnovalidate="true" href="/documents/frame" cancel
+					

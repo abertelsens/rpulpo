@@ -55,7 +55,7 @@ html
             i.fa-solid.fa-list
             | &nbspListas
           a.button.menu-item data-turbo-frame="main_frame" href='/rooms/frame' 
-            i.fa-solid.fa-list
+            i.fa-solid.fa-bed
             | &nbspRooms
           
         
@@ -71,9 +71,9 @@ html
               i.fa-solid.fa-gear
               | &nbspModules
             a.button.menu-item data-turbo-frame="main_frame" href='/help' 
-              i.fa-solid.fa-gear
+              i.fa-solid.fa-question
               | &nbspHelp
-          a.button.menu-item.user-name href="/logout" = @user.uname
+          a.button.menu-item.user-name href="/logout" = "user: #{@user.uname}"
 
       div.row
         div.container

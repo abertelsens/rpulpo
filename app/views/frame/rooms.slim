@@ -11,44 +11,31 @@ turbo-frame id="main_frame"
               .columns.twelve.u-text-center
                 h3 = "ROOMS"
             
-            .row 
+            .row style="display:flex;"
               .columns.five.offset-by-four.u-text-center
                 input#search_string.u-full-width autofocus="autofocus" type="search" autocomplete="off" placeholder="search" aria-label="Search" name="q" data-action="input->search#submit"
                 input#sort_order type="hidden" name="sort_order" data-search-target="sort_order"
               
-              .columns.two.u-full-width
-                a.button.button-primary.u-full-width href="/room/new" data-turbo-frame="editor_frame"
-                    i.fa-solid.fa-plus style="font-size:small"
-                    |&nbspadd room
+          
+              a.button.button-primary href="/room/new" data-turbo-frame="editor_frame"
+                  i.fa-solid.fa-plus style="font-size:small"
+                  |&nbspadd room
 
             .row
               .columns.three style="min-width:100px; padding-right:30px"
-                .container.table-container
-                  .row.row-head
-                    .columns.eight.row-label = "casa"
-                    .columns.two.row-label style="text-align:center" = "libres"
-                    .columns.two.row-label style="text-align:center" = "total"
-                  .row.scrollable
-                    - Room.get_rooms_count_by_house.each do |house|
-                      .columns.eight.row-field = house["name"].humanize
-                      .columns.two.row-field style="text-align:center" = house["empty"]
-                      .columns.two.row-field style="text-align:center" = house["total"]
-                  //.row.scrollable.row-head
-                  //  - data = Room.get_empty_rooms
-                  //  .columns.eight.row-field  = "total"
-                  //   .columns.two.row-field style="font-size: .7em; text-align:center" = data[:empty]
-                  //  .columns.two.row-field style="font-size: .7em; text-align:center" = data[:empty]+data[:occupied]  
-                    
+                div.table-container
+                  div.table-table.table-border  
+                    div.table-row-head
+                      div.table-cell-head.small-field = "casa"
+                      div.table-cell-head.small-field  style="text-align:center" = "libres"
+                      div.table-cell-head.small-field  style="text-align:center" = "total"
 
+                    - Room.get_rooms_count_by_house.each do |house|
+                      a.table-row-body href="/rooms/house/#{house["name"]}" data-turbo-frame="rooms_table"  style="cursor:pointer;"
+                        div.table-cell-body style="border: none" = house["name"].humanize
+                        div.table-cell-body style="border: none; text-align:center" = house["empty"]
+                        div.table-cell-body style="border: none; text-align:center" = house["total"]
+                      
 
               .columns.eight.u-full-width
-                div.container.table-container   
-                  .row.row-head
-                    .two.columns.row-label = "casa"
-                    .one.columns.row-label = "planta"
-                    .two.columns.row-label = "nombre"
-                    .four.columns.row-label = "persona"
-                    .two.columns.row-label = "baño"
-                    .one.columns.row-label = "cama"
-                    
                 turbo-frame id="rooms_table" src="/rooms/table"

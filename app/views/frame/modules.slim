@@ -8,18 +8,10 @@ turbo-frame id="main_frame"
         .row.header-frame
           .columns.four.offset-by-four.u-text-center
             h4 = "MODULES"
-          .columns.two.u-full-width
+          .columns.one.u-full-width
             a.button.button-primary.u-full-width href="/module/new" data-turbo-frame="main_frame"
                 i.fa-solid.fa-plus style="font-size:small"
                 |&nbspadd
 
         .row
-          .columns.eight.offset-by-two.u-full-width
-            div.container.table-container
-              .row.row-head
-                .two.columns.row-label = "identifier"
-                .two.columns.row-label = "name"
-                .eight.columns.row-label = "description"
-                
-                
-            turbo-frame id="modules_table" data-people-target="modules_table" src="/modules/table"
+          turbo-frame id="modules_table" data-people-target="modules_table" src="/modules/table"

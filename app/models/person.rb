@@ -86,8 +86,6 @@ class Person < ActiveRecord::Base
 
     # retrieves an attribute of the form "person.att_name"
     def get_attribute(attribute_string)
-        puts "asking for attribute"
-        puts attribute_string
         att_array = attribute_string.split(".")
         table, attribute = att_array[0], att_array[1]
         res = case table

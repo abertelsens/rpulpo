@@ -1,15 +1,22 @@
 turbo-frame id="rooms_table"
-  .row.scrollable
-    - @objects.each.with_index do |object, index|
-      //turbo-frame id="people_#{object.id}"
-      a style="display: block;" href="/room/#{object.id}" data-turbo-frame="main_frame" 
-        .row.row-link style="display: block;" data-peopletable-target="row" data-id="#{object.id}" data-num="#{index}"
-          .two.columns.row-field style="pointer-events: none" = object.house&.humanize
-          .one.columns.row-field style="pointer-events: none" = object.floor
-          .two.columns.row-field style="pointer-events: none" = object.name
-          .four.columns.row-field style="pointer-events: none" = object.person&.short_name
-          .two.columns.row-field style="pointer-events: none" = object.bathroom
-          .one.columns.row-field style="pointer-events: none" = object.bed
+   div.table-container
+    div.table-table  
+      div.table-row-head
+        div.table-cell-head.long-field = "casa"
+        div.table-cell-head.medium-field = "planta"
+        div.table-cell-head.medium-field = "nombre"
+        div.table-cell-head.long-field = "persona"
+        div.table-cell-head.medium-field = "baño"
+        div.table-cell-head.medium-field = "cama"
+
+      - @objects.each.with_index do |object, index|
+        a.table-row-body href="/room/#{object.id}" data-turbo-frame="main_frame"  style="cursor:pointer;"
+          div.table-cell-body = object.house&.humanize
+          div.table-cell-body = object.floor
+          div.table-cell-body = object.name
+          div.table-cell-body = object.person&.short_name
+          div.table-cell-body = object.bathroom
+          div.table-cell-body = object.bed
               
                   
               

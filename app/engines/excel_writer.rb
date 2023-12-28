@@ -52,15 +52,12 @@ EXCEL_TEMPLATES_DIR ="app/engines-templates/excel"
 	end
 
 	def write_excel
-		puts Rainbow("1writing excel....tmp/#{@document.name}.xlsx").red
 		begin
 			@workbook.worksheets.delete @workbook[0]					# deletes the first worksheet which is created automatically.
 			@worksheets_names.each {|wn| @workbook.add_worksheet wn }   # adds all the worksheets
 			@worksheets_settings.each_with_index do |ws,index|
-					puts Rainbow("2writing excel....tmp/#{ws} #{index}").red
 					write_headers(@workbook[index], ws.map{ |field| field[:column_name] })
-					puts Rainbow("3writing excel....tmp/#{ws} #{index}").red
-					write_data(@workbook[index], ws.map{ |field| field[:id]} , @people)
+					write_data(@workbook[index], ws.map{ |field| field[:id]} , @people)			
 			end
 			puts Rainbow("4writing excel....tmp/#{@document.name}.xlsx").red
 			@output = @workbook.write("tmp/#{@document.name}.xlsx")
@@ -77,7 +74,7 @@ EXCEL_TEMPLATES_DIR ="app/engines-templates/excel"
 	def write_data(workseet, ws_attributes, people)
 		people.each_with_index do |person,row_index|    
 			ws_attributes.each_with_index {|att, col_index| workseet.add_cell(row_index+1,col_index,person.get_attribute(att)) }
-		end    
+		end
 	end
 
 	def render()
