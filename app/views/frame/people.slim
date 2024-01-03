@@ -1,21 +1,51 @@
 turbo-frame id="main_frame" data-people-target="people_screen"
   
-  .container.container-frame data-controller="people peopletable"
+  .container.container-frame data-controller="people peopletable clipboard menu" data-clipboard-tablename="people"
     form.form-inline method="GET" action="/people/search" data-controller="search" data-turbo-frame="people_table" aria-label="Search" name="q" data-action="input->searchfield#submit"  
             
-        
+      
       .row.header-frame.u-text-center
         h3 = "PERSONAS"          
       .row 
         .columns.four.offset-by-four.u-full-width
-          input#search_string.u-full-width autofocus="autofocus" type="search" autocomplete="off" placeholder="search" aria-label="Search" name="q" data-action="input->search#submit"
+          input#search_string.u-full-width autofocus="autofocus" type="search" autocomplete="off" placeholder="search" aria-label="Search" name="q" data-action="input->search#submit" value=@query
           input#sort_order type="hidden" name="sort_order" data-search-target="sort_order"
-        .columns.one
-          a.button.button-primary.u-full-width href="/person/new/general" data-turbo-frame="editor_frame"
+        .columns.three style="display:flex"
+          a.button.button-primary href="/person/new/general" style="margin-right:.7rem; padding-left:1rem; padding-right:1rem" data-turbo-frame="editor_frame"
             i.fa-solid.fa-plus style="font-size:small"
             |&nbspadd
-        .columns.one
-          a.button.button-secondary.u-full-width href="/people/table/settings" data-turbo-frame="editor_frame" edit table
+          a.button.button-success style="width:6rem; margin-right:.7rem; padding-left:1rem; padding-right:1rem" data-clipboard-target="copybtn" data-action="click->clipboard#copy"
+            i.fa-solid.fa-copy style="font-size:small"
+            |&nbspcopy
+          a.button style="background-color:#333333; width:3rem; margin-right:.1rem; padding-left:1rem; padding-right:1rem" data-action="click->menu#toggle"
+            i.fa-solid.fa-bars style="color:white; font-size:medium"
+            |&nbsp
+
+      .row
+        .columns.twelve.u-align-center data-menu-target="menuframe" style="display: none; justify-content: space-evenly;"
+          .container.menu
+            div
+                div.table-cell-head style="border-bottom:0px"
+                i.fa-solid.fa-file style="font-size:small"
+                |&nbspDOCUMENTS
+            div style="margin-top: .0rem"
+              - (Document.get_docs_of_user get_current_user).each do |doc|
+                .row
+                  a.table-cell-body.menu-link  href="/people/set/document/#{doc.id}" target=(doc.engine=="excel" ? "_self" : "_blank") = "#{doc.pulpo_module.name} - #{doc.name}"
+            div
+              div.table-cell-head style="border-bottom:0px"
+               i.fa-solid.fa-gear style="font-size:small"
+               |&nbspACTIONS
+            div style="margin-top: .0rem;"
+              .row 
+                a.table-cell-body.menu-link href="/people/table/settings" data-turbo-frame="editor_frame"
+                  i.fa-solid.fa-table style="font-size:small"
+                  |&nbspEdit Table Columns
+              .row  
+                a.table-cell-body.menu-link href="/people/edit_field" 
+                  i.fa-solid.fa-pen-to-square style="font-size:small"
+                  |&nbspEdit Field Value
+
 
       .row
         turbo-frame id="people_table" data-people-target="people_table" src="/people/table"

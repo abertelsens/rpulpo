@@ -5,7 +5,7 @@
 
 turbo-frame id="main_frame"
   	
-	form action="/user/#{(@object.nil? ? "new" : @object.id)}" method="POST" data-controller="validate" data-validate-objectname="user"
+	form action="/user/#{(@object.nil? ? "new" : @object.id)}" method="POST" data-controller="confirm validate" data-validate-objectname="user"
 		input.u-full-width name="id" type="hidden" data-validate-target="field" value=(@object ? @object.id : "")
 		
 		// Center the container
@@ -63,7 +63,7 @@ turbo-frame id="main_frame"
 			//---------------------------------------------------------------------------------------------------------------
 			.row.center-align
 				- if (@object&.can_be_deleted?)
-					button.button-secondary type="submit" name="commit" value="delete" delete  
+					button.button-secondary type="submit" name="commit" value="delete" data-action="click->confirm#confirm" delete  
 				button.button-primary type="submit" name="commit" value="save" data-validate-target="submit_btn" save  
 				a.button.button-secondary formnovalidate="true" href="/users/frame" cancel
 				

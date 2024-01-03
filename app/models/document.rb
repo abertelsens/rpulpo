@@ -81,8 +81,12 @@ class Document < ActiveRecord::Base
 		}        
 	end
 
-	def self.get_docs_of_user(user)
-			Document.includes(:pulpo_module).all.order(:pulpo_module_id).select{|doc| user.get_allowed_modules.include? doc.pulpo_module }        
+	def self.get_docs_of_user(user)	
+		Document.includes(:pulpo_module).all.order(:pulpo_module_id).select{|doc| user.get_allowed_modules.include? doc.pulpo_module }        
+	end
+
+	def self.get_pdf_docs_of_user(user)	
+		Document.includes(:pulpo_module).all.order(:pulpo_module_id).select{|doc| ((user.get_allowed_modules.include? doc.pulpo_module) && doc.engine!="excel")}        
 	end
 
 	def get_writer(people, template_variables=nil)

@@ -86,8 +86,7 @@ class Person < ActiveRecord::Base
 
     # retrieves an attribute of the form "person.att_name"
     def get_attribute(attribute_string)
-        att_array = attribute_string.split(".")
-        table, attribute = att_array[0], att_array[1]
+        table, attribute = attribute_string.split(".")
         res = case table
             when "person"   then self[attribute.to_sym]
             when "study"    then (self.study.nil? ? "" : self.study[attribute.to_sym])
@@ -95,7 +94,10 @@ class Person < ActiveRecord::Base
             when "crs"      then (self.crs.nil? ? "" : self.crs[attribute.to_sym])
             when "room"     then (self.room.nil? ? "" : self.room[attribute.to_sym])
         end
-        res.is_a?(Date) ? res.to_s : res
+        res = "" if res.nil?
+        puts "\nfound nil while looking for #{attribute_string}" if res.nil?
+        res.is_a?(Date) ? res.strftime("%d-%m-%y") : res
+        
     end
 
     def self.get_editable_attributes()
@@ -110,5 +112,10 @@ class Person < ActiveRecord::Base
     
     def get_attributes(attributes)
         attributes.map {|att| {att => self.get_attribute(att)} }
+    end
+
+    def self.collection_to_csv(people,table_settings)
+        result = (table_settings.att.map{|att| att.name}).join("\t") + "\n"
+        result << (people.map {|person| (table_settings.att.map{|att| (person.get_attribute(att.field).dup)}).join("\t") }).join(("\n"))
     end
 end

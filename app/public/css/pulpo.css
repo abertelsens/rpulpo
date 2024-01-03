@@ -2,7 +2,7 @@
   --light-gray: rgb(192, 192, 192);
   --light-orange: rgb(255, 235, 213);
   --light-gray: rgb(224, 224, 224);
-  --light-blue: rgb(46, 182, 236);
+  --light-blue: rgb(98, 203, 244);
   --pale-blue: rgb(234, 246, 250);
   --dark-gray: rgb(64, 64, 64);
   --medium-gray: rgb(85, 85, 85);
@@ -16,6 +16,7 @@ html, body{
   height: 100%;
   margin: 0;
   padding: 0;
+  overflow: hidden;
 }	
 
 /**********************************************************************
@@ -586,5 +587,27 @@ input.hidden-input{
 
 a.button.active
 {
-  background: var(--pale-blue)
+  background: var(--light-blue);
+  color: white;
+}
+
+.closeIcon {
+  display: none;
+}
+
+.menu {
+  display: flex;
+  justify-content: space-evenly;
+  width: 600px;
+  list-style: none;
+  margin-bottom: 30px;
+  padding: 20px;
+  border-radius: 5px;
+  border: none;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+}
+
+.menu-link {
+  border:0px;
+  text-decoration: none;
 }

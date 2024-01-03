@@ -23,6 +23,12 @@ helpers do
         end
     end
     
+    def get_last_query()
+        @query = session["table_query"]
+        @table_settings = session["table_settings"].nil? ? TableSettings.new(table: :default) : session["table_settings"]
+        puts Rainbow("got @query to: #{@query}").yellow
+    end
+
     def check_permission(resource)
         @user = User.get_user(session[:current_user_id])
         partial :"/login" if @user.nil?

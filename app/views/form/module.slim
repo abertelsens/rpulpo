@@ -4,7 +4,7 @@
 
 turbo-frame id="main_frame"
   	
-	form action="/module/#{(@object.nil? ? "new" : @object.id)}" method="POST"
+	form action="/module/#{(@object.nil? ? "new" : @object.id)}" data-controller="confirm" method="POST"
 	
 		.container.full-screen-form.screen-box style="max-width:800px"
 			
@@ -36,7 +36,7 @@ turbo-frame id="main_frame"
 			//----------------------------------------------------------------------------------------------------------------
 			.row.center-align
 					- if (!@object.nil?) 
-						button type="submit" name="commit" value="delete" delete  
+						button.button-secondary type="submit" name="commit" value="delete" data-action="click->confirm#confirm" delete
 					button.button-primary type="submit" name="commit" value="save" save  
 					a.button.button-secondary formnovalidate="true" href="/modules/frame" cancel
 					

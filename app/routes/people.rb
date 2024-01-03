@@ -1,40 +1,48 @@
 ########################################################################################
 # ROUTES CONTROLLERS FOR THE PEOPLE TABLES
 ########################################################################################
+require"clipboard"
 
 # renders the people frame
 get '/people/frame' do
+	get_last_query
   partial :"frame/people"
 end
 
 # renders the table of people
 # @objects the people that will be shown in the table
 get '/people/table' do
-  @objects = Person.includes(:room).all.order(full_name: :asc) 
-  @table_settings = PeopleTable.new(table: :default)  
- partial :"table/people"
+  get_last_query
+	@objects = @query.nil? ? Person.includes(:room).all.order(full_name: :asc) : (Person.search @query)
+	partial :"table/people"
 end
 
+get '/people/clipboard/copy' do
+  get_last_query
+	@objects = @query.nil? ? Person.includes(:room).all.order(full_name: :asc) : (Person.search @query)
+	export_string = Person.collection_to_csv @objects, @table_settings
+	Clipboard.copy export_string
+	{result: true}.to_json
+end
 
 # toggles a person from the set.
 get '/people/table/settings' do
-		@table_settings = PeopleTable.new(table: :default)  
-    partial :"form/table_settings"
+	@table_settings = session["table_settings"].nil? ? TableSettings.new(table: :default) : session["table_settings"]
+	partial :"form/table_settings"
 end
 
-# toggles a person from the set.
 post '/people/table/settings' do
-	puts "HERE"
-	ts = PeopleTable.create_from_params params
+	session["table_settings"] = TableSettings.create_from_params params
 	partial :"frame/people"
 end
 
-
 # renders the table of after perfroming a search.
 get '/people/search' do
-  @objects = Person.includes(:room).search(params[:q],params[:sort_order])
-  @table_settings = PeopleTable.new(table: :default)  
-  partial :"table/people"
+	@objects = Person.search(params[:q],params[:sort_order])
+	@table_settings = session["table_settings"].nil? ? TableSettings.new(table: :default) : session["table_settings"]
+	session["table_query"] = params[:q]
+	puts Rainbow("setting session[table_query] to: #{session["table_query"]}").yellow
+	partial :"table/people"
 end
 
 # renders a single person view
@@ -120,4 +128,85 @@ end
 # uploads an image
 post '/people/:id/image' do
     FileUtils.cp(params[:file][:tempfile], "app/public/photos/#{params[:id]}.jpg")
+end
+
+
+########################################################################################
+# ACTIONS ON PEOPLE SETS
+########################################################################################
+
+
+# renders a pdf or an excel file with the params received.
+get '/people/:id/document/:doc_id' do
+	if params[:id]=="set"
+		get_last_query
+		@people = @query.nil? ? Person.all.order(full_name: :asc) : (Person.search @query)
+	else
+		@people = [Person.find(params[:id])]
+	end
+	@document = Document.find(params[:doc_id])
+	puts "found document #{@document.to_s}"
+	@writer = @document.get_writer @people
+	case @writer.status
+		when DocumentWriter::WARNING
+			puts Rainbow(@writer.message).orange
+		when DocumentWriter::FATAL
+			puts Rainbow(@writer.message).red
+			return partial :"errors/writer_error"
+	end
+	puts "found writer #{@writer.to_s}"
+	case @document.engine
+	when "prawn"
+		headers 'content-type' => "application/pdf"	
+		body @writer.render
+	when "excel" 
+		send_file @writer.render(), :filename => "#{@document.name}.xlsx"
+	when "typst"
+		if @document.has_template_variables?
+				@person = @people[0]
+				@template_variables = @document.get_template_variables
+				return partial :'form/report' 
+		end
+		case @writer.status
+			when DocumentWriter::WARNING
+				puts Rainbow(@writer.message).orange
+			when DocumentWriter::FATAL
+				puts Rainbow(@writer.message).red
+				return partial :"errors/writer_error"
+		end
+	OS.windows? ?	(send_file @writer.render) : (body @writer.render)
+	end
+end
+
+post '/people/:id/document/:doc_id' do
+	headers 'content-type' => "application/pdf"
+	if params[:id]=="set"
+		get_last_query
+		@people = @query.nil? ? Person.all.order(full_name: :asc) : (Person.search @query)
+	else
+		@people = [Person.find(params[:id])]
+	end
+		@document = Document.find(params[:doc_id])
+	@writer = @document.get_writer(@people, params)
+	case @writer.status
+		when DocumentWriter::WARNING
+			puts Rainbow(@writer.message).orange
+		when DocumentWriter::FATAL
+			puts Rainbow(@writer.message).red
+			return partial :"errors/writer_error"
+	end 
+	OS.windows? ? (send_file @writer.render) : (body @writer.render)
+end
+
+# shows the form to edit a field of all the people in the set
+get '/people/edit_field' do
+	partial :"form/set_field"
+end
+
+post '/people/edit_field' do
+	puts Rainbow("got params #{params}").yellow
+	get_last_query
+	@people = @query.nil? ? Person.all.order(full_name: :asc) : (Person.search @query)
+	@people.each {|person| person.update(params[:att_name].to_sym => params[params[:att_name]])}
+	partial :"frame/people"
 end

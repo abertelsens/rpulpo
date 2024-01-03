@@ -1,48 +1,48 @@
-turbo-frame id="peopleset_view" 
-  form action="/people/peopleset/#{@peopleset.id}/edit_field" method="POST" data-report-target="form" data-controller="setfield"
-		.columns.eight.offset-by-two
-			.container.container-frame.form-container.centered-form
-				.row.u-text-center
-					.columns.twelve
-						h4 = "#{@report} Edit: #{@peopleset.get_name}"
-						//p style="margin-bottom:20px" = ""
+turbo-frame id="main_frame" 
+  form action="/people/edit_field" method="POST" data-report-target="form" data-controller="setfield"
+		
+		.container.screen-box style="max-width: 600px"
+			.row.u-text-center
+				.columns.twelve
+					h4 = "#{@report} Edit"
+					//p style="margin-bottom:20px" = ""
 
-				.row
-					.columns.eight.offset-by-two
-						label for="date" field
-						select.u-full-width name="att_name" data-setfield-target="att_name" data-action="change->setfield#update"
-							- Person.get_editable_attributes.each do |att|
-								option value=att[:name] = att[:name]
+			.row
+				.columns.eight.offset-by-two
+					label for="date" field
+					select.u-full-width name="att_name" data-setfield-target="att_name" data-action="change->setfield#update"
+						- Person.get_editable_attributes.each do |att|
+							option value=att[:name] = att[:name]
 
-					//.columns.eight.offset-by-two
-					//	input.u-full-width type="text" name="att_value"
-					
-					.columns.eight.offset-by-two
-						label value
-						input.u-full-width type="text" name="group" value="" style="display:none"
-						input.u-full-width type="text" name="year" value="" style="display:none"
-						
-
-						select.u-full-width name="ctr" style="display:none" 
-							- Person.ctrs.each do |st| 
-								option selected=(@person&.ctr==st[0]) value=st[0] = st[0].humanize(capitalize: false) 
-						
-						select.u-full-width name="status" style="display:none" 
-							- Person.statuses.each do |st| 
-								option selected=(@person&.status==st[0]) value=st[0] = st[0]
-
-						select.u-full-width name="n/agd" style="display:none" 
-							- Person.n_agds.each do |st| 
-								option selected=(@person&.n_agd==st[0]) value=st[0] = st[0]
-							
-					/----------------------------------------------------------------------------------------------------------------
-					//BUTTONS
-					//----------------------------------------------------------------------------------------------------------------
-				 
-				.row
-					.columns.eight.offset-by-two
-						button#save_btn.button-success.u-full-width type="submit" name="commit" value="save" save
+				//.columns.eight.offset-by-two
+				//	input.u-full-width type="text" name="att_value"
 				
-				.row	
-					.columns.eight.offset-by-two
-						a.button.button-secondary.u-full-width formnovalidate="true" data-report-target="cancel_btn" href="/peopleset/#{@peopleset.id}/view" cancel 
+				.columns.eight.offset-by-two
+					label value
+					input.u-full-width type="text" name="group" value="" style="display:none"
+					input.u-full-width type="text" name="year" value="" style="display:none"
+					
+
+					select.u-full-width name="ctr" style="display:none" 
+						- Person.ctrs.each do |st| 
+							option selected=(@person&.ctr==st[0]) value=st[0] = st[0].humanize(capitalize: false) 
+					
+					select.u-full-width name="status" style="display:none" 
+						- Person.statuses.each do |st| 
+							option selected=(@person&.status==st[0]) value=st[0] = st[0]
+
+					select.u-full-width name="n/agd" style="display:none" 
+						- Person.n_agds.each do |st| 
+							option selected=(@person&.n_agd==st[0]) value=st[0] = st[0]
+						
+				/----------------------------------------------------------------------------------------------------------------
+				//BUTTONS
+				//----------------------------------------------------------------------------------------------------------------
+				
+			.row
+				.columns.eight.offset-by-two
+					button#save_btn.button-success.u-full-width type="submit" name="commit" value="save" save
+			
+			.row	
+				.columns.eight.offset-by-two
+					a.button.button-secondary.u-full-width formnovalidate="true" data-report-target="cancel_btn" href="/people/frame" cancel 
