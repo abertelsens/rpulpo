@@ -1,57 +1,55 @@
 turbo-frame id="main_frame" 
   
   .container.screen-box.vertical-align style="display: flex; justify-content: center;"
-    .columns.one
-      div.row
-        a.button.link-button href="/person/#{@person.id}/general" = "general"
+    .columns.one style="display: flex; justify-content: center; flex-direction: column;" 
+      a.button.link-button href="/person/#{@person.id}/general" = "general"
       - get_current_user().get_allowed_modules.each do |mod|
-        div.row
-          a.button.link-button href="/person/#{@person.id}/#{mod.identifier}" = mod.name
-    .columns.two
-      .row.u-text-center
-        - if @person && File.exist?("app/public/photos/#{@person.id}.jpg")
-          img.person-photo id="photo_image"  width="200px" src= "photos/#{@person.id}.jpg"
-        - else
-          img.person-photo id="photo_image" width="200px" src= "photos/avatar.jpg"
+        a.button.link-button href="/person/#{@person.id}/#{mod.identifier}" = mod.name
+    .columns.two.u-text-center
+      - if @person && File.exist?("app/public/photos/#{@person.id}.jpg")
+        img.person-photo id="photo_image"  width="200px" src= "photos/#{@person.id}.jpg"
+      - else
+        img.person-photo id="photo_image" width="200px" src= "photos/avatar.jpg"
     .columns.four
       .row
-          .columns.twelve.u-text-center
-            h3 style="margin-bottom:0px" = "#{@person.short_name}"
+        h3.u-text-center style="margin-bottom:0px" = "#{@person.short_name}"
 
       /----------------------------------------------------------------------------------------------------------------
       //GENERAL FRAME
       //----------------------------------------------------------------------------------------------------------------
       
       .row.u-text-center style="margin-bottom:10px"
-          - if @person.ctr==0
-            h6 = "#{@person.get.ctr.humanize(capitalize: false)} - habitacion"
+          - if @person.ctr!="cavabianca"
+            h6 = "#{@person.ctr.humanize(capitalize: false)}"
           - else
             h6 = "#{@person.ctr.humanize(capitalize: false)} - #{@person.room&.name} (#{@person.room&.house})"
       .row
-        .columns.three style="padding-bottom:6px; color:gray; color:#555; font-weight: 600; font-size: 1rem" = "email:"
-        .columns.nine style="padding-bottom:6px; color:gray;  color:#555; font-weight: 600; font-size: 1rem" = "#{@person.email}"
+        .columns.three.gray-label = "email:"
+        .columns.nine.gray-label = "#{@person.email}"
       .row  
-        .columns.three style="padding-bottom:6px; color:gray; color:#555; font-weight: 600; font-size: 1rem" = "telefono:"
-        .columns.nine style="padding-bottom:6px; color:gray;  color:#555; font-weight: 600; font-size: 1rem" = "#{@person.phone}"
+        .columns.three.gray-label = "telefono:"
+        .columns.nine.gray-label = "#{@person.phone}"
       .row  
-        .columns.three style="padding-bottom:6px; color:gray;  color:#555; font-weight: 600; font-size: 1rem" = "grupo:"
-        .columns.nine style="padding-bottom:6px; color:gray;  color:#555; font-weight: 600; font-size: 1rem" = "#{@person.group}"
+        .columns.three.gray-label = "grupo:"
+        .columns.nine.gray-label = "#{@person.group}"
       .row  
-        .columns.three style="padding-bottom:6px; color:gray;  color:#555; font-weight: 600; font-size: 1rem" = "año:"
-        .columns.nine style="padding-bottom:6px; color:gray;  color:#555; font-weight: 600; font-size: 1rem" = "#{@person.year}"
+        .columns.three.gray-label = "año:"
+        .columns.nine.gray-label = "#{@person.year}"
     
       .row.u-text-center 
         - if !@person.celebration_info.blank?    
-          .columns.nine.offset-by-three style="text-align: left;" = "celebra #{@person.celebration_info}"
+          .columns.nine.offset-by-three.gray-label = "celebra #{@person.celebration_info}"
       
-      .row.text-center
-        .columns.two.offset-by-five style="margin-top:20px" 
-          a.button.button-primary.u-full-width href="/people/frame" OK
+      .row.u-text-center
+        .columns.six.offset-by-three
+          a.button.button-primary.u-full-width style="margin-top:40px" href="/people/frame" OK
 
     .columns.one
       .row
-        p = "DOCUMENTS"
+        h6 = "DOCUMENTS"
       - (Document.get_pdf_docs_of_user get_current_user).each do |doc|
         .row
-          a.table-cell-body.menu-link  href="/people/#{@person.id}/document/#{doc.id}" target=(doc.engine=="excel" ? "_self" : "_blank") = "#{doc.pulpo_module.name} - #{doc.name}"
+          a.table-cell-body.menu-link  style="padding-left:0" href="/people/#{@person.id}/document/#{doc.id}" target=(doc.engine=="excel" ? "_self" : "_blank") = "#{doc.pulpo_module.name} - #{doc.name}"
   
+   
+   

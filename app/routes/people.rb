@@ -58,6 +58,9 @@ get '/person/:id/:module' do
 		when "personal" then @personal = Personal.find_by(person_id: @person.id)
 		when "study" 		then @study = Study.find_by(person_id: @person.id)
 		when "crs" 			then @crs = Crs.find_by(person_id: @person.id)
+		when "rooms" 		
+			@object = Room.find_by(person_id: @person.id)
+			return partial :"form/room"
 	end
 	partial :"form/person/#{params[:module]}"
 end
@@ -163,9 +166,12 @@ get '/people/:id/document/:doc_id' do
 		send_file @writer.render(), :filename => "#{@document.name}.xlsx"
 	when "typst"
 		if @document.has_template_variables?
+				puts Rainbow("Document has template variables").red
 				@person = @people[0]
 				@template_variables = @document.get_template_variables
 				return partial :'form/report' 
+		else
+			puts Rainbow("Document has NO template variables").red
 		end
 		case @writer.status
 			when DocumentWriter::WARNING

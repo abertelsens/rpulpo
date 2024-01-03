@@ -1,17 +1,13 @@
 turbo-frame id="main_frame" 
   
   .container.container-frame
-    .row
-      
-      //LEFT PANE
-      .columns.twelve 
-        .row.header-frame
-          .columns.four.offset-by-four.u-text-center
-            h4 = "DOCUMENTS"
-          .columns.two.u-full-width.offset-by-one
-            a.button.button-primary.u-full-width href="/document/new" data-turbo-frame="editor_frame"
-                i.fa-solid.fa-plus style="font-size:small"
-                |&nbspadd document
+    .row.header-row
+      .columns.four.offset-by-four
+        h4 = "DOCUMENTS"
+      .columns.one
+        a.button.button-primary.u-full-width.button-medium href="/document/new" data-turbo-frame="editor_frame"
+            i.fa-solid.fa-plus style="font-size:small"
+            |&nbspadd
 
-        .row
-          turbo-frame id="documents_table" data-people-target="documents_table" src="/documents/table"
+    .row
+      turbo-frame id="documents_table" data-people-target="documents_table" src="/documents/table"

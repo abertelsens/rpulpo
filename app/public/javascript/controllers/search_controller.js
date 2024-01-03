@@ -54,6 +54,7 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
 
       submit()
       {
+        console.log("submitting search")
         clearTimeout(this.timeout)
         this.timeout = setTimeout(() => {
         this.element.requestSubmit()

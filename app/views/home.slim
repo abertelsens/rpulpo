@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+
 /!=============================================================================
 /! FONTS
 /!=============================================================================
@@ -45,15 +47,13 @@ html
     // NAVIGATION BAR
     //==================================================================================================
     turbo-frame#whole_screen
-    
+
+      
       div.row.nav-bar
         .columns.six
           a.button.menu-item data-turbo-frame="main_frame" href='/people/frame' 
             i.fa-solid.fa-user
             | &nbspPeople
-          a.button.menu-item data-turbo-frame="main_frame" href='/lists/frame' 
-            i.fa-solid.fa-list
-            | &nbspListas
           a.button.menu-item data-turbo-frame="main_frame" href='/rooms/frame' 
             i.fa-solid.fa-bed
             | &nbspRooms
@@ -78,4 +78,5 @@ html
       div.row
         div.container
           turbo-frame#main_frame src="/people/frame"
-            
+  
+     

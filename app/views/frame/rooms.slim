@@ -3,39 +3,34 @@ turbo-frame id="main_frame"
   .container.container-frame style="margin-left:40px; margin-right:40px;" data-controller="search"
     form.form-inline method="GET" action="/rooms/search" data-controller="search" data-turbo-frame="rooms_table" aria-label="Search" name="q" data-action="input->searchfield#submit"  
       .row
-
-            
-        .columns.twelve
-          .columns.twelve 
-            .row.header-frame
-              .columns.twelve.u-text-center
-                h3 = "ROOMS"
-            
-            .row style="display:flex;"
-              .columns.five.offset-by-four.u-text-center
-                input#search_string.u-full-width autofocus="autofocus" type="search" autocomplete="off" placeholder="search" aria-label="Search" name="q" data-action="input->search#submit"
-                input#sort_order type="hidden" name="sort_order" data-search-target="sort_order"
-              
+        .row.header-frame
+          .columns.four.offset-by-five.u-text-center  
+            h3.u-text-center = "ROOMS"
+        
+        .row style="display:flex;"
+          .columns.four.offset-by-five.u-text-center
+            input#search_string.u-full-width autofocus="autofocus" type="search" autocomplete="off" placeholder="search" aria-label="Search" name="q" data-action="input->search#submit"
+            input#sort_order type="hidden" name="sort_order" data-search-target="sort_order"
           
-              a.button.button-primary href="/room/new" data-turbo-frame="editor_frame"
-                  i.fa-solid.fa-plus style="font-size:small"
-                  |&nbspadd room
+          a.button.button-primary href="/room/new" data-turbo-frame="editor_frame"
+            i.fa-solid.fa-plus style="font-size:small"
+            |&nbspadd room
 
-            .row
-              .columns.three style="min-width:100px; padding-right:30px"
-                div.table-container
-                  div.table-table.table-border  
-                    div.table-row-head
-                      div.table-cell-head.small-field = "casa"
-                      div.table-cell-head.small-field  style="text-align:center" = "libres"
-                      div.table-cell-head.small-field  style="text-align:center" = "total"
+        .row
+          .columns.three style="min-width:100px; padding-right:10px"
+            div.table-container
+              div.table-table.table-border  
+                div.table-row-head
+                  div.table-cell-head.small-field = "casa"
+                  div.table-cell-head.small-field  style="text-align:center" = "libres"
+                  div.table-cell-head.small-field  style="text-align:center" = "total"
 
-                    - Room.get_rooms_count_by_house.each do |house|
-                      a.table-row-body href="/rooms/house/#{house["name"]}" data-turbo-frame="rooms_table"  style="cursor:pointer;"
-                        div.table-cell-body style="border: none" = house["name"].humanize
-                        div.table-cell-body style="border: none; text-align:center" = house["empty"]
-                        div.table-cell-body style="border: none; text-align:center" = house["total"]
-                      
+                - Room.get_rooms_count_by_house.each do |house|
+                  a.table-row-body href="/rooms/house/#{house["name"]}" data-turbo-frame="rooms_table"  style="cursor:pointer;"
+                    div.table-cell-body style="border: none" = house["name"].humanize
+                    div.table-cell-body style="border: none; text-align:center" = house["empty"]
+                    div.table-cell-body style="border: none; text-align:center" = house["total"]
+                  
 
-              .columns.eight.u-full-width
-                turbo-frame id="rooms_table" src="/rooms/table"
+          .columns.eight.u-full-width
+            turbo-frame id="rooms_table" src="/rooms/table"

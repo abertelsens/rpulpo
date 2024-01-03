@@ -12,6 +12,11 @@ turbo-frame id="main_frame"
 			// FORM HEADER
 			//----------------------------------------------------------------------------------------------------------------
 			.row.u-text-center
+				- if @person && File.exist?("app/public/photos/#{@person.id}.jpg")
+					img.person-photo id="photo_image"  width="140" src= "photos/#{@person.id}.jpg"
+				- else
+					img.person-photo id="photo_image" width="140" src= "photos/avatar.jpg"
+			.row.u-text-center
 				h3 = "#{@person.short_name} - Datos Personales"
 						
 				

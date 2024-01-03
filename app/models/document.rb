@@ -1,6 +1,6 @@
 ###########################################################################################
 # DESCRIPTION
-# A class defininign a Document object.
+# A class defining a Document object.
 ###########################################################################################
 
 require_rel '../engines'
@@ -17,9 +17,9 @@ class Document < ActiveRecord::Base
   # if a document is destroyed then we delete the associated file
 	before_destroy do |doc|
 		if doc.engine!="prawn"
-            full_path = doc.get_full_path
+        full_path = doc.get_full_path
 		    FileUtils.rm full_path if File.file? full_path
-        end
+      end
 	end
 
 	def self.create_from_params(params)
@@ -61,12 +61,12 @@ class Document < ActiveRecord::Base
 		end
 	end
 
-
 	def self.prepare_params(params)
 		file_suffix = Document.get_template_extension params[:engine]
 		if params[:template]!=nil
 				if params[:engine]=="typst"
-					template_variables = has_template_variables?(File.read params[:template][:tempfile])    
+					template_variables = Document.has_template_variables?(File.read params[:template][:tempfile])   
+					puts "Found template variables #{template_variables}"
 				else
 					template_variables = false
 				end
@@ -105,7 +105,7 @@ class Document < ActiveRecord::Base
 	end
 
 	def has_template_variables?
-			return self.template_variables
+			return template_variables
 	end
 
 	def get_template_variables

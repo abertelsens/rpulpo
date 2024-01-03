@@ -10,7 +10,7 @@ turbo-frame id="documents_table" data-turbo-frame="documents_view"
 
       - @objects.each.with_index do |object, index|
         //turbo-frame id="people_#{object.id}"
-        a.table-row-body href="/document/#{object.id}" data-turbo-frame="main_frame"  style="cursor:pointer;"
+        a.table-row-body href="/document/#{object.id}" data-turbo-frame="main_frame"
           div.table-cell-body.medium-field  = object.name
           div.table-cell-body.medium-field  = object.pulpo_module.name
           div.table-cell-body.medium-field  = object.description

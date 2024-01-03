@@ -16,7 +16,6 @@ html, body{
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;
 }	
 
 /**********************************************************************
@@ -62,10 +61,20 @@ login-field
 
 .container-frame
 {
+  margin-top: 0px;
   padding: 20px
 }
 
+.header-row
+{
+  text-align: center;
+}
 
+.button-medium
+{
+ min-width: 120px;
+}
+.
 /**********************************************************************
 * FORMS
 **********************************************************************/
@@ -93,6 +102,14 @@ login-field
 .screen-container
 {
   position: relative;
+}
+.gray-label
+{
+  padding-bottom:6px; 
+  color:#555; 
+  font-weight: 600; 
+  font-size: 1rem;
+  text-align: left;
 }
 
 .screen-box {
@@ -222,7 +239,7 @@ login-field
 {
   display: flex;
   justify-content: center;
-  max-height: 70%;
+  max-height: 500px;
   width: inherit;
   overflow-y: auto;
   width: 100%;
@@ -231,7 +248,6 @@ login-field
 .table-table
 {
   display: table;
-  float:left
 }
 
 .table-border
@@ -271,9 +287,28 @@ login-field
   text-decoration: none;
 }
 
+a.table-row-body
+{
+    cursor:pointer;
+}
+
+.small-button
+{
+  margin-right: .7rem; 
+  padding-left: 1rem; 
+  padding-right: 1rem
+}
+
+.menu-frame
+{
+  display: none; 
+  justify-content: space-evenly;
+}
+
 .no-border
 {
-  border: none
+  border: none;
+  border-bottom: 0px
 }
 .table-row-body:hover
 {
@@ -472,7 +507,7 @@ background-color: #d6f0ff;
   padding-top: 5px;
   padding-bottom: 5px;
   margin: 0px;
-  transition: .2s;
+  transition: .1s;
   
 }
 
@@ -604,10 +639,38 @@ a.button.active
   padding: 20px;
   border-radius: 5px;
   border: none;
-  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
 
 .menu-link {
   border:0px;
   text-decoration: none;
+  color: #302e2e;
+}
+
+.box {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+.box .boxrow {
+  border: 1px dotted grey;
+}
+
+.box .box-header {
+  flex: 0 1 auto;
+  /* The above is shorthand for:
+  flex-grow: 0,
+  flex-shrink: 1,
+  flex-basis: auto
+  */
+}
+
+.box .box-content {
+  flex: 1 1 auto;
+}
+
+.box .box-footer {
+  flex: 0 1 40px;
 }
