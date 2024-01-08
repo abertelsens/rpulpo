@@ -76,7 +76,7 @@ class Document < ActiveRecord::Base
 				name:                   params[:name],
 				description:            params[:description],
 				engine:                 params[:engine],
-				path:                   "#{params[:name]}.#{file_suffix}",
+				path:                   params[:engine]=="" "#{params[:name]}.#{file_suffix}",
 				template_variables:     template_variables
 		}        
 	end

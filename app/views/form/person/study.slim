@@ -11,7 +11,8 @@ turbo-frame id="main_frame"
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM HEADER
 			//----------------------------------------------------------------------------------------------------------------
-			row.u-text-center
+			row.center-align
+				
 				- if @person && File.exist?("app/public/photos/#{@person.id}.jpg")
 					img.person-photo id="photo_image"  width="140" src= "photos/#{@person.id}.jpg"
 				- else

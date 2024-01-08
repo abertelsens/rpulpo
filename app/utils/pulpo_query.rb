@@ -4,6 +4,7 @@
 # A class defininign a query object. Its function is to provide some parsing capabities
 # to parse query strings and trasnform them into valid sql queries.
 ###########################################################################################
+require_relative '../models/table_settings'
 
 class PulpoQuery
 
@@ -11,78 +12,78 @@ class PulpoQuery
 	AND_DELIMITERS = [' AND ', ' and ']
 	OR_DELIMETERS = [' ', ' OR ', ' or ']
 
-	ATTRIBUTES = {
-			"family_name"   => {table:  "people",    name:  "family_name",  type:   "string"},
-			"full_name"     => {table:  "people",    name:  "full_name",    type:   "string"},
-			"clothes"       => {table:  "people",    name:  "clothes",      type:   "string"},
-			"year"          => {table:  "people",    name:  "year",         type:   "string"},
-			"group"         => {table:  "people",    name:  "group",        type:   "string"},
-			"ctr"           => {table:  "people",    name:  "ctr",          type:   "integer"},
-			"n_agd"         => {table:  "people",    name:  "n_agd",        type:   "integer"},
-			"status"        => {table:  "people",    name:  "status",       type:   "integer"},
-			"region"        => {table:  "personals", name:  "region",       type:   "string"},
-			"classnumber"   => {table:  "crs",       name:  "classnumber",  type:   "string"},
-			"admissio"      => {table:  "crs",       name:  "admissio",     type:   "date"},
-			"room"          => {table:  "rooms",     name:  "name",         type:   "string"},
+	TABLES_MODELS =
+	{
+		"people"		=> :person,
+		"personals"	=> :personal,
+		"studies"		=> :study,
+		"crs"				=> 	:crs,
+		"rooms"			=> :room,
+		"people"		=> :person,
 	}
+	ATTRIBUTES = TableSettings.get_all_attributes
 
-	def initialize(query_string, order)
-			
-		# clean any whitespaces after colons: i.e. "clothes:  96" will become clothes:96
-		query_string = query_string.gsub(/:\s+/, ':')
+	def initialize(query_string, table_settings=nil)
 		
-		# clean any more occurence of several white spaces
-		query_string = query_string.gsub(/\s+/, ' ')
+		puts "got table settings #{table_settings}"
+		@order = table_settings.nil? ? [] : table_settings.get_order
+		@tables = table_settings.nil? ? [] : table_settings.get_tables
 		
-		# split the string into AND clauses
-		query_array = query_string.split(Regexp.union(AND_DELIMITERS))
+		# clear the main table name and trasform its values to the model name, downcased to match the association
+		@tables =  (@tables-[MAIN_TABLE]).map {|table| TABLES_MODELS[table]}
+		puts "got tables  #{@tables}"
 		
-		# build the clauses and select only those which are not blank. 
-		# The parser returns a blank clauses if it is not well formed 
-		clauses = query_array.map {|clause| parse_or_clauses(clause) }
-		clauses = clauses.select { |clause| !clause.blank? }
-		@status = !clauses.empty? || query_string.blank?
-		order_array = (order.blank? ? ["family_name","ASC"] :  order.split(" ") )# the order parameter is of the form "clothes ASC"
-		
-		puts "setting order array to: #{order_array}"
-		if order_array[0]=="family_name"
-				@order = "ORDER BY #{ATTRIBUTES[order_array[0]][:table]}.#{ATTRIBUTES[order_array[0]][:name]} #{order_array[1]}"
+		if query_string.nil?
+			@query_array = []
 		else
-				@order = "ORDER BY #{ATTRIBUTES[order_array[0]][:table]}.#{ATTRIBUTES[order_array[0]][:name]} #{order_array[1]}, people.family_name ASC"
-		end
-		@sql_query = clauses.join(" AND ")
+			# clean any whitespaces after colons: i.e. "clothes:  96" will become clothes:96
+			query_string = query_string.strip.gsub(/:\s+/, ':')
 			
+			# clean any more occurence of several white spaces
+			query_string = query_string.gsub(/\s+/, ' ')
+			
+			# split the string into AND clauses
+			@query_array = query_string.split(Regexp.union(AND_DELIMITERS))
+		end	
 	end
 
-	def to_sql
-		if @sql_query.blank?
-				"SELECT * FROM #{MAIN_TABLE} #{@order};"
-		else
-				"SELECT * FROM #{MAIN_TABLE} WHERE #{@sql_query} #{@order};"
+	def execute
+		if @query_array.empty?
+			return Person.all.includes(@tables).order(@order) if MAIN_TABLE=="people"
 		end
+		puts Rainbow("got query array #{@query_array}").purple
+		# execute the OR clauses
+		res_array = @query_array.map{|or_clauses| execute_or_clauses(or_clauses)}
+		
+		# execute the AND clauses
+		result = res_array.inject{ |carry, res| (res.nil? || carry.nil?) ? nil : carry.and(res) }
+		
+		result.nil? ? [] : result.order(@order) 
 	end
-	
+		
 	def status
-			return @status
+		return @status
 	end
 	
 	# A clause is a string fo the form "attibute:value" or a concatenation of the form "attibute:value (OR) attibute:value"
-	def parse_or_clauses(query_string)
-			
+	def execute_or_clauses(query_string)
+		
+		#puts "executin execute_or_clauses of string #{query_string}"
 		query_array = query_string.split(Regexp.union(OR_DELIMETERS))
 		
 		# transform the clauses into Attributes Queries
-		attributes_array = query_array.map { |clause| AttributeQuery.new(clause) }
+		attributes_array = query_array.map { |clause| AttributeQuery.new(clause,@tables) }
 		
 		# use only the well formed attributes
 		attributes_array = attributes_array.select { |att| att.status }
-		attributes_array = attributes_array.map{ |att| "( #{att.to_sql_condition} )" }
 		
-		attributes_array.join(" OR ")
+		attributes_array = attributes_array.map { |clause| clause.execute }
+		puts "got attributes array after executing or clauses #{attributes_array}"
+		
+		attributes_array.inject{ |res, condition| condition.nil? ? res : res.or(condition) }
 	end
-
-    
-end
+	
+end # class end
 
 class AttributeQuery
 
@@ -140,65 +141,74 @@ class AttributeQuery
 			"cavabianca"    => "ctr:cb",
 			"dep"           => "ctr:dep",
     }
-        
-
-    def initialize(query_string)
-        
-        #replace the query alias if found
-        query_string = QUERY_ALIASES[query_string] unless QUERY_ALIASES[query_string].nil?
-        query_array = query_string.split(":")
-        
-        # if the query string is not of the form att:value but only a simple string "value"
-        #  we replace it with the defaull attrinute i.e. default_attibuete:value  
-        if query_array[1].nil?
-					@att_name = DEFAULT_ATTRIBUTE
-					@att_value = query_array[0]
-        else
-					@att_name = query_array[0]
-					@att_value = query_array[1]
-        end
-        
-        #check whether there an alias is used for the attribute name
-        @att_name = NAME_ALIASES[@att_name] unless NAME_ALIASES[@att_name].nil?
-        @att_value = VALUE_ALIASES[@att_value] unless VALUE_ALIASES[@att_value].nil?
-        
-        # if the attribute name is not faound in the attributes list we set the status to false
-        @status = !ATTRIBUTES[@att_name].nil?  
-    end
-
-    def status
-        @status
-    end
     
-    
-    def to_sql_condition
-        
-			# if the attribute is not in the main table we build a related table query
-			if ATTRIBUTES[@att_name][:table]==MAIN_TABLE
-				self.build_condition
-			else
-				"#{MAIN_TABLE}.id IN (SELECT #{RELATED_TABLE_ID} from #{ATTRIBUTES[@att_name][:table]} WHERE (#{self.build_condition}))"
-			end
-    end
 
-    def build_condition
-			case ATTRIBUTES[@att_name][:type]
+		attr_accessor :status
+
+    def initialize(query_string, tables)
+        
+		@tables	= tables
+		#replace the query alias if found
+		query_string = QUERY_ALIASES[query_string] unless QUERY_ALIASES[query_string].nil?
+		
+		query_array = query_string.split(":")
+		
+		# if the query string is not of the form att:value but only a simple string "value"
+		#  we replace it with the defaull attribute i.e. default_attibuete:value  
+		if query_array[1].nil?
+			@att_name = DEFAULT_ATTRIBUTE
+			@att_value = query_array[0]
+		else
+			@att_name = query_array[0]
+			@att_value = query_array[1]
+		end
+		
+		#check whether there an alias is used for the attribute name or for the attribute value
+		@att_name = NAME_ALIASES[@att_name] unless NAME_ALIASES[@att_name].nil?
+		@att_value = VALUE_ALIASES[@att_value] unless VALUE_ALIASES[@att_value].nil?
+		
+		# if the attribute name is not found in the attributes list we set the status to false
+		@status = !TableSettings.get_attribute_by_name(@att_name).nil?  
+
+	end
+
+	def execute
+		
+		return nil if !@status
+		
+		att = TableSettings.get_attribute_by_name(@att_name)
+		table, field_name = att.field.split(".")
+		puts Rainbow("searching @att_name #{@att_name} got #{att} table:#{att.table} filed:#{att.field} type:#{att.type}").yellow
+		
+		condition = case att.type
 			when "string"
-				"#{ATTRIBUTES[@att_name][:table]}.#{ATTRIBUTES[@att_name][:name]} ILIKE '%#{@att_value}%'"
-			when "integer"
+				"#{att.field} ILIKE '%#{@att_value}%'"
+			when "integer", "enum"
 				# if the value cannot be cast into an integer we set a value of -1 to return an empty set
 				if Integer(@att_value, exception: false).nil?   
-						"#{ATTRIBUTES[@att_name][:table]}.#{ATTRIBUTES[@att_name][:name]}=-1"
+					{att.field.to_sym => -1}
 				else
-						"#{ATTRIBUTES[@att_name][:table]}.#{ATTRIBUTES[@att_name][:name]}=#{@att_value}"
+					{att.field.to_sym => @att_value}
 				end
 			when "date"
-				"date_part('year', #{ATTRIBUTES[@att_name][:table]}.#{ATTRIBUTES[@att_name][:name]})=#{@att_value}"
+				if Integer(@att_value, exception: false).nil?
+					"date_part('year', #{att.field})=-1"
+				else
+					"date_part('year', #{att.field})=#{@att_value}"
+				end
 			end
-    end
+			puts "built condtion #{condition}"
+		
+			# the code is a bit complex but it allows us to include in the query the tables that are needed to show the records
+		# and avoid n+1 queries
+		puts "condition:#{condition} tables:#{@tables}"
+		case table
+			when "people" then (@tables.empty? ? Person.where(condition) : Person.includes(@tables).where(condition))
+			when "personals" then (@tables.empty? ? Person.joins(:personal).where(condition) : Person.includes(@tables).joins(:personal).where(condition)) 
+			when "studies" then (@tables.empty? ? Person.joins(:study).where(condition) : Person.includes(@tables).joins(:study).where(condition)) 
+			when "crs" then (@tables.empty? ? Person.joins(:crs).where(condition) : Person.includes(@tables).joins(:crs).where(condition)) 
+			when "rooms" then (@tables.empty? ? Person.joins(:room).where(condition) : Person.includes(@tables).joins(:room).where(condition)) 
+		end
+	end
 
-    def to_sql
-        "SELECT * from #{MAIN_TABLE} WHERE #{self.to_sql_condition}"
-    end
-
-end
+end #class end

@@ -25,15 +25,11 @@ html, body{
 .login-screen
 {
   height:100%; 
-  background: transparent url(/img/cb_jardin.jpeg) no-repeat;
+  background: url(/img/cb_jardin.jpeg) no-repeat;
   object-fit: cover;
   resize: both;
   background-size: 100% 100%;
-  /*
-  background-position: center;
-  */
   opacity: 1;
-  position: relative;
 }
 
 .login-box {

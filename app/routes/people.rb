@@ -5,43 +5,47 @@ require"clipboard"
 
 # renders the people frame
 get '/people/frame' do
-	get_last_query
+	get_last_query :people
   partial :"frame/people"
 end
 
 # renders the table of people
 # @objects the people that will be shown in the table
 get '/people/table' do
-  get_last_query
-	@objects = @query.nil? ? Person.includes(:room).all.order(full_name: :asc) : (Person.search @query)
+  get_last_query :people
+	@objects = Person.search @people_query, @people_table_settings
 	partial :"table/people"
 end
 
+# copies tghe current query results to the clipboard
+# TODO should catch some possible errors from the Cipboard.copy call
 get '/people/clipboard/copy' do
-  get_last_query
-	@objects = @query.nil? ? Person.includes(:room).all.order(full_name: :asc) : (Person.search @query)
-	export_string = Person.collection_to_csv @objects, @table_settings
+  get_last_query :people
+	@objects = Person.search @people_query, @people_table_settings
+	export_string = Person.collection_to_csv @objects,  @people_table_settings
 	Clipboard.copy export_string
 	{result: true}.to_json
 end
 
-# toggles a person from the set.
+# loads the table settings form
 get '/people/table/settings' do
-	@table_settings = session["table_settings"].nil? ? TableSettings.new(table: :default) : session["table_settings"]
+	get_table_settings :people
+	puts "IN GET /people/table/settings. Got @table_settings with attributes #{@people_table_settings.att}"
+	@table_settings = @people_table_settings
 	partial :"form/table_settings"
 end
 
 post '/people/table/settings' do
-	session["table_settings"] = TableSettings.create_from_params params
-	partial :"frame/people"
+	session["people_table_settings"] = TableSettings.create_from_params params
+	puts "got @query in post #{@people_query}"
+	redirect :"/people/frame"
 end
 
 # renders the table of after perfroming a search.
 get '/people/search' do
-	@objects = Person.search(params[:q],params[:sort_order])
-	@table_settings = session["table_settings"].nil? ? TableSettings.new(table: :default) : session["table_settings"]
-	session["table_query"] = params[:q]
-	puts Rainbow("setting session[table_query] to: #{session["table_query"]}").yellow
+	get_table_settings :people
+	@people_query = session["people_table_query"] = params[:q]
+	@objects = Person.search @people_query, @people_table_settings
 	partial :"table/people"
 end
 
@@ -142,11 +146,12 @@ end
 # renders a pdf or an excel file with the params received.
 get '/people/:id/document/:doc_id' do
 	if params[:id]=="set"
-		get_last_query
-		@people = @query.nil? ? Person.all.order(full_name: :asc) : (Person.search @query)
+		get_last_query :people
+		@people = @query.nil? ? Person.all.order(family_name: :asc) : (Person.search @people_query).order(family_name: :asc)
 	else
 		@people = [Person.find(params[:id])]
 	end
+	
 	@document = Document.find(params[:doc_id])
 	puts "found document #{@document.to_s}"
 	@writer = @document.get_writer @people
@@ -167,8 +172,8 @@ get '/people/:id/document/:doc_id' do
 	when "typst"
 		if @document.has_template_variables?
 				puts Rainbow("Document has template variables").red
-				@person = @people[0]
 				@template_variables = @document.get_template_variables
+				@set = params[:id]
 				return partial :'form/report' 
 		else
 			puts Rainbow("Document has NO template variables").red
@@ -187,13 +192,15 @@ end
 post '/people/:id/document/:doc_id' do
 	headers 'content-type' => "application/pdf"
 	if params[:id]=="set"
-		get_last_query
-		@people = @query.nil? ? Person.all.order(full_name: :asc) : (Person.search @query)
+		get_last_query :people
+		@people = @people_query.nil? ? Person.all.order(full_name: :asc) : (Person.search @people_query)
 	else
 		@people = [Person.find(params[:id])]
 	end
-		@document = Document.find(params[:doc_id])
+	
+	@document = Document.find(params[:doc_id])
 	@writer = @document.get_writer(@people, params)
+	
 	case @writer.status
 		when DocumentWriter::WARNING
 			puts Rainbow(@writer.message).orange
@@ -211,8 +218,8 @@ end
 
 post '/people/edit_field' do
 	puts Rainbow("got params #{params}").yellow
-	get_last_query
-	@people = @query.nil? ? Person.all.order(full_name: :asc) : (Person.search @query)
+	get_last_query :people
+	@people = @people_query.nil? ? Person.all.order(full_name: :asc) : (Person.search @people_query)
 	@people.each {|person| person.update(params[:att_name].to_sym => params[params[:att_name]])}
 	partial :"frame/people"
 end

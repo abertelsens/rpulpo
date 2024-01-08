@@ -4,7 +4,7 @@
 
 turbo-frame id="main_frame"
   	
-	form action="/people/table/settings" method="POST" data-controller="tablesettings"
+	form action="/#{@table_settings.main_table}/table/settings" method="POST" data-controller="tablesettings"
 	
 		.container
 			
@@ -24,20 +24,25 @@ turbo-frame id="main_frame"
 				.columns.twelve style="display: flex; justify-content: center;"
 					table
 						tr
-						 	- table_all = TableSettings.new(table: :all)
-							- table_all.get_tables.each do |table|
+						 	- table_all = TableSettings.new(table: :people_all)
+							- table_all.get_tables.each_with_index do |table, index|
 								td style="vertical-align: top"
 									.row style="text-align: center"
 										h5 = table.upcase	
 									- table_all.get_attributes(table).each do |att|
 										.row.u-full-width
-											.columns.eight 
-												a.button.button-seconday.u-full-width style="margin-bottom:.3rem" class=((@table_settings.include? att.field) ? "active" : "") data-tablesettings-target="att_button" data-tablesettings-id-param=att.field data-action="click->tablesettings#update" = att.name.humanize
-											.columns.four
-												select style="margin-bottom:.3rem" name="#{att.field}.order"      
-													option value="NONE" selected=(att.order=="NONE") = "NONE"
-													option value="ASC" selected=(att.order=="ASC") = "ASC"
-													option value="DESC" selected=(att.order=="DESC") = "DESC"
+											- if @table_settings.main_table==table
+												.columns.eight 
+													a.button.button-seconday.u-full-width style="margin-bottom:.3rem" class=((@table_settings.include? att.field) ? "active" : "") data-tablesettings-target="att_button" data-tablesettings-id-param=att.field data-action="click->tablesettings#update" = att.name.humanize
+												.columns.four
+													select style="margin-bottom:.3rem" name="#{att.field}.order"      
+														option value="NONE" selected=(att.order=="NONE") = "NONE"
+														option value="ASC" selected=(att.order=="ASC") = "ASC"
+														option value="DESC" selected=(att.order=="DESC") = "DESC"
+											- else
+												.columns.twelve 
+													a.button.button-seconday.u-full-width style="margin-bottom:.3rem" class=((@table_settings.include? att.field) ? "active" : "") data-tablesettings-target="att_button" data-tablesettings-id-param=att.field data-action="click->tablesettings#update" = att.name.humanize
+												
 											&hidden.u-full-width data-tablesettings-target="att_field" name=att.field value=(@table_settings.include? att.field).to_s
 							
 			/----------------------------------------------------------------------------------------------------------------

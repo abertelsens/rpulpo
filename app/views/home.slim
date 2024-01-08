@@ -38,8 +38,8 @@ html
     //==================================================================================================
     link rel="stylesheet" href="/css/normalize.css"
     link rel="stylesheet" href="/css/skeleton.css"
-    link rel="stylesheet" href="/css/menu_styles.css"
     link rel="stylesheet" href="/css/pulpo.css"
+    link rel="stylesheet" href="/css/menu_styles.css"
   
   body
     
@@ -73,7 +73,7 @@ html
             a.button.menu-item data-turbo-frame="main_frame" href='/help' 
               i.fa-solid.fa-question
               | &nbspHelp
-          a.button.menu-item.user-name href="/logout" = "user: #{@user.uname}"
+          a.button.menu-item.user-name target="_self" href="/logout" = "user: #{@user.uname}"
 
       div.row
         div.container

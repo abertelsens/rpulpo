@@ -5,6 +5,7 @@
 
 require_relative '../utils/pulpo_query'
 require 'yaml'
+require 'rainbow'
 
 class TableAttribute
 		
@@ -40,26 +41,63 @@ end #class end
 #A class containing the Users data
 class TableSettings
 	
-	attr_accessor :att
+	attr_accessor :att, :main_table
 	
 	SETTINGS_FILE_PATH = "app/settings/attributes.yaml"
+	print Rainbow("PULPO: Loading Tables Settings from config file: #{SETTINGS_FILE_PATH} ... ").yellow
 	SETTINGS_YAML = YAML.load_file(SETTINGS_FILE_PATH)
 
 	#ALL_TABLE = [TableAttribute::FAMILY_NAME, TableAttribute::FIRST_NAME, TableAttribute::GROUP, TableAttribute::STATUS, TableAttribute::N_AGD, TableAttribute::CTR, TableAttribute::YEAR, TableAttribute::REGION, TableAttribute::CLASS_NUMBER,  TableAttribute::HOUSE, TableAttribute::ROOM, TableAttribute::ADMISSIO ] 
 	def initialize(args)	# an array containing the attributtes to be shown in the table
-		@att = case args[:table]
-			when :default 		then DEFAULT_TABLE
-			when :small 		then SMALL_TABLE
-			when :all			then ALL_TABLE
-			else args[:table]
+		case args[:table]
+			when :people_default 		
+				@att = DEFAULT_PEOPLE_TABLE[:attributes]
+				@main_table = DEFAULT_PEOPLE_TABLE[:main_table]
+			when :rooms_default 		
+				@att = DEFAULT_ROOMS_TABLE[:attributes]
+				@main_table = DEFAULT_ROOMS_TABLE[:main_table]
+			when :people_small 		
+				@att = SMALL_PEOPLE_TABLE[:attributes]
+				@main_table = SMALL_PEOPLE_TABLE[:main_table]
+			when :people_all			
+				@att = ALL_PEOPLE_TABLE[:attributes]
+				@main_table = ALL_PEOPLE_TABLE[:main_table]
+			else 
+				@att = args[:attributes]
+				@main_table = args[:main_table]
 			end
+		puts Rainbow("initialized table settings with attributes: #{@att} and main_table: #{@main_table} ").yellow
 	end
 
-	ALL_TABLE = SETTINGS_YAML["attributes"].map {|att| TableAttribute.create_from_yaml att}	
-	DEFAULT_TABLE = SETTINGS_YAML["default_table"]["attributes"].map {|att| ALL_TABLE.find {|ta| ta.field==att } }	
-	SMALL_TABLE = SETTINGS_YAML["small_table"]["attributes"].map {|att| ALL_TABLE.find {|ta| ta.field==att } }	
+	ALL_ATTRIBUTES = SETTINGS_YAML["attributes"].map {|att| TableAttribute.create_from_yaml att}	
+	ALL_PEOPLE_TABLE = 
+	{
+		main_table: "people",
+		attributes: ALL_ATTRIBUTES
+	}
+	DEFAULT_PEOPLE_TABLE = 
+	{
+		main_table: SETTINGS_YAML["default_people_table"]["main_table"],
+		attributes: SETTINGS_YAML["default_people_table"]["attributes"].map {|att| ALL_ATTRIBUTES.find {|ta| ta.field==att }}
+	}
+
+	DEFAULT_ROOMS_TABLE = 
+	{
+		main_table: SETTINGS_YAML["default_rooms_table"]["main_table"],
+		attributes: SETTINGS_YAML["default_rooms_table"]["attributes"].map {|att| ALL_ATTRIBUTES.find {|ta| ta.field==att }}
+	}
+	 	
+	SMALL_PEOPLE_TABLE = 
+	{
+		main_table: SETTINGS_YAML["small_people_table"]["main_table"],
+		attributes: SETTINGS_YAML["small_people_table"]["attributes"].map {|att| ALL_ATTRIBUTES.find {|ta| ta.field==att } }
+	}	
 	
+	puts Rainbow("done!")
 	
+	def self.get_all_attributes
+		return ALL_ATTRIBUTES
+	end
 	# returns an array with all the table names present in the table settings
 	def get_tables
 		return @att.uniq{|att| att.table}.map{|att| att.table}
@@ -92,15 +130,39 @@ class TableSettings
 	end
 
 	def self.get_attribute(field)
-		return ALL_TABLE.find{|a| a.field==field}
+		return ALL_ATTRIBUTES.find{|a| a.field==field}
 	end
 
+	def self.get_attribute_by_name(name)
+		return ALL_ATTRIBUTES.find{|a| a.field.split(".")[1]==name}
+	end
+
+	def get_order
+		puts Rainbow("got attributes #{@att}").red
+		order_hash = Hash.new
+		@att.select{|a| a.order!="NONE"}.each { |a| order_hash[a.field.to_sym] = (a.order=="ASC" ? :asc : :desc) }
+		return order_hash
+	end
 	# Creates a TableSetting object from the params received from the corresponding form	
 	def self.create_from_params(params)
+		puts Rainbow("creating table settings from params").red
 		selected_attributes = (params.filter { |key,value| value=="true" }).keys
+		
 		attributes = selected_attributes.map { |field| TableSettings.get_attribute field }
-		attributes = attributes.map { |att| att.set_order params["#{att.field}.order"] }
-		return TableSettings.new(table: attributes)
+		puts Rainbow("selected attributes #{attributes}").red
+		
+		attributes = attributes.each do |att| 
+			att.set_order(params["#{att.field}.order"].nil? ? "NONE" : params["#{att.field}.order"])
+		end
+		
+		puts Rainbow("creating with attributes #{attributes}").blue
+		
+		res = TableSettings.new(main_table:"people", attributes: attributes)
+		
+		puts Rainbow("final attributes #{res.att}").purple
+		
+		puts Rainbow("created order hash #{res.get_order}").yellow
+		return res
 	end
 
 end #class end

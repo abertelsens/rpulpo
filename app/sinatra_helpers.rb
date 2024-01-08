@@ -23,10 +23,21 @@ helpers do
         end
     end
     
-    def get_last_query()
-        @query = session["table_query"]
-        @table_settings = session["table_settings"].nil? ? TableSettings.new(table: :default) : session["table_settings"]
-        puts Rainbow("got @query to: #{@query}").yellow
+    def get_last_query(args)
+        case args
+            when :people then @people_query = session["people_table_query"]
+            when :rooms then @rooms_query = session["rooms_table_query"]
+            end
+        get_table_settings args
+    end
+
+    def get_table_settings args
+        case args
+        when :people
+            @people_table_settings = session["people_table_settings"].nil? ? TableSettings.new(table: :people_default) : session["people_table_settings"]
+        when :rooms
+            @rooms_table_settings = session["rooms_table_settings"].nil? ? TableSettings.new(table: :rooms_default) : session["rooms_table_settings"]
+        end
     end
 
     def check_permission(resource)

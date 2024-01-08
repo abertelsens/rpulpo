@@ -53,5 +53,16 @@ class Room < ActiveRecord::Base
         total.keys.map {|key| { "name" => key.to_s, "total" => total[key], "empty" => (empty[key].nil? ? "-" :  empty[key]) } }      
     end
 
+    # retrieves an attribute of the form "person.att_name"
+    def get_attribute(attribute_string)
+        table, attribute = attribute_string.split(".")
+        res = case table
+            when "rooms"     then self[attribute.to_sym]
+            when "person", "people" then self.person.nil? ? "-" : self.person[attribute.to_sym]
+        end
+        res = "-" if (res.nil? || res.blank?)
+        puts "\nfound nil while looking for #{attribute_string}" if res.nil?
+        res.is_a?(Date) ? res.strftime("%d-%m-%y") : res
+    end
 
 end     #class end

@@ -78,23 +78,25 @@ class Person < ActiveRecord::Base
         return params
     end
 
-    def self.search(search_string, order=nil)
-        query = PulpoQuery.new(search_string, order)
-        query.status ? Person.includes(:room).find_by_sql(query.to_sql) : []
-        #query.status ? Person.include.find_by_sql(query.to_sql) : []
+    def self.search(search_string, table_settings=nil)
+        query = PulpoQuery.new(search_string, table_settings)
+        res = query.execute
+        puts "got result from query: #{res}"
+        res
+        #query.status ? Person.includes(:room).find_by_sql(query.to_sql) : []
     end
 
     # retrieves an attribute of the form "person.att_name"
     def get_attribute(attribute_string)
         table, attribute = attribute_string.split(".")
         res = case table
-            when "person"   then self[attribute.to_sym]
-            when "study"    then (self.study.nil? ? "" : self.study[attribute.to_sym])
-            when "personal" then (self.personal.nil? ? "" : self.personal[attribute.to_sym])
+            when "person", "people"   then self[attribute.to_sym]
+            when "studies"    then (self.study.nil? ? "" : self.study[attribute.to_sym])
+            when "personals" then (self.personal.nil? ? "" : self.personal[attribute.to_sym])
             when "crs"      then (self.crs.nil? ? "" : self.crs[attribute.to_sym])
-            when "room"     then (self.room.nil? ? "" : self.room[attribute.to_sym])
+            when "rooms"     then (self.room.nil? ? "" : self.room[attribute.to_sym])
         end
-        res = "" if res.nil?
+        res = "-" if (res.nil? || res.blank?)
         puts "\nfound nil while looking for #{attribute_string}" if res.nil?
         res.is_a?(Date) ? res.strftime("%d-%m-%y") : res
         

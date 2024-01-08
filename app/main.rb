@@ -20,6 +20,8 @@ include ExcelRoomImporter
 # DB SETUP
 ########################################################################################
 
+puts Rainbow("PULPO: Starting Configuration").yellow
+
 DB_NAME = 'rpulpo_db'
 
 LOCAL_DB_PATH = "postgres://alejandro@localhost/#{DB_NAME}"
@@ -74,7 +76,7 @@ end
 # renders the main page
 get '/' do
     @user = get_current_user
-    @user ? (partial :"home") : (partial :"login")
+    partial (@user ? :"home" : :"login")
 end
 
 # renders the login page

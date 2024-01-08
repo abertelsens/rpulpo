@@ -20,7 +20,7 @@ import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/di
           }
           else
           {
-            console.log("hidings")
+            console.log("hiding")
             this.menuframeTarget.style.display="none"
           }
         }

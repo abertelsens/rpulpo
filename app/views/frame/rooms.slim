@@ -12,9 +12,13 @@ turbo-frame id="main_frame"
             input#search_string.u-full-width autofocus="autofocus" type="search" autocomplete="off" placeholder="search" aria-label="Search" name="q" data-action="input->search#submit"
             input#sort_order type="hidden" name="sort_order" data-search-target="sort_order"
           
-          a.button.button-primary href="/room/new" data-turbo-frame="editor_frame"
+          a.button.button-primary.small-button href="/room/new" data-turbo-frame="editor_frame"
             i.fa-solid.fa-plus style="font-size:small"
             |&nbspadd room
+
+          a.button.button-success.small-button href="/rooms/table/settings" data-turbo-frame="editor_frame"
+            i.fa-solid.fa-table style="font-size:small"
+            |&nbspedit table
 
         .row
           .columns.three style="min-width:100px; padding-right:10px"
