@@ -31,7 +31,7 @@ class Room < ActiveRecord::Base
         {
             person_id:              params[:person].blank? ? nil : params[:person],
             house:                  params[:house],
-            name:                   params[:name],
+            room:                   params[:room],
             floor:                  params[:floor],
             bed:                    params[:bed],
             matress:                params[:matress],
@@ -40,17 +40,15 @@ class Room < ActiveRecord::Base
         }
     end
 
-    def self.search(search_string, order=nil)
-        puts "got search string #{search_string}"
-        puts "SELECT * from rooms WHERE rooms.name ILIKE '%#{@search_string}%'"
-        return Room.find_by_sql("SELECT * from rooms WHERE rooms.name ILIKE '%#{search_string}%'")
-        #query.status ? Person.include.find_by_sql(query.to_sql) : []
+    def self.search(search_string, table_settings=nil)
+        query = PulpoQuery.new(search_string, table_settings)
+        query.execute
     end
 
     def self.get_rooms_count_by_house()
         empty = Room.group(:house).where(person_id:nil).count 
         total = Room.group(:house).order(house: :asc).count
-        total.keys.map {|key| { "name" => key.to_s, "total" => total[key], "empty" => (empty[key].nil? ? "-" :  empty[key]) } }      
+        total.keys.map {|key| { "room" => key.to_s, "total" => total[key], "empty" => (empty[key].nil? ? "-" :  empty[key]) } }      
     end
 
     # retrieves an attribute of the form "person.att_name"
@@ -61,8 +59,12 @@ class Room < ActiveRecord::Base
             when "person", "people" then self.person.nil? ? "-" : self.person[attribute.to_sym]
         end
         res = "-" if (res.nil? || res.blank?)
-        puts "\nfound nil while looking for #{attribute_string}" if res.nil?
         res.is_a?(Date) ? res.strftime("%d-%m-%y") : res
+    end
+
+    def self.collection_to_csv(rooms,table_settings)
+        result = (table_settings.att.map{|att| att.name}).join("\t") + "\n"
+        result << (rooms.map {|room| (table_settings.att.map{|att| (room.get_attribute(att.field).dup)}).join("\t") }).join(("\n"))
     end
 
 end     #class end

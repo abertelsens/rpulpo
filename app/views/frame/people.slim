@@ -4,8 +4,9 @@ turbo-frame id="main_frame" data-people-target="people_screen"
     form.form-inline method="GET" action="/people/search" data-controller="search" data-turbo-frame="people_table" aria-label="Search" name="q" data-action="input->search#submit"  
             
       
-      .row.header-row
-        h3 = "PERSONAS"          
+      .row.header-row style="display: flex; justify-content: center; align-items: center;"
+         img.u-text-center src="img/cb_icon.jpg" style="margin-right: 1rem; height: 2.8rem"
+         h3 = "PERSONAS"          
       .row 
         
         // SEARCH FIELD  
@@ -31,16 +32,16 @@ turbo-frame id="main_frame" data-people-target="people_screen"
         .columns.twelve.u-align-center.menu-frame style="display:none" data-menu-target="menuframe"
           .container.menu
             div
-              div.table-cell-head style="border-bottom:0px"
-                i.fa-solid.fa-file style="font-size:small"
+              div.table-cell-head.cell-heading style="border-bottom:0px"
+                i.fa-solid.fa-file style="font-size:1rem"
                 |&nbspDOCUMENTS
             div
               - (Document.get_docs_of_user get_current_user).each do |doc|
                 .row
                   a.table-cell-body.menu-link  href="/people/set/document/#{doc.id}" target=(doc.engine=="excel" ? "_self" : "_blank") = "#{doc.pulpo_module.name} - #{doc.name}"
             div
-              .table-cell-head style="border-bottom:0px"
-                i.fa-solid.fa-gear style="font-size:small"
+              .table-cell-head.cell-heading style="border-bottom:0px"
+                i.fa-solid.fa-gear style="font-size:1rem"
                 |&nbspACTIONS
             div
               .row 

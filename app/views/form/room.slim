@@ -12,7 +12,7 @@ turbo-frame id="main_frame"
 			// FORM HEADER
 			//----------------------------------------------------------------------------------------------------------------
 			.row.u-text-center
-				h3 = (@object.nil? ? "NEW ROOM" : "ROOM: #{@object.name}")
+				h3 = (@object.nil? ? "NEW ROOM" : "ROOM: #{@object.room}")
 				
 			/----------------------------------------------------------------------------------------------------------------
 			//DOCUMENT FRAME
@@ -30,8 +30,8 @@ turbo-frame id="main_frame"
 					&text.u-full-width name="floor" value=@object&.floor
 
 				.columns.six
-					label for="name" name
-					&text.u-full-width name="name" value=@object&.name
+					label for="name" room name
+					&text.u-full-width name="room" value=@object&.room
 
 				.columns.six
 					label for="name" person

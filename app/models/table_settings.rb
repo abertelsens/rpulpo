@@ -41,32 +41,31 @@ end #class end
 #A class containing the Users data
 class TableSettings
 	
-	attr_accessor :att, :main_table
+	attr_accessor :att, :main_table, :related_tables
 	
 	SETTINGS_FILE_PATH = "app/settings/attributes.yaml"
 	print Rainbow("PULPO: Loading Tables Settings from config file: #{SETTINGS_FILE_PATH} ... ").yellow
 	SETTINGS_YAML = YAML.load_file(SETTINGS_FILE_PATH)
 
-	#ALL_TABLE = [TableAttribute::FAMILY_NAME, TableAttribute::FIRST_NAME, TableAttribute::GROUP, TableAttribute::STATUS, TableAttribute::N_AGD, TableAttribute::CTR, TableAttribute::YEAR, TableAttribute::REGION, TableAttribute::CLASS_NUMBER,  TableAttribute::HOUSE, TableAttribute::ROOM, TableAttribute::ADMISSIO ] 
 	def initialize(args)	# an array containing the attributtes to be shown in the table
 		case args[:table]
 			when :people_default 		
 				@att = DEFAULT_PEOPLE_TABLE[:attributes]
 				@main_table = DEFAULT_PEOPLE_TABLE[:main_table]
+				@related_tables = DEFAULT_PEOPLE_TABLE[:related_tables]
 			when :rooms_default 		
 				@att = DEFAULT_ROOMS_TABLE[:attributes]
 				@main_table = DEFAULT_ROOMS_TABLE[:main_table]
-			when :people_small 		
-				@att = SMALL_PEOPLE_TABLE[:attributes]
-				@main_table = SMALL_PEOPLE_TABLE[:main_table]
+				@related_tables = DEFAULT_ROOMS_TABLE[:related_tables]
 			when :people_all			
 				@att = ALL_PEOPLE_TABLE[:attributes]
 				@main_table = ALL_PEOPLE_TABLE[:main_table]
 			else 
 				@att = args[:attributes]
 				@main_table = args[:main_table]
+				@related_tables = args[:related_tables]
 			end
-		puts Rainbow("initialized table settings with attributes: #{@att} and main_table: #{@main_table} ").yellow
+		#puts Rainbow("initialized table settings with attributes: #{@att} and main_table: #{@main_table} ").yellow
 	end
 
 	ALL_ATTRIBUTES = SETTINGS_YAML["attributes"].map {|att| TableAttribute.create_from_yaml att}	
@@ -78,22 +77,18 @@ class TableSettings
 	DEFAULT_PEOPLE_TABLE = 
 	{
 		main_table: SETTINGS_YAML["default_people_table"]["main_table"],
+		related_tables: SETTINGS_YAML["default_people_table"]["related_tables"],
 		attributes: SETTINGS_YAML["default_people_table"]["attributes"].map {|att| ALL_ATTRIBUTES.find {|ta| ta.field==att }}
 	}
 
 	DEFAULT_ROOMS_TABLE = 
 	{
 		main_table: SETTINGS_YAML["default_rooms_table"]["main_table"],
+		related_tables: SETTINGS_YAML["default_rooms_table"]["related_tables"],
 		attributes: SETTINGS_YAML["default_rooms_table"]["attributes"].map {|att| ALL_ATTRIBUTES.find {|ta| ta.field==att }}
 	}
 	 	
-	SMALL_PEOPLE_TABLE = 
-	{
-		main_table: SETTINGS_YAML["small_people_table"]["main_table"],
-		attributes: SETTINGS_YAML["small_people_table"]["attributes"].map {|att| ALL_ATTRIBUTES.find {|ta| ta.field==att } }
-	}	
-	
-	puts Rainbow("done!")
+	puts Rainbow("done!").yellow
 	
 	def self.get_all_attributes
 		return ALL_ATTRIBUTES
@@ -138,31 +133,26 @@ class TableSettings
 	end
 
 	def get_order
-		puts Rainbow("got attributes #{@att}").red
 		order_hash = Hash.new
 		@att.select{|a| a.order!="NONE"}.each { |a| order_hash[a.field.to_sym] = (a.order=="ASC" ? :asc : :desc) }
 		return order_hash
 	end
 	# Creates a TableSetting object from the params received from the corresponding form	
-	def self.create_from_params(params)
-		puts Rainbow("creating table settings from params").red
+	def self.create_from_params(table,params)
 		selected_attributes = (params.filter { |key,value| value=="true" }).keys
 		
 		attributes = selected_attributes.map { |field| TableSettings.get_attribute field }
-		puts Rainbow("selected attributes #{attributes}").red
 		
 		attributes = attributes.each do |att| 
 			att.set_order(params["#{att.field}.order"].nil? ? "NONE" : params["#{att.field}.order"])
 		end
 		
-		puts Rainbow("creating with attributes #{attributes}").blue
-		
-		res = TableSettings.new(main_table:"people", attributes: attributes)
-		
-		puts Rainbow("final attributes #{res.att}").purple
-		
-		puts Rainbow("created order hash #{res.get_order}").yellow
-		return res
+		related_tables = case table
+			when "people" then DEFAULT_PEOPLE_TABLE[:related_tables] 
+			when "rooms"  then DEFAULT_ROOMS_TABLE[:related_tables] 
+		end
+
+		TableSettings.new(main_table: table, attributes: attributes, related_tables: related_tables)
 	end
 
 end #class end

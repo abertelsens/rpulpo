@@ -3,15 +3,15 @@
   --light-orange: rgb(255, 235, 213);
   --light-gray: rgb(224, 224, 224);
   --light-blue: rgb(98, 203, 244);
-  --pale-blue: rgb(234, 246, 250);
+  --pale-blue: rgb(227, 246, 255);
   --dark-gray: rgb(64, 64, 64);
   --medium-gray: rgb(85, 85, 85);
 }
 
 html, body{
-  font-family: "Open Sans", "HelveticaNeue";
-  font-weight: 400;
-  font-size: 1rem;
+  font-family: 'Rubik', sans-serif;
+  font-weight: 300;
+  font-size: 13pt;
   background-color: white;
   height: 100%;
   margin: 0;
@@ -149,10 +149,7 @@ login-field
 * ALERTS
 **********************************************************************/
 
-.alert
-{
-  border-color: var(--light-gray)
-}
+
 
 .alert-error
 {
@@ -235,7 +232,7 @@ login-field
 {
   display: flex;
   justify-content: center;
-  max-height: 500px;
+  max-height: 600px;
   width: inherit;
   overflow-y: auto;
   width: 100%;
@@ -259,7 +256,7 @@ login-field
 .table-row-head
 {
   position: sticky;
-  color: var(--dark-grey);
+  color: var(--dark-gray);
   font-variant: small-caps;
   font-weight: 600;
   border-bottom: 1px solid var(--dark-gray);
@@ -312,6 +309,15 @@ a.table-row-body
   color: initial;
 }
 
+.cell-heading
+{
+  color: var(--dark-gray);
+  font-size: 1rem;
+  font-weight:400;
+  margin-top: 1rem;
+  letter-spacing: 0rem;
+  margin-bottom: 1rem;
+}
 
 .table-cell-head
 {
@@ -322,6 +328,7 @@ a.table-row-body
   padding-right: .5rem;
   padding-left: .5rem;
   border-bottom: 1px solid var(--dark-gray);
+  font-weight: 600;
 }
 .table-cell-body
 {
@@ -491,7 +498,8 @@ background-color: #d6f0ff;
 .link-button
 {
   font-size: .9rem;
-  font-weight: bolder;
+  font-weight: 500;
+  letter-spacing: 0em;
   text-align: left;
   border-top-width: 0;
   border-right-width: 0;
@@ -514,8 +522,12 @@ p
 
 h3
 {
-  font-weight:600;
+  color: var(--dark-grey);
+  font-family: 'Bebas Neue';
+  font-size: 2.5rem;
+  font-weight:400;
   margin-top: 1rem;
+  letter-spacing: .1rem;
   margin-bottom: 1rem;
 }
 
@@ -530,7 +542,7 @@ h4
 h5
 {
   color: var(--medium-gray);
-  font-weight:600;
+  font-weight:400;
   line-height: normal;
   margin-top: 20px;
   margin-bottom: 15px;
@@ -539,9 +551,13 @@ h5
 
 h6
 {
+  color: var(--dark-grey);
   margin-top: 0rem;
   margin-bottom: .5rem;
-  font-weight: 600;
+  font-weight: 400;
+  color: var(--medium-gray);
+  letter-spacing: 0rem;
+  
 }
 
 form {
@@ -570,15 +586,16 @@ ALERTS
 
 .alert
 {
-
+  background-color:var(--pale-blue);
   margin-bottom: 20px;
-  font-weight: 100;
+  font-weight: 600;
   padding: 10px;
   border-width: 1px;
-  border-color: #dbdbdb;
+  border-color: #dcdcdc;
   border-radius: 5px;
   border-style: solid;
   line-height: 1.2em;
+  color: var(--medium-gray);
 }
 
 .alert.alert-warning

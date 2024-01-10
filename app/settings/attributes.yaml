@@ -30,7 +30,7 @@ attributes:
     order: "NONE"
     css_class: "medium-field"
   - id: "people.n_agd"
-    name: "n/agd"
+    name: "n-agd"
     type: "enum"
     order: "NONE"
     css_class: "short-field"
@@ -113,8 +113,8 @@ attributes:
     type: "string"
     order: "NONE"
     css_class: "medium-field"
-  - id: "rooms.name"
-    name: "name"
+  - id: "rooms.room"
+    name: "room name"
     type: "string"
     order: "NONE"
     css_class: "medium-field"
@@ -122,7 +122,7 @@ attributes:
     name: "house"
     type: "enum"
     order: "NONE"
-    css_class: "medium-field"
+    css_class: "long-field"
   - id: "rooms.floor"
     name: "floor"
     type: "string"
@@ -210,6 +210,11 @@ attributes:
     css_class: "medium-field"
 default_people_table:
   main_table: people
+  related_tables:
+    - personals
+    - studies
+    - crs
+    - rooms
   attributes:
     - people.family_name
     - people.first_name
@@ -218,19 +223,14 @@ default_people_table:
     - people.ctr
     - people.year
     - rooms.house
-    - rooms.name
-small_people_table:
-  main_table: people
-  attributes:
-    - people.family_name
-    - people.first_name
-    - people.group
-    - people.year
+    - rooms.room
 default_rooms_table:
   main_table: rooms
+  related_tables:
+    - people
   attributes:
     - rooms.house
-    - rooms.name
+    - rooms.room
     - people.family_name
     - people.first_name
     - people.group

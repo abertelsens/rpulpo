@@ -9,3 +9,7 @@ turbo-frame id="people_table" data-turbo-frame="person_view"
           - @people_table_settings.att.each do |sett|
             - value = object.get_attribute sett.field
             div.table-cell-body class=sett.css_class = sett.type=="enum" ? value&.humanize : value
+
+  div.row style="display: flex; align-items: center; justify-content: center;"
+    div.alert.u-text-center style="width:400px; margin-top:1.5rem" = (@objects.size>0) ? "#{@objects.size} record(s) found" : "No records found. Try something different."
+  

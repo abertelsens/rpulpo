@@ -32,11 +32,12 @@ get '/people/table/settings' do
 	get_table_settings :people
 	puts "IN GET /people/table/settings. Got @table_settings with attributes #{@people_table_settings.att}"
 	@table_settings = @people_table_settings
+	puts Rainbow("Table Settings: #{@table_settings}").purple
 	partial :"form/table_settings"
 end
 
 post '/people/table/settings' do
-	session["people_table_settings"] = TableSettings.create_from_params params
+	session["people_table_settings"] = TableSettings.create_from_params "people", params
 	puts "got @query in post #{@people_query}"
 	redirect :"/people/frame"
 end
@@ -64,7 +65,7 @@ get '/person/:id/:module' do
 		when "crs" 			then @crs = Crs.find_by(person_id: @person.id)
 		when "rooms" 		
 			@object = Room.find_by(person_id: @person.id)
-			return partial :"form/room"
+			@object.nil? ? (redirect "/person/#{params[:id]}") : (return partial :"form/room")
 	end
 	partial :"form/person/#{params[:module]}"
 end
@@ -147,7 +148,8 @@ end
 get '/people/:id/document/:doc_id' do
 	if params[:id]=="set"
 		get_last_query :people
-		@people = @query.nil? ? Person.all.order(family_name: :asc) : (Person.search @people_query).order(family_name: :asc)
+		puts "got @people_query #{@people_query}"
+		@people = @people_query.nil? ? Person.all.order(family_name: :asc) : (Person.search @people_query, @people_table_settings).order(family_name: :asc)
 	else
 		@people = [Person.find(params[:id])]
 	end
@@ -193,7 +195,8 @@ post '/people/:id/document/:doc_id' do
 	headers 'content-type' => "application/pdf"
 	if params[:id]=="set"
 		get_last_query :people
-		@people = @people_query.nil? ? Person.all.order(full_name: :asc) : (Person.search @people_query)
+		puts "got @people_query #{@people_query}"
+		@people = @people_query.nil? ? Person.all.order(family_name: :asc) : (Person.search @people_query, @people_table_settings).order(family_name: :asc)
 	else
 		@people = [Person.find(params[:id])]
 	end
@@ -219,7 +222,7 @@ end
 post '/people/edit_field' do
 	puts Rainbow("got params #{params}").yellow
 	get_last_query :people
-	@people = @people_query.nil? ? Person.all.order(full_name: :asc) : (Person.search @people_query)
+	@people = @people_query.nil? ? Person.all.order(family_name: :asc) : (Person.search @people_query, @people_table_settings).order(family_name: :asc)
 	@people.each {|person| person.update(params[:att_name].to_sym => params[params[:att_name]])}
 	partial :"frame/people"
 end

@@ -14,6 +14,7 @@ turbo-frame id="main_frame"
 			.row.u-text-center
 				.columns.twelve
 					h3 = "TABLE SETTINGS"
+				
 			.row.u-text-center
 				.columns.twelve
 					p = "Select the fields you would like to see in the results and the order in which the records will be shown."	
@@ -21,34 +22,39 @@ turbo-frame id="main_frame"
 			//DOCUMENT FRAME
 			//----------------------------------------------------------------------------------------------------------------
 			.row
+				- table_all = TableSettings.new(table: :people_all)
 				.columns.twelve style="display: flex; justify-content: center;"
 					table
 						tr
-						 	- table_all = TableSettings.new(table: :people_all)
-							- table_all.get_tables.each_with_index do |table, index|
+							td style="vertical-align: top"
+								.row style="text-align: center" 
+									h5 = @table_settings.main_table.upcase
+								- table_all.get_attributes(@table_settings.main_table).each do |att|
+									.row.u-full-width
+										.columns.eight 
+											a.button.button-seconday.u-full-width style="margin-bottom:.3rem" class=((@table_settings.include? att.field) ? "active" : "") data-tablesettings-target="att_button" data-tablesettings-id-param=att.field data-action="click->tablesettings#update" = att.name.humanize
+										.columns.four
+											select style="margin-bottom:.3rem" name="#{att.field}.order"      
+												option value="NONE" selected=(att.order=="NONE") = "NONE"
+												option value="ASC" selected=(att.order=="ASC") = "ASC"
+												option value="DESC" selected=(att.order=="DESC") = "DESC"
+										&hidden.u-full-width data-tablesettings-target="att_field" name=att.field value=(@table_settings.include? att.field).to_s
+		
+							- @table_settings.related_tables.each do |rel_table|
 								td style="vertical-align: top"
 									.row style="text-align: center"
-										h5 = table.upcase	
-									- table_all.get_attributes(table).each do |att|
-										.row.u-full-width
-											- if @table_settings.main_table==table
-												.columns.eight 
-													a.button.button-seconday.u-full-width style="margin-bottom:.3rem" class=((@table_settings.include? att.field) ? "active" : "") data-tablesettings-target="att_button" data-tablesettings-id-param=att.field data-action="click->tablesettings#update" = att.name.humanize
-												.columns.four
-													select style="margin-bottom:.3rem" name="#{att.field}.order"      
-														option value="NONE" selected=(att.order=="NONE") = "NONE"
-														option value="ASC" selected=(att.order=="ASC") = "ASC"
-														option value="DESC" selected=(att.order=="DESC") = "DESC"
-											- else
+										h5 = rel_table.upcase
+										- table_all.get_attributes(rel_table).each do |att|
+											.row.u-full-width
 												.columns.twelve 
 													a.button.button-seconday.u-full-width style="margin-bottom:.3rem" class=((@table_settings.include? att.field) ? "active" : "") data-tablesettings-target="att_button" data-tablesettings-id-param=att.field data-action="click->tablesettings#update" = att.name.humanize
-												
-											&hidden.u-full-width data-tablesettings-target="att_field" name=att.field value=(@table_settings.include? att.field).to_s
-							
+													&hidden.u-full-width data-tablesettings-target="att_field" name=att.field value=(@table_settings.include? att.field).to_s
+
+
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM BUTTONS
 			//----------------------------------------------------------------------------------------------------------------
 			.row.center-align
 					button.button-primary type="submit" name="commit" value="save" save  
-					a.button.button-secondary formnovalidate="true" href="/people/frame" cancel
+					a.button.button-secondary formnovalidate="true" href="/#{@table_settings.main_table}/frame" cancel
 					

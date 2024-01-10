@@ -22,12 +22,12 @@ turbo-frame id="main_frame"
           - if @person.ctr!="cavabianca"
             h6 = "#{@person.ctr.humanize(capitalize: false)}"
           - else
-            h6 = "#{@person.ctr.humanize(capitalize: false)} - #{@person.room&.name} (#{@person.room&.house})"
+            h6 = "#{@person.ctr.humanize(capitalize: true)} - #{@person.room&.room} (#{@person.room&.house})"
       .row
         .columns.three.gray-label = "email:"
         .columns.nine.gray-label = "#{@person.email}"
       .row  
-        .columns.three.gray-label = "telefono:"
+        .columns.three.gray-label = "teléfono:"
         .columns.nine.gray-label = "#{@person.phone}"
       .row  
         .columns.three.gray-label = "grupo:"

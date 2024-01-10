@@ -12,8 +12,19 @@ end
 # @objects the people that will be shown in the table
 get '/rooms/table' do
 	get_last_query :rooms
-	@objects = Room.includes(:person).all.order(house: :asc, name: :asc)
+	@objects = Room.search @rooms_query, @rooms_table_settings
 	partial :"table/rooms"
+end
+
+
+# copies tghe current query results to the clipboard
+# TODO should catch some possible errors from the Cipboard.copy call
+get '/rooms/clipboard/copy' do
+  get_last_query :rooms
+	@objects = Room.search @rooms_query, @rooms_table_settings
+	export_string = Room.collection_to_csv @objects,  @rooms_table_settings
+	Clipboard.copy export_string
+	{result: true}.to_json
 end
 
 # renders a single document view
@@ -47,27 +58,29 @@ end
 # renders the table of after perfroming a search.
 get '/rooms/search' do
 	get_last_query :rooms
-	@objects = Room.search(params[:q],params[:sort_order])
+	@rooms_query = session["rooms_table_query"] = params[:q]
+	@objects = Room.search @rooms_query, @rooms_table_settings
+	
+	#@objects = Room.search(params[:q],params[:sort_order])
+	
 	partial :"table/rooms"
 end
 
 # renders the table of after perfroming a search.
 get '/rooms/house/:house_name' do
-	@objects = Room.where(house: params[:house_name]).order(name: :asc)
-			partial :"table/rooms"
-	end
+	get_table_settings :rooms
+	@objects = Room.where(house: params[:house_name]).order(room: :asc)
+	partial :"table/rooms"
+end
 
 	# loads the table settings form
 get '/rooms/table/settings' do
 	get_table_settings :rooms
-	puts "IN GET /room/table/settings. Got @table_settings with attributes #{@rooms_table_settings.att}"
 	@table_settings = @rooms_table_settings
-	puts "@table_settings main table #{@table_settings.main_table}"
 	partial :"form/table_settings"
 end
 
 post '/rooms/table/settings' do
-	session["room_table_settings"] = TableSettings.create_from_params params
-	puts "got @query in post #{@rooms_query}"
+	session["rooms_table_settings"] = TableSettings.create_from_params "rooms", params
 	redirect :"/rooms/frame"
 end
