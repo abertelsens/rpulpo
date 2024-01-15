@@ -17,7 +17,7 @@ class User < ActiveRecord::Base
 	def self.params2hash(params)
 	{
 		uname: 			params[:uname], 
-  	password: 	params[:password],
+  		password: 	params[:password],
 		usertype:		params[:usertype],
 	}
 	end
@@ -87,6 +87,13 @@ end
 def get_allowed_modules
 	return PulpoModule.all if self.admin? 		# an admin has all permitions.
 	(ModuleUser.where(user:self).select {|mu| mu.modulepermission=="allowed"}).map {|mu| mu.pulpo_module}
+end
+
+def is_table_allowed?(table)
+	mod = PulpoModule.find_by(name: table)
+	modser = ModuleUser.find_by(user:self, pulpo_module: PulpoModule.find_by(name: table))
+	settings = ModuleUser.find_by(user:self, pulpo_module: PulpoModule.find_by(name: table)) 
+	settings.nil? ? "forbidden" : ModuleUser.find_by(user:self, pulpo_module: PulpoModule.find_by(name: table)).modulepermission=="allowed"
 end
 
 # admini users can be deleted only if there is more than one. 

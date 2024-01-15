@@ -7,16 +7,6 @@
 class Crs < ActiveRecord::Base
 
 	belongs_to 	:person
-	#has_many 	:transactions
-
-	#validates   :department, 	presence: true
-    
-    ##########################################################################################
-	# CALLBACKS
-	##########################################################################################
-	
-	# after a transaciton is saved we make sure to update the balance in the related report
-	# Chashbox overrides this method.
 	
 	def self.prepare_params(params)
         {
@@ -32,7 +22,8 @@ class Crs < ActiveRecord::Base
             diaconado:      params[:diaconado].blank? ? nil : Date.parse(params[:diaconado]),
             acolitado:      params[:acolitado].blank? ? nil : Date.parse(params[:acolitado]),
             lectorado:    	params[:lectorado].blank? ? nil : Date.parse(params[:lectorado]),
-            cipna:        	params[:cipna]
+            cipna:        	params[:cipna],
+            notes:        	params[:notes]
             
         }
     end

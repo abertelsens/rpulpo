@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_08_153519) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_14_122111) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -28,6 +28,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_08_153519) do
     t.date "acolitado"
     t.date "lectorado"
     t.string "cipna"
+    t.string "notes"
     t.index ["person_id"], name: "index_crs_on_person_id"
   end
 
@@ -140,6 +141,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_08_153519) do
     t.string "uname"
     t.string "password"
     t.integer "usertype"
+  end
+
+  create_table "velas", force: :cascade do |t|
+    t.date "date"
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.string "order"
   end
 
 end

@@ -2,13 +2,32 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
     
     Stimulus.register("people", class extends Controller {
       
-      static targets = ["person_editor", "people_screen", "people_table", "editset_btn", "peopleset_select", "peopleset_view"] //the button to add a new object
+      static targets = ["search_field", "person_editor", "people_screen", "people_table", "editset_btn", "peopleset_select", "peopleset_view"] //the button to add a new object
       
       connect() {
         console.log("Stimulus Connected: people controller");
+        // set focus on 
+        this.search_fieldTarget.focus();
+        this.search_fieldTarget.selectionStart = this.search_fieldTarget.selectionEnd = this.search_fieldTarget.value.length;
+
       }
 
+      search_focus(event)
+      {
+        event.preventDefault();
+        this.search_fieldTarget.focus();
+        this.search_fieldTarget.select();
 
+      }
+
+      add_person(event)
+      {
+        event.preventDefault();
+        //Turbo.visit("/person/new/general", {frame: "main_frame"})
+        let frame = document.querySelector("turbo-frame#main_frame")
+        frame.src = "/person/new/general"
+      }
+      
       show_editor()
       {
         console.log("showing person_editor");

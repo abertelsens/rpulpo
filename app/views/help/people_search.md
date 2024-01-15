@@ -1,6 +1,6 @@
 # Búsqueda de Personas
 
-El campo de búsqueda funciona de modo similar a otras aplicaciones. Para buscar por `nombre` o `apellido` basta teclear en el campo el texto que se quiera buscar. Por ejemplo `alejandro` buscará a todas las personas con** nombre y apellido** que contengan "alejandro". Las máyusculas son ignoradas: `Alejandro`, `ALEJANDRO` o `Alejandro` dan el mismo resultado.
+El campo de búsqueda funciona de modo similar a otras aplicaciones. Para buscar por `nombre` o `apellido` basta teclear en el campo el texto que se quiera buscar. Por ejemplo `alejandro` buscará a todas las personas con **nombre o apellido** que contengan "alejandro". Las máyusculas son ignoradas: `Alejandro`, `ALEJANDRO` o `Alejandro` dan el mismo resultado.
 
 Si se quiere buscar por** otros campos** estos se deben especificar. Por ejemplo `group:1` buscará todas las personas que pertenecen al grupo 1. No hace falta escribir espacios después de los dos puntos, pero tampoco pasa nada si se hace. El nombre del campo debe estar bien escrito, si no el programa no es capaz de entender lo que se quiere, por ejempo `grup:1` no dará ningún resultado porque no existe un campo llamado `grup`.
 
@@ -32,158 +32,23 @@ Hay algunos **campo de tipo numérico**, por ejemplo `ctr` puede contener cuatro
 | celebration_info | string | información sobre el día que celebra |  |
 | room | string | nombre de la habitación | habitación, hab |
 
-## Query aliases
+## Query Aliases
 
+Se ofrecen algunos aliases para búsqueda más frecuentes. 
 
-
-family_name: apellido
-first_name: 
-short_name:
-people.full_name"
-group"
-status"
-people.n_agd"
-people.ctr"
-year"
-clothes"
-arrival"
-departure"
-birth"
-email"
-phone"
-celebration_info"
-
-region"
-    name: "region"
-    type: "string"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "personals.region_of_origin"
-    name: "Region of Origin"
-    type: "string"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "studies.faculty"
-    name: "faculty"
-    type: "string"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "studies.year_of_studies"
-    name: "Year"
-    type: "string"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "studies.status"
-    name: "Estudios Inst."
-    type: "string"
-    order: "NONE"
-    css_class: "long-field"
-  - id: "studies.licence"
-    name: "licence"
-    type: "string"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "studies.doctorate"
-    name: "doctorate"
-    type: "string"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "rooms.room"
-    name: "room name"
-    type: "string"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "rooms.house"
-    name: "house"
-    type: "enum"
-    order: "NONE"
-    css_class: "long-field"
-  - id: "rooms.floor"
-    name: "floor"
-    type: "string"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "rooms.bed"
-    name: "bed"
-    type: "string"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "rooms.matress"
-    name: "matress"
-    type: "string"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "rooms.bathroom"
-    name: "bathroom"
-    type: "string"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "rooms.phone"
-    name: "phone"
-    type: "string"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "personals.classnumber"
-    name: "promoción"
-    type: "string"
-    order: "NONE"
-    css_class: "short-field u-text-center"
-  - id: "crs.admissio"
-    name: "admissio"
-    type: "date"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "crs.pa"
-    name: "pa"
-    type: "date"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "crs.admision"
-    name: "admisión"
-    type: "date"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "crs.oblacion"
-    name: "oblación"
-    type: "date"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "crs.fidelidad"
-    name: "fidelidad"
-    type: "date"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "crs.letter"
-    name: "carta"
-    type: "date"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "crs.lectorado"
-    name: "lectorado"
-    type: "date"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "crs.acolitado"
-    name: "acolitado"
-    type: "date"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "crs.diaconado"
-    name: "diaconado"
-    type: "date"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "crs.presbiterado"
-    name: "presbiterado"
-    type: "date"
-    order: "NONE"
-    css_class: "medium-field"
-  - id: "crs.cipna"
-    name: "cipna"
-    type: "string"
-    order: "NONE"
-    css_class: "medium-field"
+| Alias(es) | Query | Descripción |
+| ---- | ---- | ---- |
+| sacerdotes, sacerdote, sacd | `status:2` | Búsqueda de todos los sacerdotes |
+| diáconos, diaconos, diácono, diacono, diac  | `status:1` | Búsqueda de todos los diáconos |
+| agd | `n_agd:1` |  Búsqueda de todos los agregados |
+| laicos, laico | `status:0` | Búsqueda de todos los laicos |
+| cavabianca, cb | `ctr:0` | Búsqueda de todos los que viven actualmente en Cavabianca |
+| dep | `ctr:1` | Búsqueda de todos los que viven actualmente en ctr dependientes (no en Cavabianca) |
+| fuera, se han ido | `ctr:3` | Búsqueda de todos los que se han ido de Roma |
+| no han llegado | `ctr:2` | Búsqueda de todos los que no se han incorporado todavía |
 
 ## Concatenación de Búsquedas
 
-Si se especifican dos o más criterios, por default **PULPO** concatena las búsquedas con un operador `or`. Por ejemplo `group:2 year:1` buscará todos las personas que están en el grupo 2 o en el año 1. Si se quiere utilizar el operador `and` se debe especificad, i.e. `group:2 AND year:1` en mayúsculas o minúsculas `group:2 AND year:1` o `group:2 and year:1` son equivalentes.
+Si se especifican dos o más criterios, **PULPO** concatena por *default* las búsquedas con un operador `or`. Por ejemplo `group:2 year:1` buscará todos las personas que están en el grupo 2 o en el año 1. 
+
+Si se quiere utilizar el operador `and` se debe especificar de forma explícita, i.e. `group:2 AND year:1`. Se puede escribir el operandor en mayúsculas o minúsculas: `group:2 AND year:1` o `group:2 and year:1` son búsquedas equivalentes.

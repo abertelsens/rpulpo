@@ -11,7 +11,7 @@ turbo-frame id="main_frame"
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM HEADER
 			//----------------------------------------------------------------------------------------------------------------
-			row.u-text-center
+			.row.u-text-center
 				- if @person && File.exist?("app/public/photos/#{@person.id}.jpg")
 					img.person-photo id="photo_image"  width="140" src= "photos/#{@person.id}.jpg"
 				- else
@@ -74,7 +74,10 @@ turbo-frame id="main_frame"
 					label for="presbiterado" presbiterado
 					&date.u-full-width name="presbiterado" value=@crs&.presbiterado
 		
-
+			.row 
+				.columns.eight.offset-by-two
+					label for="notes" notes
+					textarea.u-full-width rows=3 name="notes" = @crs&.notes
 				/----------------------------------------------------------------------------------------------------------------
 				// FORM BUTTONS
 				//----------------------------------------------------------------------------------------------------------------

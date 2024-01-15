@@ -10,6 +10,7 @@ gem 'slim',               '3.0.8'
 #gem 'thin',               '1.8.1'
 gem 'puma'
 gem 'pg'
+gem 'redcarpet'
 gem 'rb_sys'
 gem 'typst' if OS.mac? 
 gem 'activerecord-postgresql-adapter'

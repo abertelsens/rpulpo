@@ -1,29 +1,37 @@
 ########################################################################################
-# ROUTES CONTROLLERS FOR THE PEOPLE TABLES
+# ROUTES CONTROLLERS FOR THE DOCUMENT OBJECT
 ########################################################################################
 
-# renders the people frame
+require 'redcarpet'
+
+# renders the documents frame
 get '/documents/frame' do
   partial :"frame/documents"
 end
 
-# renders the table of people
-# @objects the people that will be shown in the table
+# renders the table of documents
+# @objects - the documents that will be shown in the table
 get '/documents/table' do
   @objects = Document.get_docs_of_user get_current_user
   partial :"table/documents"
 end
 
-# renders a single document view
+# renders a single document form
 get '/document/:id' do
   @object = (params[:id]=="new" ? nil : Document.find(params[:id]))
   partial :"form/document"
 end
 
-# renders a single document view
+# renders in the browser the template of a document
 get '/document/:id/viewtemplate' do
   @document = (params[:id]=="new" ? nil : Document.find(params[:id]))
-  File.read @document.get_full_path
+  src = File.read @document.get_full_path
+	header = "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css\"><script src=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js\"></script><script>hljs.highlightAll();</script>"
+	header << "<h1>Source for template: #{@document.name}</h1>
+	<pre><code>#{src}</code></pre>"
+	#source = File.read @document.get_full_path
+	#markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
+  #"#{markdown.render(source).inspect}.html_safe"
 end
 
 

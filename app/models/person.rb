@@ -49,9 +49,9 @@ class Person < ActiveRecord::Base
 	end
 
     before_destroy do |person|
-		self.crs.destroy
-        self.study.destroy
-        self.personal.destroy
+		self.crs&.destroy
+        self.study&.destroy
+        self.personal&.destroy
 	end
 
     def self.update_full_info

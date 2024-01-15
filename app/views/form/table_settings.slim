@@ -41,14 +41,15 @@ turbo-frame id="main_frame"
 										&hidden.u-full-width data-tablesettings-target="att_field" name=att.field value=(@table_settings.include? att.field).to_s
 		
 							- @table_settings.related_tables.each do |rel_table|
-								td style="vertical-align: top"
-									.row style="text-align: center"
-										h5 = rel_table.upcase
-										- table_all.get_attributes(rel_table).each do |att|
-											.row.u-full-width
-												.columns.twelve 
-													a.button.button-seconday.u-full-width style="margin-bottom:.3rem" class=((@table_settings.include? att.field) ? "active" : "") data-tablesettings-target="att_button" data-tablesettings-id-param=att.field data-action="click->tablesettings#update" = att.name.humanize
-													&hidden.u-full-width data-tablesettings-target="att_field" name=att.field value=(@table_settings.include? att.field).to_s
+								- if  get_current_user.is_table_allowed?(rel_table)
+									td style="vertical-align: top"
+										.row style="text-align: center"
+											h5 = rel_table.upcase
+											- table_all.get_attributes(rel_table).each do |att|
+												.row.u-full-width
+													.columns.twelve 
+														a.button.button-seconday.u-full-width style="margin-bottom:.3rem" class=((@table_settings.include? att.field) ? "active" : "") data-tablesettings-target="att_button" data-tablesettings-id-param=att.field data-action="click->tablesettings#update" = att.name.humanize
+														&hidden.u-full-width data-tablesettings-target="att_field" name=att.field value=(@table_settings.include? att.field).to_s
 
 
 			/----------------------------------------------------------------------------------------------------------------

@@ -314,7 +314,7 @@ a.table-row-body
   color: var(--dark-gray);
   font-size: 1rem;
   font-weight:400;
-  margin-top: 1rem;
+  margin-top: 0rem;
   letter-spacing: 0rem;
   margin-bottom: 1rem;
 }
@@ -648,11 +648,7 @@ a.button.active
   justify-content: space-evenly;
   width: 600px;
   list-style: none;
-  margin-bottom: 30px;
-  padding: 20px;
-  border-radius: 5px;
   border: none;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
 }
 
 .menu-link {
@@ -686,4 +682,40 @@ a.button.active
 
 .box .box-footer {
   flex: 0 1 40px;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 3; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 80px;
+  border: 1px solid #888;
+  width: fit-content; /* Could be more or less, depending on screen size */
+  border: 1px solid;
+  border-color: var(--light-gray);
+  border-radius:10px
+}
+
+.modal-row
+{
+  margin-bottom:2rem
+}
+
+.modal-text
+{
+  font-size: .9rem;
 }

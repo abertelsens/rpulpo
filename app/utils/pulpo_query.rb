@@ -8,51 +8,33 @@ require_relative '../models/table_settings'
 
 class PulpoQuery
 
-	MAIN_TABLE ="people"
 	AND_DELIMITERS = [' AND ', ' and ']
 	OR_DELIMETERS = [' ', ' OR ', ' or ']
-	QUERY_ALIASES = [
-		{from: "sacerdotes", to:    	 "status:2"},
-		{from: "sacerdote", to:     	 "status:2"},
-		{from: "sacd", to: "status:2"},
-		{from: "diáconos", to:    		 "status:1"},
-		{from: "diaconos", to:    		 "status:1"},
-		{from: "diácono", to:    		 "status:1"},
-		{from: "diacono", to:    		 "status:1"},
-		{from: "diac", to:    				 "status:1"},
-		{from: "agd", to:     				 "n_agd:1"},
-		{from: "laicos", to:        	 "status:0"},
-		{from: "laico", to:         	 "status:0"},
-		{from: "cavabianca", to:    	 "ctr:0"},
-		{from: "cb", to:            	 "ctr:0"},
-		{from: "dep", to:           	 "ctr:1"},
-		{from: "fuera", to:           "ctr:3"},
-		{from: "se han ido", to:  		 "ctr:3"},
-		{from: "no han llegado", to:  "ctr:2"}
-	]
-
-	TABLES_MODELS =
-	{
-		"people"		=> :person,
-		"personals"	=> :personal,
-		"studies"		=> :study,
-		"crs"				=> :crs,
-		"rooms"			=> :room,
-	}
+	
+	SETTINGS_FILE_PATH = "app/settings/query_settings.yaml"
+	SETTINGS_YAML = YAML.load_file(SETTINGS_FILE_PATH)
+	QUERY_ALIASES = SETTINGS_YAML["query_aliases"].map {|al| {from: al.first[0], to: al.first[1]} }
+	TABLES_MODELS = SETTINGS_YAML["tables_models"]
+	NAME_ALIASES = SETTINGS_YAML["name_aliases"]
 	ATTRIBUTES = TableSettings.get_all_attributes
 
 	def initialize(query_string, table_settings=nil)
 		
 		@order = table_settings.nil? ? [] : table_settings.get_order
-		@tables = table_settings.nil? ? [] : table_settings.get_tables
-		@main_table = table_settings.nil? ? [] : table_settings.main_table
 		
-		# clear the main table name and trasform its values to the model name, downcased to match the association
+		@main_table = table_settings.nil? ? [] : table_settings.main_table
+		@tables = table_settings.nil? ? [] : table_settings.get_tables
 		@tables =  (@tables-[@main_table]).map {|table| TABLES_MODELS[table]}
+		#puts "got query string #{query_string} and tabels #{@tables} and main table> #{@main_table}"
+		
 		
 		if query_string.nil?
 			@query_array = []
 		else
+			
+			# clean any ' character
+			query_string = query_string.strip.gsub(/'+/, '')
+			
 			# clean any whitespaces after colons: i.e. "clothes:  96" will become clothes:96
 			query_string = query_string.strip.gsub(/:\s+/, ':')
 			
@@ -60,9 +42,8 @@ class PulpoQuery
 			query_string = query_string.gsub(/\s+/, ' ')
 			
 			#replace the query alias if found
-		#query_string = QUERY_ALIASES[query_string] unless QUERY_ALIASES[query_string].nil?
-		QUERY_ALIASES.each { |pair| query_string.gsub!(/#{pair[:from]}/, pair[:to]) }
-		
+			#query_string = QUERY_ALIASES[query_string] unless QUERY_ALIASES[query_string].nil?
+			QUERY_ALIASES.each { |pair| query_string.gsub!(/#{pair[:from]}/, pair[:to]) }
 	
 			# split the string into AND clauses
 			@query_array = query_string.split(Regexp.union(AND_DELIMITERS))
@@ -74,7 +55,8 @@ class PulpoQuery
 			return Person.all.includes(@tables).order(@order) if @main_table=="people"
 			return Room.all.includes(@tables).order(@order) if @main_table=="rooms"
 		end
-		puts Rainbow("got query array #{@query_array}").purple
+		
+		#puts Rainbow("got query array #{@query_array}").purple
 		# execute the OR clauses
 		res_array = @query_array.map{|or_clauses| execute_or_clauses(or_clauses)}
 		
@@ -101,7 +83,7 @@ class PulpoQuery
 		attributes_array = attributes_array.select { |att| att.status }
 		
 		attributes_array = attributes_array.map { |clause| clause.execute }
-		puts "got attributes array after executing or clauses #{attributes_array}"
+		#puts "got attributes array after executing or clauses #{attributes_array}"
 		
 		attributes_array.inject{ |res, condition| condition.nil? ? res : res.or(condition) }
 	end
@@ -115,30 +97,8 @@ class AttributeQuery
     RELATED_TABLE_ID = "person_id"
 
     ATTRIBUTES = PulpoQuery::ATTRIBUTES
+    NAME_ALIASES = PulpoQuery::NAME_ALIASES
 
-    NAME_ALIASES = {
-			"hab"          	=> "room",
-			"habitación"    => "room",
-			"llegada"				=> "arrival",
-			"salida"				=> "departure",
-			"name"          => "full_name",
-			"nombre"        => "full_name",
-			"ropa"          => "clothes",
-			"numero"        => "clothes",
-			"número"        => "clothes",
-			"num"        		=> "clothes",
-			"año"           => "year",
-			"grupo"         => "group",
-			"center"        => "ctr",
-			"centro"        => "ctr",
-			"n"             => "n_agd",
-			"agd"           => "n_agd",
-			"prom"          => "classnumber",
-			"promocion"     => "classnumber",
-			"promoción"     => "classnumber",
-			"tel"     			=> "phone",
-    }
-    
 		attr_accessor :status
 
     def initialize(query_string, main_table, tables)
@@ -172,7 +132,7 @@ class AttributeQuery
 		
 		att = TableSettings.get_attribute_by_name(@att_name)
 		table, field_name = att.field.split(".")
-		puts Rainbow("searching @att_name #{@att_name} got #{att} table:#{att.table} filed:#{att.field} type:#{att.type}").yellow
+		#puts Rainbow("searching @att_name #{@att_name} got #{att} table:#{att.table} filed:#{att.field} type:#{att.type}").yellow
 		
 		condition = case att.type
 			when "string"
@@ -191,11 +151,11 @@ class AttributeQuery
 					"date_part('year', #{att.field})=#{@att_value}"
 				end
 			end
-			puts "built condtion #{condition}"
+			#puts "built condtion #{condition}"
 		
 			# the code is a bit complex but it allows us to include in the query the tables that are needed to show the records
 		# and avoid n+1 queries
-		puts "condition:#{condition} tables:#{@tables}"
+		#puts "condition:#{condition} tables:#{@tables}"
 		case @main_table
 		when "people"
 			case table

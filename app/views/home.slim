@@ -17,15 +17,21 @@ script src="https://kit.fontawesome.com/4f55c9eacf.js" crossorigin="anonymous"
 script type="module"
   | import hotwiredTurbo from 'https://cdn.skypack.dev/@hotwired/turbo@7.1.0';
 
+//<script type="module">
+//  import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
+//</script>
+
 script type="module" src="javascript/application.js"
+
+
+//script src="https://unpkg.com/hotkeys-js/dist/hotkeys.min.js"
+//script type="text/javascript" src="javascript/hotkeys_settings.js"
+
 
 /! Load all Stimulus Controllers
 - Dir.glob("app/public/javascript/controllers/*.js").each do |controller|  
   - controller.slice!("app/public/")
   script type="module" src=controller
-
-//script src="javascript/highcharts.js"
-//script src="javascript/chartkick.js"
 
 html
   head
@@ -59,6 +65,9 @@ html
           a.button.menu-item data-turbo-frame="main_frame" href='/rooms/frame' 
             i.fa-solid.fa-bed
             | &nbspRooms
+          a.button.menu-item data-turbo-frame="main_frame" href='/velas/frame' 
+            i.fa-solid.fa-bed
+            | &nbspVelas
           
         
         .columns.six.u-text-right
@@ -72,9 +81,9 @@ html
             a.button.menu-item data-turbo-frame="main_frame" href='/modules/frame' 
               i.fa-solid.fa-gear
               | &nbspModules
-            a.button.menu-item data-turbo-frame="main_frame" href='/help' 
-              i.fa-solid.fa-question
-              | &nbspHelp
+          a.button.menu-item data-turbo-frame="main_frame" href='/help' 
+            i.fa-solid.fa-question
+            | &nbspHelp
           a.button.menu-item.user-name target="_self" href="/logout" = "user: #{@user.uname}"
 
       div.row

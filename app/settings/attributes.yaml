@@ -116,7 +116,7 @@ attributes:
   - id: "rooms.room"
     name: "room name"
     type: "string"
-    order: "NONE"
+    order: "ASC"
     css_class: "medium-field"
   - id: "rooms.house"
     name: "house"
@@ -130,7 +130,7 @@ attributes:
     css_class: "medium-field"
   - id: "rooms.bed"
     name: "bed"
-    type: "string"
+    type: "integer"
     order: "NONE"
     css_class: "medium-field"
   - id: "rooms.matress"
@@ -140,7 +140,7 @@ attributes:
     css_class: "medium-field"
   - id: "rooms.bathroom"
     name: "bathroom"
-    type: "string"
+    type: "integer"
     order: "NONE"
     css_class: "medium-field"
   - id: "rooms.phone"
@@ -148,11 +148,6 @@ attributes:
     type: "string"
     order: "NONE"
     css_class: "medium-field"
-  - id: "personals.classnumber"
-    name: "promoción"
-    type: "string"
-    order: "NONE"
-    css_class: "short-field u-text-center"
   - id: "crs.admissio"
     name: "admissio"
     type: "date"
@@ -207,7 +202,16 @@ attributes:
     name: "cipna"
     type: "string"
     order: "NONE"
-    css_class: "medium-field"
+  - id: "crs.classnumber"
+    name: "promoción"
+    type: "string"
+    order: "NONE"
+    css_class: "short-field u-text-center"
+  - id: "crs.notes"
+    name: "notes"
+    type: "string"
+    order: "NONE"
+    css_class: "long-field"
 default_people_table:
   main_table: people
   related_tables:
@@ -222,6 +226,7 @@ default_people_table:
     - people.status
     - people.ctr
     - people.year
+    - people.email
     - rooms.house
     - rooms.room
 default_rooms_table:

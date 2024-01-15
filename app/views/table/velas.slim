@@ -1,0 +1,18 @@
+turbo-frame id="velas_table"
+  div.table-container
+    div.table-table  
+      div.table-row-head
+        div.table-cell-head.medium-field = "date"
+        div.table-cell-head.long-field = "order"
+       
+      - @objects.each.with_index do |object, index|
+        //turbo-frame id="people_#{object.id}"
+        a.table-row-body href="/vela/#{object.id}" data-turbo-frame="main_frame"
+          div.table-cell-body.medium-field  = object.date
+          div.table-cell-body.long-field  = object.order
+            
+                  
+              
+
+        
+        

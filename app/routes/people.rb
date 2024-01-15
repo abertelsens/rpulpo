@@ -85,7 +85,7 @@ post '/person/:id/general' do
 		# if a person was deleted we go back to the screen fo the people table
 		when "delete" 
 				@person.destroy
-				redirect '/people/table'
+				redirect :"/people/frame"
 	end
 	partial :"view/person"
 end

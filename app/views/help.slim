@@ -7,19 +7,36 @@ turbo-frame id="main_frame" target="main_frame"
   
   link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.0/github-markdown.min.css"
   style = "p {font-weight: 400}"
-  div.row class="markdown-body Box-body" style="font-size:1.5rem; margin:30px; font-weight: 400; font-family: 'Rubik', sans-serif;"
+  div.row class="markdown-body Box-body" style="font-size:1.5rem; margin:30px; font-weight: 300; font-family: 'Rubik', sans-serif;"
     .columns.two
       .row
         h1 = "Topics"
       .row
-        a href="help/search"buscar personas
+        a href="help/home"  data-turbo-frame="help_frame" Inicio
+      .row
+        h4 style="margin:0 0rem 0rem 0rem" MODULOS
       .row 
-        a href="help/search" searching
-      .row  
-        a href="help/search" searching
+        a style="margin-left:.5rem" href="help/people"  data-turbo-frame="help_frame" 1. PERSONAS
+      .row
+        a style="margin-left:1.2rem" href="help/people_search"  data-turbo-frame="help_frame" Búsqueda de Personas
+      - if get_current_user.get_permission(PulpoModule.find_by(identifier: "personal"))=="allowed"
+        .row 
+          a style="margin-left:1.2rem" href="help/personal" data-turbo-frame="help_frame" Datos Personales
+      - if get_current_user.get_permission(PulpoModule.find_by(identifier: "study"))=="allowed"
+        .row 
+          a style="margin-left:1.2rem" href="help/study" data-turbo-frame="help_frame" Datos de Estudios
+      - if get_current_user.get_permission(PulpoModule.find_by(identifier: "crs"))=="allowed"
+        .row 
+          a style="margin-left:1.2rem" href="help/crs+" data-turbo-frame="help_frame" Datos Internos del CRS+
+      
+      .row 
+        a style="margin-left:.5rem" href="help/rooms" data-turbo-frame="help_frame" 2. HABITACIONES
+      .row
+        a style="margin-left:1.2rem" href="help/rooms_search"  data-turbo-frame="help_frame" Búsqueda de Habitaciones
+      
     .columns.ten style="max-width:800px; margin-left:2rem"
       .row
-        turbo-frame id="help_frame" target="help_frame" src="/help/people_search"
+        turbo-frame id="help_frame" target="help_frame" src="/help/home"
     
  
                 
