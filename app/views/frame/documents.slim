@@ -2,12 +2,12 @@ turbo-frame id="main_frame"
   
   .container.container-frame
     .row.header-row
-      .columns.four.offset-by-four
-        h3 DOCUMENTS
-      .columns.one
-        a.button.button-primary.u-full-width.button-medium style="margin: 1.2rem 0rem 0rem 0rem" href="/document/new" data-turbo-frame="editor_frame"
+      .columns.four.offset-by-four.u-text-center
+        h3.no-margin DOCUMENTS
+      .columns.two.flex-right
+        a.button.button-primary.button-medium.no-margin href="/document/new" data-turbo-frame="editor_frame"
             i.fa-solid.fa-plus style="font-size:small"
             |&nbspnew
 
-    .row
+    .row.margin-top
       turbo-frame id="documents_table" data-people-target="documents_table" src="/documents/table"

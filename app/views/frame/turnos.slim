@@ -1,0 +1,12 @@
+turbo-frame id="turnos_frame" 
+  h4.u-text-center = "--- TURNOS ---"
+  .container.container-frame
+    - @turnos.each do |turno|  
+      .row 
+        .columns.two.offset-by-one style="font-weight:300" = "#{turno.get_time(:start)} - #{turno.get_time(:end)}"
+        .columns.seven style="font-weight:300"
+          - turno.rooms.each do |room|  
+            .row 
+              .columns.eight style="font-weight:300" = room.person.short_name
+              .columns.four style="font-weight:300" = room.room
+              

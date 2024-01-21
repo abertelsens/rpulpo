@@ -1,47 +1,44 @@
 turbo-frame id="main_frame" data-people-target="people_screen"
   
   .container.container-frame data-controller="people peopletable clipboard modal" data-clipboard-tablename="people"
+    
     form.form-inline method="GET" action="/people/search" data-controller="search" data-turbo-frame="people_table" aria-label="Search" name="q" data-action="input->search#submit keydown.ctrl+p@window->modal#open_modal keydown.esc@window->modal#close_modal keydown.ctrl+c@window->clipboard#copy keydown.ctrl+f@window->people#search_focus keydown.ctrl+a@window->people#add_person"  
             
+      .row.flex-center
+        img.cb-icon src="img/cb_icon.jpg"
+        h3 PERSONAS
       
-      .row.header-row style="display: flex; justify-content: center; align-items: center;"
-         img.u-text-center src="img/cb_icon.jpg" style="margin-right: 1rem; height: 2.8rem"
-         h3 = "PERSONAS"          
-      .row 
-        
-        // SEARCH FIELD  
-        .columns.four.offset-by-four.u-full-width style="display: flex; justify-content: center; align-items: center;"
+      .row   
+        // SEARCH FIELD
+        .columns.four.offset-by-four.flex-center
           input#search_string.u-full-width autofocus="autofocus" type="search" data-people-target="search_field" autocomplete="off" placeholder="search" aria-label="Search" name="q" data-action="input->search#submit" value=@people_query
-          input#sort_order type="hidden" name="sort_order" data-search-target="sort_order"
-        
+          
         // BUTTONS
-        .columns.three style="display:flex"
-          a.button.button-primary.small-button title="adds a new person to the database (ctrl+a)" href="/person/new/general" data-turbo-frame="editor_frame"
+        .columns.three.flex-left
+          a.button.button-primary.button-small title="adds a new person to the database (ctrl+a)" href="/person/new/general" data-turbo-frame="editor_frame"
             i.fa-solid.fa-plus style="font-size:small"
             |&nbspadd
           
           
-          a.button.button-success.small-button title="copies the results to the clipboard (ctrl+c)" style="width:6rem" data-clipboard-target="copybtn" data-action="click->clipboard#copy"
+          a.button.button-success.button-small title="copies the results to the clipboard (ctrl+c)" style="width:6rem" data-clipboard-target="copybtn" data-action="click->clipboard#copy"
             i.fa-solid.fa-copy style="font-size:small"
             |&nbspcopy
 
-          button.small-button title="menu (ctrl+p)" style="background-color:#333333; width:3rem" data-action="click->modal#open_modal"
+          button.button-small.button-square title="menu (ctrl+p)" data-action="click->modal#open_modal"
             <i style="color:white" class="fa-solid fa-bars"></i>
-            //i.fa-solid.fa-bars style="color:white; font-size:small"
-            //|&nbsp
 
       .row 
         .modal data-modal-target="modal" 
-          .modal-content style="width: fit-content"
+          .modal-content
             .container.menu
-              div.table-cell-head.cell-heading style="border-bottom:0px"
+              .table-cell-head.cell-header.no-border
                 i.fa-solid.fa-file style="font-size:1rem"
                 |&nbspDOCUMENTS
               div style="margin-right:2rem"
                 - (Document.get_docs_of_user get_current_user).each do |doc|
                   .row
                     a.table-cell-body.menu-link  href="/people/set/document/#{doc.id}" target=(doc.engine=="excel" ? "_self" : "_blank") = "#{doc.pulpo_module.name} - #{doc.name}"
-              .table-cell-head.cell-heading style="border-bottom:0px"
+              .table-cell-head.cell-header.no-border
                 i.fa-solid.fa-gear style="font-size:1rem"
                 |&nbspACTIONS
               div
@@ -54,7 +51,7 @@ turbo-frame id="main_frame" data-people-target="people_screen"
                     i.fa-solid.fa-pen-to-square style="font-size:small"
                     |&nbspEdit Field Value
             .row.u-text-center style="margin-top: 2rem"
-              button.button-primary style="margin-bottom:0" data-action="click->modal#close_modal" cancel
+              button.button-primary.no-margin data-action="click->modal#close_modal" cancel
 
       .row
         turbo-frame id="people_table" data-people-target="people_table" src="/people/table"

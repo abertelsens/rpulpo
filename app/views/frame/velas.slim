@@ -1,13 +1,33 @@
 turbo-frame id="main_frame" 
+  - @people = Person.includes(:room).where(ctr:"cavabianca").order(group: :asc, family_name: :asc)
   
   .container.container-frame
-    .row.header-row
-      .columns.four.offset-by-four
-        h3 VELAS AL SANTíSIMO
-      .columns.one
-        a.button.button-primary.u-full-width.button-medium style="margin: 1.2rem 0rem 0rem 0rem" href="/vela/new" data-turbo-frame="editor_frame"
-            i.fa-solid.fa-plus style="font-size:small"
-            |&nbspnew
+    
+    .row.header-row  
+      .columns.four.offset-by-one.u-text-center
+        h3.no-margin PEOPLE  
+      .columns.five.offset-by-one.u-text-center.flex-center
+        .columns.eight.offset-by-two
+          h3.no-margin.u-full-width VELAS AL SANTíSIMO
+        .columns.two.flex-right
+          a.button.button-primary.button-medium.no-margin href="/vela/new" data-turbo-frame="editor_frame"
+              i.fa-solid.fa-plus style="font-size:small"
+              |&nbspnew
 
     .row
-      turbo-frame id="velas_table" data-people-target="velas_table" src="/velas/table"
+      .columns.four.offset-by-one
+          div.table-container
+            div.table-table  
+              div.table-row-head
+                div.table-cell-head = "name"
+                div.table-cell-head = "group"
+                div.table-cell-head.medium-field = "vela"
+              - @people.each do |person, index|
+                a(class="table-row-body" href="/person/#{person.id}/toggle_vela" style="cursor:pointer;")
+                  //a.table-row-body data-turbo-stream="true" id="person_#{person.id}" href="/person/#{person.id}/toggle_vela" style="cursor:pointer;"
+                  div.table-cell-body = "#{person.family_name}, #{person.first_name}"
+                  div.table-cell-body = person.group
+                  div.table-cell-body.medium-field id="person_#{person.id}" = person.vela.humanize
+
+      .columns.five.offset-by-one
+        turbo-frame id="velas_table" data-people-target="velas_table" src="/velas/table"

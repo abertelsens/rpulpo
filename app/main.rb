@@ -16,6 +16,7 @@ require_rel 'routes'
 include ActiveRecord
 include ExcelRoomImporter
 
+include ExcelImporter
 ########################################################################################
 # DB SETUP
 ########################################################################################
@@ -138,7 +139,7 @@ end
 #User.create(uname: "ale",password: "ale", usertype: "admin");
 #p = Person.find(1)
 #puts "Atrribute #{p.family_name}"
-#Excelimporter::import
+#ExcelImporter::import
 #ExcelRoomImporter::import
 #pw = Pandoc_Writer.new('app/pandoc/F21.md', Person.all)
 #pw.convert
@@ -146,3 +147,8 @@ end
 #puts "found variables: #{pw.get_variables()}"
 
 #puts Room.get_empty_rooms
+
+#Person.all.each do |p|
+#    p.update(ctr:"cavabianca")
+#    p.update(vela:"normal")
+#end

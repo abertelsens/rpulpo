@@ -4,92 +4,80 @@
 
 turbo-frame id="main_frame"
   	
-	form action="/vela/#{(@object.nil? ? "new" : @object.id)}" method="POST" data-controller="modal"
+	form action="/vela/#{(@object.nil? ? "new" : @object.id)}" data-vela-urlprefix="/vela/#{@object.id}" data-turbo-frame="" method="GET" data-vela-target="form" data-controller="modal vela" data-action="keydown.ctrl+c@window->vela#copy keydown.esc@window->modal#close_modal"
 	
-		.container.full-screen-form.screen-box style="max-width:1200px"
+		.container.container-frame style="max-width:1200px"
 			
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM HEADER
 			//----------------------------------------------------------------------------------------------------------------
 			.row.u-text-center
-				h3 = (@object.nil? ? "NEW VELA" : "VELA: #{@object.date}")
-				
+				.columns.four.offset-by-four
+					h3 = (@object.nil? ? "NEW VELA" : "VELA: #{@object.date.strftime('%d %b %y')}")
+				.columns.two
+					a.button.button-primary.u-full-width style="margin: 1.2rem 0rem 0rem 0rem" data-turbo-frame="turnos_frame" data-action="click->vela#build_turnos"
+						i.class.fa-regular.fa-clock
+						|&nbspturnos
+				.columns.two style="margin: 1.2rem 0rem 0rem 0rem; display: flex; justify-content: center; align-items: center;"
+					a.button.button-succes.small-button target="_blank" href="/vela/#{@object.id}/pdf" 
+						i.class.fa-regular.fa-file-pdf style="font-size:.9rem"
+						|&nbsppdf
+					a.button.button-success.small-button style="width:200rem" data-vela-target="copybtn" data-action="click->vela#copy"
+						i.class.fa-regular.fa-copy
+						|&nbspcopy
 			/----------------------------------------------------------------------------------------------------------------
 			//DOCUMENT FRAME
 			//----------------------------------------------------------------------------------------------------------------
 			.row
-				
-				.columns.eight.offset-by-two
+				.columns.two
+					label for="date" date
+					&date.u-full-width name="date" style="margin-bottom:0"	data-vela-target="field" required=true value = (@object.nil? ? "" : @object.date)		
+					
+				.columns.six
+					label horario
 					div style="display:flex; gap: .2rem; align-items: center; vertical-align:center;"
-						&number width="2rem" min=19 max=24 name="start_time_hour" required="true" value=21
+						&number width="2rem" min=0 max=23 name="start_time_hour" required="true"  data-vela-target="field" value = (@object.nil? ? 21 : @object.start_time&.hour)
 						p style="margin-bottom: 1.5rem" = ":"
-						&number width="2rem" min=0 max=59 name="start_time_min" step=5 required="true" value=30
-						&text.u-full-width value="Examen"
+						&number width="2rem" min=0 max=59 name="start_time_min" step=5 required="true" data-vela-target="field" value = (@object.nil? ? 30 : @object.start_time&.min)
+						&text.u-full-width name="start1_message" value=@object.start1_message
 						
-			.row
-				.columns.eight.offset-by-two
 					div style="display:flex; gap: .2rem; align-items: center; vertical-align:center;"
-						&number width="2rem" min=19 max=24 name="start_time_hour" required="true"  value=21
+						&number width="2rem" min=0 max=23 name="start_time2_hour" required="true" data-vela-target="field"  value = (@object.nil? ? 21 : @object.start_time2&.hour)
 						p style="margin-bottom: 1.5rem" = ":"
-						&number width="2rem" min=0 max=59 name="start_time_min" step=5 required="true"  value=45
-						&text.u-full-width value="Exposición en Nuestra Señora de los Ángeles"
+						&number width="2rem" min=0 max=59 name="start_time2_min" step=5 required="true" data-vela-target="field" value = (@object.nil? ? 45 : @object.start_time2&.min)
+						&text.u-full-width name="start2_message" value=@object.start2_message
 			
-			.row
-				.columns.eight.offset-by-two
 					div style="display:flex; gap: .2rem; align-items: center; vertical-align:center;"
-						&number width="2rem" name="start_time_hour" required="true"  value=07
+						&number width="2rem" min=0 max=23 name="end_time_hour" required="true"  data-vela-target="field" value = (@object.nil? ? 7 : @object.end_time&.hour)
 						p style="margin-bottom: 1.5rem" = ":"
-						&number width="2rem" min=0 max=59 name="start_time_min" step=5 required="true" value=45
-						&text.u-full-width value="Bendición y Santa Misa en Nuestra Señora de los Ángeles"
+						&number width="2rem" min=0 max=59 name="end_time_min" step=5 required="true" data-vela-target="field" value = (@object.nil? ? 30 : @object.end_time&.min)
+						&text.u-full-width name="end_message" value=@object.end_message
+			
+					
 
-			.row		
-				.columns.eight.offset-by-two
-					label for="order" order
-					div style="display:flex; justify-content: left; gap:1rem; vertical-align:center;"
-						select name="order1"
-							option value="altana" = "Altana" 
-							option value="chiociolla" = "Chiocciolla" 
-							option value="molino" = "Molino" 
-							option value="borgo" = "Borgo" 
-							option value="profesores" = "Profesores" 
-							option value="empty" = "-"
-						select name="order2"
-							option value="altana" = "Altana" 
-							option value="chiociolla" = "Chiocciolla" 
-							option value="molino" = "Molino" 
-							option value="borgo" = "Borgo" 
-							option value="profesores" = "Profesores"
-							option value="empty" = "-"	 
-						select name="order3"
-							option value="altana" = "Altana" 
-							option value="chiociolla" = "Chiocciolla" 
-							option value="molino" = "Molino" 
-							option value="borgo" = "Borgo" 
-							option value="profesores" = "Profesores"
-							option value="empty" = "-" 
-						select name="order4"
-							option value="altana" = "Altana" 
-							option value="chiociolla" = "Chiocciolla" 
-							option value="molino" = "Molino" 
-							option value="borgo" = "Borgo" 
-							option value="profesores" = "Profesores"
-							option value="empty" = "-" 
-						select name="order5"
-							option value="altana" = "Altana" 
-							option value="chiociolla" = "Chiocciolla" 
-							option value="molino" = "Molino" 
-							option value="borgo" = "Borgo" 
-							option value="profesores" = "Profesores"
-							option value="empty" = "-" 
-						button.button-primary = "generar turnos"
-								/----------------------------------------------------------------------------------------------------------------
+				.columns.four
+					- order_array = @object.order.nil?  ? ""  : @object.order.split(" ").map{|item| item.to_i}
+					- puts order_array
+					label = "turnos"
+					- 6.times	do |i|
+						.columns.six style=(i.even? ? "padding-left:0;" : "padding-right:0")
+							select.u-full-width name="house[#{i}]" data-vela-target="field"
+								- puts "checking if order_array[#{i}] is -1 #{order_array[i]==-1}"
+								option selected = (@object.nil? ? true : order_array[i]==-1) value=-1  = "-"
+								- Room.houses.each do |house|
+									- puts "checking if order_array[#{i}] is #{house[1]} #{order_array[i]==house[1]}"
+									option selected = (@object.nil? ? false : order_array[i]==house[1]) value=house[1] = house[0].humanize
+				
+			.row
+				turbo-frame data-vela-target="turnos_frame" id="turnos_frame"
+			
+			/----------------------------------------------------------------------------------------------------------------
 			// FORM BUTTONS
 			//----------------------------------------------------------------------------------------------------------------
 			.row.center-align
 					- if (!@object.nil?) 
 						button.button-secondary data-action="click->modal#open_modal" delete 
-					button.button-primary type="submit" name="commit" value="save" save  
-					a.button.button-secondary formnovalidate="true" href="/velas/frame" cancel
+					button.button-primary name="commit" value="save" data-action="click->vela#save" save  
 					
 
 			.modal data-modal-target="modal" 
@@ -102,5 +90,5 @@ turbo-frame id="main_frame"
 						p.modal-text  = "Are you sure you want to delete this document?"
 						p.modal-text = "This action cannot be undone!"
 					.row.center-align
-						button.button-danger formnovalidate="true" type="submit" name="commit" value="delete" delete 
+						button.button-danger formnovalidate="true" type="submit" name="commit" value="delete" data-action="click->vela#delete" delete 
 						button.button-secondary data-action="click->modal#close_modal" cancel

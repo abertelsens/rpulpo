@@ -50,6 +50,25 @@ get '/people/search' do
 	partial :"table/people"
 end
 
+
+# shows the form to edit a field of all the people in the set
+get '/person/:id/toggle_vela' do
+	@person = Person.find(params[:id])
+	@person.toggle_vela
+	content_type 'text/vnd.turbo-stream.html'
+	vela = @person.vela.nil? ? "" : @person.vela
+	puts "got vela value #{vela}"
+	#person.update(vela: (vela + 1) % 4)
+	#partial :"table/person_vela"
+	"<turbo-stream action=\"replace\" target=\"person_#{@person.id}\">
+	<template>
+	<div class=\"table-cell-body\" id=\"person_#{@person.id}\"> #{@person.vela.humanize}</div>
+	</template>
+	</turbo-stream>"
+
+	#return "<turbo-frame id=\"person_#{person.id}\">pepe<turbo-frame>"
+end
+
 # renders a single person view
 get '/person/:id' do
   @person = Person.find(params[:id])
@@ -218,6 +237,10 @@ end
 get '/people/edit_field' do
 	partial :"form/set_field"
 end
+
+
+
+
 
 post '/people/edit_field' do
 	puts Rainbow("got params #{params}").yellow

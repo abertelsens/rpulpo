@@ -84,3 +84,4 @@ post '/rooms/table/settings' do
 	session["rooms_table_settings"] = TableSettings.create_from_params "rooms", params
 	redirect :"/rooms/frame"
 end
+

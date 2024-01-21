@@ -16,6 +16,7 @@ class Person < ActiveRecord::Base
     enum status:    {laico: 0, diacono: 1, sacerdote: 2 }
     enum ctr:       {cavabianca: 0, ctr_dependiente:1, no_ha_llegado:2, se_ha_ido:3   }
     enum n_agd:     {n:0, agd:1}
+    enum vela:      {normal:0, no:1, primer_turno:2, ultimo_turno:3}
     
 
     ATTRIBUTES = 
@@ -43,7 +44,8 @@ class Person < ActiveRecord::Base
 	# CALLBACKS
 	##########################################################################################
 	
-	before_save do |person|
+	before_save do
+        puts "running callback before save on #{self}"
 		self.full_info = "#{(title.nil? ? "" : title+" ")}#{first_name} #{family_name} #{group}"
         self.full_name = "#{family_name}, #{first_name}"
 	end
@@ -119,5 +121,17 @@ class Person < ActiveRecord::Base
     def self.collection_to_csv(people,table_settings)
         result = (table_settings.att.map{|att| att.name}).join("\t") + "\n"
         result << (people.map {|person| (table_settings.att.map{|att| (person.get_attribute(att.field).dup)}).join("\t") }).join(("\n"))
+    end
+
+    def toggle_vela
+        puts "in toggle vela. Got self.vela #{self.vela}"
+        vela = case self.vela
+        when "normal" then "no"
+        when "no" then "primer_turno"
+        when "primer_turno" then "ultimo_turno"
+        when "ultimo_turno" then "normal"
+        end
+        puts "in toggle vela. Got vela #{vela}"
+        self.update(vela: vela)
     end
 end

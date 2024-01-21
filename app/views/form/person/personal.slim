@@ -13,9 +13,9 @@ turbo-frame id="main_frame"
 			//----------------------------------------------------------------------------------------------------------------
 			.row.u-text-center
 				- if @person && File.exist?("app/public/photos/#{@person.id}.jpg")
-					img.person-photo id="photo_image"  width="140" src= "photos/#{@person.id}.jpg"
+					img.person-photo.small id="photo_image" src= "photos/#{@person.id}.jpg"
 				- else
-					img.person-photo id="photo_image" width="140" src= "photos/avatar.jpg"
+					img.person-photo.small id="photo_image" src= "photos/avatar.jpg"
 			.row.u-text-center
 				h3 = "#{@person.short_name} - Datos Personales"
 						

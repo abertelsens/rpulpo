@@ -67,4 +67,8 @@ class Room < ActiveRecord::Base
         result << (rooms.map {|room| (table_settings.att.map{|att| (room.get_attribute(att.field).dup)}).join("\t") }).join(("\n"))
     end
 
+    def self.get_from_houses(houses)
+        Room.includes(:person).where(house: houses).and(Room.where.not(person: nil)).in_order_of(:house, houses)
+    end
+
 end     #class end

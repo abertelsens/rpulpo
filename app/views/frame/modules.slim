@@ -3,12 +3,12 @@ turbo-frame id="main_frame"
   .container.container-frame
     .row.header-row  
       //LEFT PANE
-      .columns.four.offset-by-four
-        h3 = "MODULES"
-      .columns.one
-        a.button.button-primary.u-full-width.button-medium style="margin: 1.2rem 0rem 0rem 0rem" href="/module/new" data-turbo-frame="main_frame"
+      .columns.four.offset-by-four.u-text-center
+        h3.no-margin = "MODULES"
+      .columns.one.flex-right
+        a.button.button-primary.button-medium.no-margin href="/module/new" data-turbo-frame="main_frame"
           i.fa-solid.fa-plus style="font-size:small"
           |&nbspnew
     
-    .row
+    .row.margin-top
       turbo-frame id="modules_table" data-people-target="modules_table" src="/modules/table"

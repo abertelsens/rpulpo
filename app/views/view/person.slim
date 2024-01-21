@@ -6,12 +6,13 @@ turbo-frame id="main_frame"
       - get_current_user().get_allowed_modules.each do |mod|
         - if mod.identifier!="person"
           a.button.link-button href="/person/#{@person.id}/#{mod.identifier}" = mod.identifier
-    .columns.two.u-text-center
+    .columns.two.u-text-center.margin-left
       - if @person && File.exist?("app/public/photos/#{@person.id}.jpg")
-        img.person-photo id="photo_image"  width="200px" src= "photos/#{@person.id}.jpg"
+				img.person-photo.medium id="photo_image" src= "photos/#{@person.id}.jpg"
       - else
-        img.person-photo id="photo_image" width="200px" src= "photos/avatar.jpg"
-    .columns.four
+				img.person-photo.medium id="photo_image" src= "photos/avatar.jpg"
+    
+    .columns.four.margin-left
       .row
         h3.u-text-center style="margin-bottom:0px" = "#{@person.short_name}"
 
@@ -45,7 +46,7 @@ turbo-frame id="main_frame"
         .columns.six.offset-by-three
           a.button.button-primary.u-full-width style="margin-top:40px" autofocus="true" tabindex="0" href="/people/frame" OK
 
-    .columns.one
+    .columns.one.margin-left
       .row
         h6 = "DOCUMENTS"
       - (Document.get_pdf_docs_of_user get_current_user).each do |doc|

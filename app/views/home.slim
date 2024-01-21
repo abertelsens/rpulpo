@@ -58,7 +58,7 @@ html
 
       
       div.row.nav-bar
-        .columns.six
+        .columns.four
           a.button.menu-item data-turbo-frame="main_frame" href='/people/frame' 
             i.fa-solid.fa-user
             | &nbspPeople
@@ -70,7 +70,7 @@ html
             | &nbspVelas
           
         
-        .columns.six.u-text-right
+        .columns.eight.u-text-right
           - if get_current_user.admin?  
             a.button.menu-item data-turbo-frame="main_frame" href='/documents/frame' 
               i.fa-solid.fa-file

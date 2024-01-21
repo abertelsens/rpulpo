@@ -23,12 +23,11 @@ html
     link rel="stylesheet" href="/css/menu_styles.css"
     
   body
-
-
+    
     turbo-frame id="whole_screen"
       form#loginForm action="/login" method="POST"
         
-        .container.u-text-center.center-frame.login-screen
+        .container.u-text-center.login-screen
         
           .login-box
   
@@ -38,14 +37,14 @@ html
             
             .row.u-text-center 
               label for="uname" user name
-              input#uname.login-field.u-full-width type="text" required="true" name="uname"
+              input#uname.u-full-width type="text" required="true" name="uname"
 
             .row.u-text-center
               label for="password" password
-              input#password.login-field.u-full-width type="password" name="password"
+              input#password.u-full-width type="password" name="password"
     
             .row.u-text-center 
-              button.login-field.button-success.u-full-width type="submit" name="commit" value="login" login
+              button.button-success.u-full-width type="submit" name="commit" value="login" login
           
             - if @auth_error
               .row.u-text-center

@@ -1,11 +1,11 @@
 require 'rubyXL'
 
-IMPORT_FILE = "tmp/datos_alumnos.xlsx"
+POEPLE_IMPORT_FILE = "tmp/datos_alumnos.xlsx"
 
-module Excelimporter
+module ExcelImporter
 
     def import()
-        workbook = RubyXL::Parser.parse IMPORT_FILE
+        workbook = RubyXL::Parser.parse POEPLE_IMPORT_FILE
         worksheet = workbook[0]
         
         puts "Reading: #{worksheet.sheet_name}"

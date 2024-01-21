@@ -1,3 +1,7 @@
+/**************************************************************************** 
+    COLOUR DEFINITIONS
+*****************************************************************************/
+
 :root {
   --light-gray: rgb(192, 192, 192);
   --light-orange: rgb(255, 235, 213);
@@ -8,7 +12,7 @@
   --medium-gray: rgb(85, 85, 85);
 }
 
-html, body{
+html, body {
   font-family: 'Rubik', sans-serif;
   font-weight: 300;
   font-size: 13pt;
@@ -18,12 +22,77 @@ html, body{
   padding: 0;
 }	
 
+form {
+  margin:0px;
+}
+
 /**********************************************************************
-* LOGIN
+* CONTAINERS
 **********************************************************************/
 
-.login-screen
-{
+/**********************************************************************
+* Top container of the screens. Used for the whole screen.
+**********************************************************************/
+.container-frame {
+  margin-top: 0px;
+  padding: 20px
+}
+
+.header-row {
+  margin-top: 20px;
+}
+
+.flex-center {
+  display: flex; 
+  text-align: center;
+  justify-content: center; 
+  align-items: center;
+}
+
+.flex-left {
+  display: flex; 
+  text-align: left;
+  justify-content: left; 
+  align-items: center;
+}
+
+.flex-right {
+  display: flex; 
+  text-align: right;
+  justify-content: right; 
+  align-items: right;
+}
+
+.row {
+  font-size: .85rem;  
+}
+
+/* Escudo de Cavabianca */
+.cb-icon {
+  margin-right: 1rem; 
+  height: 2.8rem
+}
+
+.person-photo {
+  cursor: pointer; 
+  border-radius: 5%; 
+  object-fit: cover;
+}
+
+.person-photo.small {
+  width: 140px;
+}
+
+.person-photo.medium {
+  width: 200px;
+}
+
+
+/**********************************************************************
+* LOGIN SCREEN
+**********************************************************************/
+
+.login-screen {
   height:100%; 
   background: url(/img/cb_jardin.jpeg) no-repeat;
   object-fit: cover;
@@ -43,127 +112,62 @@ html, body{
   background-color:white; 
   opacity: 1; 
   padding: 30px 60px; 
-  
   box-shadow: rgba(157, 157, 157, 0.35) 0px 5px 15px;
   border: 1px solid;
   border-color: var(--light-gray);
   border-radius:10px
 }
 
-login-field
-{
-  width: 260px;
-}
+/**********************************************************************
+* BUTTONS
+**********************************************************************/
 
-.container-frame
-{
-  margin-top: 0px;
-  padding: 20px
-}
-
-.header-row
-{
-  text-align: center;
-}
-
-.button-medium
-{
+.button-medium {
  min-width: 120px;
 }
-.
+
+.button-small {
+  margin-right: .7rem; 
+  padding-left: 1rem; 
+  padding-right: 1rem
+}
+
+.button-square {
+  background-color: var(--dark-gray);
+  width:3rem; 
+}
+
 /**********************************************************************
 * FORMS
 **********************************************************************/
-.no-margin
-{
-  margin: 0px;
-}
-.full-screen-form
-{
+
+.full-screen-form {
   width:1200px;
 }
 
-.form-header
-{
-  height:auto;
-  margin-bottom:10px
-}
-
-.form-frame
-{
-  height:auto;
-  margin-top:10px
-}
-
-.screen-container
-{
-  position: relative;
-}
-.gray-label
-{
-  padding-bottom:6px; 
-  color:#555; 
-  font-weight: 600; 
-  font-size: 1rem;
-  text-align: left;
-}
-
 .screen-box {
-  margin-top: 100px;
+  margin-top: 50px;
   min-width: 400px;
+  height: 80vh;
   min-height: 300px;
   background-color:white; 
   opacity: 1; 
   padding: 30px 60px; 
 }
-.vertical-align
-{
-  display:flex; 
-  align-items:center; 
-  vertical-align:middle;
+
+.gray-label {
+  padding-bottom:6px; 
+  color: var(--medium-gray);
+  font-weight: 600; 
+  font-size: 1rem;
+  text-align: left;
 }
 
-.vertical-align-bottom
-{
-  display:flex;
-  align-items:center; 
-  vertical-align:bottom;
-}
-
-.center-align
-{
-  display:flex;
-  gap: 10px;
-  align-items: center;
-  justify-content: center; 
-}
-
-.person-photo
-{
-  cursor: pointer; 
-  border-radius: 5%; 
-  object-fit: cover;
-}
-
-/**********************************************************************
-* ALERTS
-**********************************************************************/
-
-
-
-.alert-error
-{
-  background-color: var(--light-orange)
-}
-
-
-/**********************************************************************
-* ALERTS
-**********************************************************************/
-
-
-/* Tooltip container */
-.tooltip {
+/*************************************************************************************
+ TOOLTIPS
+ **************************************************************************************/
+ 
+ .tooltip {
   position: relative;
   display: inline-block;
 }
@@ -208,43 +212,23 @@ login-field
   opacity: 1;
 }
 
-
-.active-frame
-{
-  display: contents;
-}
-
-.idle-frame
-{
-  display: none;
-}
-
-
-
-.row
-{
-  font-weight: 600;
-  font-size: .85rem;  
-}
-
-
-.table-container
-{
+/*************************************************************************************
+ TABLES
+ **************************************************************************************/
+.table-container {
   display: flex;
   justify-content: center;
-  max-height: 600px;
+  max-height: 60vh;
   width: inherit;
   overflow-y: auto;
   width: 100%;
 }
 
-.table-table
-{
+.table-table {
   display: table;
 }
 
-.table-border
-{
+.table-border {
   margin: 10px;
   padding: 20px;
   border-radius: 5px;
@@ -252,15 +236,13 @@ login-field
   box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
 }
 
-
-.table-row-head
-{
+.table-row-head {
   position: sticky;
   color: var(--dark-gray);
   font-variant: small-caps;
   font-weight: 600;
   border-bottom: 1px solid var(--dark-gray);
-  font-size: 1.4em;
+  font-size: 1.2rem;
   display: table-row;  
   position: realtive;
   background-color: white;
@@ -268,231 +250,118 @@ login-field
   z-index: 2;
 }
 
-.table-row-body
-{
+.table-row-body {
   position:sticky;
   color: var(--dark-grey);
   border-bottom: 1px solid var(--dark-gray);
-  font-size: 1em;
   display: table-row;
   margin: 3px;
   z-index: 1;
   text-decoration: none;
 }
 
-a.table-row-body
-{
-    cursor:pointer;
-}
-
-.small-button
-{
-  margin-right: .7rem; 
-  padding-left: 1rem; 
-  padding-right: 1rem
-}
-
-.menu-frame
-{
-  display: none; 
-  justify-content: space-evenly;
-}
-
-.no-border
-{
-  border: none;
-  border-bottom: 0px
-}
-.table-row-body:hover
-{
+.table-row-body:hover {
   background-color: var(--pale-blue);
   color: initial;
 }
 
-.cell-heading
-{
-  color: var(--dark-gray);
-  font-size: 1rem;
-  font-weight:400;
-  margin-top: 0rem;
-  letter-spacing: 0rem;
-  margin-bottom: 1rem;
-}
-
-.table-cell-head
-{
+.table-cell-head {
   text-overflow: ellipsis;
   display: table-cell;
-  padding-bottom: .1rem;
-  padding-top: .1rem;
-  padding-right: .5rem;
-  padding-left: .5rem;
+  padding: .1rem .5rem 1px .5rem;
   border-bottom: 1px solid var(--dark-gray);
   font-weight: 600;
 }
-.table-cell-body
-{
+
+.cell-header {
+  font-size: 1rem;
+}
+
+.table-cell-body {
   font-weight: 400;
+  max-height: 1rem;
   text-overflow: ellipsis;
   display: table-cell;
-  padding-top: .1rem;
-  padding-bottom: .1rem;
-  padding-right: .5rem;
-  padding-left: .5rem;
+  padding-top: .1rem .5rem .1rem .5rem;
   border-bottom: 1px solid var(--light-gray);
 }
-.xlong-field
-{
+
+a.table-row-body{
+  cursor:pointer;
+}
+
+/*************************************************************************************
+ MENUS
+ **************************************************************************************/
+
+.menu-frame {
+  display: none; 
+  justify-content: space-evenly;
+}
+
+.xxlong-field {
+  width: 800px;
+}
+
+.xlong-field {
   width: 600px;
 }
 
-.long-field
-{
+.long-field {
   width: 280px;
 }
 
-.medium-field
-{
+.medium-field {
   width: 140px;
 }
 
-.short-field
-{
+.short-field {
   width: 60px;
 }
 
-
-.row-label.clickable
-{
-  cursor: pointer;
-}
-
-
-.row-label.clickable:hover
-{
-  color: var(--light-blue);
-}
-
-
-.row-field
-{
-  margin:0;
-  padding: 0;
-  display: table-cell;
-  padding: 10px;
-}
-
-div.row.scrollable {
-  max-height: 70%;
-  margin:0px;
-  padding-left:0px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  text-align: left;
-  border-bottom: 1px solid  grey;
-  overflow-y: scroll;
-  }
-
-th.row-head
-{
-  margin:0;
-  padding: 5;
-  font-size: 1.2rem
-}
-
-tr.row-field
-{
-  margin:5;
-  padding: 0px;
-  font-size: 0.9rem
-}
-tr.row-field:hover
-{
-  margin-top: 3px;
-  pointer-events: none;
-  background-color: var(--pale-blue);;
-}
-
-
-td.row-field
-{
-  margin:0;
-  padding: 0;
-  font-size: 0.9rem
-}
-
-
-div.row.scrollable {
-  max-height: 70%;
-  margin:0px;
-  padding-left:0px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  text-align: left;
-  border-bottom: 1px solid  grey;
-  }
-
-  div.row.scrollable::-webkit-scrollbar {
-    display: none;
-  }
-
-p
-{
+/*************************************************************************************
+TEXT
+ **************************************************************************************/
+p {
   color: #000000;
   margin: 0px;
   padding: .2em;
-}
-
-div.row-link {
-  color: #000000;
-  margin: 0px;
-  padding: .2em;
-  border-bottom: 1px solid rgb(224, 224, 224);
-  font-size: .95rem;
-  font-weight: 400;
-}
-
-a.row-link {
-  font-family: "Open Sans", "HelveticaNeue";
-  font-weight: 600;
   font-size: 1rem;
-  text-decoration: none;
-  color: #302e2e;
-  margin: 0px;
-  padding: .2em;
 }
 
-a.td-link:hover {
-  text-decoration: none;
+h3, h4 {
+  color: var(--dark-grey);
+  font-family: 'Bebas Neue';
+  letter-spacing: .1rem;
+  font-weight:400;
+  line-height: normal;
 }
 
-a.td-link {
-  font-family: "Open Sans", "HelveticaNeue";
-  font-weight: 400;
-  font-size: .9rem;
-  text-decoration: none;
-  color: #302e2e;
-  margin: 0px;
-  padding: 0em;
+h3 {
+  font-size: 2.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
-a.row-link:hover {
-  text-decoration: underline;
+h4 {
+  margin-bottom: 0;
 }
 
-.row-selected {
-  background-color: var(--pale-blue);
+h5, h6 {
+  color: var(--medium-gray);
+  font-weight:400; 
 }
 
-  
-div.row-link:hover{
-background-color: #d6f0ff;
+h5 {
+  line-height: normal;
+  margin-top: 20px;
+  margin-bottom: 15px;
 }
 
-.row-button{
-  letter-spacing: 0em;
-  padding: 0 1rem;
-  margin: 0px;
+h6 {
+  margin-top: 0rem;
+  margin-bottom: .5rem;
+  letter-spacing: 0rem;
 }
 
 .link-button
@@ -501,81 +370,15 @@ background-color: #d6f0ff;
   font-weight: 500;
   letter-spacing: 0em;
   text-align: left;
-  border-top-width: 0;
-  border-right-width: 0;
-  border-bottom-width: 0;
-  border-left-width: 0px;
-  border-radius:0px;
-  padding-left: 5px;
-  padding-right: 5px;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  border-width: 0;
+  padding: 5px;
   margin: 0px;
   transition: .1s;
-  
 }
 
-p
-{
-  font-size: 1rem;
-}
-
-h3
-{
-  color: var(--dark-grey);
-  font-family: 'Bebas Neue';
-  font-size: 2.5rem;
-  font-weight:400;
-  margin-top: 1rem;
-  letter-spacing: .1rem;
-  margin-bottom: 1rem;
-}
-
-h4
-{
-  color: var(--dark-gray);
-  font-weight:600;
-  line-height: normal;
-  margin-bottom: 0;
-}
-
-h5
-{
-  color: var(--medium-gray);
-  font-weight:400;
-  line-height: normal;
-  margin-top: 20px;
-  margin-bottom: 15px;
-}
-
-
-h6
-{
-  color: var(--dark-grey);
-  margin-top: 0rem;
-  margin-bottom: .5rem;
-  font-weight: 400;
-  color: var(--medium-gray);
-  letter-spacing: 0rem;
-  
-}
-
-form {
-  margin:0px;
-}
-
-.tab-button
-{
-  padding-left:5px;
-  padding-right:5px;
-}
 .link-button:hover
 {
-  border-top-width: 0;
-  border-right-width: 0;
   border-bottom-width: 2px;
-  border-left-width: 0px;
-  border-radius:0px;
   color: var(--light-blue);
   border-color: var(--light-blue);
 }
@@ -598,51 +401,29 @@ ALERTS
   color: var(--medium-gray);
 }
 
-.alert.alert-warning
-{
-/*transition: visibility 1s, opacity 0.5s linear;*
-  /*transition: visibility 1s, opacity 0.5s linear;*/
+.alert.alert-warning {
   background:#fff0d6;
   border-color: #929292;
-
 }
 
-.hidden-frame {
-  visibility: hidden;
-  opacity: 0;
-  transition: visibility 1s, opacity 1s linear;
+.alert.alert-notice {
+  background:#e9f7fe;
 }
 
-.alert.alert-notice
-{
-background:#e9f7fe;
-}
-
-.alert.alert-error
-{
+.alert-error {
   background:#e66666;
-  padding: 10px;
   color: white;
-  border-style: solid;
-  border-width: 1px;
   border-color: #3333;
 }
 
-
-input.hidden-input{
-  display: none;
-}
-
-a.button.active
-{
+a.button.active {
   background: var(--light-blue);
   color: white;
 }
 
-.closeIcon {
-  display: none;
-}
-
+/****************************************************************************************************
+  MODAL FORMS
+******************************************************************************************************/
 .menu {
   display: flex;
   justify-content: space-evenly;
@@ -669,11 +450,6 @@ a.button.active
 
 .box .box-header {
   flex: 0 1 auto;
-  /* The above is shorthand for:
-  flex-grow: 0,
-  flex-shrink: 1,
-  flex-basis: auto
-  */
 }
 
 .box .box-content {
@@ -686,14 +462,14 @@ a.button.active
 
 /* The Modal (background) */
 .modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 3; /* Sit on top */
+  display: none;        /* Hidden by default */
+  position: fixed;      /* Stay in place */
+  z-index: 3;           /* Sit on top */
   left: 0;
   top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
+  width: 100%;          /* Full width */
+  height: 100%;         /* Full height */
+  overflow: auto;       /* Enable scroll if needed */
   background-color: rgb(0,0,0); /* Fallback color */
   background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
 }
@@ -701,10 +477,10 @@ a.button.active
 /* Modal Content/Box */
 .modal-content {
   background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
+  margin: 15% auto;     /* 15% from the top and centered */
   padding: 80px;
   border: 1px solid #888;
-  width: fit-content; /* Could be more or less, depending on screen size */
+  width: fit-content;   /* Could be more or less, depending on screen size */
   border: 1px solid;
   border-color: var(--light-gray);
   border-radius:10px
@@ -718,4 +494,71 @@ a.button.active
 .modal-text
 {
   font-size: .9rem;
+}
+
+/*************************************************************************
+ UTILITY CLASSES
+**************************************************************************/
+
+.vertical-align
+{
+  display:flex; 
+  align-items:center; 
+  vertical-align:middle;
+}
+
+.vertical-align-bottom
+{
+  display:flex;
+  align-items:center; 
+  vertical-align:bottom;
+}
+
+.center-align
+{
+  display:flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center; 
+}
+
+.no-border
+{
+  border: none;
+  border-bottom: 0px
+}
+
+.margin-top {
+  margin-top: 20px;
+}
+
+.margin-left {
+  margin-left: 20px;
+}
+
+.margin-right {
+  margin-left: 20px;
+}
+
+
+.no-margin {
+  margin: 0px
+}
+
+.no-wrap {
+  white-space: nowrap;
+}
+
+.hidden-frame {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 1s, opacity 1s linear;
+}
+
+.active-frame {
+  display: contents;
+}
+
+.idle-frame {
+  display: none;
 }
