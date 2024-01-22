@@ -68,7 +68,7 @@ class Room < ActiveRecord::Base
     end
 
     def self.get_from_houses(houses)
-        Room.includes(:person).where(house: houses).and(Room.where.not(person: nil)).in_order_of(:house, houses)
+        Room.includes(:person).where(house: houses).and(Room.where.not(person: nil)).in_order_of(:house, houses).order(room: :asc)
     end
 
 end     #class end

@@ -11,7 +11,6 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
 
     submit(e)
     {
-      console.log("submit request")
       e.preventDefault();
       e.stopPropagation();
       this.submit_form()

@@ -56,22 +56,24 @@ html
     //==================================================================================================
     turbo-frame#whole_screen
 
-      
+      - @current_user = get_current_user()
       div.row.nav-bar
         .columns.four
           a.button.menu-item data-turbo-frame="main_frame" href='/people/frame' 
             i.fa-solid.fa-user
             | &nbspPeople
-          a.button.menu-item data-turbo-frame="main_frame" href='/rooms/frame' 
-            i.fa-solid.fa-bed
-            | &nbspRooms
-          a.button.menu-item data-turbo-frame="main_frame" href='/velas/frame' 
-            i.fa-solid.fa-bed
-            | &nbspVelas
+          - if @current_user.allowed?("rooms")
+            a.button.menu-item data-turbo-frame="main_frame" href='/rooms/frame' 
+              i.fa-solid.fa-bed
+              | &nbspRooms
+          - if @current_user.allowed?("velas")
+            a.button.menu-item data-turbo-frame="main_frame" href='/velas/frame' 
+              i.fa-solid.fa-bed
+              | &nbspVelas
           
         
         .columns.eight.u-text-right
-          - if get_current_user.admin?  
+          - if @current_user.admin?  
             a.button.menu-item data-turbo-frame="main_frame" href='/documents/frame' 
               i.fa-solid.fa-file
               | &nbspDocuments

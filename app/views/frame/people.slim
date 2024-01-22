@@ -1,6 +1,6 @@
 turbo-frame id="main_frame" data-people-target="people_screen"
   
-  .container.container-frame data-controller="people peopletable clipboard modal" data-clipboard-tablename="people"
+  .container.container-frame data-controller="people clipboard modal" data-clipboard-tablename="people"
     
     form.form-inline method="GET" action="/people/search" data-controller="search" data-turbo-frame="people_table" aria-label="Search" name="q" data-action="input->search#submit keydown.ctrl+p@window->modal#open_modal keydown.esc@window->modal#close_modal keydown.ctrl+c@window->clipboard#copy keydown.ctrl+f@window->people#search_focus keydown.ctrl+a@window->people#add_person"  
             

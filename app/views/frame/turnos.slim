@@ -3,10 +3,10 @@ turbo-frame id="turnos_frame"
   .container.container-frame
     - @turnos.each do |turno|  
       .row 
-        .columns.two.offset-by-one style="font-weight:300" = "#{turno.get_time(:start)} - #{turno.get_time(:end)}"
-        .columns.seven style="font-weight:300"
+        .columns.two.offset-by-one = "#{turno.get_time(:start)} - #{turno.get_time(:end)}"
+        .columns.seven
           - turno.rooms.each do |room|  
             .row 
-              .columns.eight style="font-weight:300" = room.person.short_name
-              .columns.four style="font-weight:300" = room.room
+              .columns.eight = room.person.short_name
+              .columns.four = room.room
               

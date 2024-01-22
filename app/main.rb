@@ -149,6 +149,6 @@ end
 #puts Room.get_empty_rooms
 
 #Person.all.each do |p|
-#    p.update(ctr:"cavabianca")
+#    #p.update(ctr:"cavabianca")
 #    p.update(vela:"normal")
 #end

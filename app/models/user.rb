@@ -89,6 +89,13 @@ def get_allowed_modules
 	(ModuleUser.where(user:self).select {|mu| mu.modulepermission=="allowed"}).map {|mu| mu.pulpo_module}
 end
 
+def allowed?(module_name)
+	puts "asking permission of module #{module_name} for #{uname}"
+	return true if admin?
+	puts "got module ---#{get_permission PulpoModule.find_by(name: module_name)}---"
+	(get_permission PulpoModule.find_by(name: module_name))=="allowed"
+end
+
 def is_table_allowed?(table)
 	mod = PulpoModule.find_by(name: table)
 	modser = ModuleUser.find_by(user:self, pulpo_module: PulpoModule.find_by(name: table))

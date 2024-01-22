@@ -27,7 +27,7 @@ turbo-frame id="main_frame"
                   //a.table-row-body data-turbo-stream="true" id="person_#{person.id}" href="/person/#{person.id}/toggle_vela" style="cursor:pointer;"
                   div.table-cell-body = "#{person.family_name}, #{person.first_name}"
                   div.table-cell-body = person.group
-                  div.table-cell-body.medium-field id="person_#{person.id}" = person.vela.humanize
+                  div.table-cell-body.medium-field id="person_#{person.id}" = person.vela&.humanize
 
       .columns.five.offset-by-one
         turbo-frame id="velas_table" data-people-target="velas_table" src="/velas/table"

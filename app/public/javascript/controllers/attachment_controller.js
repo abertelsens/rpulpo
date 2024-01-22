@@ -11,9 +11,7 @@ import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/di
       
       select_image()
       {
-        //document.getElementById('photo_file').click();
         this.photo_fileTarget.click();
-        //this.load_image()
       }
 
       load_image({ params: { id } }){

@@ -82,6 +82,6 @@ turbo-frame id="main_frame"
 				// FORM BUTTONS
 				//----------------------------------------------------------------------------------------------------------------
 			row.center-align
-				button#save_btn.button-primary type="submit" name="commit" value="save" data-validate-target="submit_btn" save  
+				button#save_btn.button-primary autofocus="true" type="submit" name="commit" value="save" data-validate-target="submit_btn" save  
 				a.button.button-secondary formnovalidate="true" href=(@person ? "/person/#{@person.id}" : "/people/frame") cancel 	
 				

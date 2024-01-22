@@ -1,6 +1,6 @@
 # Módulo Personas (People)
 
-La pantalla de personas funciona como un buscador que es bastante intuitivo. En la parte inferior de la pantalla aparecerá una tabla con los resultados de las búsquedas. En este [enlace](help/people_search) se puden ver las **distintas opciones de búsqueda de personas**.
+La pantalla de personas funciona como un buscador que es bastante intuitivo. En la parte inferior de la pantalla aparecerá una tabla con los resultados de las búsquedas. En este [enlace](help/people_search) se pueden ver las **distintas opciones de búsqueda de personas**.
 
 Al hacer click en una persona de la tabla se verá la **página de información de esa persona**. En esa pantalla se puede acceder a los distintos grupos de información dependiendo de los derechos del usuario.
 

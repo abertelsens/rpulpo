@@ -5,7 +5,7 @@ turbo-frame id="people_table" data-turbo-frame="person_view"
         - @people_table_settings.att.each do |sett|
           div.table-cell-head class=sett.css_class style="pointer-events: none" = sett.name.humanize(capitalize: false)  
       - @objects.each.with_index do |object, index|  
-        a.table-row-body href="/person/#{object.id}" data-turbo-frame="main_frame"  style="cursor:pointer;"
+        a.table-row-body href="/person/#{object.id}" data-turbo-frame="main_frame" style="cursor:pointer;"
           - @people_table_settings.att.each do |sett|
             - value = object.get_attribute sett.field
             div.table-cell-body class=sett.css_class = sett.type=="enum" ? value&.humanize : value

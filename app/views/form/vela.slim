@@ -11,18 +11,17 @@ turbo-frame id="main_frame"
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM HEADER
 			//----------------------------------------------------------------------------------------------------------------
-			.row.u-text-center
+			.row.u-text-center.margin-top
 				.columns.four.offset-by-four
-					h3 = (@object.nil? ? "NEW VELA" : "VELA: #{@object.date.strftime('%d %b %y')}")
-				.columns.two
-					a.button.button-primary.u-full-width style="margin: 1.2rem 0rem 0rem 0rem" data-turbo-frame="turnos_frame" data-action="click->vela#build_turnos"
+					h3.no-margin = (@object.nil? ? "NEW VELA" : "VELA: #{@object.date.strftime('%d %b %y')}")
+				.columns.three.flex-left
+					a.button.button-primary.button-small data-turbo-frame="turnos_frame" data-action="click->vela#build_turnos"
 						i.class.fa-regular.fa-clock
 						|&nbspturnos
-				.columns.two style="margin: 1.2rem 0rem 0rem 0rem; display: flex; justify-content: center; align-items: center;"
-					a.button.button-succes.small-button target="_blank" href="/vela/#{@object.id}/pdf" 
+					a.button.button-succes.button-small target="_blank" href="/vela/#{@object.id}/pdf" 
 						i.class.fa-regular.fa-file-pdf style="font-size:.9rem"
 						|&nbsppdf
-					a.button.button-success.small-button style="width:200rem" data-vela-target="copybtn" data-action="click->vela#copy"
+					a.button.button-success.button-small style="width:200rem" data-vela-target="copybtn" data-action="click->vela#copy"
 						i.class.fa-regular.fa-copy
 						|&nbspcopy
 			/----------------------------------------------------------------------------------------------------------------

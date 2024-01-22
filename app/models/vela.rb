@@ -121,7 +121,24 @@ TYPST_PREAMBLE_SEPARATOR = "//CONTENTS"
 		
 		full_doc = "#{template_source[0]} #{header} #{turnos_table}\n #{footer}"
 		
-		return Typst::Pdf.from_s(full_doc).document
+		
+
+		if OS.windows? 
+			# delete all the previous pdf files. Not ideal
+			# write a tmp typst file and compile it to pdf
+			FileUtils.rm Dir.glob("#{TYPST_TEMPLATES_DIR}/*.pdf")
+			tmp_file_name ="#{rand(10000)}"
+			typ_file_path = "#{TYPST_TEMPLATES_DIR}/#{tmp_file_name}.typ"
+			pdf_file_path = "#{TYPST_TEMPLATES_DIR}/#{tmp_file_name}.pdf"
+			
+			File.write typ_file_path, full_doc
+			res =  system("typst compile #{typ_file_path} #{pdf_file_path}")
+			File.delete typ_file_path
+			res ? (return pdf_file_path) : set_error(FATAL, "Typst Writer: failed to convert document: #{error.message}")
+		else
+			return Typst::Pdf.from_s(full_doc).document
+		end
+
 	end
 
 	def self.turno2table(turno)

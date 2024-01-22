@@ -22,8 +22,6 @@ import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/di
     
       select_engine()
       {
-        console.log("engine_selectTarget.value");
-        console.log(this.engine_selectTarget.value);
         if (this.engine_selectTarget.value==="prawn")
         {
           this.templateframeTarget.style.display="none";
@@ -37,8 +35,6 @@ import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/di
     
       check_path()
       {
-        console.log("this.pathTarget.value");
-        console.log(this.pathTarget.value);
          if (this.pathTarget.value==="")  //if there is no path set 
          {
           this.viewbtnTarget.disabled=true;

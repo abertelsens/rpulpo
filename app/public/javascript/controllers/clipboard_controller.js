@@ -28,7 +28,6 @@ import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/di
 
       handle_response(validation_data) {
         if(validation_data!=false) {
-          console.log(`got clipboard response: ${validation_data.result}`)
           if(!validation_data.result) {                          //there was a validation problem
             this.copybtnTarget.innerHTML = "<fa-solid fa-triangle-exclamation'></i> oops"
             this.copybtnTarget.classList.add("button-warning")

@@ -15,12 +15,10 @@ import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/di
           console.log("toggling menu")
           if (this.menuframeTarget.style.display=="none")
           {
-            console.log("showing")
             this.menuframeTarget.style.display="block"
           }
           else
           {
-            console.log("hiding")
             this.menuframeTarget.style.display="none"
           }
         }
