@@ -46,6 +46,11 @@ query_aliases:
   - individual: "bathroom:0"
   - común: "bathroom:0"
   - comun: "bathroom:1"
+  - g1: "group:1"
+  - g2: "group:2"
+  - g3: "group:3"
+  - g4: "group:4"
+  - dir: "group:dir"
 name_aliases:
   hab: "room"
   habitación: "room"

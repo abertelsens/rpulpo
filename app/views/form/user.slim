@@ -40,6 +40,10 @@ turbo-frame id="main_frame"
 						- User.usertypes.each do |t|
 							option selected=(@object&.usertype==t[0]) value=t[0] = t[0]
 				
+					.div.flex-left
+						input type="checkbox" name="mail" checked=@object&.mail
+						label style="margin-bottom:1.5rem; margin-left:1rem" mail user
+						
 				/----------------------------------------------------------------------------------------------------------------
 				// PERMISSIONS COLUMN
 				//----------------------------------------------------------------------------------------------------------------	

@@ -11,6 +11,9 @@
 /! Load Fontawesome
 script src="https://kit.fontawesome.com/4f55c9eacf.js" crossorigin="anonymous"
 
+script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"
+link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet"
+
 /!=============================================================================
 /! JSCRIPTS
 /!=============================================================================
@@ -22,10 +25,6 @@ script type="module"
 //</script>
 
 script type="module" src="javascript/application.js"
-
-
-//script src="https://unpkg.com/hotkeys-js/dist/hotkeys.min.js"
-//script type="text/javascript" src="javascript/hotkeys_settings.js"
 
 
 /! Load all Stimulus Controllers
@@ -48,20 +47,23 @@ html
     link rel="stylesheet" href="/css/skeleton.css"
     link rel="stylesheet" href="/css/pulpo.css"
     link rel="stylesheet" href="/css/menu_styles.css"
-  
+    
+
   body
     
     //==================================================================================================
     // NAVIGATION BAR
     //==================================================================================================
-    turbo-frame#whole_screen
-
+    turbo-frame#whole_screen data-controller="navbar"
       - @current_user = get_current_user()
+      
       div.row.nav-bar
-        .columns.four
+        div.flex-left
           a.button.menu-item data-turbo-frame="main_frame" href='/people/frame' 
             i.fa-solid.fa-user
             | &nbspPeople
+          - if @current_user.admin?
+            a.button.menu-item data-turbo-frame="main_frame" href='/crs/frame' crs+
           - if @current_user.allowed?("rooms")
             a.button.menu-item data-turbo-frame="main_frame" href='/rooms/frame' 
               i.fa-solid.fa-bed
@@ -71,9 +73,25 @@ html
               i.fa-solid.fa-bed
               | &nbspVelas
           
+          - if @current_user.mail
+            a.button.menu-item data-turbo-frame="main_frame" href='/mails/frame' 
+              i.fa-solid.fa-envelope
+              | &nbspCorreo
         
-        .columns.eight.u-text-right
+      
+        div.flex-right  style="flex: 1"
           - if @current_user.admin?  
+            a.button.menu-item data-action="click->navbar#toggle" 
+              i.fa-solid.fa-gear
+              | &nbspAdmin
+          a.button.menu-item data-turbo-frame="main_frame" href='/help' 
+            i.fa-solid.fa-question
+            | &nbspHelp
+          a.button.menu-item.user-name target="_self" href="/logout" = "user: #{@user.uname}"
+    
+      - if @current_user.admin?      
+        div.row.nav-bar-hidden.hidden-frame data-navbar-target="adminnavbar"
+          .columns.twelve.u-text-right
             a.button.menu-item data-turbo-frame="main_frame" href='/documents/frame' 
               i.fa-solid.fa-file
               | &nbspDocuments
@@ -83,13 +101,11 @@ html
             a.button.menu-item data-turbo-frame="main_frame" href='/modules/frame' 
               i.fa-solid.fa-gear
               | &nbspModules
-          a.button.menu-item data-turbo-frame="main_frame" href='/help' 
-            i.fa-solid.fa-question
-            | &nbspHelp
-          a.button.menu-item.user-name target="_self" href="/logout" = "user: #{@user.uname}"
+            a.button.menu-item data-turbo-frame="main_frame" href='/entities/frame' 
+              i.fa-solid.fa-house
+              | &nbspEntitites
 
       div.row
-        div.container
           turbo-frame#main_frame src="/people/frame"
   
      

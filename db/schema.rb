@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_17_104137) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_04_154024) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "answers", force: :cascade do |t|
+    t.integer "mail_id"
+    t.integer "answer_id"
+  end
+
+  create_table "assigned_mails", force: :cascade do |t|
+    t.integer "mail_id"
+    t.integer "user_id"
+  end
 
   create_table "crs", force: :cascade do |t|
     t.integer "person_id"
@@ -39,6 +49,32 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_17_104137) do
     t.integer "engine"
     t.string "path"
     t.boolean "template_variables"
+  end
+
+  create_table "entities", force: :cascade do |t|
+    t.string "sigla"
+    t.string "name"
+    t.string "path"
+  end
+
+  create_table "mail_files", force: :cascade do |t|
+    t.integer "mail_id"
+    t.string "name"
+    t.string "href"
+    t.string "extension"
+  end
+
+  create_table "mails", force: :cascade do |t|
+    t.integer "entity_id"
+    t.date "date"
+    t.string "topic"
+    t.string "protocol"
+    t.string "base_path"
+    t.integer "direction"
+    t.integer "mail_status"
+    t.string "assigned_users"
+    t.string "refs_string"
+    t.string "ans_string"
   end
 
   create_table "module_users", force: :cascade do |t|
@@ -112,6 +148,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_17_104137) do
     t.string "description"
   end
 
+  create_table "references", force: :cascade do |t|
+    t.integer "mail_id"
+    t.integer "reference_id"
+  end
+
   create_table "rooms", force: :cascade do |t|
     t.integer "house"
     t.string "room"
@@ -138,10 +179,16 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_17_104137) do
     t.index ["person_id"], name: "index_studies_on_person_id"
   end
 
+  create_table "unread_mails", force: :cascade do |t|
+    t.integer "mail_id"
+    t.integer "user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "uname"
     t.string "password"
     t.integer "usertype"
+    t.boolean "mail"
   end
 
   create_table "velas", force: :cascade do |t|

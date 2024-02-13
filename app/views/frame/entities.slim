@@ -1,0 +1,14 @@
+turbo-frame id="main_frame" 
+  
+  .container.container-frame
+      
+    .row.header-frame.u-text-center
+      h3 ENTITIES
+      
+    .row
+      turbo-frame id="entities_table" src="/entities/table"
+
+    .row.u-text-center.margin-top
+      a.button.button-primary href="/entity/new" data-turbo-frame="main_frame"
+        i.fa-solid.fa-plus style="font-size:small"
+        |&nbspnew

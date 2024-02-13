@@ -4,19 +4,24 @@ import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/di
 
     Stimulus.register("clipboard", class extends Controller {
       
-      static targets = ["copybtn"]
+      static targets = ["copybtn","copyfield","modal"]
      
       connect() {
         console.log("Stimulus Controller Connected: clipboard");
+        //this.check_clipboard_permissions()
       }
     
+      closemodal() {
+        this.modalTarget.style.display="none"      
+      }
+      
       copy() {    
         {
           var url = this.build_url();
           fetch(url)
           .then(res => res.json())
           .then(out => { this.handle_response(out) })
-          .catch(err => { throw err });
+          .catch(err => {alert(err) });
         }
       }
 
@@ -26,9 +31,9 @@ import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/di
         return `/${table_name}/clipboard/copy`;
       }
 
-      handle_response(validation_data) {
-        if(validation_data!=false) {
-          if(!validation_data.result) {                          //there was a validation problem
+      handle_response(response) {
+        if(response!=false) {
+          if(!response.result) {                          //there was a validation problem
             this.copybtnTarget.innerHTML = "<fa-solid fa-triangle-exclamation'></i> oops"
             this.copybtnTarget.classList.add("button-warning")
             this.copybtnTarget.style.width = w
@@ -38,9 +43,14 @@ import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/di
           }
           else {
             console.log(this.copybtnTarget)
+            this.copyfieldTarget.value = response.data
+            navigator.clipboard.writeText(this.copyfieldTarget.value)
+            //this.paste_to_browser_clipboard(response.data)
             this.copybtnTarget.innerHTML = "<i class='fa-solid fa-copy'></i> done"
             this.copybtnTarget.classList.add("button-primary")
             this.copybtnTarget.classList.remove("button-success")
+            this.modalTarget.style.display = "block"
+            this.copyfieldTarget.innerHTML =  response.data
             setTimeout(() => {
               this.reset_button();
             }, "2000");
@@ -63,6 +73,19 @@ import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/di
 
       show_frame(frame) {
         frame.classList.remove('hidden-frame')
+      }
+
+      check_clipboard_permissions()
+      {
+        navigator.permissions.query({ name: "clipboard-write" }).then((result) => {
+          if (result.state == "granted" || result.state == "prompt") {
+            //alert("Write access granted!");
+          }
+          else
+          {
+            alert("Write access denied!");
+          }
+        });
       }
 
     })

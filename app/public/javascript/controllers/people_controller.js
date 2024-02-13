@@ -15,7 +15,6 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
         event.preventDefault();
         this.search_fieldTarget.focus();
         this.search_fieldTarget.select();
-
       }
 
       add_person(event)

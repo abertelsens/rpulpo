@@ -35,21 +35,21 @@ turbo-frame id="main_frame"
 				.columns.six
 					label horario
 					div style="display:flex; gap: .2rem; align-items: center; vertical-align:center;"
-						&number width="2rem" min=0 max=23 name="start_time_hour" required="true"  data-vela-target="field" value = (@object.nil? ? 21 : @object.start_time&.hour)
+						&number style="max-width: 4rem" min=0 max=23 name="start_time_hour" required="true"  data-vela-target="field" value = (@object.nil? ? 21 : @object.start_time&.hour)
 						p style="margin-bottom: 1.5rem" = ":"
-						&number width="2rem" min=0 max=59 name="start_time_min" step=5 required="true" data-vela-target="field" value = (@object.nil? ? 30 : @object.start_time&.min)
+						&number style="max-width: 4rem" min=0 max=59 name="start_time_min" step=5 required="true" data-vela-target="field" value = (@object.nil? ? 30 : @object.start_time&.min)
 						&text.u-full-width name="start1_message" value=@object.start1_message
 						
 					div style="display:flex; gap: .2rem; align-items: center; vertical-align:center;"
-						&number width="2rem" min=0 max=23 name="start_time2_hour" required="true" data-vela-target="field"  value = (@object.nil? ? 21 : @object.start_time2&.hour)
+						&number style="max-width: 4rem" min=0 max=23 name="start_time2_hour" required="true" data-vela-target="field"  value = (@object.nil? ? 21 : @object.start_time2&.hour)
 						p style="margin-bottom: 1.5rem" = ":"
-						&number width="2rem" min=0 max=59 name="start_time2_min" step=5 required="true" data-vela-target="field" value = (@object.nil? ? 45 : @object.start_time2&.min)
+						&number style="max-width: 4rem" min=0 max=59 name="start_time2_min" step=5 required="true" data-vela-target="field" value = (@object.nil? ? 45 : @object.start_time2&.min)
 						&text.u-full-width name="start2_message" value=@object.start2_message
 			
 					div style="display:flex; gap: .2rem; align-items: center; vertical-align:center;"
-						&number width="2rem" min=0 max=23 name="end_time_hour" required="true"  data-vela-target="field" value = (@object.nil? ? 7 : @object.end_time&.hour)
+						&number style="max-width: 4rem" min=0 max=23 name="end_time_hour" required="true"  data-vela-target="field" value = (@object.nil? ? 7 : @object.end_time&.hour)
 						p style="margin-bottom: 1.5rem" = ":"
-						&number width="2rem" min=0 max=59 name="end_time_min" step=5 required="true" data-vela-target="field" value = (@object.nil? ? 30 : @object.end_time&.min)
+						&number style="max-width: 4rem" min=0 max=59 name="end_time_min" step=5 required="true" data-vela-target="field" value = (@object.nil? ? 30 : @object.end_time&.min)
 						&text.u-full-width name="end_message" value=@object.end_message
 			
 					
@@ -61,10 +61,8 @@ turbo-frame id="main_frame"
 					- 6.times	do |i|
 						.columns.six style=(i.even? ? "padding-left:0;" : "padding-right:0")
 							select.u-full-width name="house[#{i}]" data-vela-target="field"
-								- puts "checking if order_array[#{i}] is -1 #{order_array[i]==-1}"
 								option selected = (@object.nil? ? true : order_array[i]==-1) value=-1  = "-"
 								- Room.houses.each do |house|
-									- puts "checking if order_array[#{i}] is #{house[1]} #{order_array[i]==house[1]}"
 									option selected = (@object.nil? ? false : order_array[i]==house[1]) value=house[1] = house[0].humanize
 				
 			.row

@@ -1,5 +1,6 @@
 helpers do
-    
+
+=begin    
     def get_current_peopleset
         if session[:current_people_set].nil?            #there is no current set of selected people
             current_peopleset = Peopleset.get_temporary_set()
@@ -13,13 +14,13 @@ helpers do
     def set_current_peopleset(set)
         session[:current_people_set] = set.id
     end
+=end
 
     def check_update_result(result)
         if !result
             puts Rainbow("error while updating").yellow
             puts Rainbow(result.error_messages).yellow
         else
-            puts Rainbow("success when updating").yellow
         end
     end
     
@@ -27,7 +28,8 @@ helpers do
         case args
             when :people then @people_query = session["people_table_query"]
             when :rooms then @rooms_query = session["rooms_table_query"]
-            end
+            when :mails  then return @mails_query = session["mails_table_query"]
+        end
         get_table_settings args
     end
 

@@ -4,12 +4,15 @@
 
 :root {
   --light-gray: rgb(192, 192, 192);
+  --light-snow: rgb(245, 245, 245);
   --light-orange: rgb(255, 235, 213);
   --light-gray: rgb(224, 224, 224);
   --light-blue: rgb(98, 203, 244);
   --pale-blue: rgb(227, 246, 255);
   --dark-gray: rgb(64, 64, 64);
   --medium-gray: rgb(85, 85, 85);
+  --medium-orange :#ffcc00;
+  --light-orange :#ffe6c6;
 }
 
 html, body {
@@ -42,6 +45,14 @@ form {
   margin-top: 20px;
 }
 
+.flex-columns{
+flex-direction: column;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
 .flex-center {
   display: flex; 
   text-align: center;
@@ -61,6 +72,13 @@ form {
   text-align: right;
   justify-content: right; 
   align-items: right;
+}
+
+.flex-bottom
+{
+  display:flex;
+  align-items:center; 
+  vertical-align:bottom;
 }
 
 .row {
@@ -87,6 +105,16 @@ form {
   width: 200px;
 }
 
+div.search-filters
+{
+  background-color: var(--light-snow);
+  border-radius: 5px;
+  border-color: var(--light-gray);
+  border-style: solid;
+  border-width: 1px;
+  margin: 1rem 0rem 2rem 0rem;
+  padding-top: 1.4rem
+}
 
 /**********************************************************************
 * LOGIN SCREEN
@@ -96,9 +124,11 @@ form {
   height:100%; 
   background: url(/img/cb_jardin.jpeg) no-repeat;
   object-fit: cover;
-  resize: both;
-  background-size: 100% 100%;
   opacity: 1;
+  position: relative;
+  background-repeat: no-repeat;
+  background-position: center; /* Visible 30 px from the top */
+  background-size: cover;
 }
 
 .login-box {
@@ -107,16 +137,71 @@ form {
   left: 50%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
-  min-width: 400px;
-  min-height: 300px;
   background-color:white; 
   opacity: 1; 
   padding: 30px 60px; 
-  box-shadow: rgba(157, 157, 157, 0.35) 0px 5px 15px;
   border: 1px solid;
   border-color: var(--light-gray);
   border-radius:10px
 }
+
+.files-box
+{
+  background-color:#fbfbfb; 
+  opacity: 1; 
+  padding: 30px 60px; 
+  /*box-shadow: rgba(157, 157, 157, 0.35) 0px 5px 15px;*/
+  border: 1px solid;
+  border-color: var(--light-gray);
+  border-radius:10px;
+  margin: .1rem;
+}
+
+div.files-box a {
+  text-decoration: none;
+  font-weight: 400;
+}
+
+div.files-box h4 {
+  font-size: 1.4rem;
+  margin-top: 1rem
+}
+
+a.h4 {
+  margin-left: .5rem;
+  font-family: 'Bebas Neue';
+  letter-spacing: .1rem;
+  font-weight:400;
+  line-height: normal;
+  font-size: 1.2rem; 
+ }
+
+ 
+ div.ref-box { 
+  text-align: center;
+  border-radius: 5px;
+  height: 100%;
+ }
+
+ div.ref-box a:hover{ 
+  text-decoration: underline dotted;
+ }
+
+ div.active-ref-box { 
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+  padding-bottom: 1rem;
+ }
+ div.ref-box a.mail-link{
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1e1e1e;
+ }
+ div.ref-box a.mail-link:hover{
+  text-decoration: underline;
+ }
+
 
 /**********************************************************************
 * BUTTONS
@@ -124,6 +209,7 @@ form {
 
 .button-medium {
  min-width: 120px;
+ max-width: 140px;
 }
 
 .button-small {
@@ -252,7 +338,7 @@ form {
 
 .table-row-body {
   position:sticky;
-  color: var(--dark-grey);
+  color: var(--dark-gray);
   border-bottom: 1px solid var(--dark-gray);
   display: table-row;
   margin: 3px;
@@ -278,7 +364,6 @@ form {
 }
 
 .table-cell-body {
-  font-weight: 400;
   max-height: 1rem;
   text-overflow: ellipsis;
   display: table-cell;
@@ -288,6 +373,11 @@ form {
 
 a.table-row-body{
   cursor:pointer;
+}
+
+.unread {
+  font-weight: 800;
+  background-color: var(--light-orange);
 }
 
 /*************************************************************************************
@@ -374,6 +464,83 @@ div.help td{
   padding: .5rem;
 }
 
+div.nota {
+  font-size: 1rem;
+  text-align : justify ;
+  margin-left: 4rem;
+  margin-right: 4rem;
+  /*display: inline;*/
+}
+
+div.nota li p{
+  display: inline;
+}
+
+div.nota p{
+  text-align : left ;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+div.nota ol{
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  margin-left: 0rem;
+}
+
+div.nota ul{
+  margin-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+div.nota ul ul{
+  margin-left: 2rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+div.nota ol li{
+  margin-left: 0rem;
+  margin-top: 1rem
+}
+
+
+div.nota li{
+  margin-bottom: 0rem;
+  margin-top: 0rem;
+  margin-left: 0rem;
+}
+
+
+div.nota td{
+  padding: 0.2rem 1rem
+}
+
+div.notas a {
+  margin-top:1rem; 
+  display:block;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+div.nota-border{
+  padding: 3rem;
+  border: #555;
+  border-style: solid;
+  border-radius: 10px;
+}
+
+.mail.entrada
+{
+  color: #1e1e1e;
+}
+
+.mail.salida
+{
+  color: rgb(0, 85, 146);
+}
+
+
 h3, h4 {
   color: var(--dark-grey);
   font-family: 'Bebas Neue';
@@ -409,6 +576,7 @@ h6 {
   letter-spacing: 0rem;
 }
 
+ 
 h4.help {
  font-weight: 600;
  font-size: 1rem;
@@ -443,19 +611,22 @@ ALERTS
 {
   background-color:var(--pale-blue);
   margin-bottom: 20px;
-  font-weight: 600;
+  font-weight: 400;
   padding: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
   border-width: 1px;
   border-color: #dcdcdc;
   border-radius: 5px;
   border-style: solid;
-  line-height: 1.2em;
+  line-height: 1.4rem;
   color: var(--medium-gray);
+  transition: 2s;
 }
 
 .alert.alert-warning {
-  background:#fff0d6;
-  border-color: #929292;
+  background:#ffcc00;
+  border-color: var(var(--light-gray));
 }
 
 .alert.alert-notice {
@@ -548,6 +719,17 @@ a.button.active {
   font-size: .9rem;
 }
 
+
+.modal-copy-area
+{
+  width: 50rem;
+  height: 30rem;
+}
+
+.ss-main {
+  height: 2.5rem;
+}
+
 /*************************************************************************
  UTILITY CLASSES
 **************************************************************************/
@@ -589,7 +771,7 @@ a.button.active {
 }
 
 .margin-right {
-  margin-left: 20px;
+  margin-right: 20px;
 }
 
 
@@ -602,9 +784,12 @@ a.button.active {
 }
 
 .hidden-frame {
+  display:none;
+  /*height: 0px;
   visibility: hidden;
   opacity: 0;
-  transition: visibility 1s, opacity 1s linear;
+  transition: visibility 1s, opacity 1s linear, height 10s ease-out;
+  0.15s ease-out*/
 }
 
 .active-frame {

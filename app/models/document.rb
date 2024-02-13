@@ -1,39 +1,41 @@
 ###########################################################################################
 # DESCRIPTION
 # A class defining a Document object.
+# Each Document has an engine in charge of writing the documetn. 	
 ###########################################################################################
 
+# requires the engines to produce the documents.
 require_rel '../engines'
 
-#A class containing the Users data
 class Document < ActiveRecord::Base
 
 	EXCEL_TEMPLATES_DIR = "app/engines-templates/excel"
 	TYPST_TEMPLATES_DIR = "app/engines-templates/typst"
 
-	belongs_to 	    :pulpo_module    
+	belongs_to 	    :pulpo_module
 	enum engine:    {prawn: 0, excel:1, typst:2} 
 
-  # if a document is destroyed then we delete the associated file
+  # if a document is destroyed then we delete the associated file stored in the corresponding templates directory
 	before_destroy do |doc|
 		if doc.engine!="prawn"
-        full_path = doc.get_full_path
-		    FileUtils.rm full_path if File.file? full_path
-      end
+			full_path = doc.get_full_path
+			FileUtils.rm full_path if File.file? full_path
+    end
 	end
 
 	def self.create_from_params(params)
 		doc = Document.create Document.prepare_params params
+		# upddates the template file according to the new file received by the form (in params[:template])
 		doc.update_template_file(params[:template][:tempfile], params[:template][:filename]) unless params[:template].nil?
 	end
 	
 	def update_from_params(params)
-		if params[:name]!=self.name     #the name of the template did not change
-			if params[:template].nil?  #no new file was provided. We change the name of the current file
+		if params[:name]!=self.name     # the name of the template did not change
+			if params[:template].nil?  		# no new file was provided. We just update the name of the current file
 				case engine
-					when "pandoc"  then FileUtils.mv self.get_full_path, "#{PANDOC_TEMPLATES_DIR}/#{params[:name]}.md"
-					when "excel"  then FileUtils.mv self.get_full_path, "#{EXCEL_TEMPLATES_DIR}/#{params[:name]}.yaml"
-					when "excel"  then FileUtils.mv self.get_full_path, "#{TYPST_TEMPLATES_DIR}/#{params[:name]}.typ"
+					when "pandoc"  	then FileUtils.mv self.get_full_path, "#{PANDOC_TEMPLATES_DIR}/#{params[:name]}.md"
+					when "excel"  	then FileUtils.mv self.get_full_path, "#{EXCEL_TEMPLATES_DIR}/#{params[:name]}.yaml"
+					when "excel"  	then FileUtils.mv self.get_full_path, "#{TYPST_TEMPLATES_DIR}/#{params[:name]}.typ"
 				end
 			end
 		end
@@ -43,7 +45,6 @@ class Document < ActiveRecord::Base
 	end
 
 	def update_template_file(file, filename)
-			puts "full path: #{get_full_path}"
 			FileUtils.cp(file, get_full_path)
 	end
 

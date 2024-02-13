@@ -5,6 +5,9 @@
 ###########################################################################################
 
 require 'os'
+
+# in case we are on a mac we run typst via the typs gem. In windows we are foreced to call
+# the typst executable because the gem is not working (as of 11-02-2024)
 require 'typst' if OS.mac? 
 
 class TypstWriter < DocumentWriter
@@ -39,7 +42,6 @@ class TypstWriter < DocumentWriter
 		end
 
 		# stores an array of all the variables found in the template.
-		
 		template_variables.each {|var| @template_preamble.gsub!("$#{var[0]}$",var[1])} if template_variables
 		@variables = @template_contents.scan(/\$\S*\$/)				
 		

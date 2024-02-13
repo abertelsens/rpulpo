@@ -1,16 +1,16 @@
 turbo-frame id="modules_table"
-  div.table-container
-    div.table-table  
-      div.table-row-head
-        div.table-cell-head.medium-field = "identifier"
-        div.table-cell-head.medium-field = "name"
-        div.table-cell-head.xlong-field = "description"
+  .table-container
+    .table-table  
+      .table-row-head
+        .table-cell-head.medium-field = "identifier"
+        .table-cell-head.medium-field = "name"
+        .table-cell-head.xlong-field = "description"
 
       - @objects.each.with_index do |object, index|
-        a.table-row-body href="/module/#{object.id}" data-turbo-frame="main_frame"  style="cursor:pointer;"
-          div.table-cell-body  = object.identifier
-          div.table-cell-body = object.name
-          div.table-cell-body  = object.description
+        a.table-row-body href="/module/#{object.id}" data-turbo-frame="main_frame"
+          .table-cell-body  = object.identifier
+          .table-cell-body = object.name
+          .table-cell-body  = object.description
 
               
                   

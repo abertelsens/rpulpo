@@ -1,13 +1,13 @@
 turbo-frame id="main_frame" 
   
   .container.container-frame
-    .row.header-row
-      .columns.four.offset-by-four.u-text-center
-        h3.no-margin DOCUMENTS
-      .columns.two.flex-right
-        a.button.button-primary.button-medium.no-margin href="/document/new" data-turbo-frame="editor_frame"
-            i.fa-solid.fa-plus style="font-size:small"
-            |&nbspnew
-
-    .row.margin-top
+    .row.header-frame.u-text-center
+      h3 DOCUMENTS
+    
+    .row
       turbo-frame id="documents_table" data-people-target="documents_table" src="/documents/table"
+
+    .row.u-text-center.margin-top
+      a.button.button-primary.button-medium href="/document/new" data-turbo-frame="editor_frame"
+        i.fa-solid.fa-plus style="font-size:small"
+        |&nbspnew

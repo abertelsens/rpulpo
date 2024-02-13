@@ -1,0 +1,66 @@
+turbo-frame id="main_frame" 
+  form.form-inline method="GET" action="/mail/search" data-controller="search mail" data-turbo-frame="mails_table" aria-label="Search" name="q" data-action="input->search#submit keydown.ctrl+f@window->people#search_focus"  
+    
+    .container.container-frame
+      .row
+        
+        //LEFT PANE
+        .columns.ten.offset-by-one 
+          .row.header-frame.margin-top
+            
+            .columns.six.offset-by-three.flex-center
+              img.cb-icon src="img/cb_icon.jpg"
+              h3.no-margin CORREO CAVABIANCA
+              
+            .columns.two.offset-by-one.flex-right
+              a.button.button-success.u-full-width.no-margin.button-medium href="/mail/new" data-turbo-frame="main_frame"
+                  i.fa-solid.fa-plus style="font-size:small"
+                  |&nbspnuevo
+
+          // SEARCH FIELD
+          .row.flex-bottom
+            .container.search-filters.flex-center.flex-wrap
+              div.flex-columns.u-text-left.medium-field.margin-right
+                label.medium-field ctr
+                select.medium-field data-mail-target="entity" name="entity" data-action="change-search#submit"
+                  option selected=(@mails_query[:entity].to_i==-1) value=-1 all
+                  - Entity.get_all.each do |entity|
+                    option  selected=(@mails_query[:entity].to_i==entity.id) value=entity.id = entity.sigla 
+                
+              div.flex-columns.u-text-left.medium-field.margin-right
+                label.medium-field tipo
+                select.medium-field data-mail-target="direction" name="direction" data-action="change-search#submit"
+                  option selected=(@mails_query[:direction].to_i==-1) value=-1 all
+                  - Mail.directions.each do |direction|
+                    option selected=(@mails_query[:direction].to_i==direction[1]) value=direction[1] = direction[0]
+              
+              div.flex-columns.u-text-left.medium-field.margin-right
+                label.medium-field año
+                select.medium-field data-mail-target="year" name="year" data-action="change->search#submit"
+                  option selected=(@mails_query[:year].to_i==-1) value=-1 all
+                  - Mail.get_years.each do |year|
+                    option selected=(@mails_query[:year].to_i==year) value=year = year
+              
+              div.flex-columns.u-text-left.xlong-field.margin-right
+                label.xlong-field asunto
+                input#search_string.xlong-field data-mail-target="search_field" autofocus="autofocus" type="search" data-people-target="search_field" autocomplete="off" placeholder="Buscar por asunto o protocolo" name="q" data-action="input->search#submit" value=@mails_query[:q]
+              - puts "got mail query: #{@mails_query}"
+              
+              div.flex-columns.u-text-left.medium-field.margin-right
+                label.medium-field status
+                select.medium-field id="multiple" name="mail_status" data-mail-target="mail_status" data-action="change->search#submit"
+                  option selected=(@mails_query[:mail_status].to_i==-1) value=-1 all
+                  - Mail.mail_statuses.each do |st|  
+                    option selected=(@mails_query[:mail_status]==st[0]) value=st[0] = st[0].humanize.downcase
+              
+              div.flex-columns.u-text-left.medium-field
+                label.medium-field asignado
+                select.medium-field id="assigned" name="assigned" data-mail-target="assigned" data-action="change->search#submit"
+                  option selected=(@mails_query[:assigned].to_i==-1) value=-1 all
+                  - User.where(mail: true).each do |user|  
+                    option selected=(@mails_query[:assigned].to_i==user.id) value=user.id = user.uname
+
+            
+
+          .row
+            turbo-frame id="mails_table" src="/mails/table"

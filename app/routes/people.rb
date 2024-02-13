@@ -6,7 +6,7 @@ require"clipboard"
 # renders the people frame
 get '/people/frame' do
 	get_last_query :people
-  partial :"frame/people"
+  	partial :"frame/people"
 end
 
 # renders the table of people
@@ -24,7 +24,7 @@ get '/people/clipboard/copy' do
 	@objects = Person.search @people_query, @people_table_settings
 	export_string = Person.collection_to_csv @objects,  @people_table_settings
 	Clipboard.copy export_string
-	{result: true}.to_json
+	{result: true, data: export_string}.to_json
 end
 
 # loads the table settings form
@@ -88,6 +88,16 @@ get '/person/:id/:module' do
 	end
 	partial :"form/person/#{params[:module]}"
 end
+
+
+# renders a single person view
+get '/crs/frame' do
+	@people_o = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person&.crs&.get_next_fidelidad!=false)}
+	@people_a = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person&.crs&.get_next_admissio!=false)}
+	@people_l = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person&.crs&.get_next_lectorado!=false)}
+	partial :"frame/crs"
+end
+
 
 ########################################################################################
 # POST ROUTES
@@ -239,9 +249,6 @@ get '/people/edit_field' do
 end
 
 
-
-
-
 post '/people/edit_field' do
 	puts Rainbow("got params #{params}").yellow
 	get_last_query :people
@@ -249,3 +256,4 @@ post '/people/edit_field' do
 	@people.each {|person| person.update(params[:att_name].to_sym => params[params[:att_name]])}
 	partial :"frame/people"
 end
+

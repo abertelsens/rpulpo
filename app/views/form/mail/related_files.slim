@@ -1,0 +1,20 @@
+turbo-frame id="related_files_frame"
+	.row.u-text-left.files-box
+		h4.u-text-center style="padding-left:.6rem; margin-bottom:2rem" Nota y Anexos
+		- related_files = @object&.find_related_files
+		- if (!related_files.nil? && related_files.size() > 0)
+			- related_files&.each do |rf|
+				.row
+					.columns.two.notas
+						a target="_blank" href=rf.href = rf.name  
+					- if rf.extension==".docx"
+						.columns.ten.nota style="padding-right:1.6rem"
+							- puts rf.html_contents
+							== rf.html_contents
+					- if rf.extension==".pdf"
+						.columns.ten.nota style="padding-right:1.6rem"
+							embed type="application/pdf" zoom=100 frameBorder="0" scrollbar=0 toolbar=0 navpanes=0 scrolling="auto" height="800px" width="100%" src=rf.href
+		- else 
+			h5.u-text-center style="margin-top:2.2rem" 
+				i.fa-solid.fa-circle-exclamation
+				|&nbspNo Files Found!

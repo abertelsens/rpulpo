@@ -6,6 +6,7 @@ NAV BAR
     margin: 0px;
     background-color: #333333;
     width:100%;
+    display: flex;
 }
 
 .nav-bar .menu-item{
@@ -16,6 +17,22 @@ NAV BAR
     border-radius: 0px;
     border-bottom-width: 4px;
     border-color: #333333;
+}
+
+.nav-bar-hidden {
+    margin: 0px;
+    background-color: #4d4d4d;
+    width:100%;
+}
+
+.nav-bar-hidden .menu-item{
+    color: rgb(213, 213, 213);
+    margin: 0px;
+    background-color: #4d4d4d;
+    border-width: 0px;
+    border-radius: 0px;
+    border-bottom-width: 4px;
+    border-color:#4d4d4d;
 }
 
 a.menu-item.user-name {

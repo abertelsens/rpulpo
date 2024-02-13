@@ -17,6 +17,7 @@ include ActiveRecord
 include ExcelRoomImporter
 
 include ExcelImporter
+
 ########################################################################################
 # DB SETUP
 ########################################################################################
@@ -41,6 +42,7 @@ ActiveRecord::Base.logger = old_logger
 configure :development do
     set :database, {adapter: 'postgresql',  encoding: 'utf8', host: db.host, database: DB_NAME, pool: 2, username: db.user}
 end
+
 configure :production do
     set :database, {adapter: 'postgresql',  encoding: 'utf8', host: db.host, database: DB_NAME, pool: 2, username: db.user}
 end
@@ -48,6 +50,18 @@ end
 ########################################################################################
 # SINATRA SETUP
 ########################################################################################
+=begin
+require "bundler"
+Bundler.require(:default, ENV["RACK_ENV"].to_sym)
+
+require 'localhost'
+
+configure :production do 
+    set :server, :puma
+    set :host, 'ssl://localhost:2948'
+    set :force_ssl, true
+end
+=end
 
 #enables sessions to allow access control
 enable :sessions
@@ -129,7 +143,6 @@ end
 
 
 
-
 #Person.all.each do |person|
 #    person.update(first_name: person.first_name.strip)
 #    person.update(family_name: person.family_name.strip)
@@ -151,4 +164,25 @@ end
 #Person.all.each do |p|
 #    #p.update(ctr:"cavabianca")
 #    p.update(vela:"normal")
+#end
+
+#Mail.import_from_excel "L:/usuarios/sect/NOTAS/2023/Notas ao 2023.xlsm"
+#Mail.import_from_excel "L:/usuarios/sect/NOTAS/2022/Notas ao 2022.xlsm"
+#puts "DESTROYING ALL"
+#Mail.all.destroy_all
+#Mail.import_from_excel_cg "L:/usuarios/sect/CORREO-CG/ARCHIVO/REGISTRO/registro2019.xlsx"
+##Mail.import_from_excel_cg "L:/usuarios/sect/CORREO-CG/ARCHIVO/REGISTRO/registro2020.xlsx"
+#Mail.import_from_excel_cg "L:/usuarios/sect/CORREO-CG/ARCHIVO/REGISTRO/registro2021.xlsx"
+#Mail.import_from_excel_cg "L:/usuarios/sect/CORREO-CG/ARCHIVO/REGISTRO/registro2022.xlsm"
+#Mail.import_from_excel_cg "L:/usuarios/sect/CORREO-CG/ARCHIVO/REGISTRO/registro2023.xlsm"
+#puts "IMPORTING ALL"
+#Mail.import_from_excel_all "L:/usuarios/sect/CORREO-CG/ARCHIVO/REGISTRO/tmp.xlsx"
+#Mail.import_from_excel_update_all "L:/usuarios/sect/CORREO-CG/ARCHIVO/REGISTRO/tmp.xlsx"
+#User.all.each{|user| user.update(mail:false)}
+
+#SUser.create(id: 1, uname: "sect", password: "sect")
+
+#Mail.all.each do |p|
+#p.update(refs_string: p.refs.pluck(:protocol).join(", "))
+#p.update(ans_string: p.ans.pluck(:protocol).join(", "))
 #end

@@ -6,6 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:wght@400;600&family=Rubik:wght@300;400;500;600&display=swap" rel="stylesheet">
+
 html
   head
     meta charset="utf-8"
@@ -20,35 +21,25 @@ html
     link rel="stylesheet" href="/css/normalize.css"
     link rel="stylesheet" href="/css/skeleton.css"
     link rel="stylesheet" href="/css/pulpo.css"
-    link rel="stylesheet" href="/css/menu_styles.css"
-    
+    link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css" integrity="sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls" crossorigin="anonymous"
+    link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/grids-responsive-min.css"
   body
-    
+  
+  
     turbo-frame id="whole_screen"
       form#loginForm action="/login" method="POST"
-        
-        .container.u-text-center.login-screen
-        
-          .login-box
-  
-            .row.u-text-center
-              img.u-text-center src="img/cb_icon.jpg" style="width: 50px"
-              h3 PULPO CAVABIANCA
-            
-            .row.u-text-center 
+        .container.u-text-center.login-screen  
+          .login-box.u-text-center
+            img.u-text-center src="img/cb_icon.jpg" style="width: 50px"
+            h3 PULPO CAVABIANCA
+            .row
               label for="uname" user name
               input#uname.u-full-width type="text" required="true" name="uname"
-
-            .row.u-text-center
+            .row.margin-top 
               label for="password" password
               input#password.u-full-width type="password" name="password"
-    
-            .row.u-text-center 
+            .row.margin-top
               button.button-success.u-full-width type="submit" name="commit" value="login" login
-          
-            - if @auth_error
-              .row.u-text-center
+            .row.margin-top
+              - if @auth_error  
                 .alert.alert-error id="errorBox" LOGIN FAILED!
-          
-                
-                  

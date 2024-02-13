@@ -38,6 +38,7 @@ Se ofrecen algunos aliases para búsqueda más frecuentes.
 
 | Alias(es) | Query | Descripción |
 | ---- | ---- | ---- |
+| g1, g2, g3, g4, dir | `group:x` | Búsqueda de las personas pertenecientes al grupo especificado |
 | sacerdotes, sacerdote, sacd | `status:2` | Búsqueda de todos los sacerdotes |
 | diáconos, diaconos, diácono, diacono, diac  | `status:1` | Búsqueda de todos los diáconos |
 | agd | `n_agd:1` |  Búsqueda de todos los agregados |

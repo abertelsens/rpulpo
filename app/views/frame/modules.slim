@@ -1,14 +1,14 @@
 turbo-frame id="main_frame" 
   
   .container.container-frame
-    .row.header-row  
-      //LEFT PANE
-      .columns.four.offset-by-four.u-text-center
-        h3.no-margin = "MODULES"
-      .columns.one.flex-right
-        a.button.button-primary.button-medium.no-margin href="/module/new" data-turbo-frame="main_frame"
-          i.fa-solid.fa-plus style="font-size:small"
-          |&nbspnew
+    .row.header-frame.u-text-center
+      h3 = "MODULES"
+      
     
     .row.margin-top
       turbo-frame id="modules_table" data-people-target="modules_table" src="/modules/table"
+
+    .row.u-text-center.margin-top
+      a.button.button-primary.button-medium href="/module/new" data-turbo-frame="main_frame"
+        i.fa-solid.fa-plus style="font-size:small"
+        |&nbspnew

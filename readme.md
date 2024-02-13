@@ -1,6 +1,12 @@
 
-bundle exec ruby .\app\main.rb -o 0.0.0.0 -e production
+bundle exec ruby .\app\main.rb -o 0.0.0.0 -p 2948 -e production
+bundle exec puma -p 4567
+
 http://localhost:4567/
+
+
+
+bundle exec puma -C "./config/puma.rb"
 
 
 git branch test
@@ -11,9 +17,9 @@ git branch test
  bundle exec rake db:migrate
  bundle exec rake db:drop
  
- bundle exec rake db:create_migration NAME=requestpayments
- bundle exebundle exec rake db:migrate:up VERSION=20230227091407
- bundle exebundle exec rake db:migrate:down VERSION=20230227091407
+bundle exec rake db:create_migration NAME=requestpayments
+bundle exec rake db:migrate:up VERSION=20230227091407
+bundle exec rake db:migrate:down VERSION=20230227091407
 
 
  db:migrate runs (single) migrations that have not run yet.

@@ -1,9 +1,3 @@
-###########################################################################################
-# DESCRIPTION
-# A class defininign a user object.
-###########################################################################################
-
-#A class containing the Users data
 class Crs < ActiveRecord::Base
 
 	belongs_to 	:person
@@ -12,23 +6,38 @@ class Crs < ActiveRecord::Base
         {
             person_id: 		params[:person_id],
             classnumber:   	params[:classnumber],
-            pa:    		 	params[:pa].blank? ? nil : Date.parse(params[:pa]),
-            admision:    	params[:admision].blank? ? nil : Date.parse(params[:admision]),
-            oblacion:     	params[:oblacion].blank? ? nil : Date.parse(params[:oblacion]),
-            fidelidad:     	params[:fidelidad].blank? ? nil : Date.parse(params[:fidelidad]),
-            letter:    		params[:letter].blank? ? nil : Date.parse(params[:letter]),
-            admissio:       params[:admissio].blank? ? nil : Date.parse(params[:admissio]),
-            presbiterado:   params[:presbiterado].blank? ? nil : Date.parse(params[:presbiterado]),
-            diaconado:      params[:diaconado].blank? ? nil : Date.parse(params[:diaconado]),
-            acolitado:      params[:acolitado].blank? ? nil : Date.parse(params[:acolitado]),
-            lectorado:    	params[:lectorado].blank? ? nil : Date.parse(params[:lectorado]),
+            pa:    		 	params[:pa],
+            admision:    	params[:admision],
+            oblacion:     	params[:oblacion],
+            fidelidad:     	params[:fidelidad],
+            letter:    		params[:letter],
+            admissio:       params[:admissio],
+            presbiterado:   params[:presbiterado],
+            diaconado:      params[:diaconado],
+            acolitado:      params[:acolitado],
+            lectorado:    	params[:lectorado],
             cipna:        	params[:cipna],
-            notes:        	params[:notes]
-            
+            notes:        	params[:notes]    
         }
     end
 
     def can_be_deleted?
-        true
+       true
     end
-end
+
+    def get_next_fidelidad
+			if (fidelidad.nil? || fidelidad < Date.today)
+				false
+			else
+				oblacion.next_year(5)
+			end
+		end
+
+		def get_next_admissio
+			admissio.nil?
+		end
+
+		def get_next_lectorado
+			(person.status=="laico" && person.ctr!="se_ha_ido" && !admissio.nil? && lectorado.nil?)
+		end
+end #class end

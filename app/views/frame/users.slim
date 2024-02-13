@@ -1,17 +1,15 @@
 turbo-frame id="main_frame" 
   
   .container.container-frame
-    .row
+   
+    .row.header-frame.u-text-center
+      h3 USERS
       
-      //LEFT PANE
-      .columns.six.offset-by-three 
-        .row.header-frame 
-          .columns.four.offset-by-four.u-text-center
-            h3 USERS
-          .columns.two.u-full-width.offset-by-one
-            a.button.button-primary.u-full-width style="margin: 1.2rem 0rem 0rem 0rem" href="/user/new" data-turbo-frame="main_frame"
-                i.fa-solid.fa-plus style="font-size:small"
-                |&nbspnew
 
-        .row
-          turbo-frame id="users_table" data-people-target="users_table" src="/users/table"
+    .continer.row 
+      turbo-frame id="users_table" data-people-target="users_table" src="/users/table"
+
+    .row.u-text-center.margin-top
+      a.button.button-primary href="/user/new" data-turbo-frame="main_frame"
+        i.fa-solid.fa-plus style="font-size:small"
+        |&nbspnew
