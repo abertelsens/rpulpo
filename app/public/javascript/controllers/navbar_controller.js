@@ -1,32 +1,28 @@
+/************************************************************************************************  
+    A Controller for a the navigation bar.
+    It just shows or hides the secondary navigation bar.
+************************************************************************************************/ 
+
 import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
     
-    Stimulus.register("navbar", class extends Controller {
-      
-      static targets = ["adminnavbar"]; //the button to add a new object
-      
-      connect() {
-        console.log("Stimulus Connected: navbar controller");
-      }
+Stimulus.register("navbar", class extends Controller {
+  
+  static targets = ["secondary_navbar"]; //the button to add a new object
+  hide_class = 'hidden-frame'
+  
+  connect() {
+    console.log("Stimulus Connected: navbar controller");
+  }
 
-      toggle()
-      {
-        console.log("togling")
-        if (this.adminnavbarTarget.classList.contains('hidden-frame')) {
-          this.show_frame(this.adminnavbarTarget)
-        }
-        else {
-          this.hide_frame(this.adminnavbarTarget)
-        }    
-      }
-
-      hide_frame(frame) {
-        frame.classList.add('hidden-frame')
-      }
-
-      show_frame(frame) {
-        frame.classList.remove('hidden-frame')
-      }
-
-    })
+  toggle() {
+    console.log("toggling")
+    if (this.adminnavbarTarget.classList.contains(hide_class)) {
+      this.adminnavbarTarget.classList.remove(hide_class)
+    }
+    else {
+      this.adminnavbarTarget.classList.add(hide_class)
+    }    
+  }
+})
     
     

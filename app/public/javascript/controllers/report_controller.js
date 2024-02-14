@@ -2,12 +2,11 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
     
   Stimulus.register("report", class extends Controller {
     
-    static targets = ["submit_btn","cancel_btn", "form"] //the button to add a new object
+    static targets = ["submit_btn","cancel_btn", "form"]
     
     connect() {
       console.log("Stimulus Connected: report controller");
     }
-
 
     submit(e)
     {

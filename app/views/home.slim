@@ -10,7 +10,6 @@
 
 /! Load Fontawesome
 script src="https://kit.fontawesome.com/4f55c9eacf.js" crossorigin="anonymous"
-
 script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"
 link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet"
 
@@ -90,7 +89,7 @@ html
           a.button.menu-item.user-name target="_self" href="/logout" = "user: #{@user.uname}"
     
       - if @current_user.admin?      
-        div.row.nav-bar-hidden.hidden-frame data-navbar-target="adminnavbar"
+        div.row.nav-bar-hidden.hidden-frame data-navbar-target="secondary_navbar"
           .columns.twelve.u-text-right
             a.button.menu-item data-turbo-frame="main_frame" href='/documents/frame' 
               i.fa-solid.fa-file
