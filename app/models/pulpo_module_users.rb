@@ -1,9 +1,3 @@
-###########################################################################################
-# DESCRIPTION
-# A class defininign the permissions of a user on a model.
-###########################################################################################
-
-#A class containing the Users data
 class ModuleUser < ActiveRecord::Base
 
 	belongs_to :user

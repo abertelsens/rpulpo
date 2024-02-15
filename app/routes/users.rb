@@ -12,7 +12,8 @@ get '/user/validate' do
 end
 
 # renders the people frame after setting the current peopleset
-get '/users/frame' do
+get '/users' do
+    @current_user = get_current_user
     partial :"frame/users"
 end
 
@@ -42,6 +43,6 @@ post '/user/:id' do
         when "delete" 
             @user.destroy
     end
-    redirect '/users/frame'
+    redirect '/users'
 end
 

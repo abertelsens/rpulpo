@@ -10,8 +10,8 @@ class Entity < ActiveRecord::Base
 	has_many :sent_mails, class_name: "Mail", foreign_key: "to" 
 	
 	before_destroy do
-		self.received_mails.each {|mail| mail.destroy}
-		self.sent_mails.each {|mail| mail.destroy}
+		received_mails.each {|mail| mail.destroy}
+		sent_mails.each {|mail| mail.destroy}
 	end
 
 ##########################################################################################

@@ -7,19 +7,9 @@
 class Personal < ActiveRecord::Base
 
 	belongs_to 	:person
-	#has_many 	:transactions
-
-	#validates   :department, 	presence: true
     
-    ##########################################################################################
-	# CALLBACKS
-	##########################################################################################
-	
-	# after a transaciton is saved we make sure to update the balance in the related report
-	# Chashbox overrides this method.
-	
 	def self.prepare_params(params)
-        {
+    {
 			person_id: 			params[:person_id],
 			region_of_origin: 	params[:region_of_origin],
 			region: 			params[:region],
@@ -35,10 +25,6 @@ class Personal < ActiveRecord::Base
 			medical_info:		params[:medical_info],
 			notes:				params[:notes]
 		}
-    end
+  end
 
-
-    def can_be_deleted?
-        true
-    end
-end
+end # class end

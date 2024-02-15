@@ -69,7 +69,7 @@ class Mail < ActiveRecord::Base
 	# users arry contains an array of users ids
 	def set_answers(answers_string)
 		answers = Mail.find_mails answers_string
-		answers==[] ? self.answers.destroy_all : self.update(ans: answers)
+		answers==[] ? answers.destroy_all : update(ans: answers)
 	end
 
 	# users arry contains an array of users ids
@@ -90,7 +90,7 @@ class Mail < ActiveRecord::Base
 	
 	# users arry contains an array of users ids
 	def set_assigned_users(users_array)
-		users_array.nil? ? AssignedMail.where(mail:self).destroy_all : self.update(assignedusers: User.find(users_array))
+		users_array.nil? ? AssignedMail.where(mail: self).destroy_all : update(assignedusers: User.find(users_array))
 	end
 
 	# users arry contains an array of users ids
@@ -110,13 +110,13 @@ class Mail < ActiveRecord::Base
 
 	def send_related_files_to_user(user)
 		balda = "#{BALDAS_BAS_DIR}/#{user.uname}"
-		files = self.mail_files.map{|mf| [mf.get_original_path, mf.name]}
-	if files.size==1
-		puts Rainbow("Copying #{files[0][0]} to #{balda}/#{user.uname}-#{files[0][1]}").yellow
-		res = FileUtils.cp(files[0][0],"#{balda}/#{user.uname}-#{files[0][1]}")
-	else
-		new_dir = "#{balda}/#{user.uname}-#{protocol.gsub("/","-")}"
-		FileUtils.mkdir new_dir unless Dir.exist? new_dir
+		files = mail_files.map{|mf| [mf.get_original_path, mf.name]}
+		if files.size==1
+			puts Rainbow("Copying #{files[0][0]} to #{balda}/#{user.uname}-#{files[0][1]}").yellow
+			res = FileUtils.cp(files[0][0],"#{balda}/#{user.uname}-#{files[0][1]}")
+		else
+			new_dir = "#{balda}/#{user.uname}-#{protocol.gsub("/","-")}"
+			FileUtils.mkdir new_dir unless Dir.exist? new_dir
 
 		files.each do |f| 
 			puts Rainbow("Copying #{f[0]} to #{new_dir}/#{f[1]}").yellow

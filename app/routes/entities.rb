@@ -8,7 +8,8 @@
 
 
 # renders the people frame after setting the current peopleset
-get '/entities/frame' do
+get '/entities' do
+    @current_user = get_current_user
     partial :"frame/entities"
 end
 
@@ -39,6 +40,6 @@ post '/entity/:id' do
         when "delete" 
             @entity.destroy
     end
-    redirect '/entities/frame'
+    redirect '/entities'
 end
 

@@ -4,9 +4,10 @@
 require"clipboard"
 
 # renders the people frame
-get '/people/frame' do
+get '/people' do
+	@current_user = get_current_user
 	get_last_query :people
-  	partial :"frame/people"
+  partial :"frame/people"
 end
 
 # renders the table of people
@@ -39,7 +40,7 @@ end
 post '/people/table/settings' do
 	session["people_table_settings"] = TableSettings.create_from_params "people", params
 	puts "got @query in post #{@people_query}"
-	redirect :"/people/frame"
+	redirect :"/people"
 end
 
 # renders the table of after perfroming a search.
@@ -71,12 +72,14 @@ end
 
 # renders a single person view
 get '/person/:id' do
+	@current_user = get_current_user
   @person = Person.find(params[:id])
   partial :"view/person"
 end
 
 # renders a form of a single person view
 get '/person/:id/:module' do
+	@current_user = get_current_user()
 	@person = (params[:id]=="new" ? nil : Person.find(params[:id]))
 	case params[:module]
 		when "personal" then @personal = Personal.find_by(person_id: @person.id)
@@ -91,7 +94,8 @@ end
 
 
 # renders a single person view
-get '/crs/frame' do
+get '/crs' do
+	@current_user = get_current_user
 	@people_o = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person&.crs&.get_next_fidelidad!=false)}
 	@people_a = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person&.crs&.get_next_admissio!=false)}
 	@people_l = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person&.crs&.get_next_lectorado!=false)}
@@ -103,6 +107,7 @@ end
 # POST ROUTES
 ########################################################################################
 post '/person/:id/general' do
+	@current_user = get_current_user
 	@person = (params[:id]=="new" ? nil : Person.find(params[:id]))
 	case params[:commit]
 		when "save"     
@@ -114,13 +119,14 @@ post '/person/:id/general' do
 		# if a person was deleted we go back to the screen fo the people table
 		when "delete" 
 				@person.destroy
-				redirect :"/people/frame"
+				redirect :"/people"
 	end
 	partial :"view/person"
 end
 
 # post controller of the personal data of a person
 post '/person/:id/personal' do
+	@current_user = get_current_user()
     @person = Person.find(params[:id])
     @personal = params[:personal_id]=="new" ? nil : Personal.find(params[:personal_id])
     if params[:commit]=="save"
@@ -135,6 +141,7 @@ end
 
 # post controller of the study data of a person
 post '/person/:id/study' do
+	@current_user = get_current_user
 	@person = Person.find(params[:id])
 	@study = params[:studies_id]=="new" ? nil : Study.find(params[:studies_id])
 	if params[:commit]=="save"
@@ -149,6 +156,7 @@ end
 
 # post controller of the crs data of a person
 post '/person/:id/crs' do
+	@current_user = get_current_user
 	@person = Person.find(params[:id])
 	@crs = params[:crs_id]=="new" ? nil : Crs.find(params[:crs_id])
 	if params[:commit]=="save"
@@ -251,6 +259,7 @@ end
 
 post '/people/edit_field' do
 	puts Rainbow("got params #{params}").yellow
+	@current_user = get_current_user()
 	get_last_query :people
 	@people = @people_query.nil? ? Person.all.order(family_name: :asc) : (Person.search @people_query, @people_table_settings).order(family_name: :asc)
 	@people.each {|person| person.update(params[:att_name].to_sym => params[params[:att_name]])}

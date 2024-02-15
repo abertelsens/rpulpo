@@ -72,7 +72,7 @@ turbo-frame id="main_frame"
 				- if (@object&.can_be_deleted?)
 					button.button-secondary data-action="click->modal#open_modal" delete  
 				button.button-primary type="submit" name="commit" value="save" data-validate-target="submit_btn" save  
-				a.button.button-secondary formnovalidate="true" href="/users/frame" cancel
+				a.button.button-secondary formnovalidate="true" href="/users" cancel
 				
 			.modal data-modal-target="modal" data-action="keydown.esc@window->modal#close_modal" tabindex="0"
 				.modal-content

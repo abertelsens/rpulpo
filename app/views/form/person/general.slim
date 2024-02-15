@@ -119,7 +119,7 @@ turbo-frame id="main_frame"
 				- if (!@person.nil?) 
 					button.button-secondary data-action="click->modal#open_modal" delete
 				button.button-primary autofocus="true" type="submit" data-validate-target="submit_btn" name="commit" value="save" save  
-				a.button.button-secondary formnovalidate="true" href=(@person ? "/person/#{@person.id}" : "/people/frame") cancel
+				a.button.button-secondary formnovalidate="true" href=(@person ? "/person/#{@person.id}" : "/people") cancel
 
 
 			.modal data-modal-target="modal" 

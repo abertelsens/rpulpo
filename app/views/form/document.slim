@@ -15,6 +15,7 @@ turbo-frame id="main_frame"
 				h3 = (@object.nil? ? "NEW DOCUMENT" : "DOCUMENT: #{@object.name}")
 				
 			/----------------------------------------------------------------------------------------------------------------
+			/----------------------------------------------------------------------------------------------------------------
 			//DOCUMENT FRAME
 			//----------------------------------------------------------------------------------------------------------------
 			.row
@@ -62,7 +63,7 @@ turbo-frame id="main_frame"
 					- if (!@object.nil?) 
 						button.button-secondary data-action="click->modal#open_modal" delete 
 					button.button-primary type="submit" name="commit" value="save" save  
-					a.button.button-secondary formnovalidate="true" href="/documents/frame" cancel
+					a.button.button-secondary formnovalidate="true" href="/documents" cancel
 					
 
 			.modal data-modal-target="modal" 

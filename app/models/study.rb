@@ -1,24 +1,9 @@
-###########################################################################################
-# DESCRIPTION
-# A class defininign a user object.
-###########################################################################################
-
-#A class containing the Users data
 class Study < ActiveRecord::Base
 
 	belongs_to 	:person
-	#has_many 	:transactions
-
-	#validates   :department, 	presence: true
     
-    ##########################################################################################
-	# CALLBACKS
-	##########################################################################################
-	
-	# after a transaciton is saved we make sure to update the balance in the related report
-	# Chashbox overrides this method.
 	def self.prepare_params(params)
-        {
+    {
 			person_id: 				params[:person_id],
 			civil_studies: 			params[:civil_studies],
 			studies_name: 			params[:studies_name],
@@ -32,9 +17,9 @@ class Study < ActiveRecord::Base
 			thesis: 				params[:thesis],
 			
 		}
-    end
+  end
 
-    def can_be_deleted?
-        true
-    end
+	def can_be_deleted?
+			true
+	end
 end

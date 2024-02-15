@@ -90,18 +90,33 @@ end
 
 # renders the main page
 get '/' do
-    @user = get_current_user
-    partial (@user ? :"home" : :"login")
+    @current_user = get_current_user
+    if @current_user
+        puts Rainbow("found user!!!!").yellow
+        @current_user = get_current_user()
+        slim :home
+    else
+        slim :login
+    end
+    #slim (@user ? :home : :login)
 end
 
 # renders the login page
 get '/login' do
-    partial :"login"
+    slim :login
+    #partial :"login"
+end
+
+# renders the login page
+get '/navbar' do
+    @current_user = get_current_user
+    partial :navbar
+    #partial :"login"
 end
 
 get '/logout' do
     cookies[:current_user_id] = nil 
-    redirect '/'
+    redirect '/login'
 end
 
 post '/login' do
@@ -110,9 +125,10 @@ post '/login' do
     #set the current session id
     if @user
         cookies[:current_user_id] = @user.id    #sets the current_user_id in the cookies
-        redirect '/'
+        puts Rainbow("login successful").yellow
+        redirect '/people'
     else
-        partial :"login"
+        slim :login
     end
 end
 
@@ -129,8 +145,8 @@ end
 
 # adds or removes all the visible people on a table from the current set.
 get '/help' do
-    @user = get_current_user
-    partial :"help"
+    @current_user = get_current_user
+    partial :help
 end
 
 # adds or removes all the visible people on a table from the current set.

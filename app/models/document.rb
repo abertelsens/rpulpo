@@ -32,15 +32,16 @@ class Document < ActiveRecord::Base
 	def update_from_params(params)
 		if params[:name]!=self.name     # the name of the template did not change
 			if params[:template].nil?  		# no new file was provided. We just update the name of the current file
-				case engine
-					when "pandoc"  	then FileUtils.mv self.get_full_path, "#{PANDOC_TEMPLATES_DIR}/#{params[:name]}.md"
-					when "excel"  	then FileUtils.mv self.get_full_path, "#{EXCEL_TEMPLATES_DIR}/#{params[:name]}.yaml"
-					when "excel"  	then FileUtils.mv self.get_full_path, "#{TYPST_TEMPLATES_DIR}/#{params[:name]}.typ"
+				target = case engine
+					when "pandoc" then "#{PANDOC_TEMPLATES_DIR}/#{params[:name]}.md"
+					when "excel"  then "#{EXCEL_TEMPLATES_DIR}/#{params[:name]}.yaml"
+					when "typ"  	then "#{TYPST_TEMPLATES_DIR}/#{params[:name]}.typ"
 				end
+				FileUtils.mv get_full_path, target 
 			end
 		end
 		res = update Document.prepare_params params
-		self.update_template_file(params[:template][:tempfile], params[:template][:filename]) unless params[:template].nil?
+		update_template_file(params[:template][:tempfile], params[:template][:filename]) unless params[:template].nil?
 		return res
 	end
 
@@ -65,11 +66,10 @@ class Document < ActiveRecord::Base
 	def self.prepare_params(params)
 		file_suffix = Document.get_template_extension params[:engine]
 		if params[:template]!=nil
-				if params[:engine]=="typst"
-					template_variables = Document.has_template_variables?(File.read params[:template][:tempfile])   
-					puts "Found template variables #{template_variables}"
+			template_variables = if params[:engine]=="typst"
+					Document.has_template_variables?(File.read params[:template][:tempfile])   
 				else
-					template_variables = false
+					false
 				end
 		end
 		{
@@ -77,7 +77,7 @@ class Document < ActiveRecord::Base
 				name:                   params[:name],
 				description:            params[:description],
 				engine:                 params[:engine],
-				path:                   params[:engine]=="" "#{params[:name]}.#{file_suffix}",
+				path:                   (params[:engine].blank? ? "" : "#{params[:name]}.#{file_suffix}"),
 				template_variables:     template_variables
 		}        
 	end
@@ -102,15 +102,16 @@ class Document < ActiveRecord::Base
 	def self.has_template_variables?(source)
 			variables = source.scan(/\$\S*\$/)
 			template_variables = variables.select { |var| var.gsub("$","").split(".")[1].nil? }
-			return !template_variables&.empty?
+			!template_variables&.empty?
 	end
 
 	def has_template_variables?
-			return template_variables
+			template_variables
 	end
 
 	def get_template_variables
 			variables = File.read(get_full_path).scan(/\$\S*\$/)
 			(variables.select { |var| var.gsub("$","").split(".")[1].nil? }).map{|var| var.gsub("$","")}
 	end
-end
+
+end # class end

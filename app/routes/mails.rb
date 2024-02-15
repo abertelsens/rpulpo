@@ -8,7 +8,8 @@
 
 
 # renders the people frame after setting the current peopleset
-get '/mails/frame' do
+get '/mails' do
+    @current_user = get_current_user
     get_last_query :mails   
     @mails_query = session["mails_table_query"] = {q: "", year:Date.today.year(), direction:"-1", entity:"-1", mail_status:"-1", assigned:"-1"} if @mails_query.nil? 
     partial :"frame/mails"
@@ -94,6 +95,6 @@ post '/mail/:id' do
         when "delete" 
             @mail.destroy
     end
-    redirect '/mails/frame'
+    redirect '/mails'
 end
 

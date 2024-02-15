@@ -4,11 +4,14 @@
 ************************************************************************************************/ 
 
 import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
-    
+ 
+const hide_class = 'hidden-frame'
+
 Stimulus.register("navbar", class extends Controller {
   
-  static targets = ["secondary_navbar"]; //the button to add a new object
-  hide_class = 'hidden-frame'
+  static targets = ["navbar"]
+
+ 
   
   connect() {
     console.log("Stimulus Connected: navbar controller");
@@ -16,11 +19,11 @@ Stimulus.register("navbar", class extends Controller {
 
   toggle() {
     console.log("toggling")
-    if (this.adminnavbarTarget.classList.contains(hide_class)) {
-      this.adminnavbarTarget.classList.remove(hide_class)
+    if (this.navbarTarget.classList.contains(hide_class)) {
+      this.navbarTarget.classList.remove(hide_class)
     }
     else {
-      this.adminnavbarTarget.classList.add(hide_class)
+      this.navbarTarget.classList.add(hide_class)
     }    
   }
 })

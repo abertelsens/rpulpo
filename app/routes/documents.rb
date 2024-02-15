@@ -5,7 +5,8 @@
 require 'redcarpet'
 
 # renders the documents frame
-get '/documents/frame' do
+get '/documents' do
+  @current_user = get_current_user
   partial :"frame/documents"
 end
 
@@ -51,5 +52,5 @@ post '/document/:id' do
     # if a person was deleted we go back to the screen fo the people table
     when "delete" then @document.destroy
   end
-  redirect '/documents/frame'
+  redirect '/documents'
 end

@@ -1,10 +1,9 @@
-turbo-frame id="main_frame"
-  - current_user = get_current_user
+turbo-frame id="main_frame" data-turbo-action="advance"
   .container.screen-box style="display: flex; justify-content: center;"
     .columns.one style="display: flex; flex-direction: column;" 
       a.button.link-button href="/person/#{@person.id}/general" = "general"
       - ["study","personal","crs","room"].each do |mod|
-        - if (current_user.allowed? mod)
+        - if (@current_user.allowed? mod)
         a.button.link-button href="/person/#{@person.id}/#{mod}" = mod
     .columns.two.u-text-center.margin-left
       - if @person && File.exist?("app/public/photos/#{@person.id}.jpg")
@@ -44,12 +43,12 @@ turbo-frame id="main_frame"
       
       .row.u-text-center
         .columns.six.offset-by-three
-          a.button.button-primary.u-full-width style="margin-top:40px" autofocus="true" tabindex="0" href="/people/frame" OK
+          a.button.button-primary.u-full-width style="margin-top:40px" autofocus="true" tabindex="0" href="/people" OK
 
     .columns.one.margin-left
       .row
         h6 = "DOCUMENTS"
-      - (Document.get_pdf_docs_of_user get_current_user).each do |doc|
+      - (Document.get_pdf_docs_of_user @current_user).each do |doc|
         .row
           a.table-cell-body.menu-link  style="padding-left:0" href="/people/#{@person.id}/document/#{doc.id}" target=(doc.engine=="excel" ? "_self" : "_blank") = "#{doc.pulpo_module.name} - #{doc.name}"
       

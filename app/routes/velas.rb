@@ -4,7 +4,8 @@
 require"clipboard"
 
 # renders the documents frame
-get '/velas/frame' do
+get '/velas' do
+  @current_user = get_current_user
   partial :"frame/velas"
 end
 
@@ -64,5 +65,5 @@ post '/vela/:id' do
     # if a person was deleted we go back to the screen fo the people table
     when "delete" then @vela.destroy
   end
-  redirect '/velas/frame'
+  redirect '/velas'
 end

@@ -129,14 +129,21 @@ div.search-filters
   background-repeat: no-repeat;
   background-position: center; /* Visible 30 px from the top */
   background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .login-box {
-  position: absolute;
+  /*position: absolute;
   top: 50%;
   left: 50%;
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
+  
+  
+  */
+  max-width: 500px;
   background-color:white; 
   opacity: 1; 
   padding: 30px 60px; 

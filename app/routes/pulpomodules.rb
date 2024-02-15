@@ -4,8 +4,8 @@
 
 
 # renders the people frame after setting the current peopleset
-get '/modules/frame' do
-    
+get '/modules' do
+    @current_user = get_current_user
     partial :"frame/modules"
 end
 
@@ -42,7 +42,7 @@ post '/module/:id' do
         # if a person was deleted we go back to the screen fo the people table
         when "delete" 
             @module.destroy
-            redirect '/modules/frame'
+            redirect '/modules'
     end
-    redirect '/modules/frame'
+    redirect '/modules'
 end

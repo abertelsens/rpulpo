@@ -11,7 +11,7 @@ class PulpoModule < ActiveRecord::Base
 ##########################################################################################
 	
 	def self.create_from_params(params)
-        params.delete("commit")
+    params.delete("commit")
 		params.delete("id")
 		PulpoModule.create params
 	end
@@ -22,16 +22,12 @@ class PulpoModule < ActiveRecord::Base
 
 
 	######################################################################################################
-    # CRUD METHODS
-    ######################################################################################################
+  # CRUD METHODS
+  ######################################################################################################
 
-    def update_from_params(params)
+	def update_from_params(params)
 		params.delete("commit")
 		self.update params
 	end
-
-    def delete
-        self.destroy
-    end
 
 end #class end
