@@ -21,11 +21,9 @@ class PulpoQuery
 	def initialize(query_string, table_settings=nil)
 		
 		@order = table_settings.nil? ? [] : table_settings.get_order
-		
 		@main_table = table_settings.nil? ? [] : table_settings.main_table
 		@tables = table_settings.nil? ? [] : table_settings.get_tables
-		@tables =  (@tables-[@main_table]).map {|table| TABLES_MODELS[table]}
-		#puts "got query string #{query_string} and tabels #{@tables} and main table> #{@main_table}"
+		@tables = (@tables-[@main_table]).map {|table| TABLES_MODELS[table]}
 		
 		
 		if query_string.nil?
@@ -56,7 +54,6 @@ class PulpoQuery
 			return Room.all.includes(@tables).order(@order) if @main_table=="rooms"
 		end
 		
-		#puts Rainbow("got query array #{@query_array}").purple
 		# execute the OR clauses
 		res_array = @query_array.map{|or_clauses| execute_or_clauses(or_clauses)}
 		
@@ -151,26 +148,24 @@ class AttributeQuery
 					"date_part('year', #{att.field})=#{@att_value}"
 				end
 			end
-			#puts "built condtion #{condition}"
 		
-			# the code is a bit complex but it allows us to include in the query the tables that are needed to show the records
+		# the code is a bit complex but it allows us to include in the query the tables that are needed to show the records
 		# and avoid n+1 queries
-		#puts "condition:#{condition} tables:#{@tables}"
 		case @main_table
-		when "people"
-			case table
-				when "people" then (@tables.empty? ? Person.where(condition) : Person.includes(@tables).where(condition))
-				when "personals" then (@tables.empty? ? Person.joins(:personal).where(condition) : Person.includes(@tables).joins(:personal).where(condition)) 
-				when "studies" then (@tables.empty? ? Person.joins(:study).where(condition) : Person.includes(@tables).joins(:study).where(condition)) 
-				when "crs" then (@tables.empty? ? Person.joins(:crs).where(condition) : Person.includes(@tables).joins(:crs).where(condition)) 
-				when "rooms" then (@tables.empty? ? Person.joins(:room).where(condition) : Person.includes(@tables).joins(:room).where(condition)) 
+			when "people"
+				case table
+					when "people" then (@tables.empty? ? Person.where(condition) : Person.includes(@tables).where(condition))
+					when "personals" then (@tables.empty? ? Person.joins(:personal).where(condition) : Person.includes(@tables).joins(:personal).where(condition)) 
+					when "studies" then (@tables.empty? ? Person.joins(:study).where(condition) : Person.includes(@tables).joins(:study).where(condition)) 
+					when "crs" then (@tables.empty? ? Person.joins(:crs).where(condition) : Person.includes(@tables).joins(:crs).where(condition)) 
+					when "rooms" then (@tables.empty? ? Person.joins(:room).where(condition) : Person.includes(@tables).joins(:room).where(condition)) 
+				end
+			when "rooms"
+				case table
+					when "rooms" then (@tables.empty? ? Room.where(condition) : Room.includes(@tables).where(condition))
+					when "people" then (@tables.empty? ? Room.joins(:person).where(condition) : Room.includes(@tables).joins(:person).where(condition))  
+				end
 			end
-		when "rooms"
-			case table
-				when "rooms" then (@tables.empty? ? Room.where(condition) : Room.includes(@tables).where(condition))
-				when "people" then (@tables.empty? ? Room.joins(:person).where(condition) : Room.includes(@tables).joins(:person).where(condition))  
-			end
-		end
 	end
 
 end #class end

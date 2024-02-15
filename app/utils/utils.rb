@@ -63,17 +63,13 @@ module Utils
 		return s.gsub!(/\A"|"\Z/, '')
 	end
 
-	#def empty?(collection)
-	#	collection.size() == 0
-	#end
-
 	def columns(col, val)
 		return "two.columns = val"
 	end
 
 	def latin_date(date)
-        date_array = date.split("-")
-        "#{date_array[2]} #{MONTHS_LATIN[date_array[1].to_i-1]} #{date_array[0]}"
-    end
+		date_array = date.split("-")
+		"#{date_array[2]} #{MONTHS_LATIN[date_array[1].to_i-1]} #{date_array[0]}"
+	end
 
 end
