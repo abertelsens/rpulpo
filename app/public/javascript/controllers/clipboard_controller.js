@@ -1,6 +1,5 @@
 import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
 
-
 Stimulus.register("clipboard", class extends Controller {
   
   static targets = ["copybtn","copyfield","modal"]

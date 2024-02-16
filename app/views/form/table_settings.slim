@@ -41,7 +41,7 @@ turbo-frame id="main_frame"
 										&hidden.u-full-width data-tablesettings-target="att_field" name=att.field value=(@table_settings.include? att.field).to_s
 		
 							- @table_settings.related_tables.each do |rel_table|
-								- if  get_current_user.is_table_allowed?(rel_table)
+								- if get_current_user.is_table_allowed?(rel_table)
 									td style="vertical-align: top"
 										.row style="text-align: center"
 											h5 = rel_table.upcase

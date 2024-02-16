@@ -20,17 +20,15 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
       activatebox(event)
       {
         const value = event.target.dataset.value
-        this.deactivateFrame(this.notesTarget)
-        this.deactivateFrame(this.referencesTarget)
-        this.deactivateFrame(this.answersTarget)
+        if (this.hasNotesTarget) { this.deactivateFrame(this.notesTarget) } 
+        if (this.hasReferencesTarget) { this.deactivateFrame(this.referencesTarget) } 
+        if (this.hasAnswersTarget) { this.deactivateFrame(this.answersTarget) } 
+        
         if (value=="referencelink") {
           this.activateFrame(this.referencesTarget)
         }
         if (value=="noteslink") {
           this.activateFrame(this.notesTarget)
-        }
-        if (value=="referencelink") {
-          this.activateFrame(this.referencesTarget)
         }
         if (value=="answerslink") {
           this.activateFrame(this.answersTarget)

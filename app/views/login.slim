@@ -1,19 +1,66 @@
+<!DOCTYPE html>
+
+/!=============================================================================
+/! FONTS
+/!=============================================================================
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:wght@400;600&family=Rubik:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+/! Load Fontawesome
+script src="https://kit.fontawesome.com/4f55c9eacf.js" crossorigin="anonymous"
+script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"
+link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet"
+
+/!=============================================================================
+/! JSCRIPTS
+/!=============================================================================
+script type="module"
+  | import hotwiredTurbo from 'https://cdn.skypack.dev/@hotwired/turbo@7.1.0';
+
+script type="module" src="javascript/application.js"
 
 
-  .container.u-text-center.login-screen  
-    form#loginForm action="/login" method="POST"
-  
-      .login-box.u-text-center
-        img.u-text-center src="img/cb_icon.jpg" style="width: 50px"
-        h3 PULPO CAVABIANCA
-        .row
-          label for="uname" user name
-          input#uname.u-full-width type="text" required="true" name="uname"
-        .row.margin-top 
-          label for="password" password
-          input#password.u-full-width type="password" name="password"
-        .row.margin-top
-          button.button-success.u-full-width type="submit" name="commit" value="login" login
-        .row.margin-top
-          - if @auth_error  
-            .alert.alert-error id="errorBox" LOGIN FAILED!
+/! Load all Stimulus Controllers
+- puts "Current dir: #{Dir.pwd}\n\n\n\n\n\n\n"
+- Dir.glob("app/public/javascript/controllers/*.js").each do |controller|  
+  - controller.slice!("app/public/")
+  script type="module" src=controller
+
+html
+  head
+    meta charset="utf-8"
+    meta http-equiv="x-ua-compatible" content="ie=edge"
+    title Pulpo Cavabianca
+    meta name="description" content=""
+    meta name="viewport" content="width=device-width, initial-scale=1"
+
+    //==================================================================================================
+    //STYLESHEETS
+    //==================================================================================================
+    link rel="stylesheet" href="/css/normalize.css"
+    link rel="stylesheet" href="/css/skeleton.css"
+    link rel="stylesheet" href="/css/pulpo.css"
+    link rel="stylesheet" href="/css/menu_styles.css"
+    
+
+  body
+
+    .container.u-text-center.login-screen  
+      form#loginForm action="/login" method="POST"
+    
+        .login-box.u-text-center
+          img.u-text-center src="img/cb_icon.jpg" style="width: 50px"
+          h3 PULPO CAVABIANCA
+          .row
+            label for="uname" user name
+            input#uname.u-full-width type="text" required="true" name="uname"
+          .row.margin-top 
+            label for="password" password
+            input#password.u-full-width type="password" name="password"
+          .row.margin-top
+            button.button-success.u-full-width type="submit" name="commit" value="login" login
+          .row.margin-top
+            - if @auth_error  
+              .alert.alert-error id="errorBox" LOGIN FAILED!

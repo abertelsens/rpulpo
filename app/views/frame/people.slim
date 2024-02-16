@@ -35,7 +35,7 @@ turbo-frame id="main_frame" data-people-target="people_screen"
                 i.fa-solid.fa-file style="font-size:1rem"
                 |&nbspDOCUMENTS
               div style="margin-right:2rem"
-                - (Document.get_docs_of_user get_current_user).each do |doc|
+                - (Document.get_docs_of_user @current_user).each do |doc|
                   .row
                     a.table-cell-body.menu-link  href="/people/set/document/#{doc.id}" target=(doc.engine=="excel" ? "_self" : "_blank") = "#{doc.pulpo_module.name} - #{doc.name}"
               .table-cell-head.cell-header.no-border

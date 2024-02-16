@@ -96,14 +96,15 @@ get '/' do
         @current_user = get_current_user()
         slim :home
     else
-        slim :login
+        puts Rainbow("did not found user!!!!").yellow
+       redirect '/login'
     end
-    #slim (@user ? :home : :login)
 end
 
 # renders the login page
 get '/login' do
-    slim :login
+    @auth_error=true if params[:auth_error]=="true"
+    slim :login, layout: false
     #partial :"login"
 end
 
@@ -111,7 +112,6 @@ end
 get '/navbar' do
     @current_user = get_current_user
     partial :navbar
-    #partial :"login"
 end
 
 get '/logout' do
@@ -122,13 +122,13 @@ end
 post '/login' do
     @user = User.authenticate(params[:uname],params[:password])
     @auth_error = @user==false
-    #set the current session id
     if @user
         cookies[:current_user_id] = @user.id    #sets the current_user_id in the cookies
         puts Rainbow("login successful").yellow
-        redirect '/people'
+        redirect '/'
     else
-        slim :login
+        puts Rainbow("login failed").yellow
+        redirect '/login?auth_error=true'
     end
 end
 

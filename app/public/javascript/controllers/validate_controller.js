@@ -4,7 +4,7 @@
 ************************************************************************************************/ 
 
 
-import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
+import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
 
 Stimulus.register("validate", class extends Controller {
   

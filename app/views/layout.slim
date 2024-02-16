@@ -54,22 +54,22 @@ html
     - if !@current_user.nil?
       div.row.nav-bar 
         div.flex-left
-          a.button.menu-item data-turbo-action="advance" data-turbo-frame="main_frame" href='/people' 
+          a.button.menu-item data-turbo-frame="main_frame" href='/people' 
             i.fa-solid.fa-user
             | &nbspPeople
           - if @current_user.admin?
-            a.button.menu-item data-turbo-action="advance" data-turbo-frame="main_frame" href='/crs' crs+
+            a.button.menu-item data-turbo-frame="main_frame" href='/crs' crs+
           - if @current_user.allowed?("rooms")
-            a.button.menu-item data-turbo-action="advance" data-turbo-frame="main_frame" href='/rooms' 
+            a.button.menu-item data-turbo-frame="main_frame" href='/rooms' 
               i.fa-solid.fa-bed
               | &nbspRooms
           - if @current_user.allowed?("velas")
-            a.button.menu-item data-turbo-action="advance" data-turbo-frame="main_frame" href='/velas' 
+            a.button.menu-item data-turbo-frame="main_frame" href='/velas' 
               i.fa-solid.fa-bed
               | &nbspVelas
           
           - if @current_user.mail
-            a.button.menu-item data-turbo-action="advance" data-turbo-frame="main_frame" href='/mails' 
+            a.button.menu-item data-turbo-frame="main_frame" href='/mails' 
               i.fa-solid.fa-envelope
               | &nbspCorreo
         
@@ -78,7 +78,7 @@ html
             a.button.menu-item data-action="click->navbar#toggle" 
               i.fa-solid.fa-gear
               | &nbspAdmin
-          a.button.menu-item data-turbo-action="advance" data-turbo-frame="main_frame" href='/help' 
+          a.button.menu-item data-turbo-frame="main_frame" href='/help' 
             i.fa-solid.fa-question
             | &nbspHelp
           a.button.menu-item.user-name href="/logout" = "user: #{@current_user.uname}"
@@ -86,19 +86,20 @@ html
       - if @current_user.admin?      
         div.row.nav-bar-hidden.hidden-frame data-navbar-target="navbar"
           .columns.twelve.u-text-right
-            a.button.menu-item data-turbo-action="advance" data-turbo-frame="main_frame" href='/documents' 
+            a.button.menu-item data-turbo-frame="main_frame" href='/documents' 
               i.fa-solid.fa-file
               | &nbspDocuments
-            a.button.menu-item data-turbo-action="advance" data-turbo-frame="main_frame" href='/users' 
+            a.button.menu-item data-turbo-frame="main_frame" href='/users' 
               i.fa-solid.fa-users
               | &nbspUsers
-            a.button.menu-item data-turbo-action="advance" data-turbo-frame="main_frame" href='/modules' 
+            a.button.menu-item data-turbo-frame="main_frame" href='/modules' 
               i.fa-solid.fa-gear
               | &nbspModules
-            a.button.menu-item data-turbo-action="advance" data-turbo-frame="main_frame" href='/entities' 
+            a.button.menu-item data-turbo-frame="main_frame" href='/entities' 
               i.fa-solid.fa-house
               | &nbspEntitites
     
-    turbo-frame id="main_frame" src="/people"
+    - if !@current_user.nil? 
+      turbo-frame id="main_frame" src="/people"
   
      

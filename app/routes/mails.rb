@@ -63,12 +63,11 @@ get '/mail/:id/update' do
         return (@object.send_related_files_to_users params[:users]).to_json
     elsif
         params.key?(:references)
-        return (@object.check_protocols params[:references]).to_json
+        return (@object.update_references params[:references]).to_json
+        #return (@object.check_protocols params[:references]).to_json
     elsif
         params.key?(:answers)
-        return (@object.check_protocols params[:answers]).to_json
-    else
-        return {result:false, message:"unknown parameters to update"}.to_json
+        return (@object.update_answers params[:answers]).to_json
     end
 
 end

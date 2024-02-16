@@ -1,6 +1,6 @@
 /************************************************************************************************  
-    A Controller for a the navigation bar.
-    It just shows or hides the secondary navigation bar.
+A Controller for a the navigation bar.
+It just shows or hides the secondary navigation bar.
 ************************************************************************************************/ 
 
 import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"

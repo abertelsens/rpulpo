@@ -3,7 +3,7 @@ import { Application } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.
 //import { Hotkeys } from './controllers/stimulus-hotkeys.js'
 
 //window.Stimulus = Application.start()
-const application = Application.start()
-
+//  const application = Application.start()
+window.Stimulus = Application.start()
 //application.register('autocomplete', Autocomplete)
 //application.register('hotkeys', Hotkeys)

@@ -5,8 +5,8 @@ turbo-frame id="document-links-frame"
 			- references = @object&.refs
 			- answers = @object&.ans
 			
-			.columns.four.ref-box data-documentlinks-target="references"
-				- if (!references.nil? && references.size() > 0)
+			- if (!references.nil? && references.size() > 0)
+				.columns.four.ref-box data-documentlinks-target="references"
 					h4 Referencias  
 					- references.each do |rf|
 						- related_files = rf.find_related_files()
@@ -14,7 +14,7 @@ turbo-frame id="document-links-frame"
 						- related_files&.each do |rf|
 							.row
 								.columns.twelve
-									a data-turbo-frame="mailfile-frame" data-value="referencelink" data-action="click->documentlinks#activatebox" href="/mailfile/#{rf&.id}?type=referencia" = rf&.name 
+									a data-value="referencelink" data-action="click->documentlinks#activatebox" data-turbo-frame="mailfile-frame" href="/mailfile/#{rf&.id}?type=referencia" = rf&.name 
 									label.tooltip style="margin: 0"
 										|&nbsp&nbsp
 										<i class="fa-regular fa-folder"></i>
@@ -22,8 +22,8 @@ turbo-frame id="document-links-frame"
 									//name  
 			
 			- related_files = @object&.find_related_files()		
-			.columns.four.ref-box.active-ref-box data-documentlinks-target="notes"
-				- if (!related_files.nil? && related_files.size() > 0)
+			- if (!related_files.nil? && related_files.size() > 0)
+				.columns.four.ref-box.active-ref-box data-documentlinks-target="notes"
 					h4 Nota y Anexos
 					- related_files&.each_with_index do |rf,index|
 						- if index==0 
@@ -36,8 +36,8 @@ turbo-frame id="document-links-frame"
 										<i class="fa-regular fa-folder"></i>
 										<span class="tooltiptext">#{rf&.get_original_path}</span>
 
-			.columns.four.ref-box data-documentlinks-target="answers"
-				- if (!answers.nil? && answers.size() > 0)
+			- if (!answers.nil? && answers.size() > 0)
+				.columns.four.ref-box data-documentlinks-target="answers"
 					h4 Respuesta en  
 					- answers.each do |rf|
 						a.mail-link data-turbo-frame="main_frame" href="mail/#{rf.id}" = "prot: #{rf.protocol}"
@@ -45,7 +45,7 @@ turbo-frame id="document-links-frame"
 						- related_files&.each do |rf|
 							.row
 								.columns.twelve
-									a data-turbo-frame="mailfile-frame" data-value="answerslink" data-action="click->documentlinks#activatebox" href="/mailfile/#{rf&.id}?type=respuesta%20en" = rf&.name  
+									a data-value="answerslink" data-action="click->documentlinks#activatebox" data-turbo-frame="mailfile-frame" href="/mailfile/#{rf&.id}?type=respuesta%20en" = rf&.name  
 									label.tooltip style="margin: 0"
 										|&nbsp&nbsp
 										<i class="fa-regular fa-folder"></i>
@@ -55,6 +55,7 @@ turbo-frame id="document-links-frame"
 				turbo-frame id="mailfile-frame" data-mailform-target="mailfile_frame" src="/mailfile/#{first_file.id}?type=nota"
 		- else
 			.row.u-text-center
-			  h3
-				i.fa-solid.fa-triangle-exclamation
-				p = "No se encontró ningun documento relacionado con este correo."
+				turbo-frame id="mailfile-frame" data-mailform-target="mailfile_frame"
+					h3
+						i.fa-solid.fa-triangle-exclamation
+						p = "No se encontró ningun documento relacionado con este correo."
