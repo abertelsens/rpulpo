@@ -10,8 +10,8 @@
 # renders the people frame after setting the current peopleset
 get '/mails' do
     @current_user = get_current_user
-    get_last_query :mails   
-    @mails_query = session["mails_table_query"] = {q: "", year:Date.today.year(), direction:"-1", entity:"-1", mail_status:"-1", assigned:"-1"} if @mails_query.nil? 
+    get_last_query :mails
+    @mails_query = session["mails_table_query"] = {q: "", year:Date.today.year(), direction:"-1", entity:"-1", mail_status:"-1", assigned:"-1"} if @mails_query.nil?
     partial :"frame/mails"
 end
 
@@ -32,7 +32,7 @@ get '/mail/:id/update_form' do
 end
 
 get '/mail/search' do
-    
+
     #condition = "topic ILIKE '%#{params[:q]}%'"
     #@objects = Mail.includes(:entity).where(condition).order(date: :desc)
     @mails_query = session["mails_table_query"] = params
@@ -71,6 +71,24 @@ get '/mail/:id/update' do
     end
 
 end
+
+get '/mail/assign_protocol' do
+	entity = Entity.find(params[:entity])
+	protocol = Mail.assign_protocol(entity)
+	p = {
+		date:					Date.today,
+		topic:				params[:topic],
+		protocol:			protocol,
+		mail_status:	"en_curso",
+		entity:				entity,
+		direction:		"salida",
+		assignedusers: [get_current_user]
+		}
+	Mail.create(p)
+	redirect '/mails'
+end
+
+
 # renders a single document view
 get '/mail/:id' do
     @object = (params[:id]=="new" ? Mail.create_from_params() : Mail.find(params[:id]))
@@ -91,9 +109,8 @@ post '/mail/:id' do
         when "save"
             @mail  = @mail.nil? ? (Mail.create_from_params params) : (@mail.update_from_params params)
             check_update_result @mail
-        when "delete" 
+        when "delete"
             @mail.destroy
     end
     redirect '/mails'
 end
-

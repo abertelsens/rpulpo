@@ -1,18 +1,11 @@
 import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
     
-    Stimulus.register("mail", class extends Controller {
+    Stimulus.register("protocolmodal", class extends Controller {
       
-      static targets = ["protocolmodal", "entity", "direction", "year", "mail_status", "protocol", "alert"]; //the button to add a new object
+      static targets = ["protocolmodal"]; //the button to add a new object
       
       connect() {
-        console.log("Stimulus Connected: mail controller");
-      }
-
-      search_focus(event)
-      {
-        event.preventDefault();
-        this.search_fieldTarget.focus();
-        this.search_fieldTarget.select();
+        console.log("Stimulus Connected: protocolmodal controller");
       }
 
       show_protocol_form() {
@@ -27,7 +20,8 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
       } 
 
       close_protocol_modal(event) {    
-        //event.preventDefault();
+        event.stopPropagation();
+        event.preventDefault();
         this.protocolmodalTarget.style.display="none";
       }  
 

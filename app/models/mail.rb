@@ -59,6 +59,19 @@ class Mail < ActiveRecord::Base
 		protolos_string.split(",").map{|prot| Mail.find_by(protocol: prot.strip)}
 	end
 
+	def self.assign_protocol(entity)
+		current_year = Date.today().year
+		mails = Mail.where(entity: entity, direction: "salida").and(Mail.where("date_part('year', date)=#{current_year}"))
+		protocols = mails.map {|mail| mail.get_protocol_serial[0].to_i }
+		"#{protocols.max + 1}/#{current_year-2000}"
+	end
+
+	def get_protocol_serial()
+		m = protocol.match(/(?<num>[0-9]+)\/(?<year>[0-9]{2})/)
+		return [-1,-1] if m.nil?
+		[m[:num].to_i,m[:year].to_i]
+	end
+
 	def update_from_params(params)
 		set_assigned_users(params[:assigned])
 		set_references(params[:references])
@@ -267,7 +280,7 @@ class Mail < ActiveRecord::Base
 		sets[3] = (params[:entity]=="-1" ? nil :  Mail.includes(:entity, :assignedusers).where(entity: params[:entity]))
 		sets[4] = (params[:mail_status]=="-1" ? nil :  Mail.includes(:entity, :assignedusers).where(mail_status: params[:mail_status]))
 		sets[5] = (params[:assigned]=="-1" ? nil :  User.find(params[:assigned]).assignedmails.includes(:entity, :assignedusers))
-		(sets.inject{ |res, set| (set.nil? ? res : res.merge(set)) }).order(date: :desc)
+		(sets.inject{ |res, set| (set.nil? ? res : res.merge(set)) }).order(date: :desc, protocol: :desc)
 	end
 end #class end
 
