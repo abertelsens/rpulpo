@@ -8,10 +8,12 @@
 - 210216 Avoid temp files to show up 
 - 210216 Sort mails by date and then by protocol
 - 210216 Suggest protocol for new mail
+- 210217 cambiar numero de ropa a int
+- 210217 add field alumnos and respective queries. Updated help
 
 # Mail 
 
 
 # Ropa
 
-- [ ] cambiar numero de ropa a int
+ 

@@ -12,6 +12,16 @@ Stimulus.register("search", class extends Controller {
   
   connect() {
     console.log("Stimulus Connected: search controller");
+    var width = window.innerWidth
+    || document.documentElement.clientWidth
+    || document.body.clientWidth;
+
+    var height = window.innerHeight
+    || document.documentElement.clientHeight
+    || document.body.clientHeight;
+
+    console.log(width)
+    console.log(height)
   }
 
   submit() {

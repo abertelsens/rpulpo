@@ -23,6 +23,7 @@ Hay algunos **campo de tipo numérico**, por ejemplo `ctr` puede contener cuatro
 | n_agd | integer | Si es n o ag. e. Puede contener dos valores: 0 - n, 1 - agd | n, agd |
 | ctr | integer | ctr en el que vive. Puede contener cuatro valores: 0 - cavabianca, 1 - ctr dependiente, 2 no ha llegado, 3 se ha ido | centro, center |
 | year | date | año en el crs+ | año |
+| student | boolean | si se considera alumno del crs+ | alumno |
 | clothes | string |  | ropa, número, numero, num |
 | arrival | date | fecha de llegada al crs+ | llegada |
 | departure | date | fecha de salida del crs+ | salida |
@@ -43,6 +44,7 @@ Se ofrecen algunos aliases para búsqueda más frecuentes.
 | diáconos, diaconos, diácono, diacono, diac  | `status:1` | Búsqueda de todos los diáconos |
 | agd | `n_agd:1` |  Búsqueda de todos los agregados |
 | laicos, laico | `status:0` | Búsqueda de todos los laicos |
+| students, alumnos | `student:true` | Búsqueda de todos los alumnos del crs+ |
 | cavabianca, cb | `ctr:0` | Búsqueda de todos los que viven actualmente en Cavabianca |
 | dep | `ctr:1` | Búsqueda de todos los que viven actualmente en ctr dependientes (no en Cavabianca) |
 | fuera, se han ido | `ctr:3` | Búsqueda de todos los que se han ido de Roma |

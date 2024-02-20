@@ -23,7 +23,6 @@ script type="module" src="javascript/application.js"
 
 
 /! Load all Stimulus Controllers
-- puts "Current dir: #{Dir.pwd}\n\n\n\n\n\n\n"
 - Dir.glob("app/public/javascript/controllers/*.js").each do |controller|  
   - controller.slice!("app/public/")
   script type="module" src=controller
@@ -98,8 +97,11 @@ html
             a.button.menu-item data-turbo-frame="main_frame" href='/entities' 
               i.fa-solid.fa-house
               | &nbspEntitites
+            a.button.menu-item data-turbo-frame="main_frame" href='/matrix' 
+              i.fa-solid.fa-house
+              | &nbspMatrix
     
     - if !@current_user.nil? 
-      turbo-frame id="main_frame" src="/people"
+      turbo-frame id="main_frame" src=(@current_user.mail_user? ? "/mails" : "/people")
   
      

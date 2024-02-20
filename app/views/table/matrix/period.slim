@@ -1,0 +1,21 @@
+turbo-frame id="periods_table"
+  div.table-container
+    div.table-table  
+      div.table-row-head
+        div.table-cell-head.long-field = "nombre"
+        div.table-cell-head.medium-field = "desde"
+        div.table-cell-head.medium-field = "hasta"
+
+      - @objects.each.with_index do |object, index|
+        //turbo-frame id="people_#{object.id}"
+        a.table-row-body href="/matrix/period/#{object.id}" data-turbo-frame="main_frame"
+          div.table-cell-body  = object.name
+          div.table-cell-body  = object.s_date.strftime("%d-%m-%y")
+          div.table-cell-body  = object.e_date.strftime("%d-%m-%y")
+         
+            
+                  
+              
+
+        
+        

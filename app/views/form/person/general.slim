@@ -106,11 +106,16 @@ turbo-frame id="main_frame"
 				.columns.two
 					label for="departure" fecha de salida
 					&date.u-full-width name="departure" value=@person&.departure
-				.columns.six
+				.columns.five
 					label.tooltip for="celebration_info" celebración
 						<i class="fa-sharp fa-regular fa-circle-question"></i>
 						<span class="tooltiptext">Ej: Celebra su (santo, cumpleaños) el 15.08</span>
 					&text.u-full-width name="celebration_info" value=@person&.celebration_info
+				.columns.one 
+				label alumno
+				select name="student"
+					option selected=@person&.student value="true" sí
+					option selected=!@person&.student value="false" no
 		
 				/----------------------------------------------------------------------------------------------------------------
 				// FORM BUTTONS

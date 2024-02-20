@@ -85,7 +85,7 @@ get '/person/:id/:module' do
 		when "personal" then @personal = Personal.find_by(person_id: @person.id)
 		when "study" 		then @study = Study.find_by(person_id: @person.id)
 		when "crs" 			then @crs = Crs.find_by(person_id: @person.id)
-		when "rooms", "room"		
+		when "rooms", "room"
 			@object = Room.find_by(person_id: @person.id)
 			@object.nil? ? (redirect "/person/#{params[:id]}") : (return partial :"form/room")
 	end
@@ -110,14 +110,14 @@ post '/person/:id/general' do
 	@current_user = get_current_user
 	@person = (params[:id]=="new" ? nil : Person.find(params[:id]))
 	case params[:commit]
-		when "save"     
-			if @person.nil? 
+		when "save"
+			if @person.nil?
 				@person = Person.create_from_params params
 			else
 				check_update_result (@person.update_from_params params)
 			end
 		# if a person was deleted we go back to the screen fo the people table
-		when "delete" 
+		when "delete"
 				@person.destroy
 				redirect :"/people"
 	end
@@ -134,8 +134,8 @@ post '/person/:id/personal' do
 				@personal = Personal.create Personal.prepare_params params
 			else
 				check_update_result (@personal.update Personal.prepare_params params)
-			end    
-    end    
+			end
+    end
     partial :"view/person"
 end
 
@@ -149,8 +149,8 @@ post '/person/:id/study' do
 			@study = Study.create Study.prepare_params params
 		else
 			check_update_result (@study.update Study.prepare_params params)
-		end    
-	end    
+		end
+	end
 	partial :"view/person"
 end
 
@@ -164,8 +164,8 @@ post '/person/:id/crs' do
 			@crs = Crs.create Crs.prepare_params params
 		else
 			check_update_result (@crs.update Crs.prepare_params params)
-		end    
-	end    
+		end
+	end
 	partial :"view/person"
 end
 
@@ -190,7 +190,7 @@ get '/people/:id/document/:doc_id' do
 	else
 		@people = [Person.find(params[:id])]
 	end
-	
+
 	@document = Document.find(params[:doc_id])
 	puts "found document #{@document.to_s}"
 	@writer = @document.get_writer @people
@@ -204,16 +204,16 @@ get '/people/:id/document/:doc_id' do
 	puts "found writer #{@writer.to_s}"
 	case @document.engine
 	when "prawn"
-		headers 'content-type' => "application/pdf"	
+		headers 'content-type' => "application/pdf"
 		body @writer.render
-	when "excel" 
+	when "excel"
 		send_file @writer.render(), :filename => "#{@document.name}.xlsx"
 	when "typst"
 		if @document.has_template_variables?
 				puts Rainbow("Document has template variables").red
 				@template_variables = @document.get_template_variables
 				@set = params[:id]
-				return partial :'form/report' 
+				return partial :'form/report'
 		else
 			puts Rainbow("Document has NO template variables").red
 		end
@@ -237,17 +237,17 @@ post '/people/:id/document/:doc_id' do
 	else
 		@people = [Person.find(params[:id])]
 	end
-	
+
 	@document = Document.find(params[:doc_id])
 	@writer = @document.get_writer(@people, params)
-	
+
 	case @writer.status
 		when DocumentWriter::WARNING
 			puts Rainbow(@writer.message).orange
 		when DocumentWriter::FATAL
 			puts Rainbow(@writer.message).red
 			return partial :"errors/writer_error"
-	end 
+	end
 	OS.windows? ? (send_file @writer.render) : (body @writer.render)
 end
 
@@ -262,7 +262,11 @@ post '/people/edit_field' do
 	@current_user = get_current_user()
 	get_last_query :people
 	@people = @people_query.nil? ? Person.all.order(family_name: :asc) : (Person.search @people_query, @people_table_settings).order(family_name: :asc)
-	@people.each {|person| person.update(params[:att_name].to_sym => params[params[:att_name]])}
-	partial :"frame/people"
+	if params[:att_name]=="phase"
+		crs = @people.map {|person| person.crs}
+		crs.each {|crs| crs&.update(params[:att_name].to_sym => params[params[:att_name]])}
+	else
+		@people.each {|person| person.update(params[:att_name].to_sym => params[params[:att_name]])}
+	end
+		partial :"frame/people"
 end
-

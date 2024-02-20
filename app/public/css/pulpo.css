@@ -23,7 +23,10 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-}	
+  line-height: 1.4rem
+}
+
+
 
 form {
   margin:0px;
@@ -41,6 +44,11 @@ form {
   padding: 20px
 }
 
+@media all and (max-width: 1500px) {
+  .container-frame {
+    padding: 0px;  
+  }
+}
 .header-row {
   margin-top: 20px;
 }
@@ -85,6 +93,12 @@ flex-direction: column;
   font-size: .85rem;  
 }
 
+@media all and (max-width: 1500px) {
+  .row {
+    font-size: .75rem;  
+  }
+}
+
 /* Escudo de Cavabianca */
 .cb-icon {
   margin-right: 1rem; 
@@ -116,6 +130,11 @@ div.search-filters
   padding-top: 1.4rem
 }
 
+@media all and (max-width: 1500px) {
+  div.search-filters {
+    padding-top: .8rem;
+  }
+}
 /**********************************************************************
 * LOGIN SCREEN
 **********************************************************************/
@@ -205,6 +224,15 @@ a.h4 {
   font-weight: 600;
   color: #1e1e1e;
  }
+
+ 
+@media all and (max-width: 1500px) {
+  div.ref-box a.mail-link {
+   font-size: .8rem;
+   }
+ }
+
+ 
  div.ref-box a.mail-link:hover{
   text-decoration: underline;
  }
@@ -228,6 +256,18 @@ a.h4 {
 .button-square {
   background-color: var(--dark-gray);
   width:3rem; 
+}
+
+@media all and (max-width: 1500px) {
+  button {
+    font-size: .65rem;
+  }
+}
+
+@media all and (max-width: 1500px) {
+  .button {
+    font-size: .65rem;
+  }
 }
 
 /**********************************************************************
@@ -317,6 +357,13 @@ a.h4 {
   width: 100%;
 }
 
+@media all and (max-width: 1500px) {
+  .table-container {
+    max-height: 55vh;;
+  }
+}
+
+
 .table-table {
   display: table;
 }
@@ -341,6 +388,12 @@ a.h4 {
   background-color: white;
   top: 0px;
   z-index: 2;
+}
+
+@media all and (max-width: 1500px) {
+  .table-row-head {
+    font-size: 1rem;
+  }
 }
 
 .table-row-body {
@@ -378,13 +431,16 @@ a.h4 {
   border-bottom: 1px solid var(--light-gray);
 }
 
+
+
+
 a.table-row-body{
   cursor:pointer;
 }
 
 .unread {
   font-weight: 800;
-  background-color: var(--light-orange);
+  /*background-color: var(--light-orange);*/
 }
 
 /*************************************************************************************
@@ -412,8 +468,22 @@ a.table-row-body{
   width: 140px;
 }
 
+
 .short-field {
   width: 60px;
+}
+
+@media all and (max-width: 1500px) {
+  .medium-field {
+    width: 100px;
+  }
+  .long-field {
+    width: 180px;
+  }
+  .xlong-field {
+    width: 500px;
+  }
+  
 }
 
 /*************************************************************************************
@@ -479,6 +549,9 @@ div.nota {
   /*display: inline;*/
 }
 
+
+
+ 
 div.nota li p{
   display: inline;
 }
@@ -537,6 +610,20 @@ div.nota-border{
   border-radius: 10px;
 }
 
+@media all and (max-width: 1500px) {
+  div.nota {
+    line-height: 1.2rem;
+    font-size: .8rem;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    }
+  div.nota p {
+   line-height: 1.2rem;
+   font-size: .8rem;
+   }
+ }
+
+
 .mail.entrada
 {
   color: #1e1e1e;
@@ -588,6 +675,13 @@ h4.help {
  font-weight: 600;
  font-size: 1rem;
  letter-spacing: 0.05rem; 
+}
+
+
+@media all and (max-width: 1500px) {
+  h3 {
+    font-size: 2rem;
+  }
 }
 
 .link-button

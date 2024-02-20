@@ -1,0 +1,52 @@
+/***************************************************************************************************** 
+// FORM for Personal Information about a person
+/*****************************************************************************************************
+
+turbo-frame id="main_frame"
+  	
+	form action="/matrix/day_type/#{(@object.nil? ? "new" : @object.id)}" method="POST" data-controller="modal"
+	
+		.container.full-screen-form.screen-box style="max-width:800px"
+			
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM HEADER
+			//----------------------------------------------------------------------------------------------------------------
+			.row.u-text-center
+				h3 = (@object.nil? ? "NEW DAY DEFINITION" : "DAY: #{@object.name}")
+				
+			/----------------------------------------------------------------------------------------------------------------
+			/----------------------------------------------------------------------------------------------------------------
+			//DOCUMENT FRAME
+			//----------------------------------------------------------------------------------------------------------------
+			.row
+		
+				.columns.twelve
+					label for="name" name
+					&text.u-full-width id="name" name="name" required="true" value=@object&.name
+				
+				.columns.twelve
+					label for="description" descripción
+					&text.u-full-width id="description" name="description" required="true" value=@object&.description
+			
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM BUTTONS
+			//----------------------------------------------------------------------------------------------------------------
+			.row.center-align
+					- if (!@object.nil?) 
+						button.button-secondary data-action="click->modal#open_modal" delete 
+					button.button-primary type="submit" name="commit" value="save" save  
+					a.button.button-secondary formnovalidate="true" href="/matrix" cancel
+					
+
+			.modal data-modal-target="modal" 
+				.modal-content
+					.row.modal-row
+						h4.u-text-center
+							i.fa-solid.fa-triangle-exclamation
+							|&nbspConfirm Delete
+					.row.u-text-center style="margin-bottom:2rem; font-size:1rem"
+						p.modal-text  = "Are you sure you want to delete this day?"
+						p.modal-text = "This action cannot be undone!"
+					.row.center-align
+						button.button-danger formnovalidate="true" type="submit" name="commit" value="delete" delete 
+						button.button-secondary data-action="click->modal#close_modal" cancel

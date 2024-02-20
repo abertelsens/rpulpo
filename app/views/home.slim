@@ -76,6 +76,8 @@ html
             a.button.menu-item data-turbo-frame="main_frame" href='/mails/frame' 
               i.fa-solid.fa-envelope
               | &nbspCorreo
+          
+         
         
       
         div.flex-right  style="flex: 1"
@@ -105,6 +107,6 @@ html
               | &nbspEntitites
       p this is home
       div.row
-        turbo-frame#main_frame src="/people"
+        turbo-frame#main_frame src=(@current_user.mail_user? ? "/mail" : "/people")
   
      

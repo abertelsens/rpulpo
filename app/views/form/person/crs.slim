@@ -73,6 +73,13 @@ turbo-frame id="main_frame"
 				.columns.two
 					label for="presbiterado" presbiterado
 					&date.u-full-width name="presbiterado" value=@crs&.presbiterado
+
+			.row
+				.columns.two.offset-by-two
+					label etapa
+					select.u-full-width name="phase"
+						- Crs.phases.each do |st| 
+							option selected=(@crs&.phase==st[0]) value=st[0] = st[0]
 		
 			.row 
 				.columns.eight.offset-by-two

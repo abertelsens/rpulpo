@@ -5,22 +5,22 @@
 
 # A class containing the Users data
 class User < ActiveRecord::Base
-	
+
 	enum usertype: {normal: 0, admin: 1, guest: 2}
 
 	has_many	:unread_mails, dependent: :destroy
 	has_many	:assigned_mails, dependent: :destroy
 	has_many	:assignedmails, :through => :assigned_mails, :source => :mail , dependent: :destroy
 	has_many 	:module_users, dependent: :destroy
-	
+
 
 ##########################################################################################
 # STATIC METHODS
 ##########################################################################################
-	
+
 	def self.prepare_params(params)
 	{
-		uname: 			params[:uname], 
+		uname: 			params[:uname],
   	password: 	params[:password],
 		usertype:		params[:usertype],
 		mail:				!params[:mail].nil?
@@ -30,9 +30,9 @@ class User < ActiveRecord::Base
 	# creates a user and updated the module permissions.
 	def self.create_from_params(params)
     user = User.create User.prepare_params params
-		PulpoModule.all.each {|mod| user.updatePermission(mod.id, params["module_#{mod.id}".to_sym]) }	
+		PulpoModule.all.each {|mod| user.updatePermission(mod.id, params["module_#{mod.id}".to_sym]) }
 	end
-	
+
 	def self.get_all()
 		User.order(uname: :asc)
 	end
@@ -44,7 +44,7 @@ class User < ActiveRecord::Base
 
   def update_from_params(params)
 		update User.prepare_params params
-		PulpoModule.all.each{|mod| updatePermission(mod.id, params["module_#{mod.id}".to_sym])} 
+		PulpoModule.all.each{|mod| updatePermission(mod.id, params["module_#{mod.id}".to_sym])}
 	end
 
 	# authenticates the user login data.
@@ -80,6 +80,10 @@ class User < ActiveRecord::Base
 		self[:usertype]=="admin"
 	end
 
+	def mail_user?
+		self[:mail]
+	end
+
 	def get_allowed_modules
 		return PulpoModule.all if self.admin? 		# an admin has all permitions.
 		(module_users.select {|mu| mu.modulepermission=="allowed"}).map {|mu| mu.pulpo_module}
@@ -97,32 +101,32 @@ class User < ActiveRecord::Base
 		settings.nil? ? false : settings.modulepermission=="allowed"
 	end
 
-	# admini users can be deleted only if there is more than one. 
+	# admini users can be deleted only if there is more than one.
 	def can_be_deleted?
 		if self[:usertype]!="admin"
-			return true 
+			return true
 		else
 			return User.where(usertype: "admin").size() > 1
 		end
 	end
 
-	# Validates the parametes from the user form. 
+	# Validates the parametes from the user form.
 	# Checks whether there is already a user with the provided user name
 	def self.validate(params)
 		puts "Validating with params #{params}"
-		
+
 		# tries to find an existing user with the name provided.
 		user  = User.find_by(uname: params[:uname])
-		
+
 		puts "found user with username #{params[:uname]}" unless user.nil?
-		
+
 		validation_result = user.nil? ? true : user.id==params[:id]
 		validation_result ? {result: true} : {result: false, message: "user name already in use"}
 	end
 
 
 	def get_mails(args)
-		case args	
+		case args
 			when :assigned 	then assignedmails.pluck(:mail)
 			when :unread	then unreadmails.pluck(:mail)
 		end

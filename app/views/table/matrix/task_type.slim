@@ -1,0 +1,23 @@
+turbo-frame id="task_types_table"
+  div.table-container
+    div.table-table  
+      div.table-row-head
+        div.table-cell-head.short-field = "día"
+        div.table-cell-head.medium-field = "encargo"
+        div.table-cell-head.medium-field = "comienzo"
+        div.table-cell-head.medium-field = "fin"
+
+      - @objects.each.with_index do |object, index|
+        //turbo-frame id="people_#{object.id}"
+        a.table-row-body href="/matrix/task_type/#{object.id}" data-turbo-frame="main_frame"
+          div.table-cell-body  = object.day_type.name
+          div.table-cell-body  = object.task.name
+          div.table-cell-body  = object.s_time.strftime("%H:%M")
+          div.table-cell-body  = object.e_time.strftime("%H:%M")
+         
+            
+                  
+              
+
+        
+        

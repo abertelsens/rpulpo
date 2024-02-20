@@ -1,0 +1,52 @@
+turbo-frame id="main_frame" 
+  
+  .container.container-frame
+    .row.header-frame.u-text-center
+      h3 Matrix
+    .row
+      .columns.three.offset-by-one
+        .row
+          .columns.nine
+            h4.u-text-left Horarios
+
+          .columns.three.flex-right
+            a.button.button-primary.button-small href="/matrix/day_type/new" 
+              i.fa-solid.fa-plus style="font-size:small"
+              |&nbspadd
+          
+          turbo-frame id="day_types_table" src="/matrix/day_type/table"
+        
+        .row.margin-top style="margin-top:40px"
+          .columns.nine
+            h4.u-text-left Encargos
+          
+          .columns.three.flex-right
+            a.button.button-primary.button-small href="/matrix/task/new" 
+              i.fa-solid.fa-plus style="font-size:small"
+              |&nbspadd
+          
+          turbo-frame id="tasks_table" src="/matrix/task/table"
+
+
+        .row.margin-top style="margin-top:40px"
+          .columns.nine
+            h4.u-text-left Definición de Encargos
+          
+          .columns.three.flex-right
+            a.button.button-primary.button-small href="/matrix/task_type/new" 
+              i.fa-solid.fa-plus style="font-size:small"
+              |&nbspadd
+          
+          turbo-frame id="task_types_table" src="/matrix/task_type/table"
+
+
+        .row.margin-top style="margin-top:40px"
+          .columns.nine
+            h4.u-text-left Periodos
+          
+          .columns.three.flex-right
+            a.button.button-primary.button-small href="/matrix/period/new" 
+              i.fa-solid.fa-plus style="font-size:small"
+              |&nbspadd
+          
+          turbo-frame id="periods_table" src="/matrix/period/table"

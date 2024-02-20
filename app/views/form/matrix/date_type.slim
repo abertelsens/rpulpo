@@ -1,0 +1,51 @@
+/***************************************************************************************************** 
+// FORM for Personal Information about a person
+/*****************************************************************************************************
+
+turbo-frame id="main_frame"
+  	
+	form action="/matrix/date_type/#{(@object.nil? ? "new" : @object.id)}" method="POST" data-controller="modal"
+	
+		.container.full-screen-form.screen-box style="max-width:1000px"
+			
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM HEADER
+			//----------------------------------------------------------------------------------------------------------------
+			.row.u-text-center
+				h3 = (@object.nil? ? "" : "#{@object.date.strftime("%d %b - %a")}")
+				
+			/----------------------------------------------------------------------------------------------------------------
+			/----------------------------------------------------------------------------------------------------------------
+			//DOCUMENT FRAME
+			//----------------------------------------------------------------------------------------------------------------
+			.row
+				.columns.five.offset-by-one
+					.row
+						label for="date" fecha
+						&date.u-full-width id="date" name="date" required="true" value=@object&.date
+					
+					.row
+						label for="day_type" día
+						select.u-full-width id="day_type" name="day_type" 
+							- DayType.all.each do |dt|
+								option selected=(@object.nil? ? false : (@object.day_type_id==dt)) value=dt.id = "#{dt.name} - #{dt.description}"
+				.columns.five.offset-by-one
+					- people = Person.all	
+					- TaskType.includes(:task).joins(:task).where(day_type: @object.day_type).all.order("tasks.name asc").each do |tt|
+						.columns.twelve	
+							label for="task" = tt.task.name
+							select.u-full-width id="task_#{tt.task.id}" name="task[#{tt.task.id}]"
+								- ta = TaskAssignment.includes(:person).find_by(date_type: @object, task: tt.task)
+								- people.each do |p|
+									option selected=(p==ta&.person) value=p.id = p.short_name
+					
+			
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM BUTTONS
+			//----------------------------------------------------------------------------------------------------------------
+			.row.center-align
+					- if (!@object.nil?) 
+						button.button-secondary data-action="click->modal#open_modal" delete 
+					button.button-primary type="submit" name="commit" value="save" save  
+					a.button.button-secondary formnovalidate="true" href="/matrix/period/#{@object.period.id}" cancel
+					

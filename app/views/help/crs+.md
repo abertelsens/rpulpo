@@ -16,6 +16,16 @@ La tabla de Datos del crs+ contiene información sobre las admisiones así como 
 | presbiterado | date | Fecha del presbiterado |  |
 | cipna | string | año(s) en los que estuvo en Aralar |  |
 | classnumber | string | promoción del Colegio Romano |  |
+| phase | integer | Estapa de acuerdo a las etapas definidas por el Dicasterio del Clero | fase, etapa |
 
+
+## Query Aliases
 
 La tabla contiene más datos, pero la búsqueda se ha restringido a estos campos.
+
+Se ofrecen algunos aliases para búsqueda más frecuentes. 
+
+| Alias(es) | Query | Descripción |
+| discipular, disc | `phase:0` | Búsqueda de todos los que están en la etapa discipular |
+| configuracional, config | `phase:1` | Búsqueda de todos los que están en la etapa configuracional |
+| sintesis, síntesis, sint | `pahse:2` | Búsqueda de todos los que están en la etapa de síntesis |

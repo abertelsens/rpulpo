@@ -1,7 +1,9 @@
 class Crs < ActiveRecord::Base
 
+    enum phase:     {discipular: 0, configuracional:1, síntesis:2, propedeutica: 4}
+
 	belongs_to 	:person
-	
+
 	def self.prepare_params(params)
         {
             person_id: 		params[:person_id],
@@ -17,7 +19,8 @@ class Crs < ActiveRecord::Base
             acolitado:      params[:acolitado],
             lectorado:    	params[:lectorado],
             cipna:        	params[:cipna],
-            notes:        	params[:notes]    
+            notes:        	params[:notes],
+            phase:        	params[:phase]
         }
     end
 
@@ -25,7 +28,13 @@ class Crs < ActiveRecord::Base
        true
     end
 
-    def get_next_fidelidad
+    def self.get_editable_attributes()
+        [
+            {name: "phase",          value: "options",   description: "etapa (dicasterio)"},
+        ]
+        end
+
+        def get_next_fidelidad
 			(fidelidad.nil? || fidelidad < Date.today) ? false : oblacion.next_year(5)
 		end
 

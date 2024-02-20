@@ -56,7 +56,7 @@ Bundler.require(:default, ENV["RACK_ENV"].to_sym)
 
 require 'localhost'
 
-configure :production do 
+configure :production do
     set :server, :puma
     set :host, 'ssl://localhost:2948'
     set :force_ssl, true
@@ -67,7 +67,7 @@ end
 enable :sessions
 
 #0 do not print anything, 1 print controller info, 2 print params
-SINATRA_LOG_LEVEL = 2   
+SINATRA_LOG_LEVEL = 2
 
 ########################################################################################
 # SLIM SETUP
@@ -115,7 +115,7 @@ get '/navbar' do
 end
 
 get '/logout' do
-    cookies[:current_user_id] = nil 
+    cookies[:current_user_id] = nil
     redirect '/login'
 end
 
@@ -150,7 +150,7 @@ get '/help' do
 end
 
 # adds or removes all the visible people on a table from the current set.
-get '/help/:page' do  
+get '/help/:page' do
     file_body = GitHub::Markup.render("{params[:page].md", File.read("app/views/help/#{params[:page]}.md"))
     "<turbo-frame id=\"help_frame\" target=\"help_frame\">
     #{file_body}
@@ -202,3 +202,29 @@ end
 #p.update(refs_string: p.refs.pluck(:protocol).join(", "))
 #p.update(ans_string: p.ans.pluck(:protocol).join(", "))
 #end
+
+#£Person.all.each{|person| person.update(student: true)}
+#Person.where(status:"sacerdote").each{|person| person.update(student: false)}
+
+#(Crs.where.not(admissio:nil).and(Crs.where(diaconado:nil))).each{|crs| crs.update(phase: "configuracional")}
+=begin
+type_l = DayType.create(name: "L", description: "laborable: periodo normal de clases" )
+DayType.create(name: "D", description: "Domingo y Fiestas A y B sin encargo" )
+visitasPM = Task.create(name: "visitas PM")
+Task.create(name: "portería T1")
+Task.create(name: "portería T2")
+Task.create(name: "portería T3")
+
+
+=end
+#Period.create(name: "febrero 2023", s_date: Date::strptime("1-2-2024","%d-%m-%Y"), e_date: Date::strptime("2-2-2024","%d-%m-%Y"))
+#type_l = DayType.find_by(name:"L")
+#visitasAM = Task.find_by(name: "visitas AM")
+#TaskType.create(day_type: type_l, task: visitasAM, s_time: Time.parse("08:00") , e_time: Time.parse("12:30"))
+#dt = DateType.create(day_type: type_l, date: Date::strptime("1-2-2024","%d-%m-%Y"))
+#dt = DateType.find_by(day_type: type_l, date: Date::strptime("1-2-2024","%d-%m-%Y"))
+#
+#ta = TaskAssignment.create(person: Person.find_by(clothes: 96), task: visitasAM, date_type: dt )
+#ta = TaskAssignment.find_by(person: Person.find_by(clothes: 96), task: visitasAM, date_type: dt)
+#ta.get_date_type
+#ta.get_task_type

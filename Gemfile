@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 require 'os'
-ruby '3.2.2' 
+ruby '3.2.2'
 gem 'sinatra',            '2.1.0'
 #gem 'sinatra-flash'
 gem 'sinatra-partial'
@@ -15,7 +15,7 @@ gem 'puma'
 gem 'pg'
 gem 'redcarpet'
 gem 'rb_sys'
-gem 'typst' if OS.mac? 
+gem 'typst' if OS.mac?
 gem 'activerecord-postgresql-adapter'
 gem 'groupdate'
 gem 'activerecord', '~> 7.0', '>= 7.0.4.2'
@@ -39,5 +39,5 @@ gem 'github-markup'
 gem 'commonmarker'
 gem 'rack-ssl-enforcer'
 gem 'encrypted_cookie'
-
-
+gem 'google_calendar'
+gem 'solargraph'

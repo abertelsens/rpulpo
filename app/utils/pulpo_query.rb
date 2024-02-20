@@ -10,7 +10,7 @@ class PulpoQuery
 
 	AND_DELIMITERS = [' AND ', ' and ']
 	OR_DELIMETERS = [' ', ' OR ', ' or ']
-	
+
 	SETTINGS_FILE_PATH = "app/settings/query_settings.yaml"
 	SETTINGS_YAML = YAML.load_file(SETTINGS_FILE_PATH)
 	QUERY_ALIASES = SETTINGS_YAML["query_aliases"].map {|al| {from: al.first[0], to: al.first[1]} }
@@ -19,33 +19,33 @@ class PulpoQuery
 	ATTRIBUTES = TableSettings.get_all_attributes
 
 	def initialize(query_string, table_settings=nil)
-		
+
 		@order = table_settings.nil? ? [] : table_settings.get_order
 		@main_table = table_settings.nil? ? [] : table_settings.main_table
 		@tables = table_settings.nil? ? [] : table_settings.get_tables
 		@tables = (@tables-[@main_table]).map {|table| TABLES_MODELS[table]}
-		
-		
+
+
 		if query_string.nil?
 			@query_array = []
 		else
-			
+
 			# clean any ' character
 			query_string = query_string.strip.gsub(/'+/, '')
-			
+
 			# clean any whitespaces after colons: i.e. "clothes:  96" will become clothes:96
 			query_string = query_string.strip.gsub(/:\s+/, ':')
-			
+
 			# clean any more occurence of several white spaces
 			query_string = query_string.gsub(/\s+/, ' ')
-			
+
 			#replace the query alias if found
 			#query_string = QUERY_ALIASES[query_string] unless QUERY_ALIASES[query_string].nil?
 			QUERY_ALIASES.each { |pair| query_string.gsub!(/#{pair[:from]}/, pair[:to]) }
-	
+
 			# split the string into AND clauses
 			@query_array = query_string.split(Regexp.union(AND_DELIMITERS))
-		end	
+		end
 	end
 
 	def execute
@@ -53,38 +53,38 @@ class PulpoQuery
 			return Person.all.includes(@tables).order(@order) if @main_table=="people"
 			return Room.all.includes(@tables).order(@order) if @main_table=="rooms"
 		end
-		
+
 		# execute the OR clauses
 		res_array = @query_array.map{|or_clauses| execute_or_clauses(or_clauses)}
-		
+
 		# execute the AND clauses
 		result = res_array.inject{ |carry, res| (res.nil? || carry.nil?) ? nil : carry.and(res) }
-		
-		result.nil? ? [] : result.order(@order) 
+
+		result.nil? ? [] : result.order(@order)
 	end
-		
+
 	def status
 		return @status
 	end
-	
+
 	# A clause is a string fo the form "attibute:value" or a concatenation of the form "attibute:value (OR) attibute:value"
 	def execute_or_clauses(query_string)
-		
+
 		#puts "executin execute_or_clauses of string #{query_string}"
 		query_array = query_string.split(Regexp.union(OR_DELIMETERS))
-		
+
 		# transform the clauses into Attributes Queries
 		attributes_array = query_array.map { |clause| AttributeQuery.new(clause, @main_table, @tables) }
-		
+
 		# use only the well formed attributes
 		attributes_array = attributes_array.select { |att| att.status }
-		
+
 		attributes_array = attributes_array.map { |clause| clause.execute }
 		#puts "got attributes array after executing or clauses #{attributes_array}"
-		
+
 		attributes_array.inject{ |res, condition| condition.nil? ? res : res.or(condition) }
 	end
-	
+
 end # class end
 
 class AttributeQuery
@@ -99,14 +99,14 @@ class AttributeQuery
 		attr_accessor :status
 
     def initialize(query_string, main_table, tables)
-        
+
 			@main_table	= main_table
 			@tables	= tables
-		
+
 		query_array = query_string.split(":")
-		
+
 		# if the query string is not of the form att:value but only a simple string "value"
-		#  we replace it with the defaull attribute i.e. default_attibuete:value  
+		#  we replace it with the defaull attribute i.e. default_attibuete:value
 		if query_array[1].nil?
 			@att_name = DEFAULT_ATTRIBUTES[@main_table]
 			@att_value = query_array[0]
@@ -114,29 +114,29 @@ class AttributeQuery
 			@att_name = query_array[0]
 			@att_value = query_array[1]
 		end
-		
+
 		#check whether there an alias is used for the attribute name or for the attribute value
 		@att_name = NAME_ALIASES[@att_name] unless NAME_ALIASES[@att_name].nil?
-		
+
 		# if the attribute name is not found in the attributes list we set the status to false
-		@status = !TableSettings.get_attribute_by_name(@att_name).nil?  
+		@status = !TableSettings.get_attribute_by_name(@att_name).nil?
 
 	end
 
 	def execute
-		
+
 		return nil if !@status
-		
+
 		att = TableSettings.get_attribute_by_name(@att_name)
 		table, field_name = att.field.split(".")
 		#puts Rainbow("searching @att_name #{@att_name} got #{att} table:#{att.table} filed:#{att.field} type:#{att.type}").yellow
-		
+
 		condition = case att.type
 			when "string"
 				"#{att.field} ILIKE '%#{@att_value}%'"
 			when "integer", "enum"
 				# if the value cannot be cast into an integer we set a value of -1 to return an empty set
-				if Integer(@att_value, exception: false).nil?   
+				if Integer(@att_value, exception: false).nil?
 					{att.field.to_sym => -1}
 				else
 					{att.field.to_sym => @att_value}
@@ -147,23 +147,28 @@ class AttributeQuery
 				else
 					"date_part('year', #{att.field})=#{@att_value}"
 				end
+			when "boolean"
+				"#{att.field}=#{@att_value=="true"}"
 			end
-		
+
+		puts Rainbow("main table: #{@main_table}").yellow
+		puts Rainbow("tables: #{@tables}").yellow
+		puts Rainbow("main condition: #{condition}").yellow
 		# the code is a bit complex but it allows us to include in the query the tables that are needed to show the records
 		# and avoid n+1 queries
 		case @main_table
 			when "people"
 				case table
 					when "people" then (@tables.empty? ? Person.where(condition) : Person.includes(@tables).where(condition))
-					when "personals" then (@tables.empty? ? Person.joins(:personal).where(condition) : Person.includes(@tables).joins(:personal).where(condition)) 
-					when "studies" then (@tables.empty? ? Person.joins(:study).where(condition) : Person.includes(@tables).joins(:study).where(condition)) 
-					when "crs" then (@tables.empty? ? Person.joins(:crs).where(condition) : Person.includes(@tables).joins(:crs).where(condition)) 
-					when "rooms" then (@tables.empty? ? Person.joins(:room).where(condition) : Person.includes(@tables).joins(:room).where(condition)) 
+					when "personals" then (@tables.empty? ? Person.joins(:personal).where(condition) : Person.includes(@tables).joins(:personal).where(condition))
+					when "studies" then (@tables.empty? ? Person.joins(:study).where(condition) : Person.includes(@tables).joins(:study).where(condition))
+					when "crs" then (@tables.empty? ? Person.joins(:crs).where(condition) : Person.includes(@tables).joins(:crs).where(condition))
+					when "rooms" then (@tables.empty? ? Person.joins(:room).where(condition) : Person.includes(@tables).joins(:room).where(condition))
 				end
 			when "rooms"
 				case table
 					when "rooms" then (@tables.empty? ? Room.where(condition) : Room.includes(@tables).where(condition))
-					when "people" then (@tables.empty? ? Room.joins(:person).where(condition) : Room.includes(@tables).joins(:person).where(condition))  
+					when "people" then (@tables.empty? ? Room.joins(:person).where(condition) : Room.includes(@tables).joins(:person).where(condition))
 				end
 			end
 	end
