@@ -13,7 +13,6 @@ class Mail < ActiveRecord::Base
 	enum mail_status:    	{ pendiente: 0, en_curso: 1, terminado: 2 }
 
 	belongs_to 	:entity
-	has_many 	:unreadmails, dependent: :destroy, class_name: 'UnreadMail'
 	has_many 	:assigned_mails, dependent: :destroy
 	has_many 	:assignedusers, :through => :assigned_mails, :source => :user, dependent: :destroy
 	has_many 	:references, dependent: :destroy
@@ -22,20 +21,28 @@ class Mail < ActiveRecord::Base
 	has_many 	:ans,	:through => :answers, :source => :answer
 	has_many 	:mail_files, dependent: :destroy
 
-##########################################################################################
-# STATIC METHODS
-##########################################################################################
+# -----------------------------------------------------------------------------------------
+# CALLBACKS
+# -----------------------------------------------------------------------------------------
+
+	after_create do |mail|
+		User.get_mail_users.each{|user| user.add_unread_mail mail }
+	end
+
+# -----------------------------------------------------------------------------------------
+# CRUD
+# -----------------------------------------------------------------------------------------
 
 	# prepares params after receiving them from the form.
 	def self.prepare_params(params=nil)
 		if params.nil? # no params provided. We create default params
 			{
 			entity: 		Entity.find_by(sigla: "crs+"),
-			date:			Date.today,
+			date:				Date.today,
 			topic:			"",
 			protocol:		"crs+ XX/XX",
-			direction:		0,
-			mail_status:	0
+			direction:	0,
+			mail_status:0
 			}
 		else
 			{
@@ -47,65 +54,24 @@ class Mail < ActiveRecord::Base
 		end
 	end
 
-	# creates a user and updated the module permissions.
 	def self.create_from_params(params=nil)
-		mail = Mail.create(prepare_params params)
-		User.where(mail:true).each {|user| UnreadMail.create(mail_id: mail.id, user_id:user.id)}
-		return mail
-	end
-
-	# return an array of mail objects given a string of the type "prot1, prot2"
-	def self.find_mails(protolos_string)
-		protolos_string.split(",").map{|prot| Mail.find_by(protocol: prot.strip)}
-	end
-
-	def self.assign_protocol(entity)
-		current_year = Date.today().year
-		mails = Mail.where(entity: entity, direction: "salida").and(Mail.where("date_part('year', date)=#{current_year}"))
-		protocols = mails.map {|mail| mail.get_protocol_serial[0].to_i }
-		"#{protocols.max + 1}/#{current_year-2000}"
-	end
-
-	def get_protocol_serial()
-		m = protocol.match(/(?<num>[0-9]+)\/(?<year>[0-9]{2})/)
-		return [-1,-1] if m.nil?
-		[m[:num].to_i,m[:year].to_i]
+		Mail.create(prepare_params params)
 	end
 
 	def update_from_params(params)
-		set_assigned_users(params[:assigned])
-		set_references(params[:references])
-		set_answers(params[:answers])
+		update(assignedusers: (User.find params[:assigned])) unless params[:assigned].nil?
+		update_references(params[:references])
+		update_answers(params[:answers])
 		update(Mail.prepare_params params)
-	end
-
-	# users arry contains an array of users ids
-	def set_answers(answers_string)
-		answers = Mail.find_mails answers_string
-		answers==[] ? ans.destroy_all : update(ans: answers)
-	end
-
-	# users arry contains an array of users ids
-	def set_references(references_string)
-		references = Mail.find_mails references_string
-		references==[] ? self.references.destroy_all : self.update(refs: references)
-	end
-
-	# checks if a given protocols string contains exisiting mails.
-	def check_protocols(protocols_string)
-		return {result: true, data: nil} if protocols_string.strip.empty?
-		mails = Mail.find_mails protocols_string
-		r = mails.map{|mail| {protocol: protocol, status: mail!=nil} }
-		res = r.map{|elem| elem[:status]}.inject(:&)
-		{result: res, data: r}
 	end
 
 	# checks if a given protocols string contains exisiting mails.
 	def update_references(protocols_string)
+		references = Mail.find_mails protocols_string
 		if protocols_string.blank?
 			references.destroy_all
 			return {result: true}
-		else#return {result: true, data: nil} if protocols_string.strip.empty?
+		else
 			mails = Mail.find_mails protocols_string
 			r = mails.map{|mail| {protocol: protocol, status: mail!=nil} }
 			res = r.map{|elem| elem[:status]}.inject(:&)
@@ -120,7 +86,6 @@ class Mail < ActiveRecord::Base
 			answers.destroy_all
 			return {result: true}
 		else
-			#return {result: true, data: nil} if protocols_string.strip.empty?
 			mails = Mail.find_mails protocols_string
 			r = mails.map{|mail| {protocol: protocol, status: mail!=nil} }
 			res = r.map{|elem| elem[:status]}.inject(:&)
@@ -134,6 +99,32 @@ class Mail < ActiveRecord::Base
 		users_array.nil? ? AssignedMail.where(mail: self).destroy_all : update(assignedusers: User.find(users_array))
 	end
 
+# -----------------------------------------------------------------------------------------
+# ACCESSORS
+# -----------------------------------------------------------------------------------------
+
+	# return an array of mail objects given a string of the type "prot1, prot2"
+	def self.find_mails(protocols_string)
+		protocols_string.split(",").map{|prot| Mail.find_by(protocol: prot.strip)}
+	end
+
+	# given an entity suggest the next protocol for an outgoing mail to that entity
+	def self.assign_protocol(entity)
+		current_year = Date.today.year
+		# get all the outgoing mails from the entity this year
+		mails = Mail.where(entity: entity, direction: "salida").and(Mail.where("date_part('year', date)=#{current_year}"))
+		protocols = mails.map {|mail| mail.get_protocol_serial[0].to_i }
+		"crs+ #{protocols.max + 1}/#{current_year-2000}"
+	end
+
+	# given a protocol retuns and array with the numers corresponding to the number and the year
+	# for example: for a mail with protocol "crs+ 56/24" the result will be [56,24]
+	def get_protocol_serial()
+		m = protocol.match(/(?<num>[0-9]+)\/(?<year>[0-9]{2})/)
+		return [-1,-1] if m.nil?
+		[m[:num].to_i,m[:year].to_i]
+	end
+
 	# users arry contains an array of users ids
 	def get_assigned_users()
 		assignedusers.pluck(:uname).join("-")
@@ -144,6 +135,9 @@ class Mail < ActiveRecord::Base
 		res.pluck(:protocol).join("-")
 	end
 
+	#-----------------------------------------------------------------------------------------------------
+	# REVISANDO AQUI
+	#-----------------------------------------------------------------------------------------------------
 	def send_related_files_to_users(users)
 		set_assigned_users users.split(",")
 		assignedusers.each {|u| (send_related_files_to_user u)} unless (users.nil? || users.blank?)
@@ -290,12 +284,12 @@ class UnreadMail < ActiveRecord::Base
 end
 
 class AssignedMail < ActiveRecord::Base
-	belongs_to 	:mail, :class_name => "Mail"
-	belongs_to 	:user, :class_name => "User"
+	belongs_to 	:mail
+	belongs_to 	:user
 end
 
 class Reference < ActiveRecord::Base
-	belongs_to 	:mail, 		:class_name => "Mail"
+	belongs_to 	:mail
 	belongs_to 	:reference, :class_name => "Mail"
 
 	after_save do
@@ -325,6 +319,6 @@ class Answer < ActiveRecord::Base
 end
 
 class UnreadMail < ActiveRecord::Base
-	belongs_to 	:mail, 		:class_name => "Mail"
-	belongs_to 	:user, 		:class_name => "User"
+	belongs_to 	:mail
+	belongs_to 	:user
 end

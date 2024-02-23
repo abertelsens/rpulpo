@@ -18,8 +18,9 @@ end
 # renders the table of people
 # @objects the people that will be shown in the table
 get '/mails/table' do
+    @current_user = get_current_user
     @objects = Mail.search (get_last_query :mails)
-    @unread = UnreadMail.where(user: get_current_user).pluck(:mail_id)
+    @unread = @current_user.unread_mails.pluck(:mail_id)
     @unread = [] if @unread.nil?
     partial :"table/mail"
 end

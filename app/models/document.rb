@@ -1,8 +1,8 @@
-###########################################################################################
+# -----------------------------------------------------------------------------------------
 # DESCRIPTION
 # A class defining a Document object.
-# Each Document has an engine in charge of writing the documetn. 	
-###########################################################################################
+# Each Document has an engine in charge of writing the document.
+# -------------------------------------------------------------############################
 
 # requires the engines to produce the documents.
 require_rel '../engines'
@@ -13,9 +13,11 @@ class Document < ActiveRecord::Base
 	TYPST_TEMPLATES_DIR = "app/engines-templates/typst"
 
 	belongs_to 	    :pulpo_module
-	enum engine:    {prawn: 0, excel:1, typst:2} 
 
-  # if a document is destroyed then we delete the associated file stored in the corresponding templates directory
+	enum engine:    {prawn: 0, excel:1, typst:2}
+
+  # if a document is destroyed then we delete the associated file stored in the corresponding
+	# templates directory
 	before_destroy do |doc|
 		if doc.engine!="prawn"
 			full_path = doc.get_full_path
@@ -28,7 +30,7 @@ class Document < ActiveRecord::Base
 		# upddates the template file according to the new file received by the form (in params[:template])
 		doc.update_template_file(params[:template][:tempfile], params[:template][:filename]) unless params[:template].nil?
 	end
-	
+
 	def update_from_params(params)
 		if params[:name]!=self.name     # the name of the template did not change
 			if params[:template].nil?  		# no new file was provided. We just update the name of the current file
@@ -37,7 +39,7 @@ class Document < ActiveRecord::Base
 					when "excel"  then "#{EXCEL_TEMPLATES_DIR}/#{params[:name]}.yaml"
 					when "typ"  	then "#{TYPST_TEMPLATES_DIR}/#{params[:name]}.typ"
 				end
-				FileUtils.mv get_full_path, target 
+				FileUtils.mv get_full_path, target
 			end
 		end
 		res = update Document.prepare_params params
@@ -67,7 +69,7 @@ class Document < ActiveRecord::Base
 		file_suffix = Document.get_template_extension params[:engine]
 		if params[:template]!=nil
 			template_variables = if params[:engine]=="typst"
-					Document.has_template_variables?(File.read params[:template][:tempfile])   
+					Document.has_template_variables?(File.read params[:template][:tempfile])
 				else
 					false
 				end
@@ -79,15 +81,15 @@ class Document < ActiveRecord::Base
 				engine:                 params[:engine],
 				path:                   (params[:engine].blank? ? "" : "#{params[:name]}.#{file_suffix}"),
 				template_variables:     template_variables
-		}        
+		}
 	end
 
-	def self.get_docs_of_user(user)	
-		Document.includes(:pulpo_module).all.order(:pulpo_module_id).select{|doc| user.get_allowed_modules.include? doc.pulpo_module }        
+	def self.get_docs_of_user(user)
+		Document.includes(:pulpo_module).all.order(:pulpo_module_id).select{|doc| user.get_allowed_modules.include? doc.pulpo_module }
 	end
 
-	def self.get_pdf_docs_of_user(user)	
-		Document.includes(:pulpo_module).all.order(:pulpo_module_id).select{|doc| ((user.get_allowed_modules.include? doc.pulpo_module) && doc.engine!="excel")}        
+	def self.get_pdf_docs_of_user(user)
+		Document.includes(:pulpo_module).all.order(:pulpo_module_id).select{|doc| ((user.get_allowed_modules.include? doc.pulpo_module) && doc.engine!="excel")}
 	end
 
 	def get_writer(people, template_variables=nil)
@@ -98,7 +100,7 @@ class Document < ActiveRecord::Base
 		end
 	end
 
-			
+
 	def self.has_template_variables?(source)
 			variables = source.scan(/\$\S*\$/)
 			template_variables = variables.select { |var| var.gsub("$","").split(".")[1].nil? }

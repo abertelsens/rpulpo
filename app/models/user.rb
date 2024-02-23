@@ -12,6 +12,7 @@ class User < ActiveRecord::Base
 	has_many	:assignedmails, :through => :assigned_mails, :source => :mail , dependent: :destroy
 	has_many 	:module_users, dependent: :destroy
 
+
 # -----------------------------------------------------------------------------------------
 # CALLBACKS
 # -----------------------------------------------------------------------------------------
@@ -101,6 +102,16 @@ class User < ActiveRecord::Base
 		end
 	end
 
+	def self.get_mail_users
+		User.where(mail:true)
+	end
+
+# -----------------------------------------------------------------------------------------
+# ACCESSORS
+# -----------------------------------------------------------------------------------------
+def add_unread_mail(mail)
+	UnreadMail.create(user:self, mail:mail)
+end
 # -----------------------------------------------------------------------------------------
 # PERMISSIONS
 # -----------------------------------------------------------------------------------------
