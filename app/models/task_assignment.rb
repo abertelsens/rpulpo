@@ -19,7 +19,4 @@ class TaskAssignment < ActiveRecord::Base
 		end
 	end
 
-	self.has_assignment?(person)
-
-	end
-end
+end #class end

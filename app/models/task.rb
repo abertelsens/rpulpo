@@ -18,15 +18,15 @@ class Task < ActiveRecord::Base
             schedule_id: schedule_id,
             task:self,
             number: number[schedule_id],
-            s_time:  parse_string s_time[schedule_id],
-            e_time:  parse_string e_time[schedule_id],
+            s_time:  parse_string(s_time[schedule_id]),
+            e_time:  parse_string(e_time[schedule_id]),
             notes: notes[schedule_id]
             )
         else
           ts.update(
             number: number[schedule_id],
-            s_time:  parse_string s_time[schedule_id],
-            e_time:  parse_string e_time[schedule_id],
+            s_time:  parse_string(s_time[schedule_id]),
+            e_time:  parse_string(e_time[schedule_id]),
             notes: notes[schedule_id]
           )
         end

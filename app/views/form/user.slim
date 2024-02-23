@@ -54,7 +54,7 @@ turbo-frame id="main_frame"
 					- PulpoModule.all().each do |mod|
 						label for="module_permission" = mod.name
 						// PERMISSIONS SELECT, uses the values of an enum object.
-						select.u-full-width name="module_#{mod.id}"
+						select.u-full-width name="module[#{mod.id}]"
 							- ModuleUser.modulepermissions.each do |permission|
 								option selected=(@object&.get_permission(mod)==permission[0]) value=permission[0] = permission[0].humanize(capitalize: false) 
 

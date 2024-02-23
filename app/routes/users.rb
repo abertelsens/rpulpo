@@ -38,7 +38,7 @@ post '/user/:id' do
     @user = (params[:id]=="new" ? nil : User.find(params[:id]))
     case params[:commit]
         when "save"
-            @user  = @user.nil? ? (User.create_from_params params) : (@user.update_from_params params)
+            @user  = @user.nil? ? (User.create params) : (@user.update params)
             check_update_result @user
         when "delete" 
             @user.destroy

@@ -130,6 +130,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_22_093429) do
     t.string "name"
     t.date "s_date"
     t.date "e_date"
+    t.index ["s_date", "e_date"], name: "index_periods_on_s_date_and_e_date", unique: true
   end
 
   create_table "personals", force: :cascade do |t|

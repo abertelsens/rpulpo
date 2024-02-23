@@ -1,9 +1,8 @@
-###########################################################################################
+# -----------------------------------------------------------------------------------------
 # DESCRIPTION
 # A class defininign a user object.
-###########################################################################################
+# -----------------------------------------------------------------------------------------
 
-# A class containing the Users data
 class User < ActiveRecord::Base
 
 	enum usertype: {normal: 0, admin: 1, guest: 2}
@@ -27,10 +26,18 @@ class User < ActiveRecord::Base
 	}
 	end
 
-	# creates a user and updated the module permissions.
-	def self.create_from_params(params)
-    user = User.create User.prepare_params params
-		PulpoModule.all.each {|mod| user.updatePermission(mod.id, params["module_#{mod.id}".to_sym]) }
+	def self.create(params)
+		user = super(User.prepare_params params)
+		modules = PulpoModule.find(params["module"].keys)
+		module_users = modules.each{ |mod| ModuleUser.create(user: user, pulpo_module: mod, modulepermission: params["module"][mod.id]) } 
+		user.save
+		#params["module"].[keys].map{|key| Module.find(params["module"][key])}
+		#PulpoModule.all.each {|mod| user.updatePermission(mod.id, params["module_#{mod.id}".to_sym]) }
+	end
+
+	def update(params)
+		super(User.prepare_params params)
+		PulpoModule.all.each {|mod| self.updatePermission(mod.id, params["module_#{mod.id}".to_sym]) }
 	end
 
 	def self.get_all()
@@ -42,13 +49,8 @@ class User < ActiveRecord::Base
   # CRUD METHODS
   ######################################################################################################
 
-  def update_from_params(params)
-		update User.prepare_params params
-		PulpoModule.all.each{|mod| updatePermission(mod.id, params["module_#{mod.id}".to_sym])}
-	end
-
 	# authenticates the user login data.
-	def self.authenticate(uname,password)
+	def self.authenticate(uname, password)
 		user = User.find_by(uname: uname)
 		return false if user.nil?
 		user.password==password ? user : false

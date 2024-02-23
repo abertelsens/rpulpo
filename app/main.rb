@@ -228,3 +228,7 @@ Task.create(name: "portería T3")
 #ta = TaskAssignment.find_by(person: Person.find_by(clothes: 96), task: visitasAM, date_type: dt)
 #ta.get_date_type
 #ta.get_task_type
+
+Person.all.each do |p|
+    p.update(clothes:nil) if p.clothes=""
+end
