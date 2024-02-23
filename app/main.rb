@@ -229,6 +229,6 @@ Task.create(name: "portería T3")
 #ta.get_date_type
 #ta.get_task_type
 
-Person.all.each do |p|
-    p.update(clothes:nil) if p.clothes=""
-end
+#Person.all.each do |p|
+#    p.update(clothes:nil) if p.clothes=""
+#end

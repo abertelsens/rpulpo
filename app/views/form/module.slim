@@ -1,27 +1,41 @@
-/***************************************************************************************************** 
-// FORM for a Module
-/*****************************************************************************************************
+/ ----------------------------------------------------------------------------------------
+/ FORM for a Model Object
+/ Uses a validation controller tirggered by changes in the uname field
+/
+/ last update: 2024-02-23 
+/ ----------------------------------------------------------------------------------------
 
 turbo-frame id="main_frame"
   	
-	form action="/module/#{(@object.nil? ? "new" : @object.id)}" data-controller="modal" method="POST"
+	form[
+		action="/module/#{(@object.nil? ? "new" : @object.id)}" 
+		data-controller="modal form-validator" 
+		method="POST"
+		] 
 	
 		.container.full-screen-form.screen-box style="max-width:800px"
 			
-			/----------------------------------------------------------------------------------------------------------------
-			// FORM HEADER
-			//----------------------------------------------------------------------------------------------------------------
+			/ ----------------------------------------------------------------------------------
+			/ FORM HEADER
+			/ ----------------------------------------------------------------------------------
 			.row.u-text-center
 				h3 = (@object.nil? ? "NEW MODULE" : "MODULE: #{@object.name}")
 						
-			/----------------------------------------------------------------------------------------------------------------
-			//DOCUMENT FRAME
-			//----------------------------------------------------------------------------------------------------------------
+			/ ----------------------------------------------------------------------------------
+			/ DOCUMENT FRAME
+			/ ----------------------------------------------------------------------------------
 			.row
 				
 				.columns.six
 					label for="name" module identifier
-					&text.u-full-width required="true" name="identifier" value=@object&.identifier
+					input.u-full-width[
+						type="text"
+						required="true"
+						name="identifier"
+						value=@object&.identifier
+						data-action="input->form-validator#validate"
+					] 
+					
 				
 				.columns.six
 					label for="name" module name
@@ -30,14 +44,28 @@ turbo-frame id="main_frame"
 				.columns.twelve
 					label for="name" description
 					&text.u-full-width name="description" value=@object&.description
-
-			/----------------------------------------------------------------------------------------------------------------
-			// FORM BUTTONS
-			//----------------------------------------------------------------------------------------------------------------
+					
+			
+			/ ----------------------------------------------------------------------------------
+			/ ALERT FRAME
+			/ ----------------------------------------------------------------------------------
+			.row	
+				.columns.twelve 
+					.alert.alert-warning.hidden-frame data-form-validator-target="error_frame"
+			
+			/-----------------------------------------------------------------------------------
+			/ BUTTONS
+			/-----------------------------------------------------------------------------------
 			.row.center-align
 					- if (!@object.nil?) 
 						button.button-secondary data-action="click->modal#open_modal" delete  
-					button.button-primary type="submit" name="commit" value="save" save  
+					button.button-primary[
+						type="submit"
+					 	name="commit"
+					 	value="save"
+					 	data-form-validator-target="submit_btn"
+					] save  
+					
 					a.button.button-secondary formnovalidate="true" href="/modules" cancel
 					
 			.modal data-modal-target="modal" 

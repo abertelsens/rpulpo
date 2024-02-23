@@ -1,48 +1,43 @@
-########################################################################################
+# -----------------------------------------------------------------------------------------
 # ROUTES CONTROLLERS FOR THE USERS TABLES
-########################################################################################
+# -----------------------------------------------------------------------------------------
 
-########################################################################################
-# GET ROUTES
-########################################################################################
+# -----------------------------------------------------------------------------------------
+# GET
+# -----------------------------------------------------------------------------------------
 
-get '/user/validate' do
-    content_type :json
-    (User.validate params).to_json
-end
-
-# renders the people frame after setting the current peopleset
+# renders the users frame
 get '/users' do
     @current_user = get_current_user
     partial :"frame/users"
 end
 
-# renders the table of people
-# @objects the people that will be shown in the table
+# renders the users table
 get '/users/table' do
-    @objects = User.all.order(uname: :asc)
+    @objects = User.get_all
     partial :"table/user"
 end
 
-# renders a single document view
+# renders a user form
 get '/user/:id' do
     @object = (params[:id]=="new" ? nil : User.find(params[:id]))
     partial :"form/user"
 end
 
-########################################################################################
+# -----------------------------------------------------------------------------------------
 # POST ROUTES
-########################################################################################
+# -----------------------------------------------------------------------------------------
 
-post '/user/:id' do
-    @user = (params[:id]=="new" ? nil : User.find(params[:id]))
-    case params[:commit]
-        when "save"
-            @user  = @user.nil? ? (User.create params) : (@user.update params)
-            check_update_result @user
-        when "delete" 
-            @user.destroy
-    end
-    redirect '/users'
+# Returns a JSON object
+post '/user/:id/validate' do
+  content_type :json
+  (User.validate params).to_json
 end
 
+post '/user/:id' do
+  case params[:commit]
+    when "save" then User.create_update params
+    when "delete" then User.destroy params
+  end
+  redirect '/users'
+end

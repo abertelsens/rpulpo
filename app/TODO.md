@@ -1,18 +1,28 @@
-# Completed
+## LOG
 
-## Mail
+### 210216
 
-- 210216 Make the reference files and answer show up in the reader when updated
-- 210216 Get rid of the gray box when no files are found
-- 210216 Order the files by name
-- 210216 Avoid temp files to show up 
-- 210216 Sort mails by date and then by protocol
-- 210216 Suggest protocol for new mail
-- 210217 cambiar numero de ropa a int
-- 210217 add field alumnos and respective queries. Updated help
+- Make the reference files and answer show up in the reader when updated
+- Get rid of the gray box when no files are found
+- Order the files by name
+- Avoid temp files to show up 
+- Sort mails by date and then by protocol
+- Suggest protocol for new mail
 
-# Mail 
+### 210217
 
+- cambiar numero de ropa a int
+- add field alumnos and respective queries. Updated help
+- add phase field alumnos and respective queries. 
+
+### 210218
+
+- Update help for queries aliases for crs.phases. 
+
+
+# People 
+
+- [ ] Update help for queries aliases for crs.phases. 
 
 # Ropa
 

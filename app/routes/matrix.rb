@@ -2,7 +2,7 @@
 # ROUTES CONTROLLERS FOR THE PEOPLE TABLES
 ########################################################################################
 
-# renders the people frame
+# renders the main matrix frame
 get '/matrix' do
   partial :"frame/matrix"
 end
@@ -28,7 +28,6 @@ post '/matrix/schedule/:id' do
 		end
 	when "delete"
 			@schedule.destroy
-			redirect :"/matrix"
 	end
 	redirect :"/matrix"
 end
@@ -53,10 +52,8 @@ post '/matrix/task/:id' do
 			@task.update(name: params[:name])
 		end
 		@task.update_task_schedules(params["number"],params["s_time"],params["e_time"],params["notes"])
-	# if a person was deleted we go back to the screen fo the people table
 	when "delete"
-			@task.destroy
-			redirect :"/matrix"
+		@task.destroy
 	end
 	redirect :"/matrix"
 end
@@ -88,7 +85,6 @@ post '/matrix/task_schedule/:id' do
 	end
 	redirect :"/matrix"
 end
-
 
 get '/matrix/period/table' do
 	@objects = Period.all.order(s_date: :desc)
@@ -138,9 +134,6 @@ get '/matrix/day_schedule/:id' do
 	partial :"form/matrix/day_schedule"
 end
 
-
-
-
 post '/matrix/day_schedule/:id' do
 	@object = DaySchedule.find(params[:id])
 	puts Rainbow("got params #{params}").purple
@@ -153,7 +146,6 @@ post '/matrix/day_schedule/:id' do
 	end
 	redirect "/matrix/period/#{@object.period.id}"
 end
-
 
 get '/matrix/day_schedule/:id/task_assignments' do
 	@object = (params[:id]=="new" ? nil : DaySchedule.includes(:schedule).find(params[:id]))

@@ -50,6 +50,7 @@ Se ofrecen algunos aliases para búsqueda más frecuentes.
 | fuera, se han ido | `ctr:3` | Búsqueda de todos los que se han ido de Roma |
 | no han llegado | `ctr:2` | Búsqueda de todos los que no se han incorporado todavía |
 
+
 ## Concatenación de Búsquedas
 
 Si se especifican dos o más criterios, **PULPO** concatena por *default* las búsquedas con un operador `or`. Por ejemplo `group:2 year:1` buscará todos las personas que están en el grupo 2 o en el año 1. 
