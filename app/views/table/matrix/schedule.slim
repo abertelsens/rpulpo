@@ -1,4 +1,4 @@
-turbo-frame id="day_types_table"
+turbo-frame id="schedules_table"
   div.table-container
     div.table-table  
       div.table-row-head
@@ -7,7 +7,7 @@ turbo-frame id="day_types_table"
 
       - @objects.each.with_index do |object, index|
         //turbo-frame id="people_#{object.id}"
-        a.table-row-body href="/matrix/day_type/#{object.id}" data-turbo-frame="main_frame"
+        a.table-row-body href="/matrix/schedule/#{object.id}" data-turbo-frame="main_frame"
           div.table-cell-body  = object.name
           div.table-cell-body = object.description
          

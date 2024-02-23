@@ -610,6 +610,17 @@ div.nota-border{
   border-radius: 10px;
 }
 
+div.schedule-border{
+  margin: 1rem !important;
+  padding: 1rem;
+  border-color: #555;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 5px;
+  min-width: 400px;
+  height: 200px;
+}
+
 @media all and (max-width: 1500px) {
   div.nota {
     line-height: 1.2rem;

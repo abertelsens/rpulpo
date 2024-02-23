@@ -1,12 +1,9 @@
 # Google calendar API key AIzaSyA-3PoZaonvgyax2wkRPVGsze0O7ZKJL1A
-class DateType < ActiveRecord::Base#
-	belongs_to	:day_type
-	belongs_to	:period
-  has_many    :task_assignment
-end
 
 class Period < ActiveRecord::Base
-  has_many  :date_type
+
+  has_many  :day_schedules
+  has_many  :task_assignments, :through => :day_schedules
 
 	def self.prepare_params(params)
 		{
@@ -17,9 +14,9 @@ class Period < ActiveRecord::Base
 	end
 
   def create_days
-    default_day_type = DayType.find_by(name:"L")
+    default_schedule = Schedule.find_by(name:"L")
     (s_date..e_date).each do |date|
-      DateType.create(period: self, date: date, day_type: default_day_type) unless DateType.find_by(date: date)
+      DaySchedule.create(period: self, date: date, schedule: default_schedule) unless DaySchedule.find_by(date: date)
     end
   end
 
@@ -32,10 +29,16 @@ class Period < ActiveRecord::Base
   end
 
   def get_task_assignments
-    set = TaskAssignment.includes(:person, :task, :day_type)
-    .joins(:date_type)
-    .where(date_type: {period: self})
-    .pluck("date_type.date", "tasks.id", "tasks.name", "people.short_name")
+=begin
+    set = TaskAssignment.includes(:person, :task, :day_schedule)
+    .joins(:day_schedule)
+    .where(day_schedule: {period: self})
+    .pluck("day_schedule.date", "tasks.id", "tasks.name", "people.short_name")
+    puts Rainbow(set.inspect).red
+    return set
+=end
+    set = task_assignments.includes(:person, :task, :day_schedule)
+    .pluck("day_schedules.date", "tasks.id", "tasks.name", "people.short_name")
     puts Rainbow(set.inspect).red
     return set
   end

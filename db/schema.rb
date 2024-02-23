@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_18_102302) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_22_093429) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -43,17 +43,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_18_102302) do
     t.index ["person_id"], name: "index_crs_on_person_id"
   end
 
-  create_table "date_types", force: :cascade do |t|
-    t.integer "day_type_id"
+  create_table "day_schedules", force: :cascade do |t|
+    t.integer "schedule_id"
     t.date "date"
     t.integer "period_id"
-    t.index ["day_type_id", "date"], name: "index_date_types_on_day_type_id_and_date", unique: true
-  end
-
-  create_table "day_types", force: :cascade do |t|
-    t.string "name"
-    t.string "description"
-    t.index ["name"], name: "index_day_types_on_name", unique: true
+    t.index ["schedule_id", "date"], name: "index_day_schedules_on_schedule_id_and_date", unique: true
   end
 
   create_table "documents", force: :cascade do |t|
@@ -185,6 +179,12 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_18_102302) do
     t.integer "phone"
   end
 
+  create_table "schedules", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.index ["name"], name: "index_schedules_on_name", unique: true
+  end
+
   create_table "studies", force: :cascade do |t|
     t.integer "person_id"
     t.string "civil_studies"
@@ -203,15 +203,17 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_18_102302) do
   create_table "task_assignments", force: :cascade do |t|
     t.integer "person_id"
     t.integer "task_id"
-    t.integer "date_type_id"
+    t.integer "day_schedule_id"
   end
 
-  create_table "task_types", force: :cascade do |t|
-    t.integer "day_type_id"
+  create_table "task_schedules", force: :cascade do |t|
+    t.integer "schedule_id"
     t.integer "task_id"
     t.time "s_time"
     t.time "e_time"
-    t.index ["day_type_id", "task_id"], name: "index_task_types_on_day_type_id_and_task_id", unique: true
+    t.string "notes"
+    t.integer "number"
+    t.index ["schedule_id", "task_id"], name: "index_task_schedules_on_schedule_id_and_task_id", unique: true
   end
 
   create_table "tasks", force: :cascade do |t|

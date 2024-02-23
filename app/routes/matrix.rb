@@ -4,33 +4,30 @@
 
 # renders the people frame
 get '/matrix' do
-	#@current_user = get_current_user
-	#get_last_query :rooms
   partial :"frame/matrix"
 end
 
-get '/matrix/day_type/table' do
-	@objects = DayType.all.order(name: :asc)
-	partial :"table/matrix/day_type"
+get '/matrix/schedule/table' do
+	@objects = Schedule.all.order(name: :asc)
+	partial :"table/matrix/schedule"
 end
 
-get '/matrix/day_type/:id' do
-	@object = (params[:id]=="new" ? nil : DayType.find(params[:id]))
-	partial :"form/matrix/day_type"
+get '/matrix/schedule/:id' do
+	@object = (params[:id]=="new" ? nil : Schedule.find(params[:id]))
+	partial :"form/matrix/schedule"
 end
 
-post '/matrix/day_type/:id' do
-	@dt = (params[:id]=="new" ? nil : DayType.find(params[:id]))
+post '/matrix/schedule/:id' do
+	@schedule = (params[:id]=="new" ? nil : Schedule.find(params[:id]))
 	case params[:commit]
 	when "save"
-		if @dt.nil?
-			@dt = DayType.create(name: params[:name],description: params[:description])
+		if @schedule.nil?
+			@schedule = Schedule.create(name: params[:name],description: params[:description])
 		else
-			@dt.update(name: params[:name],description: params[:description])
+			@schedule.update(name: params[:name],description: params[:description])
 		end
-	# if a person was deleted we go back to the screen fo the people table
 	when "delete"
-			@dt.destroy
+			@schedule.destroy
 			redirect :"/matrix"
 	end
 	redirect :"/matrix"
@@ -55,6 +52,7 @@ post '/matrix/task/:id' do
 		else
 			@task.update(name: params[:name])
 		end
+		@task.update_task_schedules(params["number"],params["s_time"],params["e_time"],params["notes"])
 	# if a person was deleted we go back to the screen fo the people table
 	when "delete"
 			@task.destroy
@@ -64,28 +62,28 @@ post '/matrix/task/:id' do
 end
 
 
-get '/matrix/task_type/table' do
-	@objects = TaskType.all.order(task_id: :asc)
-	partial :"table/matrix/task_type"
+get '/matrix/task_schedule/table' do
+	@objects = TaskSchedule.all.order(task_id: :asc)
+	partial :"table/matrix/task_schedule"
 end
 
-get '/matrix/task_type/:id' do
-	@object = (params[:id]=="new" ? nil : TaskType.find(params[:id]))
-	partial :"form/matrix/task_type"
+get '/matrix/task_schedule/:id' do
+	@object = (params[:id]=="new" ? nil : TaskSchedule.find(params[:id]))
+	partial :"form/matrix/task_schedule"
 end
 
-post '/matrix/task_type/:id' do
-	@tt = (params[:id]=="new" ? nil : TaskType.find(params[:id]))
+post '/matrix/task_schedule/:id' do
+	@task_schedule = (params[:id]=="new" ? nil : TaskSchedule.find(params[:id]))
 	case params[:commit]
 	when "save"
-		if @tt.nil?
-			@tt = TaskType.create(TaskType.prepare_params params)
+		if @task_schedule.nil?
+			@task_schedule = TaskSchedule.create(TaskSchedule.prepare_params params)
 		else
-			@tt.update(TaskType.prepare_params params)
+			@task_schedule.update(TaskSchedule.prepare_params params)
 		end
 	# if a person was deleted we go back to the screen fo the people table
 	when "delete"
-			@task.destroy
+			@task_schedule.destroy
 			redirect :"/matrix"
 	end
 	redirect :"/matrix"
@@ -103,19 +101,19 @@ get '/matrix/period/:id' do
 end
 
 post '/matrix/period/:id' do
-	@p = (params[:id]=="new" ? nil : Period.find(params[:id]))
+	@period = (params[:id]=="new" ? nil : Period.find(params[:id]))
 	case params[:commit]
 	when "save"
-		if @p.nil?
-			@p = Period.create(Period.prepare_params params)
-			@p.create_days
+		if @period.nil?
+			@period = Period.create(Period.prepare_params params)
+			@period.create_days
 		else
-			@p.update(Period.prepare_params params)
+			@period.update(Period.prepare_params params)
 			#@p.update_days I need to implement this
 		end
 	# if a person was deleted we go back to the screen fo the people table
 	when "delete"
-			@p.destroy
+			@period.destroy
 			redirect :"/matrix"
 	end
 	redirect :"/matrix"
@@ -127,19 +125,37 @@ get '/matrix/period/:id/task_assignment/table' do
 	partial :"table/matrix/task_assignment"
 end
 
-get '/matrix/date_type/:id' do
-	@object = (params[:id]=="new" ? nil : DateType.includes(:day_type).find(params[:id]))
-	partial :"form/matrix/date_type"
+get '/matrix/day_schedule/:id/update' do
+	@object = DaySchedule.find(params[:id])
+	puts Rainbow("got params #{params}").purple
+	schedule = Schedule.find(params[:schedule])
+	@object.update(schedule: schedule)
+	{result: true}.to_json
 end
 
-post '/matrix/date_type/:id' do
-	@object = DateType.find(params[:id])
+get '/matrix/day_schedule/:id' do
+	@object = (params[:id]=="new" ? nil : DaySchedule.includes(:schedule).find(params[:id]))
+	partial :"form/matrix/day_schedule"
+end
+
+
+
+
+post '/matrix/day_schedule/:id' do
+	@object = DaySchedule.find(params[:id])
 	puts Rainbow("got params #{params}").purple
 	params["task"].keys.each do |key|
 		task = Task.find(key)
-		date_type = @object
-		person = Person.find(params["task"][key])
-		TaskAssignment.assign(task, date_type, person)
+		day_schedule = @object
+		people =  params["task"][key].blank? ? nil : Person.find(params["task"][key].values)
+		#person = params["task"][key].blank? ? nil : Person.find(params["task"][key])
+		TaskAssignment.assign(task, day_schedule, people)
 	end
 	redirect "/matrix/period/#{@object.period.id}"
+end
+
+
+get '/matrix/day_schedule/:id/task_assignments' do
+	@object = (params[:id]=="new" ? nil : DaySchedule.includes(:schedule).find(params[:id]))
+	partial :"form/matrix/task_assignments"
 end

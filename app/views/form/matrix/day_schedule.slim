@@ -1,0 +1,56 @@
+/***************************************************************************************** 
+// FORM for Personal Information about a person
+/*****************************************************************************************
+
+turbo-frame id="main_frame"
+  	
+	form[
+		action="/matrix/day_schedule/#{(@object.nil? ? "new" : @object.id)}"
+		method="POST" data-controller="modal dayschedule"] 
+	 
+		.container.full-screen-form.screen-box style="max-width:1000px"
+			
+			/-----------------------------------------------------------------------------------
+			/ FORM HEADER
+			/-----------------------------------------------------------------------------------
+			.row.u-text-center
+				h3 = (@object.nil? ? "" : "#{@object.date.strftime("%d %b - %a")}")
+				
+			/-----------------------------------------------------------------------------------
+			/ DOCUMENT FRAME
+			/-----------------------------------------------------------------------------------
+			.row
+				.columns.five.offset-by-one
+					
+					.row
+						label for="day_type" horario
+						select[
+							class="u-full-width"
+							id="schedule" 
+							name="schedule" 
+							data-dayscheduleid="#{@object.id}" 
+							data-dayschedule-target="scheduleselect" 
+							data-action="change->dayschedule#updateschedule"
+							]
+				
+							- Schedule.all.each do |schedule|
+								option[
+									selected = (@object.nil? ? false : (@object.schedule==schedule)) 
+									value = schedule.id 
+									] = schedule.to_s
+				
+				.columns.five.offset-by-one
+					turbo-frame[
+						id="task_assignments" 
+						data-dayschedule-target="taskassignmentsframe" 
+						src="/matrix/day_schedule/#{(@object.nil? ? "new" : @object.id)}/task_assignments"
+						]		
+			/-----------------------------------------------------------------------------------
+			// FORM BUTTONS
+			//---------------------------------------------------------------------------------
+			.row.center-align
+					- if (!@object.nil?) 
+						button.button-secondary data-action="click->modal#open_modal" delete 
+					button.button-primary type="submit" name="commit" value="save" save  
+					a.button.button-secondary formnovalidate="true" href="/matrix/period/#{@object.period.id}" cancel
+					

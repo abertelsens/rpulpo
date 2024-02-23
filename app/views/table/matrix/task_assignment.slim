@@ -4,17 +4,17 @@ turbo-frame id="date_types_table"
     div.table-table  
       div.table-row-head
         div.table-cell-head.long-field = "fecha"
-        div.table-cell-head.medium-field = "día"
+        div.table-cell-head.medium-field.u-text-center = "horario"
         - tasks.each do |task|
           div.table-cell-head.long-field = task.name.downcase
 
-      - @object.date_type.each do |dt|
-        - puts "aqui"
-        a.table-row-body href="/matrix/date_type/#{dt.id}" data-turbo-frame="main_frame"
-          div.table-cell-body  = dt.date.strftime("%d %b - %a")
-          div.table-cell-body = dt.day_type.name
+      - @object.day_schedules.each do |ds|
+        - puts "date #{ds.date}"
+        a.table-row-body href="/matrix/day_schedule/#{ds.id}" data-turbo-frame="main_frame"
+          div.table-cell-body  = ds.date.strftime("%d %b - %a")
+          div.table-cell-body.u-text-center = ds.schedule.name
           - tasks.each do |task|
-            - ta = @assignments.select{ |assignment| (dt.date==assignment[0] && task.id==assignment[1])}
+            - ta = @assignments.select{ |assignment| (ds.date==assignment[0] && task.id==assignment[1])}
             - res = ta.map{ |t| t[3]}.join(" - ")
             .table-cell-body = (ta.nil? ? "-" : res)
             

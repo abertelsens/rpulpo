@@ -10,14 +10,14 @@ turbo-frame id="main_frame"
             h4.u-text-left Horarios
 
           .columns.three.flex-right
-            a.button.button-primary.button-small href="/matrix/day_type/new" 
+            a.button.button-primary.button-small href="/matrix/schedule/new" 
               i.fa-solid.fa-plus style="font-size:small"
               |&nbspadd
           
-          turbo-frame id="day_types_table" src="/matrix/day_type/table"
+          turbo-frame id="schedules_table" src="/matrix/schedule/table"
         
         .row.margin-top style="margin-top:40px"
-          .columns.nine
+          .columns.nine 
             h4.u-text-left Encargos
           
           .columns.three.flex-right
@@ -26,19 +26,6 @@ turbo-frame id="main_frame"
               |&nbspadd
           
           turbo-frame id="tasks_table" src="/matrix/task/table"
-
-
-        .row.margin-top style="margin-top:40px"
-          .columns.nine
-            h4.u-text-left Definición de Encargos
-          
-          .columns.three.flex-right
-            a.button.button-primary.button-small href="/matrix/task_type/new" 
-              i.fa-solid.fa-plus style="font-size:small"
-              |&nbspadd
-          
-          turbo-frame id="task_types_table" src="/matrix/task_type/table"
-
 
         .row.margin-top style="margin-top:40px"
           .columns.nine
