@@ -65,7 +65,6 @@ get '/mail/:id/update' do
     elsif
         params.key?(:references)
         return (@object.update_references params[:references]).to_json
-        #return (@object.check_protocols params[:references]).to_json
     elsif
         params.key?(:answers)
         return (@object.update_answers params[:answers]).to_json

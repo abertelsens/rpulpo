@@ -16,7 +16,6 @@ get '/modules/table' do
 	partial :"table/modules"
 end
 
-# renders a single document view
 get '/module/:id' do
     @object = (params[:id]=="new" ? nil : PulpoModule.find(params[:id]))
     partial :"form/module"

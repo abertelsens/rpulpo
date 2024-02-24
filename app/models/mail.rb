@@ -6,8 +6,8 @@ require 'rubyXL'
 class Mail < ActiveRecord::Base
 
 	BASE_DIR= "app/public"
-	TMP_MAIL_CONTAINER = "app/public/tmp/mail"
 	BALDAS_BAS_DIR = "L:/usuarios/sect/CORREO-CG/BALDAS"
+	BASE_PATH = "//rafiki.cavabianca.org/datos/usuarios/sect/"
 
 	enum direction:    		{ entrada: 0, salida: 1}
 	enum mail_status:    	{ pendiente: 0, en_curso: 1, terminado: 2 }
@@ -67,16 +67,15 @@ class Mail < ActiveRecord::Base
 
 	# checks if a given protocols string contains exisiting mails.
 	def update_references(protocols_string)
-		references = Mail.find_mails protocols_string
-		if protocols_string.blank?
+		if protocols_string.strip.blank?
 			references.destroy_all
+			update(refs_string: "")
 			return {result: true}
-		else
-			mails = Mail.find_mails protocols_string
-			r = mails.map{|mail| {protocol: protocol, status: mail!=nil} }
-			res = r.map{|elem| elem[:status]}.inject(:&)
-			update(refs: mails) if res
 		end
+		mails = Mail.find_mails protocols_string
+		r = mails.map{|mail| {protocol: protocol, status: mail!=nil} }
+		res = r.map{|elem| elem[:status]}.inject(:&)
+		update(refs: mails, refs_string: mails.pluck(:protocol).join(", ")) if res
 		{result: res, data: r}
 	end
 
@@ -84,13 +83,13 @@ class Mail < ActiveRecord::Base
 	def update_answers(protocols_string)
 		if protocols_string.blank?
 			answers.destroy_all
+			update(ans_string: "")
 			return {result: true}
-		else
-			mails = Mail.find_mails protocols_string
-			r = mails.map{|mail| {protocol: protocol, status: mail!=nil} }
-			res = r.map{|elem| elem[:status]}.inject(:&)
-			update(ans: mails) if res
 		end
+		mails = Mail.find_mails protocols_string
+		r = mails.map{|mail| {protocol: protocol, status: mail!=nil} }
+		res = r.map{|elem| elem[:status]}.inject(:&)
+		update(ans: mails, ans_string: mails.pluck(:protocol).join(", ")) if res
 		{result: res, data: r}
 	end
 
@@ -135,44 +134,34 @@ class Mail < ActiveRecord::Base
 		res.pluck(:protocol).join("-")
 	end
 
-	#-----------------------------------------------------------------------------------------------------
-	# REVISANDO AQUI
-	#-----------------------------------------------------------------------------------------------------
-	def send_related_files_to_users(users)
-		set_assigned_users users.split(",")
-		assignedusers.each {|u| (send_related_files_to_user u)} unless (users.nil? || users.blank?)
+	def send_related_files_to_users(users_string)
+		set_assigned_users users_string.split(",")
+		assignedusers.each {|u| (send_related_files_to_user u)} unless (assignedusers.nil? || assignedusers.blank?)
 	end
 
 	def send_related_files_to_user(user)
-		balda = "#{BALDAS_BAS_DIR}/#{user.uname}"
-		files = mail_files.map{|mf| [mf.get_original_path, mf.name]}
-		if files.size==1
-			puts Rainbow("Copying #{files[0][0]} to #{balda}/#{user.uname}-#{files[0][1]}").yellow
-			res = FileUtils.cp(files[0][0],"#{balda}/#{user.uname}-#{files[0][1]}")
-		else
-			new_dir = "#{balda}/#{user.uname}-#{protocol.gsub("/","-")}"
-			FileUtils.mkdir new_dir unless Dir.exist? new_dir
-
-			files.each do |f|
-				puts Rainbow("Copying #{f[0]} to #{new_dir}/#{f[1]}").yellow
-				FileUtils.cp(f[0],"#{new_dir}/#{f[1]}")
-			end
+		target = "#{BALDAS_BAS_DIR}/#{user.uname}"
+		mail_files = find_related_files
+		if (mail_files.size>1)
+			target = "#{target}/#{protocol.gsub("/","-")}"
+			FileUtils.mkdir target unless Dir.exist? target
 		end
+
+		mail_files.each {|mf| FileUtils.cp mf.get_path, "#{target}/#{mf.name}" }
+
 	end
 
 	# tries to suggest a direction and the entity fields from a protocol
 	def update_protocol(protocol_string)
-		data = {"result" => true, "entity" => nil, "direction"=> nil, "message"=>""}
+		data = { "result" => true }
+		error = { "result" => false, "message" => "El protocolo <b>#{protocol_string}</b> está mal formado" }
+
+		# check if the numeric part of the protocol is well formed
 		num = protocol_string.match(/(?<num>[0-9]+)\/(?<year>[0-9]{2})/)
+		return error if num.nil?
+
 		entities = protocol_string.match(/(?<e1>[a-zA-Z]+\+*)\s*-*\s*(?<e2>[a-zA-Z]*\+*)/)
 
-		if num.nil?
-			data["result"]=false
-			data["message"]="El protocolo <b>#{protocol_string}</b> está mal formado"
-			return data
-		end
-
-		puts "entities #{entities} **#{entities[:e1]}** **#{entities[:e2]}**" unless entities.nil?
 		if entities.nil? # nota del cg. No tiene ningun tipo de entidad.
 			data["entity"]="cg"
 			data["direction"]="entrada"
@@ -186,26 +175,15 @@ class Mail < ActiveRecord::Base
 			data["entity"]=entities[:e1]
 			data["direction"]="entrada"
 		else
-			data["result"]=false
-			data["message"]="El protocolo <b>#{protocol_string}</b> está mal formado"
-			return data
+			return error
 		end
 
-		puts "trying to find entity by sigla"
 		ent = Entity.find_by(sigla: data["entity"])
+		return error if ent.nil?
 
-		if ent.nil?
-			puts "did not find any entity with sigla #{data["entity"]}"
-			data["result"]=false
-			data["message"]="El protocolo <b>#{protocol_string}</b> está mal formado."
-			return data
-		else
-			puts "Found entity #{ent.id.to_s}"
-			data["result"]=true
-			data["entity"]=ent.id.to_s
-		end
-		update(protocol: protocol_string, direction: data["direction"], entity: Entity.find(data["entity"]))
-		return data
+		data["entity"]=ent.id.to_s
+		update(protocol: protocol_string, direction: data["direction"], entity: ent)
+		data
 	end
 
 	def find_related_files()
@@ -217,6 +195,7 @@ class Mail < ActiveRecord::Base
 				mf = MailFile.where(mail_id: id, name: f)
 				mfiles << (mf.empty? ? MailFile.create_from_file(f,self) : mf[0])
 		end
+		update(mail_files: mfiles)
 		return mfiles
 	end
 
@@ -240,10 +219,11 @@ class Mail < ActiveRecord::Base
 	end
 
 	def get_sources_directory
+		base = "#{BASE_PATH}/#{entity.path}"
 		dir_path = if entity.sigla=="cg"
-			"#{entity.path}/#{(direction=="entrada" ? "ENTRADAS" : "SALIDAS")}/#{date.year}"
+			"#{base}/#{(direction=="entrada" ? "ENTRADAS" : "SALIDAS")}/#{date.year}"
 		else
-			"#{entity.path}/#{date.year}/#{entity.sigla}/#{(direction=="entrada" ? "ENTRADAS" : "SALIDAS")}"
+			"#{base}/#{date.year}/#{entity.sigla}/#{(direction=="entrada" ? "ENTRADAS" : "SALIDAS")}"
 		end
 		return (File.directory?(dir_path) ? dir_path : false)
 	end
@@ -291,31 +271,11 @@ end
 class Reference < ActiveRecord::Base
 	belongs_to 	:mail
 	belongs_to 	:reference, :class_name => "Mail"
-
-	after_save do
-		references = (Reference.where(mail: self.mail).map {|r| r.reference.protocol}).join(", ")
-		self.mail.update(refs_string: references)
-	end
-
-	after_destroy do
-		references = (Reference.where(mail: self.mail).map {|r| r.reference.protocol}).join(", ")
-		self.mail.update(refs_string: references)
-	end
 end
 
 class Answer < ActiveRecord::Base
 	belongs_to 	:mail, 		:class_name => "Mail"
 	belongs_to 	:answer, 	:class_name => "Mail"
-
-	after_save do
-		answers = (Answer.where(mail: self.mail).map {|r| r.answer.protocol}).join(", ")
-		mail.update(ans_string: answers)
-	end
-
-	after_destroy do
-		answers = (Answer.where(mail: self.mail).map {|r| r.answer.protocol}).join(", ")
-		self.mail.update(ans_string: answers)
-	end
 end
 
 class UnreadMail < ActiveRecord::Base
