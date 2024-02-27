@@ -1,6 +1,10 @@
-########################################################################################
-# ROUTES CONTROLLERS FOR THE PEOPLE TABLES
-########################################################################################
+# -----------------------------------------------------------------------------------------
+# ROUTES CONTROLLERS FOR THE ROOMS TABLES
+# -----------------------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------------------
+# GET
+# -----------------------------------------------------------------------------------------
 
 # renders the people frame
 get '/rooms' do
@@ -34,15 +38,14 @@ get '/room/:id' do
     partial :"form/room"
 end
 
-
-########################################################################################
-# POST ROUTES
-########################################################################################
+# -----------------------------------------------------------------------------------------
+# POST
+# -----------------------------------------------------------------------------------------
 post '/room/:id' do
 	@room = (params[:id]=="new" ? nil : Room.find(params[:id]))
 	case params[:commit]
-		when "save"     
-			if @room.nil? 
+		when "save"
+			if @room.nil?
 				@room = Room.create_from_params params
 			else
 				res = @room.update_from_params params
@@ -54,16 +57,11 @@ post '/room/:id' do
 	redirect '/rooms'
 end
 
-
-
 # renders the table of after perfroming a search.
 get '/rooms/search' do
 	get_last_query :rooms
 	@rooms_query = session["rooms_table_query"] = params[:q]
 	@objects = Room.search @rooms_query, @rooms_table_settings
-	
-	#@objects = Room.search(params[:q],params[:sort_order])
-	
 	partial :"table/rooms"
 end
 
@@ -74,7 +72,7 @@ get '/rooms/house/:house_name' do
 	partial :"table/rooms"
 end
 
-	# loads the table settings form
+# loads the table settings form
 get '/rooms/table/settings' do
 	get_table_settings :rooms
 	@table_settings = @rooms_table_settings
@@ -85,4 +83,3 @@ post '/rooms/table/settings' do
 	session["rooms_table_settings"] = TableSettings.create_from_params "rooms", params
 	redirect :"/rooms"
 end
-

@@ -1,7 +1,12 @@
-########################################################################################
-# ROUTES CONTROLLERS FOR THE PEOPLE TABLES
-########################################################################################
+# -----------------------------------------------------------------------------------------
+# ROUTES CONTROLLERS FOR THE PEOPE TABLES
+# -----------------------------------------------------------------------------------------
+
 require"clipboard"
+
+# -----------------------------------------------------------------------------------------
+# GET
+# -----------------------------------------------------------------------------------------
 
 # renders the people frame
 get '/people' do
@@ -30,16 +35,14 @@ end
 
 # loads the table settings form
 get '/people/table/settings' do
+	@current_user = get_current_user
 	get_table_settings :people
-	puts "IN GET /people/table/settings. Got @table_settings with attributes #{@people_table_settings.att}"
 	@table_settings = @people_table_settings
-	puts Rainbow("Table Settings: #{@table_settings}").purple
 	partial :"form/table_settings"
 end
 
 post '/people/table/settings' do
 	session["people_table_settings"] = TableSettings.create_from_params "people", params
-	puts "got @query in post #{@people_query}"
 	redirect :"/people"
 end
 
@@ -58,16 +61,11 @@ get '/person/:id/toggle_vela' do
 	@person.toggle_vela
 	content_type 'text/vnd.turbo-stream.html'
 	vela = @person.vela.nil? ? "" : @person.vela
-	puts "got vela value #{vela}"
-	#person.update(vela: (vela + 1) % 4)
-	#partial :"table/person_vela"
 	"<turbo-stream action=\"replace\" target=\"person_#{@person.id}\">
 	<template>
 	<div class=\"table-cell-body\" id=\"person_#{@person.id}\"> #{@person.vela.humanize}</div>
 	</template>
 	</turbo-stream>"
-
-	#return "<turbo-frame id=\"person_#{person.id}\">pepe<turbo-frame>"
 end
 
 # renders a single person view
@@ -93,19 +91,64 @@ get '/person/:id/:module' do
 end
 
 
+get '/crs/table' do
+	@has_date = params[:ceremony].present?
+	case params[:ceremony]
+
+		when "fidelidad"
+			@title = "Próximas Fidelidades"
+			@objects = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person&.crs&.get_next_fidelidad!=false)}
+			@objects = @objects.map {|p| [p.id, p.short_name, p.crs&.get_next_fidelidad.strftime("%d-%m-%y")]}
+		when "admissio"
+			@title = "Próximas Admissio"
+			@objects = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person&.crs&.get_next_admissio!=nil)}
+			@objects = @objects.map {|p| [p.id, p.short_name, p&.crs&.get_next_admissio.strftime("%d-%m-%y")]}
+		when "lectorado"
+			@title = "Próximos Lectorados"
+			@objects = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person&.crs&.get_next_lectorado!=nil)}
+			@objects = @objects.map {|p| [p.id, p.short_name, p.crs&.get_next_lectorado.strftime("%d-%m-%y")]}
+		when "acolitado"
+			@title = "Próximos Acolitados"
+			@objects = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person&.crs&.get_next_acolitado!=nil)}
+			@objects = @objects.map {|p| [p.id, p.short_name, p.crs&.get_next_acolitado.strftime("%d-%m-%y")]}
+		end
+
+	case params[:phase]
+		when "propedeutica"
+			@title = "Estapa Propedeútica"
+			@objects = Person.joins(:crs).where('crs.phase' => "propedeutica").pluck(:id, :short_name)
+		when "discipular"
+			@title = "Etapa Discipular"
+			@objects = Person.joins(:crs).where('crs.phase' => "discipular").pluck(:id, :short_name)
+		when "configuracional"
+			@title = "Etapa Configuracional"
+			@objects = Person.joins(:crs).where('crs.phase' => "configuracional").pluck(:id, :short_name)
+		when "sintesis"
+			@title = "Etapa de Síntesis"
+			@objects = Person.joins(:crs).where('crs.phase' => "síntesis").pluck(:id, :short_name)
+		end
+		@total = @objects.size unless @objects.nil?
+		partial "table/ceremony"
+	end
+
+
 # renders a single person view
 get '/crs' do
 	@current_user = get_current_user
 	@people_o = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person&.crs&.get_next_fidelidad!=false)}
 	@people_a = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person&.crs&.get_next_admissio!=false)}
 	@people_l = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person&.crs&.get_next_lectorado!=false)}
+	@people_propedeutica =  Person.joins(:crs).where('crs.phase' => "propedeutica")
+	@people_discipular =  Person.joins(:crs).where('crs.phase' => "discipular")
+	@people_configuracional = Person.joins(:crs).where('crs.phase' => "configuracional")
+	@people_sintesis = Person.joins(:crs).where('crs.phase' => "síntesis")
 	partial :"frame/crs"
 end
 
 
-########################################################################################
-# POST ROUTES
-########################################################################################
+# -----------------------------------------------------------------------------------------
+# POST
+# -----------------------------------------------------------------------------------------
 post '/person/:id/general' do
 	@current_user = get_current_user
 	@person = (params[:id]=="new" ? nil : Person.find(params[:id]))
@@ -176,23 +219,20 @@ post '/people/:id/image' do
 end
 
 
-########################################################################################
-# ACTIONS ON PEOPLE SETS
-########################################################################################
-
+# -----------------------------------------------------------------------------------------
+# ACTIONS
+# -----------------------------------------------------------------------------------------
 
 # renders a pdf or an excel file with the params received.
 get '/people/:id/document/:doc_id' do
 	if params[:id]=="set"
 		get_last_query :people
-		puts "got @people_query #{@people_query}"
 		@people = @people_query.nil? ? Person.all.order(family_name: :asc) : (Person.search @people_query, @people_table_settings).order(family_name: :asc)
 	else
 		@people = [Person.find(params[:id])]
 	end
 
 	@document = Document.find(params[:doc_id])
-	puts "found document #{@document.to_s}"
 	@writer = @document.get_writer @people
 	case @writer.status
 		when DocumentWriter::WARNING
@@ -201,7 +241,6 @@ get '/people/:id/document/:doc_id' do
 			puts Rainbow(@writer.message).red
 			return partial :"errors/writer_error"
 	end
-	puts "found writer #{@writer.to_s}"
 	case @document.engine
 	when "prawn"
 		headers 'content-type' => "application/pdf"
@@ -232,7 +271,6 @@ post '/people/:id/document/:doc_id' do
 	headers 'content-type' => "application/pdf"
 	if params[:id]=="set"
 		get_last_query :people
-		puts "got @people_query #{@people_query}"
 		@people = @people_query.nil? ? Person.all.order(family_name: :asc) : (Person.search @people_query, @people_table_settings).order(family_name: :asc)
 	else
 		@people = [Person.find(params[:id])]

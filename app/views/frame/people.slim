@@ -12,32 +12,34 @@ turbo-frame id="main_frame" data-people-target="people_screen"
         // SEARCH FIELD
         .columns.four.offset-by-four.flex-center
           input#search_string.u-full-width  isTrusted="true" autofocus="autofocus" type="search" data-people-target="search_field" autocomplete="off" placeholder="search" aria-label="Search" name="q" data-action="input->search#submit" value=@people_query
-          
+
+        
         // BUTTONS
         .columns.three.flex-left
-          a.button.button-primary.button-small title="adds a new person to the database (ctrl+a)" href="/person/new/general" data-turbo-frame="editor_frame"
-            i.fa-solid.fa-plus style="font-size:small"
-            |&nbspadd
+          - if @current_user.usertype!="guest"  
+            a.button.button-primary.button-small title="adds a new person to the database (ctrl+a)" href="/person/new/general" data-turbo-frame="editor_frame"
+              i.fa-solid.fa-plus style="font-size:small"
+              |&nbspadd
+            
           
-          
-          a.button.button-success.button-small  isTrusted="true" title="copies the results to the clipboard (ctrl+c)" style="width:6rem" data-clipboard-target="copybtn" data-action="click->clipboard#copy"
-            i.fa-solid.fa-copy style="font-size:small"
-            |&nbspcopy
+            a.button.button-success.button-small isTrusted="true" title="copies the results to the clipboard (ctrl+c)" style="width:6rem" data-clipboard-target="copybtn" data-action="click->clipboard#copy"
+              i.fa-solid.fa-copy style="font-size:small"
+              |&nbspcopy
 
           button.button-small.button-square title="menu (ctrl+p)" data-action="click->modal#open_modal"
             <i style="color:white" class="fa-solid fa-bars"></i>
-
       .row 
         .modal data-modal-target="modal" 
           .modal-content
             .container.menu
-              .table-cell-head.cell-header.no-border
-                i.fa-solid.fa-file style="font-size:1rem"
-                |&nbspDOCUMENTS
-              div style="margin-right:2rem"
-                - (Document.get_docs_of_user @current_user).each do |doc|
-                  .row
-                    a.table-cell-body.menu-link  href="/people/set/document/#{doc.id}" target=(doc.engine=="excel" ? "_self" : "_blank") = "#{doc.pulpo_module.name} - #{doc.name}"
+              - if @current_user.usertype!="guest"  
+                .table-cell-head.cell-header.no-border
+                  i.fa-solid.fa-file style="font-size:1rem"
+                  |&nbspDOCUMENTS
+                div style="margin-right:2rem"
+                  - (Document.get_docs_of_user @current_user).each do |doc|
+                    .row
+                      a.table-cell-body.menu-link  href="/people/set/document/#{doc.id}" target=(doc.engine=="excel" ? "_self" : "_blank") = "#{doc.pulpo_module.name} - #{doc.name}"
               .table-cell-head.cell-header.no-border
                 i.fa-solid.fa-gear style="font-size:1rem"
                 |&nbspACTIONS
@@ -46,10 +48,11 @@ turbo-frame id="main_frame" data-people-target="people_screen"
                   a.table-cell-body.menu-link href="/people/table/settings" data-turbo-frame="editor_frame"
                     i.fa-solid.fa-table style="font-size:small"
                     |&nbspEdit Table Columns
-                .row  
-                  a.table-cell-body.menu-link href="/people/edit_field" 
-                    i.fa-solid.fa-pen-to-square style="font-size:small"
-                    |&nbspEdit Field Value
+                - if @current_user.usertype!="guest"  
+                  .row  
+                    a.table-cell-body.menu-link href="/people/edit_field" 
+                      i.fa-solid.fa-pen-to-square style="font-size:small"
+                      |&nbspEdit Field Value
             .row.u-text-center style="margin-top: 2rem"
               button.button-primary.no-margin data-action="click->modal#close_modal" cancel
 
@@ -62,7 +65,7 @@ turbo-frame id="main_frame" data-people-target="people_screen"
             textarea#copy_field.modal-copy-area isTrusted="true" rows="4" cols="20" data-clipboard-target="copyfield"
             .columns.two.offset-by-five   
               button.button-primary data-action="click->clipboard#closemodal" close
-      
+        
       .row
         turbo-frame id="people_table" data-people-target="people_table" src="/people/table"
 

@@ -2,7 +2,7 @@
 # DESCRIPTION
 # A class defining a Document object.
 # Each Document has an engine in charge of writing the document.
-# -------------------------------------------------------------############################
+# -----------------------------------------------------------------------------------------
 
 # requires the engines to produce the documents.
 require_rel '../engines'
@@ -16,6 +16,10 @@ class Document < ActiveRecord::Base
 
 	enum engine:    {prawn: 0, excel:1, typst:2}
 
+	# -----------------------------------------------------------------------------------------
+	# CALLBACKS
+	# -----------------------------------------------------------------------------------------
+
   # if a document is destroyed then we delete the associated file stored in the corresponding
 	# templates directory
 	before_destroy do |doc|
@@ -28,14 +32,13 @@ class Document < ActiveRecord::Base
 	def self.create_from_params(params)
 		doc = Document.create Document.prepare_params params
 		# upddates the template file according to the new file received by the form (in params[:template])
-		doc.update_template_file(params[:template][:tempfile], params[:template][:filename]) unless params[:template].nil?
+		doc.update_template_file(params[:template][:tempfile]) unless params[:template].nil?
 	end
 
 	def update_from_params(params)
 		if params[:name]!=self.name     # the name of the template did not change
 			if params[:template].nil?  		# no new file was provided. We just update the name of the current file
 				target = case engine
-					when "pandoc" then "#{PANDOC_TEMPLATES_DIR}/#{params[:name]}.md"
 					when "excel"  then "#{EXCEL_TEMPLATES_DIR}/#{params[:name]}.yaml"
 					when "typ"  	then "#{TYPST_TEMPLATES_DIR}/#{params[:name]}.typ"
 				end
@@ -43,12 +46,12 @@ class Document < ActiveRecord::Base
 			end
 		end
 		res = update Document.prepare_params params
-		update_template_file(params[:template][:tempfile], params[:template][:filename]) unless params[:template].nil?
+		update_template_file(params[:template][:tempfile]) unless params[:template].nil?
 		return res
 	end
 
-	def update_template_file(file, filename)
-			FileUtils.cp(file, get_full_path)
+	def update_template_file(file)
+			FileUtils.cp file, get_full_path
 	end
 
 	def get_full_path
@@ -99,7 +102,6 @@ class Document < ActiveRecord::Base
 			when "typst" then TypstWriter.new(self, people, template_variables)
 		end
 	end
-
 
 	def self.has_template_variables?(source)
 			variables = source.scan(/\$\S*\$/)

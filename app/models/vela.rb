@@ -1,11 +1,7 @@
-###########################################################################################
-# DESCRIPTION
-# A class defining a Document object.
-###########################################################################################
 
 require_rel '../engines'
 require 'os'
-require 'typst' if OS.mac? 
+require 'typst' if OS.mac?
 
 #A class containing the Users data
 class Vela < ActiveRecord::Base
@@ -19,12 +15,12 @@ TYPST_PREAMBLE_SEPARATOR = "//CONTENTS"
 			date: 					date,
 			start_time:			DateTime.new(date.year, date.month, date.day, params[:start_time_hour].to_i, params[:start_time_min].to_i,0,1),
 			start_time2:		DateTime.new(date.year, date.month, date.day, params[:start_time2_hour].to_i , params[:start_time2_min].to_i,0,1),
-			end_time:				DateTime.new(date.year, date.month, date.day + 1, params[:end_time_hour].to_i, params[:end_time_min].to_i, 0,1), 
+			end_time:				DateTime.new(date.year, date.month, date.day + 1, params[:end_time_hour].to_i, params[:end_time_min].to_i, 0,1),
 			start1_message: params[:start1_message],
 			start2_message: params[:start2_message],
 			end_message: 		params[:end_message],
 			order: 					params[:house].values.join(" ")
-		}	
+		}
 	end
 
 	def self.create_from_params(params)
@@ -35,11 +31,11 @@ TYPST_PREAMBLE_SEPARATOR = "//CONTENTS"
 		houses_names = Room.houses.keys
 		order.split(" ").select{|index| index!="-1"}.map{|index| houses_names[index.to_i].humanize}.join( " - " )
 	end
-	
+
 	def self.create_new()
 		date = DateTime.now()
 		params =
-		{ 
+		{
 			date: 					date,
 			start_time:			DateTime.new(date.year, date.month, date.day, 21, 15 ,0, 1),
 			start_time2:		DateTime.new(date.year, date.month, date.day, 21, 30 ,0, 1),
@@ -62,8 +58,8 @@ TYPST_PREAMBLE_SEPARATOR = "//CONTENTS"
 		current_time = self.start_time2
 		half_hour = 30*60 #1.0/(24*2)
 		turnos = []
-		
-		while current_time < self.end_time do 
+
+		while current_time < self.end_time do
 			turnos << Turno.new(current_time , current_time + half_hour)
 			current_time = current_time + half_hour
 		end
@@ -74,22 +70,22 @@ TYPST_PREAMBLE_SEPARATOR = "//CONTENTS"
 		primer_turno = rooms.select{|room| room.person.vela=="primer_turno"}
 		ultimo_turno = rooms.select{|room| room.person.vela=="ultimo_turno"}
 		no_vela = rooms.select{|room| room.person.vela=="no"}
-		
+
 		turnos[0].assign primer_turno
 		turnos[-1].assign ultimo_turno
 
 		rooms = ((rooms - primer_turno) - ultimo_turno) - no_vela
 		turnos_left = turnos.size
-		
+
 		turnos.each_with_index do |turno,index|
 			people_to_assing = ((rooms.size.to_f/turnos_left).round).to_i
-			
+
 			if turno.empty?
-				turno.assign rooms[0..(people_to_assing-1)] 
+				turno.assign rooms[0..(people_to_assing-1)]
 			else
 				people_in_turno = turno.rooms.size
 				people_to_assing = [0,people_to_assing-people_in_turno].max
-				turno.assign rooms[0..(people_to_assing - 1)]  if people_to_assing > 0 
+				turno.assign rooms[0..(people_to_assing - 1)]  if people_to_assing > 0
 			end
 			turnos_left = turnos_left -1
 			rooms = rooms - turno.rooms
@@ -106,31 +102,31 @@ TYPST_PREAMBLE_SEPARATOR = "//CONTENTS"
 
 	def to_pdf turnos
 		turnos = build_turnos
-		
+
 		@document_path = "vela.typ"
 		@template_source = File.read "#{TYPST_TEMPLATES_DIR}/#{@document_path}"
 		template_source = @template_source.split(TYPST_PREAMBLE_SEPARATOR)
-		
+
 		header = "= vela al santísimo (#{self.date.strftime('%d %b %y').downcase})\n
 							*#{self.start_time.strftime('%H:%M')}: #{self.start1_message}*\n
 							*#{self.start_time2.strftime('%H:%M')}: #{self.start2_message}*\n"
-		
-		footer = 	"*#{self.end_time.strftime('%H:%M')}: #{self.end_message}*"
-		
-		turnos_table = Turno.to_typst_table turnos
-		
-		full_doc = "#{template_source[0]} #{header} #{turnos_table}\n #{footer}"
-		
-		
 
-		if OS.windows? 
+		footer = 	"*#{self.end_time.strftime('%H:%M')}: #{self.end_message}*"
+
+		turnos_table = Turno.to_typst_table turnos
+
+		full_doc = "#{template_source[0]} #{header} #{turnos_table}\n #{footer}"
+
+
+
+		if OS.windows?
 			# delete all the previous pdf files. Not ideal
 			# write a tmp typst file and compile it to pdf
 			FileUtils.rm Dir.glob("#{TYPST_TEMPLATES_DIR}/*.pdf")
 			tmp_file_name ="#{rand(10000)}"
 			typ_file_path = "#{TYPST_TEMPLATES_DIR}/#{tmp_file_name}.typ"
 			pdf_file_path = "#{TYPST_TEMPLATES_DIR}/#{tmp_file_name}.pdf"
-			
+
 			File.write typ_file_path, full_doc
 			res =  system("typst compile #{typ_file_path} #{pdf_file_path}")
 			File.delete typ_file_path
@@ -154,7 +150,7 @@ end #class end
 class Turno
 
 	attr_accessor :rooms, :stime, :etime
-	
+
 	def initialize(start_time, end_time)
 		@stime = start_time
 		@etime = end_time
@@ -166,7 +162,7 @@ class Turno
 	end
 
 	def empty?
-		@rooms.empty?	
+		@rooms.empty?
 	end
 
 	def get_time(args)
@@ -179,7 +175,7 @@ class Turno
 	def to_typst_table
 		res = ""
 		@rooms.each_with_index do |room, index|
-			if index!=0 
+			if index!=0
 				res << "[], [#{room.person.short_name}], [#{room.room}]"
 			else
 				res << "[#{@stime.strftime('%H:%M')} - #{@etime.strftime('%H:%M')}], [#{room.person.short_name}], [#{room.room}]"
@@ -192,7 +188,7 @@ class Turno
 	def to_csv
 		res = ""
 		@rooms.each_with_index do |room, index|
-			if index!=0 
+			if index!=0
 				res << "\n\t#{room.person.short_name}\t#{room.room}"
 			else
 				res << "#{@stime.strftime('%H:%M')} - #{@etime.strftime('%H:%M')}\t#{room.person.short_name}\t#{room.room}"

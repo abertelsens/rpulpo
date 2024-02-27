@@ -1,13 +1,12 @@
-###########################################################################################
-# A class defining a correo entry.
-###########################################################################################
-require 'rubyXL'
+# -----------------------------------------------------------------------------------------
+# A class defining a mail object
+# -----------------------------------------------------------------------------------------
 
 class Mail < ActiveRecord::Base
 
 	BASE_DIR= "app/public"
 	BALDAS_BAS_DIR = "L:/usuarios/sect/CORREO-CG/BALDAS"
-	BASE_PATH = "//rafiki.cavabianca.org/datos/usuarios/sect/"
+	BASE_PATH = "//rafiki.cavabianca.org/datos/usuarios/sect"
 
 	enum direction:    		{ entrada: 0, salida: 1}
 	enum mail_status:    	{ pendiente: 0, en_curso: 1, terminado: 2 }
@@ -26,7 +25,7 @@ class Mail < ActiveRecord::Base
 # -----------------------------------------------------------------------------------------
 
 	after_create do |mail|
-		User.get_mail_users.each{|user| user.add_unread_mail mail }
+		User.get_mail_users.each{|user| UnreadMail.create(user: user, mail: mail)}
 	end
 
 # -----------------------------------------------------------------------------------------
@@ -37,19 +36,19 @@ class Mail < ActiveRecord::Base
 	def self.prepare_params(params=nil)
 		if params.nil? # no params provided. We create default params
 			{
-			entity: 		Entity.find_by(sigla: "crs+"),
-			date:				Date.today,
-			topic:			"",
-			protocol:		"crs+ XX/XX",
-			direction:	0,
-			mail_status:0
+				entity: 		Entity.find_by(sigla: "crs+"),
+				date:				Date.today,
+				topic:			"",
+				protocol:		"crs+ XX/XX",
+				direction:	0,
+				mail_status:0
 			}
 		else
 			{
-			date:					Date.parse(params[:date]),
-			topic:				params[:topic],
-			protocol:			params[:protocol],
-			mail_status:	params[:mail_status]
+				date:					Date.parse(params[:date]),
+				topic:				params[:topic],
+				protocol:			params[:protocol],
+				mail_status:	params[:mail_status]
 			}
 		end
 	end
@@ -142,12 +141,14 @@ class Mail < ActiveRecord::Base
 	def send_related_files_to_user(user)
 		target = "#{BALDAS_BAS_DIR}/#{user.uname}"
 		mail_files = find_related_files
+
+		# if we need to send more than one file we create a directory and send the mails there
 		if (mail_files.size>1)
-			target = "#{target}/#{protocol.gsub("/","-")}"
+			target = "#{target}/#{user.uname}#{protocol.gsub("/","-")}"
 			FileUtils.mkdir target unless Dir.exist? target
 		end
 
-		mail_files.each {|mf| FileUtils.cp mf.get_path, "#{target}/#{mf.name}" }
+		mail_files.each {|mf| FileUtils.cp mf.get_path, "#{target}/#{user.uname}-#{mf.name}" }
 
 	end
 

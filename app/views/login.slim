@@ -54,13 +54,14 @@ html
           img.u-text-center src="img/cb_icon.jpg" style="width: 50px"
           h3 PULPO CAVABIANCA
           .row
-            label for="uname" user name
+            label for="uname" user name or email
             input#uname.u-full-width type="text" required="true" name="uname"
           .row.margin-top 
             label for="password" password
             input#password.u-full-width type="password" name="password"
           .row.margin-top
             button.button-success.u-full-width type="submit" name="commit" value="login" login
+          <p style="font-size: .8rem">If you live in Cavabianca you can log in as <em>guest</em> just using your email and leaving the password field empty.
           .row.margin-top
             - if @auth_error  
               .alert.alert-error id="errorBox" LOGIN FAILED!

@@ -29,18 +29,8 @@ class Period < ActiveRecord::Base
   end
 
   def get_task_assignments
-=begin
-    set = TaskAssignment.includes(:person, :task, :day_schedule)
-    .joins(:day_schedule)
-    .where(day_schedule: {period: self})
-    .pluck("day_schedule.date", "tasks.id", "tasks.name", "people.short_name")
-    puts Rainbow(set.inspect).red
-    return set
-=end
-    set = task_assignments.includes(:person, :task, :day_schedule)
+    task_assignments.includes(:person, :task, :day_schedule)
     .pluck("day_schedules.date", "tasks.id", "tasks.name", "people.short_name")
-    puts Rainbow(set.inspect).red
-    return set
   end
 
 

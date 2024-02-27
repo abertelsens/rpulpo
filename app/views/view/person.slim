@@ -1,10 +1,12 @@
 turbo-frame id="main_frame"
+  - user_is_person = (@person.email==@current_user.uname)
   .container.screen-box style="display: flex; justify-content: center;"
     .columns.one style="display: flex; flex-direction: column;" 
-      a.button.link-button href="/person/#{@person.id}/general" = "general"
-      - ["study","personal","crs","room"].each do |mod|
-        - if (@current_user.allowed? mod)
-        a.button.link-button href="/person/#{@person.id}/#{mod}" = mod
+      - if (@current_user.usertype!="guest"|| user_is_person)
+        a.button.link-button href="/person/#{@person.id}/general" = "general"
+      - ["study","personal","crs"].each do |mod|
+        - if ((@current_user.allowed? mod) || user_is_person)
+          a.button.link-button href="/person/#{@person.id}/#{mod}" = mod
     .columns.two.u-text-center.margin-left
       - if @person && File.exist?("app/public/photos/#{@person.id}.jpg")
 				img.person-photo.medium id="photo_image" src= "photos/#{@person.id}.jpg"

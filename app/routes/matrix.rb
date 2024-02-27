@@ -1,14 +1,18 @@
-########################################################################################
-# ROUTES CONTROLLERS FOR THE PEOPLE TABLES
-########################################################################################
+# -----------------------------------------------------------------------------------------
+# ROUTES CONTROLLERS FOR THE MATRIX MODULE
+# -----------------------------------------------------------------------------------------
 
 # renders the main matrix frame
 get '/matrix' do
   partial :"frame/matrix"
 end
 
+# -----------------------------------------------------------------------------------------
+# SCHEDULES
+# -----------------------------------------------------------------------------------------
+
 get '/matrix/schedule/table' do
-	@objects = Schedule.all.order(name: :asc)
+	@objects = Schedule.get_all
 	partial :"table/matrix/schedule"
 end
 
@@ -18,19 +22,16 @@ get '/matrix/schedule/:id' do
 end
 
 post '/matrix/schedule/:id' do
-	@schedule = (params[:id]=="new" ? nil : Schedule.find(params[:id]))
 	case params[:commit]
-	when "save"
-		if @schedule.nil?
-			@schedule = Schedule.create(name: params[:name],description: params[:description])
-		else
-			@schedule.update(name: params[:name],description: params[:description])
-		end
-	when "delete"
-			@schedule.destroy
+		when "save" then Schedule.create_update params
+		when "delete" then Schedule.destroy params
 	end
 	redirect :"/matrix"
 end
+
+# -----------------------------------------------------------------------------------------
+# TASKS
+# -----------------------------------------------------------------------------------------
 
 get '/matrix/task/table' do
 	@objects = Task.all.order(name: :asc)
@@ -43,17 +44,9 @@ get '/matrix/task/:id' do
 end
 
 post '/matrix/task/:id' do
-	@task = (params[:id]=="new" ? nil : Task.find(params[:id]))
 	case params[:commit]
-	when "save"
-		if @task.nil?
-			@task = Task.create(name: params[:name])
-		else
-			@task.update(name: params[:name])
-		end
-		@task.update_task_schedules(params["number"],params["s_time"],params["e_time"],params["notes"])
-	when "delete"
-		@task.destroy
+	when "save" then Task.create_update params
+	when "delete" then Task.create_update params
 	end
 	redirect :"/matrix"
 end

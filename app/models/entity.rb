@@ -23,11 +23,7 @@ class Entity < ActiveRecord::Base
 	end
 
 	def self.create_update(params)
-		if params[:id]=="new"
-			Entity.create(params)
-		else
-			Entity.find(params[:id]).update(params)
-		end
+		params[:id]=="new" ? Entity.create(params) : Entity.find(params[:id]).update(params)
 	end
 
 	# transforms the parameters received from the form into a hash that can be used to create

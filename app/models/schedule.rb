@@ -3,8 +3,25 @@ class Schedule < ActiveRecord::Base
 	has_many	:task_schedules
 	has_many	:day_schedules
 
-	def to_s
-		"#{name} - #{description}"
+
+	def self.create_update(params)
+		@schedule = (params[:id]=="new" ? nil : Schedule.find(params[:id]))
+		@schedule.nil? ? Schedule.create(prepare_params params) : @schedule.update(prepare_params params)
+	end
+
+	def self.prepare_params(params)
+	{
+		name: params[:name],
+		description: params[:description]
+	}
+	end
+
+	def self.destroy(params)
+		Schedule.find(params[:id]).destroy
+	end
+
+	def self.get_all
+		Schedule.all.order(name: :asc)
 	end
 
 	def get_task_schedules
@@ -13,6 +30,10 @@ class Schedule < ActiveRecord::Base
 
 	def get_task_schedule task
 		task_schedules.includes(:task).find_by(task: task)
+	end
+
+	def to_s
+		"#{name} - #{description}"
 	end
 
 end

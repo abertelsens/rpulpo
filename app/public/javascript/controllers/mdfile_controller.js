@@ -10,8 +10,7 @@ import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/di
         this.select_engine();
       }
       
-      select_file()
-      {
+      select_file() {
         this.mdfileTarget.click();
       }
 
@@ -22,12 +21,10 @@ import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/di
     
       select_engine()
       {
-        if (this.engine_selectTarget.value==="prawn")
-        {
+        if (this.engine_selectTarget.value==="prawn") {
           this.templateframeTarget.style.display="none";
         }
-        else
-        {
+        else {
           this.templateframeTarget.style.display="block";
         }
         this.check_path();

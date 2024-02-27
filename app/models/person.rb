@@ -1,16 +1,16 @@
-###########################################################################################
+# -----------------------------------------------------------------------------------------
 # DESCRIPTION
-# A class defininign a user object.
-###########################################################################################
+# A class defininign a person.
+# -----------------------------------------------------------------------------------------
 
 require_relative '../utils/pulpo_query'
 
 #A class containing the Users data
 class Person < ActiveRecord::Base
 
-    has_one :crs
-    has_one :personal
-    has_one :study
+    has_one :crs, dependent: :destroy
+    has_one :personal, dependent: :destroy
+    has_one :study, dependent: :destroy
     has_one :room
 
     enum status:    {laico: 0, diacono: 1, sacerdote: 2 }
@@ -18,7 +18,7 @@ class Person < ActiveRecord::Base
     enum n_agd:     {n:0, agd:1}
     enum vela:      {normal:0, no:1, primer_turno:2, ultimo_turno:3}
 
-
+=begin
     ATTRIBUTES =
     {
         "title"             =>   {name: "title",          value: "string",    description: "don, Fr., etc..."},
@@ -38,101 +38,72 @@ class Person < ActiveRecord::Base
         "n_agd"             =>   {name: "n/agd",          value: "options",   description:  "n/agd"},
         "year"              =>   {name: "year",           value: "string",    description:  "año en cavabianca"},
     }
+=end
 
-
-    ##########################################################################################
-	# CALLBACKS
-	##########################################################################################
+    # -----------------------------------------------------------------------------------------
+    # CALLBACKS
+    # -----------------------------------------------------------------------------------------
 
 	before_save do
-        puts "running callback before save on #{self}"
-		self.full_info = "#{(title.nil? ? "" : title+" ")}#{first_name} #{family_name} #{group}"
-        self.full_name = "#{family_name}, #{first_name}"
+		full_info = "#{(title.nil? ? "" : title+" ")}#{first_name} #{family_name} #{group}"
+    full_name = "#{family_name}, #{first_name}"
 	end
 
-    before_destroy do |person|
-		self.crs&.destroy
-        self.study&.destroy
-        self.personal&.destroy
+	def self.create_from_params(params)
+		Person.create Person.prepare_params params
 	end
 
-    def self.update_full_info
-        Person.all.each do |p|
-            info = "#{(p.title.nil? ? "" : p.title+" ")} #{p.first_name} #{p.family_name}"
-            p.update(full_info: info )
-        end
-    end
+	def update_from_params(params)
+		update Person.prepare_params params
+	end
 
-    def self.create_from_params(params)
-        Person.create Person.prepare_params params
-    end
+	# prepares the parameters received from the form to aupdate/create the person object.
+	def self.prepare_params(params)
+		params["student"] = params["student"]=="true"
+		params.except("commit", "id", "photo_file")
+	end
 
+	def self.search(search_string, table_settings=nil)
+		(PulpoQuery.new(search_string, table_settings)).execute
+	end
 
-    def update_from_params(params)
-        update Person.prepare_params params
-    end
+	# retrieves an attribute of the form "person.att_name"
+	def get_attribute(attribute_string)
+		table, attribute = attribute_string.split(".")
+		res = case table
+				when "person", "people" then self[attribute.to_sym]
+				when "studies"          then (study.nil? ? "" : self.study[attribute.to_sym])
+				when "personals"        then (personal.nil? ? "" : self.personal[attribute.to_sym])
+				when "crs"              then (crs.nil? ? "" : self.crs[attribute.to_sym])
+				when "rooms"            then (room.nil? ? "" : self.room[attribute.to_sym])
+		end
+		res = "-" if (res.nil? || res.blank?)
+		puts "\nfound nil while looking for #{attribute_string}" if res.nil?
+		res.is_a?(Date) ? res.strftime("%d-%m-%y") : res
 
-    # prepares the parameters received from the form to aupdate/create the person object.
-    def self.prepare_params(params)
-        params.delete("commit")     #get rid of the commint parameter
-        params.delete("id")
-        params.delete("photo_file")
-        params["student"] = params["student"]=="true"
-        return params
-    end
+	end
 
-    def self.search(search_string, table_settings=nil)
-        query = PulpoQuery.new(search_string, table_settings)
-        res = query.execute
-        puts "got result from query: #{res}"
-        res
-        #query.status ? Person.includes(:room).find_by_sql(query.to_sql) : []
-    end
+	def self.get_editable_attributes()
+	[
+			{name: "group",          value: "string",    description: "group in cavabianca"},
+			{name: "ctr",            value: "options",   description: "ctr donde vive"},
+			{name: "status",         value: "options",   description:  "laico/diácono/sacerdote"},
+			{name: "n/agd",          value: "options",   description:  "n/agd"},
+			{name: "year",           value: "string",    description:  "año en cavabianca"},
+	]
+	end
 
-    # retrieves an attribute of the form "person.att_name"
-    def get_attribute(attribute_string)
-        table, attribute = attribute_string.split(".")
-        res = case table
-            when "person", "people"   then self[attribute.to_sym]
-            when "studies"    then (self.study.nil? ? "" : self.study[attribute.to_sym])
-            when "personals" then (self.personal.nil? ? "" : self.personal[attribute.to_sym])
-            when "crs"      then (self.crs.nil? ? "" : self.crs[attribute.to_sym])
-            when "rooms"     then (self.room.nil? ? "" : self.room[attribute.to_sym])
-        end
-        res = "-" if (res.nil? || res.blank?)
-        puts "\nfound nil while looking for #{attribute_string}" if res.nil?
-        res.is_a?(Date) ? res.strftime("%d-%m-%y") : res
+	def get_attributes(attributes)
+			attributes.map {|att| {att => self.get_attribute(att)} }
+	end
 
-    end
+	def self.collection_to_csv(people,table_settings)
+			result = (table_settings.att.map{|att| att.name}).join("\t") + "\n"
+			result << (people.map {|person| (table_settings.att.map{|att| (person.get_attribute(att.field).dup)}).join("\t") }).join(("\n"))
+	end
 
-    def self.get_editable_attributes()
-    [
-        {name: "group",          value: "string",    description: "group in cavabianca"},
-        {name: "ctr",            value: "options",   description: "ctr donde vive"},
-        {name: "status",         value: "options",   description:  "laico/diácono/sacerdote"},
-        {name: "n/agd",          value: "options",   description:  "n/agd"},
-        {name: "year",           value: "string",    description:  "año en cavabianca"},
-    ]
-    end
-
-    def get_attributes(attributes)
-        attributes.map {|att| {att => self.get_attribute(att)} }
-    end
-
-    def self.collection_to_csv(people,table_settings)
-        result = (table_settings.att.map{|att| att.name}).join("\t") + "\n"
-        result << (people.map {|person| (table_settings.att.map{|att| (person.get_attribute(att.field).dup)}).join("\t") }).join(("\n"))
-    end
-
-    def toggle_vela
-        puts "in toggle vela. Got self.vela #{self.vela}"
-        vela = case self.vela
-        when "normal" then "no"
-        when "no" then "primer_turno"
-        when "primer_turno" then "ultimo_turno"
-        when "ultimo_turno" then "normal"
-        end
-        puts "in toggle vela. Got vela #{vela}"
-        self.update(vela: vela)
-    end
+	def toggle_vela
+			options  = ["normal", "no", "primer_turno", "ultimo_turno"]
+			update(vela: options[((options.find_index vela)+1)%options.size])
+	end
 end

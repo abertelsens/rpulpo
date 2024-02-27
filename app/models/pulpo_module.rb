@@ -23,11 +23,7 @@ class PulpoModule < ActiveRecord::Base
 	end
 
 	def self.create_update(params)
-		if params[:id]=="new"
-			PulpoModule.create(params)
-		else
-			PulpoModule.find(params[:id]).update(params)
-		end
+		params[:id]=="new" ? PulpoModule.create(params) : PulpoModule.find(params[:id]).update(params)
 	end
 
 	def self.destroy(params)
@@ -64,7 +60,5 @@ class PulpoModule < ActiveRecord::Base
 		validation_result = pmodule.nil? ? true : pmodule.id==params[:id].to_i
 		validation_result ? {result: true} : {result: false, message: "module name already in use"}
 	end
-
-
 
 end #class end

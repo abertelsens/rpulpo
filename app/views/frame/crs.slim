@@ -4,34 +4,16 @@ turbo-frame id="main_frame"
     .row.header-frame.u-text-center
       h3 CRS+
     .row
-      .columns.three.offset-by-one
-        h4.u-text-center Próximas Oblaciones
-        div.table-container
-          div.table-table  
-            div.table-row-head
-              div.table-cell-head.long-field style="pointer-events: none" nombre
-              div.table-cell-head style="pointer-events: none" fecha  
-            - @people_o.each.with_index do |object, index|  
-              a.table-row-body href="/person/#{object.id}" data-turbo-frame="main_frame" style="cursor:pointer;"
-                div.table-cell-body = object[:short_name]
-                div.table-cell-body = (object&.crs.nil? ? "" : object&.crs&.get_next_fidelidad.strftime("%d-%m-%y"))
-                  
-      .columns.four
-        h4.u-text-center Próximas Admissio
-        div.table-container
-          div.table-table  
-            div.table-row-head
-              div.table-cell-head.long-field  style="pointer-events: none" nombre
-            - @people_a.each.with_index do |object, index|  
-              a.table-row-body href="/person/#{object.id}" data-turbo-frame="main_frame" style="cursor:pointer;"
-                div.table-cell-body = object[:short_name]
-                  
-      .columns.three
-        h4.u-text-center Próximos Lectorados
-        div.table-container
-          div.table-table  
-            div.table-row-head
-              div.table-cell-head.long-field  style="pointer-events: none" nombre
-            - @people_l.each.with_index do |object, index|  
-              a.table-row-body href="/person/#{object.id}" data-turbo-frame="main_frame" style="cursor:pointer;"
-                div.table-cell-body = object[:short_name]
+      .columns.one.offset-by-three 
+        a.button.link-button data-turbo-frame="people-frame" href="/crs/table?ceremony=fidelidad" = "fidelidad"
+        a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?ceremony=admissio" = "admissio"
+        a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?ceremony=lectorado" = "lectorado"
+        a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?ceremony=acolitado" = "acolitado"
+        a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?phase=propedeutica" = "propedeútica"
+        a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?phase=discipular" = "discipular"
+        a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?phase=configuracional" = "configuracional"
+        a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?phase=sintesis" = "síntesis"
+      
+      .columns.four 
+        turbo-frame id="people-frame" src="/crs/table?ceremony=fidelidad"
+    

@@ -4,8 +4,14 @@
 
 turbo-frame id="main_frame"
   	
-	form action="/document/#{(@object.nil? ? "new" : @object.id)}" enctype="multipart/form-data" method="POST" data-controller="modal mdfile" data-attachment-target="form"
-	
+	form[ 
+		action="/document/#{(@object.nil? ? "new" : @object.id)}" 
+		enctype="multipart/form-data" 
+		method="POST" 
+		data-controller="modal mdfile" 
+		data-attachment-target="form"
+		]
+		
 		.container.full-screen-form.screen-box style="max-width:800px"
 			
 			/----------------------------------------------------------------------------------------------------------------

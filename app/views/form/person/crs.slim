@@ -78,6 +78,7 @@ turbo-frame id="main_frame"
 				.columns.two.offset-by-two
 					label etapa
 					select.u-full-width name="phase"
+						option selected=(@crs.phase.nil?) value="" = "-"
 						- Crs.phases.each do |st| 
 							option selected=(@crs&.phase==st[0]) value=st[0] = st[0]
 		

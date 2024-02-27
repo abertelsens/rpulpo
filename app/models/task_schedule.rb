@@ -4,14 +4,14 @@ class TaskSchedule < ActiveRecord::Base
 	belongs_to :schedule
 	belongs_to :task
 
-	def self.prepare_params(params)
-		{
-			schedule: Schedule.find(params["schedule"]),
-			task: 		Task.find(params["task"]),
-			number: 	params["number"],
-			s_time: 	DateTime.strptime(params["s_time"],"%H:%M"),
-			e_time: 	DateTime.strptime(params["e_time"],"%H:%M")
-		}
+	def self.create_from_array params_array
+		params_array.each do |params|
+			ts = TaskSchedule.find_by(task: params[:task], schedule_id:params[:schedule_id])
+			if ts.nil?
+				TaskSchedule.create(params)
+			else
+				ts.update params
+			end
 	end
 
 end

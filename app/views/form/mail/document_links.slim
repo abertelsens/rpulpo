@@ -5,8 +5,8 @@ turbo-frame id="document-links-frame"
 			- references = @object&.refs
 			- answers = @object&.ans
 			
-			- if (!references.nil? && references.size() > 0)
-				.columns.four.ref-box data-documentlinks-target="references"
+			.columns.four.ref-box data-documentlinks-target="references"
+				- if (!references.nil? && references.size() > 0)
 					h4 Referencias  
 					- references.each do |rf|
 						- related_files = rf.find_related_files()
@@ -18,12 +18,12 @@ turbo-frame id="document-links-frame"
 									label.tooltip style="margin: 0"
 										|&nbsp&nbsp
 										<i class="fa-regular fa-folder"></i>
-										<span class="tooltiptext">#{rf&.get_original_path}</span>
+										<span class="tooltiptext">#{rf&.get_path}</span>
 									//name  
 			
 			- related_files = @object&.find_related_files()		
-			- if (!related_files.nil? && related_files.size() > 0)
-				.columns.four.ref-box.active-ref-box data-documentlinks-target="notes"
+			.columns.four.ref-box.active-ref-box data-documentlinks-target="notes"
+				- if (!related_files.nil? && related_files.size() > 0)
 					h4 Nota y Anexos
 					- related_files&.each_with_index do |rf,index|
 						- if index==0 
@@ -34,10 +34,10 @@ turbo-frame id="document-links-frame"
 								label.tooltip style="margin: 0"
 										|&nbsp&nbsp
 										<i class="fa-regular fa-folder"></i>
-										<span class="tooltiptext">#{rf&.get_original_path}</span>
+										<span class="tooltiptext">#{rf&.get_path}</span>
 
-			- if (!answers.nil? && answers.size() > 0)
-				.columns.four.ref-box data-documentlinks-target="answers"
+			.columns.four.ref-box data-documentlinks-target="answers"
+				- if (!answers.nil? && answers.size() > 0)
 					h4 Respuesta en  
 					- answers.each do |rf|
 						a.mail-link data-turbo-frame="main_frame" href="mail/#{rf.id}" = "prot: #{rf.protocol}"
@@ -49,7 +49,7 @@ turbo-frame id="document-links-frame"
 									label.tooltip style="margin: 0"
 										|&nbsp&nbsp
 										<i class="fa-regular fa-folder"></i>
-										<span class="tooltiptext">#{rf&.get_original_path}</span>
+										<span class="tooltiptext">#{rf&.get_path}</span>
 		- if !first_file.nil?
 			.row
 				turbo-frame id="mailfile-frame" data-mailform-target="mailfile_frame" src="/mailfile/#{first_file.id}?type=nota"

@@ -17,8 +17,8 @@ get '/modules/table' do
 end
 
 get '/module/:id' do
-    @object = (params[:id]=="new" ? nil : PulpoModule.find(params[:id]))
-    partial :"form/module"
+	@object = (params[:id]=="new" ? nil : PulpoModule.find(params[:id]))
+	partial :"form/module"
 end
 
 # -----------------------------------------------------------------------------------------
@@ -27,8 +27,8 @@ end
 
 # Returns a JSON object
 post '/module/:id/validate' do
-    content_type :json
-    (PulpoModule.validate params).to_json
+	content_type :json
+	(PulpoModule.validate params).to_json
 end
 
 post '/module/:id' do

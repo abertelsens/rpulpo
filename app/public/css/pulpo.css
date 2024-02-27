@@ -237,6 +237,10 @@ a.h4 {
   text-decoration: underline;
  }
 
+a.button.no-border
+{
+  border: 0;
+}
 
 /**********************************************************************
 * BUTTONS

@@ -12,7 +12,6 @@ class User < ActiveRecord::Base
 	has_many	:assignedmails, :through => :assigned_mails, :source => :mail , dependent: :destroy
 	has_many 	:module_users, dependent: :destroy
 
-
 # -----------------------------------------------------------------------------------------
 # CALLBACKS
 # -----------------------------------------------------------------------------------------
@@ -22,9 +21,11 @@ class User < ActiveRecord::Base
 
 	def self.create(params)
 		user = super(User.prepare_params params)
-		modules = PulpoModule.find(params["module"].keys)
-		module_users = modules.each do |mod|
-			ModuleUser.create(user: user, pulpo_module: mod, modulepermission: params["module"][mod.id.to_s])
+		if params["module"].present?
+			modules = PulpoModule.find(params["module"].keys)
+			module_users = modules.each do |mod|
+				ModuleUser.create(user: user, pulpo_module: mod, modulepermission: params["module"][mod.id.to_s])
+			end
 		end
 	end
 
@@ -69,7 +70,10 @@ class User < ActiveRecord::Base
 	# authenticates the user login data.
 	def self.authenticate(uname, password)
 		user = User.find_by(uname: uname)
-		return false if user.nil?
+		if user.nil? && Person.find_by(email: uname)
+			User.create(uname: uname, password: "", usertype: "guest")
+			return User.authenticate(uname,"")
+		end
 		user.password==password ? user : false
   end
 
@@ -106,15 +110,9 @@ class User < ActiveRecord::Base
 		User.where(mail:true)
 	end
 
-# -----------------------------------------------------------------------------------------
-# ACCESSORS
-# -----------------------------------------------------------------------------------------
-def add_unread_mail(mail)
-	UnreadMail.create(user:self, mail:mail)
-end
-# -----------------------------------------------------------------------------------------
-# PERMISSIONS
-# -----------------------------------------------------------------------------------------
+	# -----------------------------------------------------------------------------------------
+	# PERMISSIONS
+	# -----------------------------------------------------------------------------------------
 
 	# get the permission for a module
 	def get_permission(mod)
@@ -136,8 +134,10 @@ end
 	end
 
 	def allowed?(module_identifier)
-		#puts "asking if module #{module_identifier} is allowed. Found module #{PulpoModule.find_by(identifier: module_identifier)}"
+		puts "checking if #{uname} is allowed to see #{module_identifier}"
+		puts "got: #{get_permission PulpoModule.find_by(name: module_identifier)}"
 		return true if admin?
+		puts "#{uname} is not an admin"
 		(get_permission PulpoModule.find_by(name: module_identifier))=="allowed"
 	end
 
