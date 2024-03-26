@@ -10,10 +10,8 @@
 // Pulpo will prompt the user to set the values of the variables that are      
 // enclosed in $ signs.
 
-
-#let date = "$date$"
+#let date = "$$date$$"
 #let impreso = "F21"
-#let rector = "$rector$\nRector"
 
 //=================================================================
 //FUNCTIONS 
@@ -23,13 +21,6 @@
   width:100%,
   text([#align(right, date)])
 )
-
-#let show_signature(rector) = { 
-pad(x:7cm, y: 2cm)[
-#box(
-  width: 200pt,
-)[#align(center,rector)]]
-}
 
 //Defines the style of the heading of the document
 #show heading: it => {
@@ -70,4 +61,3 @@ Insuper religióso voluntátis et intelléctus obséquio doctrínis adhaéreo qu
 
 
 #show_date[#date]
-#show_signature[#rector]

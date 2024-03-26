@@ -68,12 +68,14 @@ end
 # renders the table of after perfroming a search.
 get '/rooms/house/:house_name' do
 	get_table_settings :rooms
+	@rooms_query = session["rooms_table_query"] = "#{params[:house_name]}"
 	@objects = Room.where(house: params[:house_name]).order(room: :asc)
 	partial :"table/rooms"
 end
 
 # loads the table settings form
 get '/rooms/table/settings' do
+	@current_user = get_current_user
 	get_table_settings :rooms
 	@table_settings = @rooms_table_settings
 	partial :"form/table_settings"

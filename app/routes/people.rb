@@ -263,7 +263,7 @@ get '/people/:id/document/:doc_id' do
 				puts Rainbow(@writer.message).red
 				return partial :"errors/writer_error"
 		end
-	OS.windows? ?	(send_file @writer.render) : (body @writer.render)
+	OS.windows? ?	(send_file(@writer.render )) : (body @writer.render)
 	end
 end
 

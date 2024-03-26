@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_22_093429) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_21_104924) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -57,6 +57,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_22_093429) do
     t.integer "engine"
     t.string "path"
     t.boolean "template_variables"
+    t.boolean "singlepage"
   end
 
   create_table "entities", force: :cascade do |t|
@@ -130,7 +131,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_22_093429) do
     t.string "name"
     t.date "s_date"
     t.date "e_date"
-    t.index ["s_date", "e_date"], name: "index_periods_on_s_date_and_e_date", unique: true
   end
 
   create_table "personals", force: :cascade do |t|

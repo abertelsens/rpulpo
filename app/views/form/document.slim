@@ -36,16 +36,18 @@ turbo-frame id="main_frame"
 						- PulpoModule.all.each do |m|
 							option selected=(@object&.pulpo_module_id==m.id) value=m.id = m.name
 			.row		
-				.columns.three
-					label for="engine" engine
-					select.u-full-width name="engine" data-mdfile-target="engine_select" data-action="change->mdfile#select_engine"
-						- Document.engines.each do |engine|
-							option selected=(@object&.engine==engine[0]) value=engine[0] = engine[0]
 
 				.columns.nine
 					label for="description" description
 					&text.u-full-width name="description" value=@object&.description
 			
+
+				.columns.three
+					label for="singlepage" page type
+					select.u-full-width name="singlepage"
+						option selected=@object&.singlepage value="true" = "single page"
+						option selected=!@object&.singlepage value="false" = "multiple pages"
+
 			.row data-mdfile-target="templateframe"
 				.columns.six
 					label for="path" template path
@@ -62,6 +64,7 @@ turbo-frame id="main_frame"
 					- if @object
 						a.button.button-secondary.u-full-width data-mdfile-target="viewbtn" target="_blank" href=(@object&.path&.blank? ? "#" : "/document/#{@object.id}/viewtemplate") view
 					
+
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM BUTTONS
 			//----------------------------------------------------------------------------------------------------------------

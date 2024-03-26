@@ -12,12 +12,10 @@ require 'typst' if OS.mac?
 
 class TypstWriter < DocumentWriter
 
+	MONTHS_LATIN = [nil, "Ianuarius", "Februarius", "Martius", "Aprilis", "Maius", "Iunius", "Iulius", "Augustus", "September", "October", "November", "December"]
+
 	# The directory where the typst templates are located.
 	TYPST_TEMPLATES_DIR ="app/engines-templates/typst"
-
-	# Typst command to force a page break
-	TYPST_PAGE_BREAK = "\n#pagebreak()\n"
-	TYPST_PREAMBLE_SEPARATOR = "//CONTENTS"
 
 	def initialize(document, people, template_variables=nil)
 		@status = true
@@ -31,42 +29,59 @@ class TypstWriter < DocumentWriter
 			return
 		end
 
-		template_source = @template_source.split(TYPST_PREAMBLE_SEPARATOR)
-
-		if template_source.size==1  #We could not find the TYPST_PREAMBLE_SEPARATOR in the file.
-				set_error(FATAL,"Typst Writer: Could not find the //CONTENTS marker in template'#{@document.path}'. You should check the template source before trying again.")
-				return
-		else
-				@template_preamble = template_source[0]
-				@template_contents = template_source[1]
-		end
 
 		# stores an array of all the variables found in the template.
-		template_variables.each {|var| @template_preamble.gsub!("$#{var[0]}$",var[1])} if template_variables
-		@variables = @template_contents.scan(/\$\S*\$/)
+		template_variables.each {|var| @template_source.gsub!("$$#{var[0]}$$",var[1])} if template_variables
+		@variables = @template_source.scan(/\$\S*\$/)
 
 		# process each person.
 		# replace the variables in the md file with the values retrieved from the DB
-		@typst_src = @template_preamble << (@people.map { |person| replace_variables(@template_contents,person) }).join(TYPST_PAGE_BREAK)
+		if @document.singlepage
+			@typst_src = replace_variables_of_set(@template_source,people)
+		else
+			@typst_src =(@people.map { |person| replace_variables(@template_source,person) }).join("\n")
 		end
 
+	end
+
 	# replaces variables with the values corresponding to each person
-	def replace_variables(source,person)
+	def replace_variables(source, person)
 		variables = @variables.map{ |var| [var, get_variable_value(var,person)] }
-		result= source
-		variables.each {|var| var[1].nil? ? result = result.gsub(var[0], "NOT FOUND") : result = result.gsub(var[0],var[1]) }
+		result = source
+		variables.each {|var| var[1].nil? ? result = result.gsub(var[0], "NOT FOUND") : result = result.gsub(var[0],var[1].to_s) }
 		return result
 	end
+
+		# replaces variables with the values corresponding to each person
+		def replace_variables_of_set(source, people)
+			variables = @variables.map{ |var| [var, get_variable_values(var,people)] }
+			result = source
+			variables.each {|var| var[1].nil? ? result = result.gsub(var[0], "NOT FOUND") : result = result.gsub(var[0],var[1]) }
+			return result
+		end
 
 	def get_variable_value(var,person)
 		# clean the $ characters and parse the variable.
 		variable_identifier = var.gsub("$","")
-		#puts Rainbow("Typst Writer: looking for variable: #{variable_identifier}").yellow
 		variable_array = variable_identifier.split(".")
 		db_variable = !variable_array[1].nil?
 
 		if db_variable
-			return person.get_attribute(variable_identifier)
+			person.get_attribute(variable_identifier, variable_array[2])
+		else
+			set_error WARNING, "Typst Writer: don't know how to replace '#{variable_identifier}'"
+			return nil
+		end
+	end
+
+	def get_variable_values(var,people)
+		# clean the $ characters and parse the variable.
+		variable_identifier = var.gsub("$","")
+		variable_array = variable_identifier.split(".")
+		db_variable = !(variable_identifier.split("."))[1].nil?
+
+		if db_variable
+			(people.map{ |person| person.get_attribute(variable_identifier)}).join(" \n")
 		else
 			set_error WARNING, "Typst Writer: don't know how to replace '#{variable_identifier}'"
 			return nil
@@ -85,7 +100,7 @@ class TypstWriter < DocumentWriter
 				pdf_file_path = "#{TYPST_TEMPLATES_DIR}/#{tmp_file_name}.pdf"
 
 				File.write typ_file_path, @typst_src
-				res =  system("typst compile #{typ_file_path} #{pdf_file_path}")
+				res =  system("typst compile --root ../.. #{typ_file_path} #{pdf_file_path}")
 				File.delete typ_file_path
 				res ? (return pdf_file_path) : set_error(FATAL, "Typst Writer: failed to convert document: #{error.message}")
 
@@ -97,4 +112,5 @@ class TypstWriter < DocumentWriter
 				set_error(FATAL, "Typst Writer: failed to convert document: #{error.message}")
 		end
 	end
+
 end #class end

@@ -33,26 +33,19 @@ turbo-frame id="main_frame" data-people-target="people_screen"
           .modal-content
             .container.menu
               - if @current_user.usertype!="guest"  
-                .table-cell-head.cell-header.no-border
-                  i.fa-solid.fa-file style="font-size:1rem"
-                  |&nbspDOCUMENTS
+                .table-cell-head.cell-header.no-border DOCUMENTS
                 div style="margin-right:2rem"
                   - (Document.get_docs_of_user @current_user).each do |doc|
                     .row
                       a.table-cell-body.menu-link  href="/people/set/document/#{doc.id}" target=(doc.engine=="excel" ? "_self" : "_blank") = "#{doc.pulpo_module.name} - #{doc.name}"
-              .table-cell-head.cell-header.no-border
-                i.fa-solid.fa-gear style="font-size:1rem"
-                |&nbspACTIONS
+              
+              .table-cell-head.cell-header.no-border ACTIONS
               div
                 .row 
-                  a.table-cell-body.menu-link href="/people/table/settings" data-turbo-frame="editor_frame"
-                    i.fa-solid.fa-table style="font-size:small"
-                    |&nbspEdit Table Columns
+                  a.table-cell-body.menu-link href="/people/table/settings" data-turbo-frame="editor_frame" Edit Table Columns
                 - if @current_user.usertype!="guest"  
                   .row  
-                    a.table-cell-body.menu-link href="/people/edit_field" 
-                      i.fa-solid.fa-pen-to-square style="font-size:small"
-                      |&nbspEdit Field Value
+                    a.table-cell-body.menu-link href="/people/edit_field" Edit Field Value
             .row.u-text-center style="margin-top: 2rem"
               button.button-primary.no-margin data-action="click->modal#close_modal" cancel
 

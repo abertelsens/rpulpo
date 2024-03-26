@@ -109,7 +109,7 @@ class PrawnWriter  < DocumentWriter
 		@pdf.move_down LINE_HEIGHT
 
 		add_label("Idiomas", 0, @pdf.cursor+LINE_HEIGHT,135,LINE_HEIGHT)
-		add_field("#{@personal.languages}" ,135 , @pdf.cursor+LINE_HEIGHT, 388, LINE_HEIGHT) unless @study.nil?
+		add_field("#{@personal.languages}" ,135 , @pdf.cursor+LINE_HEIGHT, 388, LINE_HEIGHT) unless @personal.nil?
 		@pdf.move_down LINE_HEIGHT
 
 		add_label("Pidió la admisión", 0, @pdf.cursor+LINE_HEIGHT,135,LINE_HEIGHT)

@@ -75,11 +75,19 @@ class Mail < ActiveRecord::Base
 		r = mails.map{|mail| {protocol: protocol, status: mail!=nil} }
 		res = r.map{|elem| elem[:status]}.inject(:&)
 		update(refs: mails, refs_string: mails.pluck(:protocol).join(", ")) if res
+		if res
+			mails.each do |mail|
+				old_answers =  mail.ans_string
+				new_answers = (old_answers.blank? ? protocol : old_answers + ", " + protocol)
+				mail.update_answers new_answers
+			end
+		end
 		{result: res, data: r}
 	end
 
 	# checks if a given protocols string contains exisiting mails.
 	def update_answers(protocols_string)
+		puts Rainbow("updating answer to #{protocols_string}").purple
 		if protocols_string.blank?
 			answers.destroy_all
 			update(ans_string: "")
@@ -103,7 +111,7 @@ class Mail < ActiveRecord::Base
 
 	# return an array of mail objects given a string of the type "prot1, prot2"
 	def self.find_mails(protocols_string)
-		protocols_string.split(",").map{|prot| Mail.find_by(protocol: prot.strip)}
+		protocols_string.split(",").map{|prot| Mail.find_by(protocol: prot.strip)}.uniq
 	end
 
 	# given an entity suggest the next protocol for an outgoing mail to that entity
@@ -112,7 +120,7 @@ class Mail < ActiveRecord::Base
 		# get all the outgoing mails from the entity this year
 		mails = Mail.where(entity: entity, direction: "salida").and(Mail.where("date_part('year', date)=#{current_year}"))
 		protocols = mails.map {|mail| mail.get_protocol_serial[0].to_i }
-		"crs+ #{protocols.max + 1}/#{current_year-2000}"
+		"crs+#{entity.sigla=="cg" ? "" : "-"+entity.sigla} #{protocols.max + 1}/#{current_year-2000}"
 	end
 
 	# given a protocol retuns and array with the numers corresponding to the number and the year

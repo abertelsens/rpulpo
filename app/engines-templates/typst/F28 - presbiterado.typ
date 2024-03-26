@@ -1,5 +1,5 @@
 // =================================================================
-// TYPST TEMPLATE FOR IMPRESO F21
+// TYPST TEMPLATE FOR IMPRESO F28
 // =================================================================
 // The template has two parts. A preamble in which we define some variables, 
 // functions to be used and some settings of the document.
@@ -10,9 +10,8 @@
 // Pulpo will prompt the user to set the values of the variables that are      
 // enclosed in $ signs.
 
-
-#let date = "$date$"
 #let impreso = "F28"
+#let date = "$$date$$"
 
 //=================================================================
 //FUNCTIONS 
@@ -22,13 +21,6 @@
   width:100%,
   text([#align(right, date)])
 )
-
-#let show_signature(rector) = { 
-pad(x:7cm, y: 2cm)[
-#box(
-  width: 200pt,
-)[#align(center,rector)]]
-}
 
 //Defines the style of the heading of the document
 #show heading: it => {
@@ -53,8 +45,7 @@ footer: [#pad(x:-2.3cm, y: 1.2cm, text(size: 9pt, [#impreso]))]
 
 = IUISUIURANDUM FIDELITATIS IN SUSCIPIENDO OFFICIO NOMINE ECCLESIAE EXERCENDO
 
-        
-Ego $person.first_name$ $person.family_name$ in suscipiendo officio promitto me cum catholica Ecclesia communionem semper servaturum, sive verbis a me prolatis, sive mea agendi ratione.
+Ego $person.first_name$ $person.family_name$ in suscipiendo ordine Presbiteratus promitto me cum catholica Ecclesia communionem semper servaturum, sive verbis a me prolatis, sive mea agendi ratione.
 
 Magna cum diligentia et fidelitate onera explebo quibus teneor erga Ecclesiam, tum universam, tum particularem, in qua ad meum servitium, secundum iuris praescripta, exercendum vocatus sum.
 

@@ -47,11 +47,11 @@ turbo-frame id="main_frame"
         .columns.six.offset-by-three
           a.button.button-primary.u-full-width style="margin-top:40px" autofocus="true" tabindex="0" href="/people" OK
 
-    .columns.one.margin-left
+    .columns.two.margin-left
       .row
         h6 = "DOCUMENTS"
       - (Document.get_pdf_docs_of_user @current_user).each do |doc|
         .row
-          a.table-cell-body.menu-link  style="padding-left:0" href="/people/#{@person.id}/document/#{doc.id}" target=(doc.engine=="excel" ? "_self" : "_blank") = "#{doc.pulpo_module.name} - #{doc.name}"
+          a.table-cell-body.menu-link  style="padding-left:0" href="/people/#{@person.id}/document/#{doc.id}" target=(doc.engine=="excel" ? "_self" : "_blank") = doc.name
       
     

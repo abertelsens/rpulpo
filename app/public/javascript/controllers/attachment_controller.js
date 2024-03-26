@@ -29,8 +29,8 @@ load_image({ params: { id } }) {
   this.submit_image(id)
 }
 
-// the function submits the image uploaded inmediately without waiting for the whole to 
-// be sumbitted. This way the user will see the image inmediately.
+// the function submits the image uploaded inmediately without waiting for the whole form to 
+// be sumbitted. This way the user will see the uploaded image appear inmediately.
 submit_image(person_id) {
   var url = `/people/${person_id}/image`
   var input = document.querySelector('input[type="file"]')
@@ -41,7 +41,6 @@ submit_image(person_id) {
     body: data,
   })
   .then(response => this.photo_imageTarget.src=`photos/${person_id}.jpg`)
-  //.then(data => window.open(URL.createObjectURL(data)))
   }
 
 })
