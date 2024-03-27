@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 require 'os'
-ruby '3.2.2'
+ruby '3.2'
 gem 'sinatra',            '2.1.0'
 #gem 'sinatra-flash'
 gem 'sinatra-partial'
