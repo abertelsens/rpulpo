@@ -21,6 +21,7 @@ class MailFile < ActiveRecord::Base
 	end
 
   def get_path
+		puts "returning path #{mail.get_sources_directory}/#{name}"
     return "#{mail.get_sources_directory}/#{name}"
   end
 

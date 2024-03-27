@@ -241,30 +241,21 @@ get '/people/:id/document/:doc_id' do
 			puts Rainbow(@writer.message).red
 			return partial :"errors/writer_error"
 	end
-	case @document.engine
-	when "prawn"
-		headers 'content-type' => "application/pdf"
-		body @writer.render
-	when "excel"
-		send_file @writer.render(), :filename => "#{@document.name}.xlsx"
-	when "typst"
-		if @document.has_template_variables?
-				puts Rainbow("Document has template variables").red
-				@template_variables = @document.get_template_variables
-				@set = params[:id]
-				return partial :'form/report'
-		else
-			puts Rainbow("Document has NO template variables").red
-		end
-		case @writer.status
-			when DocumentWriter::WARNING
-				puts Rainbow(@writer.message).orange
-			when DocumentWriter::FATAL
-				puts Rainbow(@writer.message).red
-				return partial :"errors/writer_error"
-		end
-	OS.windows? ?	(send_file(@writer.render )) : (body @writer.render)
+
+	if @document.has_template_variables?
+			@template_variables = @document.get_template_variables
+			@set = params[:id]
+			return partial :'form/report'
 	end
+
+	case @writer.status
+		when DocumentWriter::WARNING
+			puts Rainbow(@writer.message).orange
+		when DocumentWriter::FATAL
+			puts Rainbow(@writer.message).red
+			return partial :"errors/writer_error"
+	end
+	OS.windows? ?	(send_file(@writer.render )) : (body @writer.render)
 end
 
 post '/people/:id/document/:doc_id' do
@@ -280,8 +271,7 @@ post '/people/:id/document/:doc_id' do
 	@writer = @document.get_writer(@people, params)
 
 	case @writer.status
-		when DocumentWriter::WARNING
-			puts Rainbow(@writer.message).orange
+		when DocumentWriter::WARNING then puts Rainbow(@writer.message).orange
 		when DocumentWriter::FATAL
 			puts Rainbow(@writer.message).red
 			return partial :"errors/writer_error"
