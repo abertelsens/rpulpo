@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 require 'os'
-ruby '3.2'
+ruby '3.3'
 gem 'sinatra',            '2.1.0'
 #gem 'sinatra-flash'
 gem 'sinatra-partial'
@@ -12,7 +12,7 @@ gem 'localhost'
 
 
 gem 'puma'
-gem 'pg'
+gem 'pg', '~> 1.5', '>= 1.5.4'
 gem 'redcarpet'
 gem 'rb_sys'
 gem 'typst' if OS.mac?
@@ -26,7 +26,7 @@ gem 'rainbow'
 gem 'matrix'
 gem 'require_all'
 gem 'clipboard', '~> 1.3', '>= 1.3.6'
-gem 'ffi'
+gem 'ffi', '~> 1.16', '>= 1.16.3'
 gem 'whenever'
 #gem 'combine_pdf', 		'1.0.22'
 gem 'prawn'

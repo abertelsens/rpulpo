@@ -4,17 +4,23 @@ GEM
     TimezoneParser (0.3.3)
       insensitive_hash
       tzinfo
-    activemodel (7.0.4.3)
-      activesupport (= 7.0.4.3)
-    activerecord (7.0.4.3)
-      activemodel (= 7.0.4.3)
-      activesupport (= 7.0.4.3)
+    activemodel (7.1.3.2)
+      activesupport (= 7.1.3.2)
+    activerecord (7.1.3.2)
+      activemodel (= 7.1.3.2)
+      activesupport (= 7.1.3.2)
+      timeout (>= 0.4.0)
     activerecord-postgresql-adapter (0.0.1)
       pg
-    activesupport (7.0.4.3)
+    activesupport (7.1.3.2)
+      base64
+      bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
+      connection_pool (>= 2.2.5)
+      drb
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
+      mutex_m
       tzinfo (~> 2.0)
     addressable (2.8.6)
       public_suffix (>= 2.0.2, < 6.0)
@@ -23,12 +29,17 @@ GEM
     base64 (0.2.0)
     benchmark (0.3.0)
     bidi (0.0.2)
+    bigdecimal (3.1.7)
     chronic (0.10.2)
     clipboard (1.3.6)
-    commonmarker (0.23.10)
-    concurrent-ruby (1.2.2)
+    commonmarker (1.0.4-arm64-darwin)
+    commonmarker (1.0.4-x64-mingw-ucrt)
+    commonmarker (1.0.4-x86_64-darwin)
+    concurrent-ruby (1.2.3)
+    connection_pool (2.4.1)
     content_disposition (1.0.0)
     diff-lcs (1.5.1)
+    drb (2.2.1)
     e2mmap (0.1.0)
     encrypted_cookie (0.1.0)
       rack (>= 1.1, < 3)
@@ -37,65 +48,65 @@ GEM
     faraday-net_http (3.1.0)
       net-http
     ffi (1.16.3)
-    ffi (1.16.3-x64-mingw-ucrt)
     github-markup (4.0.2)
     google_calendar (0.6.4)
       TimezoneParser (~> 0.3.0)
       json (>= 1.8.3)
       signet (~> 0.7)
-    groupdate (6.2.0)
-      activesupport (>= 5.2)
-    i18n (1.12.0)
+    groupdate (6.4.0)
+      activesupport (>= 6.1)
+    i18n (1.14.4)
       concurrent-ruby (~> 1.0)
     insensitive_hash (0.3.3)
     jaro_winkler (1.5.6)
     json (2.7.1)
-    jwt (2.8.0)
+    jwt (2.8.1)
       base64
     kramdown (2.4.0)
       rexml
     kramdown-parser-gfm (1.1.0)
       kramdown (~> 2.0)
     language_server-protocol (3.17.0.3)
-    localhost (1.1.10)
+    localhost (1.2.0)
     matrix (0.4.2)
-    minitest (5.18.0)
+    minitest (5.22.3)
     multi_json (1.15.0)
     mustermann (1.1.2)
       ruby2_keywords (~> 0.0.1)
+    mutex_m (0.2.0)
     net-http (0.4.1)
       uri
-    nio4r (2.7.0)
-    nokogiri (1.14.3-arm64-darwin)
+    nio4r (2.7.1)
+    nokogiri (1.16.3-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.14.3-x64-mingw-ucrt)
+    nokogiri (1.16.3-x64-mingw-ucrt)
       racc (~> 1.4)
-    nokogiri (1.14.3-x86_64-darwin)
+    nokogiri (1.16.3-x86_64-darwin)
       racc (~> 1.4)
     os (1.1.4)
-    pandoc-ruby (2.1.7)
+    pandoc-ruby (2.1.10)
     parallel (1.24.0)
     parser (3.3.0.5)
       ast (~> 2.4.1)
       racc
-    pdf-core (0.9.0)
-    pg (1.4.6)
-    pg (1.4.6-x64-mingw-ucrt)
-    prawn (2.4.0)
-      pdf-core (~> 0.9.0)
-      ttfunk (~> 1.7)
+    pdf-core (0.10.0)
+    pg (1.5.6)
+    prawn (2.5.0)
+      matrix (~> 0.4)
+      pdf-core (~> 0.10.0)
+      ttfunk (~> 1.8)
     prawn-table (0.1.2)
     public_suffix (5.0.4)
     puma (6.4.2)
       nio4r (~> 2.0)
-    racc (1.6.2)
-    rack (2.2.6.4)
+    racc (1.7.3)
+    rack (2.2.9)
     rack-protection (2.1.0)
       rack
     rack-ssl-enforcer (0.2.9)
     rainbow (3.1.1)
     rake (13.1.0)
-    rb_sys (0.9.83)
+    rb_sys (0.9.90)
     rbs (2.8.4)
     redcarpet (3.6.0)
     regexp_parser (2.9.0)
@@ -103,7 +114,7 @@ GEM
     reverse_markdown (2.1.1)
       nokogiri
     rexml (3.2.6)
-    rubocop (1.60.2)
+    rubocop (1.62.1)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -111,17 +122,17 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml (>= 3.2.5, < 4.0)
-      rubocop-ast (>= 1.30.0, < 2.0)
+      rubocop-ast (>= 1.31.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.30.0)
-      parser (>= 3.2.1.0)
+    rubocop-ast (1.31.2)
+      parser (>= 3.3.0.4)
     ruby-progressbar (1.13.0)
     ruby2_keywords (0.0.5)
-    rubyXL (3.4.25)
+    rubyXL (3.4.26)
       nokogiri (>= 1.10.8)
       rubyzip (>= 1.3.0)
-    rubyzip (1.3.0)
+    rubyzip (2.3.2)
     signet (0.19.0)
       addressable (~> 2.8)
       faraday (>= 0.17.5, < 3.a)
@@ -132,7 +143,7 @@ GEM
       rack (~> 2.2)
       rack-protection (= 2.1.0)
       tilt (~> 2.0)
-    sinatra-activerecord (2.0.26)
+    sinatra-activerecord (2.0.27)
       activerecord (>= 4.1)
       sinatra (>= 1.0)
     sinatra-contrib (2.1.0)
@@ -165,18 +176,18 @@ GEM
       tilt (~> 2.0)
       yard (~> 0.9, >= 0.9.24)
     temple (0.8.2)
-    thor (1.3.0)
+    thor (1.3.1)
     tilt (2.0.11)
-    ttfunk (1.7.0)
-    typst (0.0.4)
-      rb_sys (>= 0.9.83)
+    timeout (0.4.1)
+    ttfunk (1.8.0)
+      bigdecimal (~> 3.1)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.5.0)
     uri (0.13.0)
     whenever (1.0.0)
       chronic (>= 0.6.3)
-    yard (0.9.34)
+    yard (0.9.36)
 
 PLATFORMS
   arm64-darwin-22
@@ -191,7 +202,7 @@ DEPENDENCIES
   commonmarker
   content_disposition (~> 1.0)
   encrypted_cookie
-  ffi
+  ffi (~> 1.16, >= 1.16.3)
   github-markup
   google_calendar
   groupdate
@@ -199,7 +210,7 @@ DEPENDENCIES
   matrix
   os
   pandoc-ruby
-  pg
+  pg (~> 1.5, >= 1.5.4)
   prawn
   prawn-table (~> 0.1.0)
   puma
@@ -216,11 +227,10 @@ DEPENDENCIES
   sinatra-reloader
   slim (= 3.0.8)
   solargraph
-  typst
   whenever
 
 RUBY VERSION
-   ruby 3.2.2p53
+   ruby 3.3.0p0
 
 BUNDLED WITH
    2.3.11
