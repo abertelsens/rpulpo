@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-require 'os'
+#require 'os'
 ruby '3.3'
 gem 'sinatra',            '2.1.0'
 #gem 'sinatra-flash'
@@ -15,7 +15,7 @@ gem 'puma'
 gem 'pg', '~> 1.5', '>= 1.5.4'
 gem 'redcarpet'
 gem 'rb_sys'
-gem 'typst' if OS.mac?
+#gem 'typst' #if OS.mac?
 gem 'activerecord-postgresql-adapter'
 gem 'groupdate'
 gem 'activerecord', '~> 7.0', '>= 7.0.4.2'
