@@ -4,11 +4,11 @@
 # The class relies on the typst gem (https://github.com/actsasflinn/typst-rb)
 # -----------------------------------------------------------------------------------------
 
-require 'os'
+#require 'os'
 
 # in case we are on a mac we run typst via the typs gem. In windows we are foreced to call
 # the typst executable because the gem is not working (as of 11-02-2024)
-require 'typst' if OS.mac?
+#require 'typst' if OS.mac?
 
 class TypstWriter < DocumentWriter
 
@@ -91,7 +91,7 @@ class TypstWriter < DocumentWriter
 	def render(output_type="pdf")
 		begin
 			# if running in windows we will produce a file
-			if OS.windows?
+			#if OS.windows?
 				# delete all the previous pdf files. Not ideal
 				# write a tmp typst file and compile it to pdf
 				FileUtils.rm Dir.glob("#{TYPST_TEMPLATES_DIR}/*.pdf")
@@ -105,9 +105,9 @@ class TypstWriter < DocumentWriter
 				res ? (return pdf_file_path) : set_error(FATAL, "Typst Writer: failed to convert document: #{error.message}")
 
 			# if running in osx we produce the file via the typst gem
-			else
-				Typst::Pdf.from_s(@typst_src).document
-			end
+			#else
+			#	Typst::Pdf.from_s(@typst_src).document
+			#end
 		rescue => error
 				set_error(FATAL, "Typst Writer: failed to convert document: #{error.message}")
 		end
