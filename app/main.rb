@@ -24,13 +24,13 @@ include ExcelImporter
 
 puts Rainbow("PULPO: Starting Configuration").yellow
 
-DB_NAME = 'rpulpo_db'
+#DB_NAME = 'rpulpo_db'
 
-LOCAL_DB_PATH = "postgres://alejandro@localhost/#{DB_NAME}"
+#LOCAL_DB_PATH = "postgres://alejandro@localhost/#{DB_NAME}"
 
 # if running in a remote environment look for the DB URL in the enviroment. If the ENV variable is not
 # found then it means we are running locally, so use the LOCAL_DB_PATH
-db = URI.parse( ENV['DATABASE_URL'] || LOCAL_DB_PATH)
+#db = URI.parse( ENV['DATABASE_URL'] || LOCAL_DB_PATH)
 
 # do not print to console
 old_logger = ActiveRecord::Base.logger
@@ -39,13 +39,13 @@ old_logger = ActiveRecord::Base.logger
 # To turn active record logger back on
 ActiveRecord::Base.logger = old_logger
 
-configure :development do
-    set :database, {adapter: 'postgresql',  encoding: 'utf8', host: db.host, database: DB_NAME, pool: 2, username: db.user}
-end
+#configure :development do
+#    set :database, {adapter: 'postgresql',  encoding: 'utf8', host: db.host, database: DB_NAME, pool: 2, username: db.user}
+#end
 
-configure :production do
-    set :database, {adapter: 'postgresql',  encoding: 'utf8', host: db.host, database: DB_NAME, pool: 2, username: db.user}
-end
+#configure :production do
+#    set :database, {adapter: 'postgresql',  encoding: 'utf8', host: db.host, database: DB_NAME, pool: 2, username: db.user}
+#end
 
 ########################################################################################
 # SINATRA SETUP
@@ -80,6 +80,9 @@ set :partial_template_engine, :slim
 ########################################################################################
 # LOGIN
 ########################################################################################
+DB_ENV ||= 'development'
+connection_details = YAML::load(File.open('config/database.yaml'))
+ActiveRecord::Base.establish_connection(connection_details[DB_ENV])
 
 ADMIN_USER = User.find_by(uname: "ale")
 

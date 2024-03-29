@@ -1,0 +1,23 @@
+default: &default
+  adapter: 'postgresql'
+  database: 'rpulpo_db'
+  encoding: 'utf8' 
+  pool: 5
+  
+development:
+  database: 'rpulpo_db'
+  adapter: 'postgresql'  
+  encoding: 'utf8'
+  pool: 5
+  username: 'postgres'
+  server: 'puma'
+
+  
+production:
+  database: 'rpulpo_db'
+  adapter: 'postgresql'  
+  encoding: 'utf8'
+  pool: 5
+  username: 'alejandro'
+  server: 'puma'
+  #host: db.host,
