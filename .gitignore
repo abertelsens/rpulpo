@@ -1,7 +1,6 @@
 # ignore ALL files in ANY directory 
 app/public/tmp
 tmp/
-app/public/photos
 .DS_Store
 
 *.pdf
