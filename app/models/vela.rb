@@ -1,7 +1,5 @@
 
 require_rel '../engines'
-require 'os'
-require 'typst' if OS.mac?
 
 #A class containing the Users data
 class Vela < ActiveRecord::Base
