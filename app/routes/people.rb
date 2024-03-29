@@ -276,7 +276,7 @@ post '/people/:id/document/:doc_id' do
 			puts Rainbow(@writer.message).red
 			return partial :"errors/writer_error"
 	end
-	OS.windows? ? (send_file @writer.render) : (body @writer.render)
+	send_file @writer.render
 end
 
 # shows the form to edit a field of all the people in the set
