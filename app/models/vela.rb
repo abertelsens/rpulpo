@@ -119,7 +119,7 @@ TYPST_PREAMBLE_SEPARATOR = "//CONTENTS"
 
 
 
-		if OS.windows?
+
 			# delete all the previous pdf files. Not ideal
 			# write a tmp typst file and compile it to pdf
 			FileUtils.rm Dir.glob("#{TYPST_TEMPLATES_DIR}/*.pdf")
@@ -131,9 +131,6 @@ TYPST_PREAMBLE_SEPARATOR = "//CONTENTS"
 			res =  system("typst compile #{typ_file_path} #{pdf_file_path}")
 			File.delete typ_file_path
 			res ? (return pdf_file_path) : set_error(FATAL, "Typst Writer: failed to convert document: #{error.message}")
-		else
-			return Typst::Pdf.from_s(full_doc).document
-		end
 
 	end
 
