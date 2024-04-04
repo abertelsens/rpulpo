@@ -5,8 +5,10 @@
 class Mail < ActiveRecord::Base
 
 	BASE_DIR= "app/public"
-	BALDAS_BAS_DIR = "L:/usuarios/sect/CORREO-CG/BALDAS"
-	BASE_PATH = "//rafiki.cavabianca.org/datos/usuarios/sect"
+	BALDAS_BAS_DIR = "/mnt/sect/CORREO-CG/BALDAS"
+	#BALDAS_BAS_DIR = "L:/usuarios/sect/CORREO-CG/BALDAS"
+	#BASE_PATH = "//rafiki.cavabianca.org/datos/usuarios/sect"
+	BASE_PATH = "/mnt/sect"
 
 	enum direction:    		{ entrada: 0, salida: 1}
 	enum mail_status:    	{ pendiente: 0, en_curso: 1, terminado: 2 }

@@ -12,7 +12,7 @@ class MailFile < ActiveRecord::Base
 	belongs_to  :mail
 	validates 	:name, uniqueness: { scope: :mail_id }
 
-  enum file_type: {nota: 0, reference: 1, answer: 2}
+  #enum :file_type: {nota: 0, reference: 1, answer: 2}
 
    # creates a MailFile object given a file and a mail object.
 	def self.create_from_file(file, mail)
@@ -30,7 +30,8 @@ class MailFile < ActiveRecord::Base
 	# to wrap them around quotation marks
   def	get_html_contents
 		return ""  unless is_word_file?
-		PandocRuby.new(["\"#{get_path}\""], from: 'docx').to_html
+		`pandoc \"#{get_path}\" --from docx --to html`
+		#PandocRuby.new([get_path], from: 'docx').to_html
 	end
 
 	def is_word_file?
