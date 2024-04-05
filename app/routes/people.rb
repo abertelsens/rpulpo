@@ -215,7 +215,7 @@ end
 
 # uploads an image
 post '/people/:id/image' do
-    FileUtils.cp(params[:file][:tempfile], "app/public/photos/#{params[:id]}.jpg")
+ FileUtils.cp_r(params[:file][:tempfile], "app/public/photos/#{params[:id]}.jpg", remove_destination: true)
 end
 
 

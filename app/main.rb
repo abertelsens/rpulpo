@@ -8,8 +8,8 @@ require 'sinatra/partial'
 require 'sinatra/reloader'
 require_relative 'sinatra_helpers'  #helpers for the sinatra controllers
 require 'require_all'
-require 'github/markup'
 require 'commonmarker'
+require 'github/markup'
 require_rel 'models'
 require_rel 'routes'
 

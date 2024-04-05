@@ -40,7 +40,7 @@ submit_image(person_id) {
     method: 'post',
     body: data,
   })
-  .then(response => this.photo_imageTarget.src=`photos/${person_id}.jpg`)
+  .then(response => this.photo_imageTarget.src=`photos/${person_id}.jpg?v=${Math.random()}`)
   }
 
 })
