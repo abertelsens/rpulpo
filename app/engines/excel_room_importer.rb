@@ -7,7 +7,7 @@ module ExcelRoomImporter
     def import()
         workbook = RubyXL::Parser.parse IMPORT_FILE
         worksheet = workbook[0]
-        
+
         puts "Reading: #{worksheet.sheet_name}"
         headers = worksheet[0].cells.map(&:value)
         rows = worksheet[1..-1].map do |row|
@@ -18,7 +18,7 @@ module ExcelRoomImporter
     # Print the hash to the console
     puts headers
     #puts data.inspect
-    data.each do |row| 
+    data.each do |row|
         h_room = {
             name: row["name"],
             house: CASAS[row["house"]],

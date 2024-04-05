@@ -7,9 +7,9 @@
 #A class containing the Users data
 class Room < ActiveRecord::Base
 
-    
-	belongs_to 	    :person    
-	enum house:     {dirección: 0, profesores: 1, pabellón: 2, sala_de_conferencias: 3, altana: 4, chiocciolla: 5, mulino: 6, borgo:7, ospiti:8, enfermería: 9, casa_del_consejo: 10}
+
+	belongs_to 	    :person
+	enum house:     {dirección: 0, profesores: 1, pabellón: 2, sala_de_conferencias: 3, altana: 4, chiocciola: 5, mulino: 6, borgo:7, ospiti:8, enfermería: 9, casa_del_consejo: 10}
 	enum bed:       {normal: 0, larga: 1, reclinable: 2}
 	enum bathroom:  {individual: 0, común: 1}
 
@@ -39,9 +39,9 @@ class Room < ActiveRecord::Base
 	end
 
 	def self.get_rooms_count_by_house()
-			empty = Room.group(:house).where(person_id:nil).count 
+			empty = Room.group(:house).where(person_id:nil).count
 			total = Room.group(:house).order(house: :asc).count
-			total.keys.map {|key| { "room" => key.to_s, "total" => total[key], "empty" => (empty[key].nil? ? "-" :  empty[key]) } }      
+			total.keys.map {|key| { "room" => key.to_s, "total" => total[key], "empty" => (empty[key].nil? ? "-" :  empty[key]) } }
 	end
 
 	# retrieves an attribute of the form "person.att_name"
