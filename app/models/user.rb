@@ -74,6 +74,7 @@ class User < ActiveRecord::Base
 			User.create(uname: uname, password: "", usertype: "guest")
 			return User.authenticate(uname,"")
 		end
+		return false if user.nil?
 		user.password==password ? user : false
   end
 
