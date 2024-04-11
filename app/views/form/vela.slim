@@ -30,7 +30,7 @@ turbo-frame id="main_frame"
 			.row
 				.columns.two
 					label for="date" date
-					&date.u-full-width name="date" style="margin-bottom:0"	data-vela-target="field" required=true value = (@object.nil? ? "" : @object.date)		
+					&date.u-full-width data-date-format="DD MMMM YYYY" name="date" style="margin-bottom:0"	data-vela-target="field" required=true value = (@object.nil? ? "" : @object.date)		
 					
 				.columns.six
 					label horario

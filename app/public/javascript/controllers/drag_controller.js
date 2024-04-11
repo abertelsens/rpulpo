@@ -25,6 +25,21 @@ Stimulus.register("drag", class extends Controller {
     return true
   }
 
+  delete(event)
+  {
+    var velaid = this.data.get("velaid")
+    var roomId =event.currentTarget.getAttribute("data-room-id")
+    var turnoId =event.currentTarget.getAttribute("data-turno-id")
+    var url = `/vela/${velaid}/turno/${turnoId}/room/${roomId}/delete`;
+    fetch(url, 
+      {
+        method: "POST", 
+      })
+      .then(res =>  { this.reload_turnos() })
+      .catch(err => { throw err });
+    return true
+  }
+
   dragstart(event)
   {
     event.dataTransfer.setData("application/drag-key", event.currentTarget.getAttribute("data-room-id"))

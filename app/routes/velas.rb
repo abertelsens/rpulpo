@@ -87,3 +87,10 @@ post '/vela/:id/turno/:turno_id/room/:room_id' do
   old_turno = @vela.turnos.find{|turno| turno.rooms.include? room}
   TurnoRoom.find_by(turno: old_turno, room: room).update(turno_id: params[:turno_id])
 end
+
+post '/vela/:id/turno/:turno_id/room/:room_id/delete' do
+  @vela = Vela.find(params[:id])
+  room = Room.find(params[:room_id])
+  turno = @vela.turnos.find{|turno| turno.rooms.include? room}
+  TurnoRoom.find_by(turno: turno, room: room).destroy
+end
