@@ -20,7 +20,7 @@ end #class end
 
 class TurnoRoom < ActiveRecord::Base
 
-	belongs_to :room,  dependent: :destroy
-	belongs_to :turno, dependent: :destroy
+	belongs_to :room
+	belongs_to :turno
 
 end #class end
