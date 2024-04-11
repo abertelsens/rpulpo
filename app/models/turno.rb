@@ -7,7 +7,7 @@ class Turno < ActiveRecord::Base
 	def toTypstTable()
 		rooms_list = rooms.order(room: :asc) unless self.rooms.nil?
 		return "[#{start_time.strftime('%H:%M')} - #{end_time.strftime('%H:%M')}],[-], [-]\n" if rooms_list.empty?
-		first_room = "[#{start_time.strftime('%H:%M')} - #{end_time.strftime('%H:%M')}],[#{rooms_list[0].person.short_name}], [#{rooms_list[0].room}]\n"
+		first_room = "[#{start_time.strftime('%H:%M')} - #{end_time.strftime('%H:%M')}], [#{rooms_list[0].person.short_name}], [#{rooms_list[0].room}]  \n"
 		if rooms_list.size==1
 			first_room
 		else

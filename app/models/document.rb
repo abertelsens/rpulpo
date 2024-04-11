@@ -62,14 +62,14 @@ class Document < ActiveRecord::Base
 			template_variables = Document.has_template_variables?(File.read params[:template][:tempfile])
 		end
 		{
-				pulpo_module_id:        params[:module],
-				name:                   params[:name],
-				description:            params[:description],
-				engine:                 "typst",
-				path:                   "#{params[:name]}.#{file_suffix}",
-				singlepage:             (params[:singlepage].blank? ? true : params[:singlepage]=="true"),
-				template_variables:     template_variables
-		}
+			pulpo_module_id:        params[:module],
+			name:                   params[:name],
+			description:            params[:description],
+			engine:                 "typst",
+			path:                   "#{params[:name]}.#{file_suffix}",
+			singlepage:             (params[:singlepage].blank? ? true : params[:singlepage]=="true"),
+			template_variables:     template_variables
+	}
 	end
 
 	def self.get_docs_of_user(user)

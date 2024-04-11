@@ -135,10 +135,7 @@ class User < ActiveRecord::Base
 	end
 
 	def allowed?(module_identifier)
-		puts "checking if #{uname} is allowed to see #{module_identifier}"
-		puts "got: #{get_permission PulpoModule.find_by(name: module_identifier)}"
 		return true if admin?
-		puts "#{uname} is not an admin"
 		(get_permission PulpoModule.find_by(name: module_identifier))=="allowed"
 	end
 

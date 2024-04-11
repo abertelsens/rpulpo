@@ -19,6 +19,7 @@ turbo-frame id="turnos_frame"
         .columns.five 
           - turno.rooms.each do |room|  
             .row.room data-drag-target="room" draggable="true" data-turno-id=turno.id data-room-id=room.id data-action="dblclick->drag#delete drop->drag#drop dragover->drag#dragover dragstart->drag#dragstart dragenter->drag#dragenter"
-              .columns.four draggable="false"  = room.room
               .columns.six draggable="false" = room.person.short_name
+              .columns.four draggable="false"  = room.room
+              
             

@@ -6,21 +6,21 @@ class Crs < ActiveRecord::Base
 
 	def self.prepare_params(params)
 		{
-				person_id: 		params[:person_id],
-				classnumber:  params[:classnumber],
-				pa:    		 		params[:pa],
-				admision:    	params[:admision],
-				oblacion:     params[:oblacion],
-				fidelidad:    params[:fidelidad],
-				letter:    		params[:letter],
-				admissio:     params[:admissio],
-				presbiterado: params[:presbiterado],
-				diaconado:    params[:diaconado],
-				acolitado:    params[:acolitado],
-				lectorado:    params[:lectorado],
-				cipna:        params[:cipna],
-				notes:        params[:notes],
-				phase:        params[:phase].blank? ? nil : params[:phase]
+		person_id: 		params[:person_id],
+		classnumber:  params[:classnumber],
+		pa:    		 		params[:pa],
+		admision:    	params[:admision],
+		oblacion:     params[:oblacion],
+		fidelidad:    params[:fidelidad],
+		letter:    		params[:letter],
+		admissio:     params[:admissio],
+		presbiterado: params[:presbiterado],
+		diaconado:    params[:diaconado],
+		acolitado:    params[:acolitado],
+		lectorado:    params[:lectorado],
+		cipna:        params[:cipna],
+		notes:        params[:notes],
+		phase:        params[:phase].blank? ? nil : params[:phase]
 		}
 	end
 
@@ -29,7 +29,7 @@ class Crs < ActiveRecord::Base
 	end
 
 	def self.get_editable_attributes()
-		[ {name: "phase",          value: "options",   description: "etapa (dicasterio)"} ]
+		[ {name: "phase", value: "options", description: "etapa (dicasterio)"} ]
 	end
 
 	def get_next_fidelidad
@@ -37,11 +37,7 @@ class Crs < ActiveRecord::Base
 	end
 
 	def get_next_admissio
-		if admissio.nil?
-			get_next_date(10,15)
-		else
-			nil
-		end
+		admissio.nil? ? get_next_date(10,15) : nil
 	end
 
 	def get_next_lectorado
