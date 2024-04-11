@@ -232,16 +232,29 @@ a.h4 {
    }
  }
 
- div.turno
+div.turno
 {
-  margin: 15pt;
+  margin: 6pt;
   user-select: none;
+}
+
+div.room
+{
+  cursor: move;
+  border: #ffffff;
+  border-style: solid;
+  border-width: 1px;
+  padding: 1px;
+  border-radius: 4px;
 }
 
 div.room:hover
 {
   background-color: var(--pale-blue);
-  cursor: pointer;
+  cursor: move;
+  border: #888;
+  border-width: 1px;
+  border-style: dotted;
 }
 
 

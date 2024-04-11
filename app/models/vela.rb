@@ -1,46 +1,22 @@
 
 require_rel '../engines'
 
-#A class containing the Users data
 class Vela < ActiveRecord::Base
 
 has_many :turnos,  dependent: :destroy
 
 TYPST_TEMPLATES_DIR = "app/engines-templates/typst"
 TYPST_PREAMBLE_SEPARATOR = "//CONTENTS"
-HALF_HOUR = 30*60 #1.0/(24*2)
+HALF_HOUR = 30*60 #in seconds
 
-	def self.prepare_params(params)
-		puts "vela preparing params\n\n"
-		date = Date.parse params[:date]
-		{
-			date: 					date,
-			start_time:			DateTime.new(date.year, date.month, date.day, params[:start_time_hour].to_i, params[:start_time_min].to_i,0,1),
-			start_time2:		DateTime.new(date.year, date.month, date.day, params[:start_time2_hour].to_i , params[:start_time2_min].to_i,0,1),
-			end_time:				DateTime.new(date.year, date.month, date.day + 1, params[:end_time_hour].to_i, params[:end_time_min].to_i, 0,1),
-			start1_message: params[:start1_message],
-			start2_message: params[:start2_message],
-			end_message: 		params[:end_message],
-			order: 					params[:house].values.join(" ")
-		}
-	end
-
-	def self.create_from_params(params)
-		Vela.create (Vela.prepare_params params)
-	end
-
-	def order_to_s
-		houses_names = Room.houses.keys
-		order.split(" ").select{|index| index!="-1"}.map{|index| houses_names[index.to_i].humanize}.join( " - " )
-	end
-
+	# creates a vela objet with default parameters
 	def self.create_new()
 		date = DateTime.now()
 		params =
 		{
 			date: 					date,
-			start_time:			DateTime.new(date.year, date.month, date.day, 21, 15 ,0, 1),
-			start_time2:		DateTime.new(date.year, date.month, date.day, 21, 30 ,0, 1),
+			start_time:			parse_datetime(date,21,15),
+			start_time2:		parse_datetime(date,21, 30),
 			end_time:				DateTime.new(date.year, date.month, date.day + 1, 6, 30, 0,1),
 			start1_message: "Examen",
 			start2_message: "Exposición en Nuestra Señora de los Ángeles",
@@ -50,17 +26,38 @@ HALF_HOUR = 30*60 #1.0/(24*2)
 		Vela.create params
 	end
 
+	def self.prepare_params(params)
+		date = Date.parse params[:date]
+		{
+			date: 					date,
+			start_time:			parse_datetime(date, params[:start_time_hour].to_i, params[:start_time_min].to_i),
+			start_time2:		parse_datetime(date, params[:start_time2_hour].to_i, params[:start_time2_min].to_i),
+			end_time:				parse_datetime(date.next_day(1), params[:end_time_hour].to_i, params[:end_time_min].to_i),
+			start1_message: params[:start1_message],
+			start2_message: params[:start2_message],
+			end_message: 		params[:end_message],
+			order: 					params[:house].values.join(" ")
+		}
+	end
+
 	def update_from_params(params)
 		update(Vela.prepare_params params)
 	end
 
+	def order_to_s
+		houses_names = Room.houses.keys
+		order.split(" ").select{|index| index!="-1"}.map{|index| houses_names[index.to_i].humanize}.join( " - " )
+	end
+
+	# buils all the turnos for the vela
 	def build_turnos
 
 		turnos.destroy_all unless turnos.nil?
 		houses = order.split(" ").select{|index| index!="-1"}
-		current_time = self.start_time2 + 15*60 # 15 minutes after start_time2, i.e. the Exposition
+		current_time = start_time2 + 15*60 # 15 minutes after start_time2, i.e. the Exposition
 
-		while current_time < self.end_time do
+		puts "building turnos for times #{current_time} and  #{end_time}"
+		while current_time < end_time do
 			turnos << Turno.create(vela: self, start_time: current_time, end_time: current_time + HALF_HOUR )
 			current_time = current_time + HALF_HOUR
 		end
@@ -78,14 +75,6 @@ HALF_HOUR = 30*60 #1.0/(24*2)
 		rooms_to_assign = rooms[0..(rooms.size/slots_number).to_i-1]
 		turnos2assign[0].rooms << rooms_to_assign
 		assign(turnos2assign.drop(1),rooms - rooms_to_assign) unless slots_number==1
-	end
-
-	def to_csv
-		turnos = build_turnos
-		header = "#{self.start_time.strftime('%H:%M')}:\t#{self.start1_message}\n#{self.start_time2.strftime('%H:%M')}:\t#{self.start2_message}\n"
-		footer = 	"\n#{self.end_time.strftime('%H:%M')}:\t#{self.end_message}"
-		turnos_table = Turno.to_csv turnos
-		full_doc = "#{header}\n#{turnos_table}\n#{footer}"
 	end
 
 	def to_pdf
@@ -126,5 +115,10 @@ HALF_HOUR = 30*60 #1.0/(24*2)
 			align: horizon,\n"
 			res << (turnos.order(start_time: :asc).map{|turno| turno.toTypstTable}).join(",\n")
 			res << ")"
+	end
+
+
+	def self.parse_datetime(date,hour,min)
+		DateTime.new(date.year, date.month, date.day,hour,min,0,1)
 	end
 end #class end

@@ -6,8 +6,9 @@ turbo-frame id="turnos_frame"
         |&nbspInstrucciones
       p style="font-size: .9em"
       |- Para <b>mover</b> una persona de turno se puede <b>arrastrar</b> su nombre al turno deseado.
-      p style="font-size: .9em" = 
-      |- Para <b>borrar</b> a una persona de la vela hacer <b>doble click</b> en su nombre o habitación. Ojo que no se puede deshacer"
+      p style="font-size: .9em" 
+      |- Para <b>borrar</b> a una persona de la vela hacer <b>doble click</b> en su nombre o habitación. 
+      |Ojo que no se puede deshacer
 
   h4.u-text-center = "TURNOS"
   .container.container-frame data-controller="drag" data-drag-velaid=@vela.id  
@@ -15,9 +16,9 @@ turbo-frame id="turnos_frame"
     - @turnos.each_with_index do |turno, turno_index|  
       .row.turno data-drag-turno=turno.id
         .columns.two.offset-by-three draggable="true" data-turno-id=turno.id data-action="drop->drag#drop dragover->drag#dragover dragstart->drag#dragstart dragenter->drag#dragenter" data-drag-target="turno" = "#{turno.start_time.strftime("%H:%M")} - #{turno.end_time.strftime("%H:%M")}"
-        .columns.six 
+        .columns.five 
           - turno.rooms.each do |room|  
             .row.room data-drag-target="room" draggable="true" data-turno-id=turno.id data-room-id=room.id data-action="dblclick->drag#delete drop->drag#drop dragover->drag#dragover dragstart->drag#dragstart dragenter->drag#dragenter"
-              .columns.six draggable="false"  = room.room
+              .columns.four draggable="false"  = room.room
               .columns.six draggable="false" = room.person.short_name
             

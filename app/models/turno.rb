@@ -1,9 +1,8 @@
 class Turno < ActiveRecord::Base
 
-	has_many :turno_rooms
+	has_many :turno_rooms, dependent: :destroy
 	has_many :rooms, :through => :turno_rooms
 	belongs_to :vela
-
 
 	def toTypstTable()
 		rooms_list = rooms.order(room: :asc) unless self.rooms.nil?
