@@ -4,7 +4,7 @@
 
 turbo-frame id="main_frame"
   	
-	form action="/vela/#{(@object.nil? ? "new" : @object.id)}" data-vela-urlprefix="/vela/#{@object.id}" data-turbo-frame="" method="GET" data-vela-target="form" data-controller="modal vela" data-action="keydown.ctrl+c@window->vela#copy keydown.esc@window->modal#close_modal"
+	form action="/vela/#{(@object.nil? ? "new" : @object.id)}" data-vela-urlprefix="/vela/#{@object.id}" id="velaform" data-turbo-frame="" method="GET" data-vela-target="form" data-controller="modal vela" data-action="turnosreload@window->vela#reloadturnos keydown.ctrl+c@window->vela#copy keydown.esc@window->modal#close_modal"
 	
 		.container.container-frame style="max-width:1200px"
 			
@@ -15,9 +15,9 @@ turbo-frame id="main_frame"
 				.columns.four.offset-by-four
 					h3.no-margin = (@object.nil? ? "NEW VELA" : "VELA: #{@object.date.strftime('%d %b %y')}")
 				.columns.three.flex-left
-					a.button.button-primary.button-small data-turbo-frame="turnos_frame" data-action="click->vela#build_turnos"
+					a.button.button-primary.button-small data-turbo-frame="turnos_frame" data-action="click->vela#update_turnos"
 						i.class.fa-regular.fa-clock
-						|&nbspturnos
+						|&nbspreset turnos
 					a.button.button-succes.button-small target="_blank" href="/vela/#{@object.id}/pdf" 
 						i.class.fa-regular.fa-file-pdf style="font-size:.9rem"
 						|&nbsppdf
@@ -65,8 +65,8 @@ turbo-frame id="main_frame"
 								- Room.houses.each do |house|
 									option selected = (@object.nil? ? false : order_array[i]==house[1]) value=house[1] = house[0].humanize
 				
-			.row
-				turbo-frame data-vela-target="turnos_frame" id="turnos_frame"
+			.row data-controller="drag"
+				turbo-frame src="/vela/#{@object.id}/turnos" data-vela-target="turnos_frame" id="turnos_frame" data-drag-target="turnosframe" data-action="click->contoller2#turnRed"
 			
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM BUTTONS

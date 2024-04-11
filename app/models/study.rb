@@ -1,7 +1,7 @@
 class Study < ActiveRecord::Base
 
 	belongs_to 	:person
-    
+
 	def self.prepare_params(params)
     {
 			person_id: 				params[:person_id],
@@ -15,11 +15,10 @@ class Study < ActiveRecord::Base
 			licence: 				params[:licence],
 			doctorate: 				params[:doctorate],
 			thesis: 				params[:thesis],
-			
 		}
   end
 
 	def can_be_deleted?
-			true
+		true
 	end
 end

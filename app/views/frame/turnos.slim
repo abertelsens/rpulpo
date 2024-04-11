@@ -1,13 +1,14 @@
 turbo-frame id="turnos_frame" 
-  h4.u-text-center = "--- TURNOS ---"
-  .container.container-frame
-    - @turnos.each do |turno|  
-      .row 
-        .columns.two.offset-by-one = "#{turno.get_time(:start)} - #{turno.get_time(:end)}"
-        .columns.seven
-          - turno.rooms.each do |room|  
-            .row 
-              .columns.eight = room.person.short_name
-              .columns.four = room.room
-              
   
+  h4.u-text-center = "TURNOS"
+  .container.container-frame data-controller="drag" data-drag-velaid=@vela.id
+    - previous_time = nil
+    - @turnos.each_with_index do |turno, turno_index|  
+      .row.turno data-drag-turno=turno.id
+        .columns.two.offset-by-three draggable="true" data-turno-id=turno.id data-action="drop->drag#drop dragover->drag#dragover dragstart->drag#dragstart dragenter->drag#dragenter" data-drag-target="turno" = "#{turno.start_time.strftime("%H:%M")} - #{turno.end_time.strftime("%H:%M")}"
+        .columns.six 
+          - turno.rooms.each do |room|  
+            .row.room data-drag-target="room" draggable="true" data-turno-id=turno.id data-room-id=room.id data-action="drop->drag#drop dragover->drag#dragover dragstart->drag#dragstart dragenter->drag#dragenter"
+              .columns.six draggable="false"  = room.room
+              .columns.six draggable="false" = room.person.short_name
+            

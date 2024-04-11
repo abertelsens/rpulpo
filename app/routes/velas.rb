@@ -1,9 +1,6 @@
 # -----------------------------------------------------------------------------------------
 # ROUTES CONTROLLERS FOR THE VELAS TABLES
 # -----------------------------------------------------------------------------------------
-
-require"clipboard"
-
 # -----------------------------------------------------------------------------------------
 # GET
 # -----------------------------------------------------------------------------------------
@@ -25,25 +22,25 @@ end
 # renders a single document form
 get '/vela/:id/turnos' do
   @vela = Vela.find(params[:id])
-  @vela.update_from_params params
-  @turnos = @vela.build_turnos
+  @turnos = @vela.turnos.includes(:rooms => [:person])
   partial :"frame/turnos"
 end
 
-# copies tghe current query results to the clipboard
-# TODO should catch some possible errors from the Cipboard.copy call
-get '/vela/:id/clipboard/copy' do
+# renders a single document form
+get '/vela/:id/turnos/update' do
   @vela = Vela.find(params[:id])
-	Clipboard.copy @vela.to_csv
-	{result: true}.to_json
+  @vela.update_from_params params
+  @vela.turnos.destroy
+  @vela.build_turnos
+  @turnos = @vela.turnos.includes(:rooms => [:person])
+  partial :"frame/turnos"
 end
-
 
 # renders a single document form
 get '/vela/:id/pdf' do
   headers 'content-type' => "application/pdf"
   @vela = Vela.find(params[:id])
-  result = @vela.to_pdf (@vela.build_turnos)
+  result = @vela.to_pdf
   #OS.windows? ? (send_file result) : (body result)
   send_file result
 end
@@ -51,10 +48,9 @@ end
 # renders a single document form
 get '/vela/:id' do
   @object = (params[:id]=="new" ? Vela.create_new() : Vela.find(params[:id]))
+  @object.build_turnos if @object.turnos.empty?
   partial :"form/vela"
 end
-
-
 
 # -----------------------------------------------------------------------------------------
 # POST
@@ -73,4 +69,21 @@ post '/vela/:id' do
     when "delete" then @vela.destroy
   end
   redirect '/velas'
+end
+
+# -----------------------------------------------------------------------------------------
+# DRAG AND DROP OF TURNOS
+# -----------------------------------------------------------------------------------------
+get '/vela/:id/update_drag' do
+  @vela = Vela.find(params[:id])
+  @turnos = @vela.turnos.includes(:rooms => [:person])
+  partial :"frame/turnos"
+
+end
+
+post '/vela/:id/turno/:turno_id/room/:room_id' do
+  @vela = Vela.find(params[:id])
+  room = Room.find(params[:room_id])
+  old_turno = @vela.turnos.find{|turno| turno.rooms.include? room}
+  TurnoRoom.find_by(turno: old_turno, room: room).update(turno_id: params[:turno_id])
 end

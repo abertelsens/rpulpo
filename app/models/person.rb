@@ -14,6 +14,7 @@ class Person < ActiveRecord::Base
 	has_one :personal, dependent: :destroy
 	has_one :study, dependent: :destroy
 	has_one :room
+	has_many :turnos
 
 	enum status:    {laico: 0, diacono: 1, sacerdote: 2 }
 	enum ctr:       {cavabianca: 0, ctr_dependiente:1, no_ha_llegado:2, se_ha_ido:3   }
@@ -90,7 +91,7 @@ class Person < ActiveRecord::Base
 	end
 
 	def toggle_vela
-			options  = ["normal", "no", "primer_turno", "ultimo_turno"]
+			options  = ["normal", "no"]
 			update(vela: options[((options.find_index vela)+1)%options.size])
 	end
 

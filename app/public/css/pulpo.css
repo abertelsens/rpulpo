@@ -232,7 +232,19 @@ a.h4 {
    }
  }
 
- 
+ div.turno
+{
+  margin: 15pt;
+  user-select: none;
+}
+
+div.room:hover
+{
+  background-color: var(--pale-blue);
+  cursor: pointer;
+}
+
+
  div.ref-box a.mail-link:hover{
   text-decoration: underline;
  }

@@ -9,6 +9,7 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
       
       connect() {
         this.default_action = this.formTarget.action
+        this.element[this.identifier] = this
       }
     
       //saves the form  
@@ -20,6 +21,10 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
         this.element.requestSubmit()
       }
 
+      reloadturnos()
+      {
+        this.turnos_frameTarget.src = `${this.data.get("urlprefix")}/update_drag`
+      }  
       // submits the form with a delete commit
       delete()
       {
@@ -29,8 +34,8 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
         this.element.requestSubmit()
       }
 
-      build_turnos(event) {    
-          this.formTarget.action = `${this.default_action}/turnos` 
+      update_turnos(event) {    
+          this.formTarget.action = `${this.default_action}/turnos/update` 
           this.element.dataset.turboFrame = "turnos_frame"
           this.element.requestSubmit()
       }
