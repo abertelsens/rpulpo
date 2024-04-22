@@ -25,7 +25,7 @@ class Crs < ActiveRecord::Base
 	end
 
 	def can_be_deleted?
-			true
+		true
 	end
 
 	def self.get_editable_attributes()

@@ -102,7 +102,6 @@ post '/login' do
     end
 end
 
-
 # adds or removes all the visible people on a table from the current set.
 post '/people/:action' do
     @peopleset = get_current_peopleset

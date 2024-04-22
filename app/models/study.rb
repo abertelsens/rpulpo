@@ -4,17 +4,17 @@ class Study < ActiveRecord::Base
 
 	def self.prepare_params(params)
     {
-			person_id: 				params[:person_id],
-			civil_studies: 			params[:civil_studies],
-			studies_name: 			params[:studies_name],
-			degree: 				params[:degree],
+			person_id: 							params[:person_id],
+			civil_studies: 					params[:civil_studies],
+			studies_name: 					params[:studies_name],
+			degree: 								params[:degree],
 			profesional_experience: params[:profesional_experience],
-			year_of_studies: 		params[:year_of_studies],
-			faculty: 				params[:faculty],
-			status: 				params[:study_status],
-			licence: 				params[:licence],
-			doctorate: 				params[:doctorate],
-			thesis: 				params[:thesis],
+			year_of_studies: 				params[:year_of_studies],
+			faculty: 								params[:faculty],
+			status: 								params[:study_status],
+			licence: 								params[:licence],
+			doctorate: 							params[:doctorate],
+			thesis: 								params[:thesis],
 		}
   end
 

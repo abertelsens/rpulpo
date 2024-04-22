@@ -39,10 +39,7 @@ end
 # renders a single document form
 get '/vela/:id/pdf' do
   headers 'content-type' => "application/pdf"
-  @vela = Vela.find(params[:id])
-  result = @vela.to_pdf
-  #OS.windows? ? (send_file result) : (body result)
-  send_file result
+  send_file (Vela.find(params[:id])).to_pdf
 end
 
 # renders a single document form

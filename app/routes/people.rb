@@ -298,3 +298,7 @@ post '/people/edit_field' do
 	end
 		partial :"frame/people"
 end
+
+get '/people/cb/json' do
+	Person.where(ctr:"cavabianca").to_json
+end
