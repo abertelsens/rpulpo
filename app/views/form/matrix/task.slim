@@ -55,13 +55,13 @@ turbo-frame id="main_frame"
 									class="medium-field u-text-center" 
 									id="s_time" 
 									name="s_time[#{schedule.id}]" 
-									value=(task_schedule.nil? ? "" : task_schedule&.s_time.strftime("%H:%M"))]
+									value=(task_schedule.nil? ? "" : task_schedule&.s_time&.strftime("%H:%M"))]
 								td
 									input[type="text"
 									style="margin-bottom: 0.2rem; margin-top: 0.2rem"
 									class="medium-field u-text-center" 
 									name="e_time[#{schedule.id}]" 
-									value=(task_schedule.nil? ? "" : task_schedule&.e_time.strftime("%H:%M"))]
+									value=(task_schedule.nil? ? "" : task_schedule&.e_time&.strftime("%H:%M"))]
 								td
 									input[type="text"
 									style="margin-bottom: 0.2rem; margin-top: 0.2rem"

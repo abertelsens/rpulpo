@@ -54,19 +54,24 @@ html
     - if !@current_user.nil?
       div.row.nav-bar 
         div.flex-left
+          
           a.button.menu-item data-turbo-frame="main_frame" href='/people' 
             i.fa-solid.fa-user
             | &nbspPeople
+          
           - if @current_user.admin?
             a.button.menu-item data-turbo-frame="main_frame" href='/crs' crs+
+          
           - if @current_user.allowed?("rooms")
             a.button.menu-item data-turbo-frame="main_frame" href='/rooms' 
               i.fa-solid.fa-bed
               | &nbspRooms
+          
           - if @current_user.allowed?("velas")
             a.button.menu-item data-turbo-frame="main_frame" href='/velas' 
               i.fa-solid.fa-bed
               | &nbspVelas
+          
           
           - if @current_user.mail
             a.button.menu-item data-turbo-frame="main_frame" href='/mails' 
@@ -74,6 +79,7 @@ html
               | &nbspCorreo
         
         div.flex-right  style="flex: 1"
+          
           - if @current_user.admin?  
             a.button.menu-item data-action="click->navbar#toggle" 
               i.fa-solid.fa-gear
@@ -86,18 +92,23 @@ html
       - if @current_user.admin?      
         div.row.nav-bar-hidden.hidden-frame data-navbar-target="navbar"
           .columns.twelve.u-text-right
+      
             a.button.menu-item data-turbo-frame="main_frame" href='/documents' 
               i.fa-solid.fa-file
               | &nbspDocuments
+      
             a.button.menu-item data-turbo-frame="main_frame" href='/users' 
               i.fa-solid.fa-users
               | &nbspUsers
+      
             a.button.menu-item data-turbo-frame="main_frame" href='/modules' 
               i.fa-solid.fa-gear
               | &nbspModules
+      
             a.button.menu-item data-turbo-frame="main_frame" href='/entities' 
               i.fa-solid.fa-house
               | &nbspEntitites
+      
             a.button.menu-item data-turbo-frame="main_frame" href='/matrix' 
               i.fa-solid.fa-house
               | &nbspMatrix

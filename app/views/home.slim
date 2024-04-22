@@ -19,10 +19,6 @@ link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="styles
 script type="module"
   | import hotwiredTurbo from 'https://cdn.skypack.dev/@hotwired/turbo';
 
-//<script type="module">
-//  import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
-//</script>
-
 script type="module" src="javascript/application.js"
 
 
@@ -61,12 +57,15 @@ html
           a.button.menu-item data-turbo-frame="main_frame" href='/people/frame' 
             i.fa-solid.fa-user
             | &nbspPeople
+          
           - if @current_user.admin?
             a.button.menu-item data-turbo-frame="main_frame" href='/crs/frame' crs+
+          
           - if @current_user.allowed?("rooms")
             a.button.menu-item data-turbo-frame="main_frame" href='/rooms/frame' 
               i.fa-solid.fa-bed
               | &nbspRooms
+          
           - if @current_user.allowed?("velas")
             a.button.menu-item data-turbo-frame="main_frame" href='/velas/frame' 
               i.fa-solid.fa-bed
@@ -85,27 +84,33 @@ html
             a.button.menu-item data-action="click->navbar#toggle" 
               i.fa-solid.fa-gear
               | &nbspAdmin
+          
           a.button.menu-item data-turbo-frame="whole_screen" href='/help' 
             i.fa-solid.fa-question
             | &nbspHelp
+          
           a.button.menu-item.user-name target="_self" href="/logout" = "user: #{@current_user.uname}"
     
       - if @current_user.admin?      
         div.row.nav-bar-hidden.hidden-frame data-navbar-target="navbar"
           .columns.twelve.u-text-right
+          
             a.button.menu-item data-turbo-frame="main_frame" href='/documents/frame' 
               i.fa-solid.fa-file
               | &nbspDocuments
+          
             a.button.menu-item data-turbo-frame="main_frame" href='/users/frame' 
               i.fa-solid.fa-users
               | &nbspUsers
+          
             a.button.menu-item data-turbo-frame="main_frame" href='/modules/frame' 
               i.fa-solid.fa-gear
               | &nbspModules
+          
             a.button.menu-item data-turbo-frame="main_frame" href='/entities/frame' 
               i.fa-solid.fa-house
               | &nbspEntitites
-      p this is home
+      
       div.row
         turbo-frame#main_frame src=(@current_user.mail_user? ? "/mail" : "/people")
   

@@ -18,7 +18,7 @@ git branch test
  bundle exec rake db:drop
  
 bundle exec rake db:create_migration NAME=requestpayments
-bundle exec rake db:migrate:up VERSION=20230227091407
+bundle exec rake db:migrate:up VERSION=20240410141410
 bundle exec rake db:migrate:down VERSION=20230227091407
 
 

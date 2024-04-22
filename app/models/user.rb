@@ -5,12 +5,12 @@
 
 class User < ActiveRecord::Base
 
-	enum usertype: {normal: 0, admin: 1, guest: 2}
-
 	has_many	:unread_mails, dependent: :destroy
 	has_many	:assigned_mails, dependent: :destroy
 	has_many	:assignedmails, :through => :assigned_mails, :source => :mail , dependent: :destroy
 	has_many 	:module_users, dependent: :destroy
+
+	enum usertype: {normal: 0, admin: 1, guest: 2}
 
 # -----------------------------------------------------------------------------------------
 # CALLBACKS
@@ -35,11 +35,7 @@ class User < ActiveRecord::Base
 	end
 
 	def self.create_update(params)
-		if params[:id]=="new"
-			User.create(params)
-		else
-			User.find(params[:id]).update(params)
-		end
+		params[:id]=="new" ? User.create(params) : User.find(params[:id]).update(params)
 	end
 
 	def self.destroy(params)

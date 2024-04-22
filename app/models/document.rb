@@ -9,12 +9,12 @@ require_rel '../engines'
 
 class Document < ActiveRecord::Base
 
+	belongs_to 	    :pulpo_module
+
 	EXCEL_TEMPLATES_DIR = "app/engines-templates/excel"
 	TYPST_TEMPLATES_DIR = "app/engines-templates/typst"
 
-	belongs_to 	    :pulpo_module
-
-	enum engine:    {prawn: 0, excel:1, typst:2}
+	enum engine:    {excel: 1, typst: 2}
 
 	# -----------------------------------------------------------------------------------------
 	# CALLBACKS
@@ -23,20 +23,20 @@ class Document < ActiveRecord::Base
   # if a document is destroyed then we delete the associated file stored in the corresponding
 	# templates directory
 	before_destroy do |doc|
-		if doc.engine!="prawn"
-			full_path = doc.get_full_path
-			FileUtils.rm full_path if File.file? full_path
-    end
+		full_path = doc.get_full_path
+		FileUtils.rm full_path if File.file? full_path
 	end
 
 	def self.create_from_params(params)
 		doc = Document.create Document.prepare_params params
-		# upddates the template file according to the new file received by the form (in params[:template])
+
+		# upddates the template file according to the new file received
+		# by the form (in params[:template])
 		doc.update_template_file(params[:template][:tempfile]) unless params[:template].nil?
 	end
 
 	def update_from_params(params)
-		if params[:name]!=self.name     # the name of the template did not change
+		if params[:name]!=name     # the name of the template did not change
 			if params[:template].nil?  		# no new file was provided. We just update the name of the current file
 				target = "#{TYPST_TEMPLATES_DIR}/#{params[:name]}.typ"
 				FileUtils.mv get_full_path, target

@@ -14,6 +14,7 @@ class Task < ActiveRecord::Base
     task_schedules = TaskSchedule.create_from_array(ts_params)
   end
 
+	# creates an array of parameters that coan be used to create a TaslSchedule object
 	def map_task_schedules_params(params)
 		schedule_ids = params[:number].keys
 		schedule_ids.map do |schedule_id|
@@ -40,6 +41,8 @@ class Task < ActiveRecord::Base
 	end
 
   def parse_time(time_string)
+		puts "parsing time #{time_string}"
+		return nil if time_string.blank?
     DateTime.strptime(time_string,"%H:%M")
   end
 

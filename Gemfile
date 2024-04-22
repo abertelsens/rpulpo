@@ -8,7 +8,8 @@ gem 'sinatra-reloader'
 gem 'slim',               '3.0.8'
 gem 'localhost'
 
-
+gem 'sinatra-cross_origin'
+gem 'sinatra-cors', '~> 1.2'
 gem 'puma'
 gem 'pg', '~> 1.5', '>= 1.5.4'
 gem 'redcarpet'

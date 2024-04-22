@@ -58,11 +58,11 @@ class Person < ActiveRecord::Base
 	def get_attribute(attribute_string, format=nil)
 		table, attribute = attribute_string.split(".")
 		res = case table
-				when "person", "people" then self[attribute.to_sym]
-				when "studies"          then (study.nil? ? "" : study[attribute.to_sym])
-				when "personals"        then (personal.nil? ? "" : personal[attribute.to_sym])
-				when "crs"              then (crs.nil? ? "" : crs[attribute.to_sym])
-				when "rooms"            then (room.nil? ? "" : room[attribute.to_sym])
+			when "person", "people" then self[attribute.to_sym]
+			when "studies"          then (study.nil? ? "" : study[attribute.to_sym])
+			when "personals"        then (personal.nil? ? "" : personal[attribute.to_sym])
+			when "crs"              then (crs.nil? ? "" : crs[attribute.to_sym])
+			when "rooms"            then (room.nil? ? "" : room[attribute.to_sym])
 		end
 		res = "-" if (res.nil? || res.blank?)
 		puts "\nfound nil while looking for #{attribute_string}" if res.nil?
@@ -73,11 +73,11 @@ class Person < ActiveRecord::Base
 
 	def self.get_editable_attributes()
 	[
-			{name: "group",          value: "string",    description: "group in cavabianca"},
-			{name: "ctr",            value: "options",   description: "ctr donde vive"},
-			{name: "status",         value: "options",   description:  "laico/diácono/sacerdote"},
-			{name: "n/agd",          value: "options",   description:  "n/agd"},
-			{name: "year",           value: "string",    description:  "año en cavabianca"},
+		{name: "group",          value: "string",    description: "group in cavabianca"},
+		{name: "ctr",            value: "options",   description: "ctr donde vive"},
+		{name: "status",         value: "options",   description:  "laico/diácono/sacerdote"},
+		{name: "n/agd",          value: "options",   description:  "n/agd"},
+		{name: "year",           value: "string",    description:  "año en cavabianca"},
 	]
 	end
 

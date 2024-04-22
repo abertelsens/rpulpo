@@ -1,5 +1,6 @@
-import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
-    
+//import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
+import { Controller } from "https://cdn.jsdelivr.net/npm/stimulus@3.2.2/dist/stimulus.js"
+
     Stimulus.register("mail", class extends Controller {
       
       static targets = ["protocolmodal", "entity", "direction", "year", "mail_status", "protocol", "alert"]; //the button to add a new object

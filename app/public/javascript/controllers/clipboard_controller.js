@@ -1,4 +1,5 @@
-import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
+//import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
+import { Controller } from "https://cdn.jsdelivr.net/npm/stimulus@3.2.2/dist/stimulus.js"
 
 Stimulus.register("clipboard", class extends Controller {
   
@@ -39,10 +40,7 @@ Stimulus.register("clipboard", class extends Controller {
         }, "2000");
       }
       else {
-        console.log(this.copybtnTarget)
         this.copyfieldTarget.value = response.data
-        navigator.clipboard.writeText(this.copyfieldTarget.value)
-        //this.paste_to_browser_clipboard(response.data)
         this.copybtnTarget.innerHTML = "<i class='fa-solid fa-copy'></i> done"
         this.copybtnTarget.classList.add("button-primary")
         this.copybtnTarget.classList.remove("button-success")
@@ -71,20 +69,6 @@ Stimulus.register("clipboard", class extends Controller {
   show_frame(frame) {
     frame.classList.remove('hidden-frame')
   }
-
-  check_clipboard_permissions()
-  {
-    navigator.permissions.query({ name: "clipboard-write" }).then((result) => {
-      if (result.state == "granted" || result.state == "prompt") {
-        //alert("Write access granted!");
-      }
-      else
-      {
-        alert("Write access denied!");
-      }
-    });
-  }
-
 })
     
     

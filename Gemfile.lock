@@ -132,6 +132,8 @@ GEM
       rack-protection (= 2.1.0)
       sinatra (= 2.1.0)
       tilt (~> 2.0)
+    sinatra-cors (1.2.0)
+    sinatra-cross_origin (0.4.0)
     sinatra-partial (1.0.1)
       sinatra (>= 1.4)
     sinatra-reloader (1.0)
@@ -202,6 +204,8 @@ DEPENDENCIES
   rubyXL
   sinatra (= 2.1.0)
   sinatra-activerecord
+  sinatra-cors (~> 1.2)
+  sinatra-cross_origin
   sinatra-partial
   sinatra-reloader
   slim (= 3.0.8)

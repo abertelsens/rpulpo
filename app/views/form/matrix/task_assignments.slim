@@ -8,7 +8,7 @@ turbo-frame id="task_assignments"
         .columns.twelve
           select.u-full-width id="task_#{task}" name="task[#{task.id}][#{i}]"
             - ta = @object.get_task_assignments task
-            option selected=(p==ta&.person.nil?) value="" = "-"
+            option value="" = "-"
             - people.each do |p|
-              option selected=(p==ta&.person) value=p.id = p.short_name
-          
+              option value=p.id = p.short_name
+          //selected=(p==ta&.person) 

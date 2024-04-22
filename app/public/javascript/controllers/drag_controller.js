@@ -1,4 +1,6 @@
-import { Controller }  from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
+//import { Controller }  from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
+import { Controller } from "https://cdn.jsdelivr.net/npm/stimulus@3.2.2/dist/stimulus.js"
+
 
 Stimulus.register("drag", class extends Controller {
 
