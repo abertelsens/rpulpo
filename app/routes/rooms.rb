@@ -29,7 +29,7 @@ get '/rooms/clipboard/copy' do
 	@objects = Room.search @rooms_query, @rooms_table_settings
 	export_string = Room.collection_to_csv @objects,  @rooms_table_settings
 	Clipboard.copy export_string
-	{result: true}.to_json
+	{result: true, data: export_string}.to_json
 end
 
 # renders a single document view
