@@ -39,6 +39,14 @@ turbo-frame id="main_frame"
                   div.table-cell-body.no-border.u-text-center = house["empty"]
                   div.table-cell-body.no-border.u-text-center = house["total"]
                 
-
+      .row
+        .modal data-clipboard-target="modal" 
+      
+          .modal-content.u-text-center
+            h5.u-text-center = "Data to copy"
+            textarea#copy_field.modal-copy-area isTrusted="true" rows="4" cols="20" data-clipboard-target="copyfield"
+            .columns.two.offset-by-five   
+              button.button-primary data-action="click->clipboard#closemodal" close
+                  
         .columns.eight.u-full-width
           turbo-frame id="rooms_table" src="/rooms/table"
