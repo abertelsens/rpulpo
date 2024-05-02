@@ -66,7 +66,7 @@ HALF_HOUR = 30*60 #in seconds
 
 	def assign_turnos(rooms)
 		no_vela = rooms.select{|room| room.person.vela=="no"}
-		rooms = (rooms - no_vela)
+		#rooms = (rooms - no_vela)
 		assign(turnos.to_a,rooms)
 	end
 
