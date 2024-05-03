@@ -15,12 +15,12 @@ HALF_HOUR = 30*60 #in seconds
 		params =
 		{
 			date: 					date,
-			start_time:			parse_datetime(date,21,15),
-			start_time2:		parse_datetime(date,21, 30),
+			start_time:			parse_datetime(date,21,05),
+			start_time2:		parse_datetime(date,21,20),
 			end_time:				DateTime.new(date.year, date.month, date.day + 1, 6, 30, 0,1),
 			start1_message: "Examen",
 			start2_message: "Exposición en Nuestra Señora de los Ángeles",
-			end_message:		"Exposición en Nuestra Señora de los Ángeles",
+			end_message:		"Bendición y Santa Misa en Nuestra Señora de los Ángeles",
 			order: 					"0 1 2 3 4 5",
 		}
 		Vela.create params
@@ -54,7 +54,7 @@ HALF_HOUR = 30*60 #in seconds
 
 		turnos.destroy_all unless turnos.nil?
 		houses = order.split(" ").select{|index| index!="-1"}
-		current_time = start_time2 + 15*60 # 15 minutes after start_time2, i.e. the Exposition
+		current_time = start_time2 + 10*60 # 10 minutes after start_time2, i.e. the Exposition
 
 		puts "building turnos for times #{current_time} and  #{end_time}"
 		while current_time < end_time do
@@ -66,7 +66,6 @@ HALF_HOUR = 30*60 #in seconds
 
 	def assign_turnos(rooms)
 		no_vela = rooms.select{|room| room.person.vela=="no"}
-		#rooms = (rooms - no_vela)
 		assign(turnos.to_a,rooms)
 	end
 
