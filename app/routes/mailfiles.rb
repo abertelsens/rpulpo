@@ -20,5 +20,5 @@ end
 get '/mnt/sect/*' do
 	puts "pdf file"
 	headers 'content-type' => "application/pdf"
-	send_file File("/#{params[:splat[0]]}")
+	send_file "/#{params[:splat[0]]}"
 end
