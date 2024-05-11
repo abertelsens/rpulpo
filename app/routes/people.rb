@@ -23,13 +23,12 @@ get '/people/table' do
 	partial :"table/people"
 end
 
-# copies tghe current query results to the clipboard
+# copies tge current query results to the clipboard
 # TODO should catch some possible errors from the Cipboard.copy call
 get '/people/clipboard/copy' do
   get_last_query :people
 	@objects = Person.search @people_query, @people_table_settings
 	export_string = Person.collection_to_csv @objects,  @people_table_settings
-	Clipboard.copy export_string
 	{result: true, data: export_string}.to_json
 end
 
