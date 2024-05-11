@@ -11,7 +11,7 @@ get '/mailfile/:id' do
 	partial :"form/mail/mailfile"
 end
 
-get '/public/tmp/media/:path' do
-	puts "serving static media file"
+get '/tmp/media/:path' do
+	puts "serving static media file #{File.join(settings.public_folder, 'tmp/media/#{params[:path]}')}"
 	send_file File.join(settings.public_folder, 'tmp/media/#{params[:path]}')
 end
