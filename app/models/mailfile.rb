@@ -31,6 +31,7 @@ class MailFile < ActiveRecord::Base
 	# Embedded media, like images, will be stored in the p
   def	get_html_contents
 		return ""  unless is_word_file?
+		puts `pandoc --extract-media public/tmp \"#{get_path}\" --from docx --to html`
 		`pandoc --extract-media public/tmp \"#{get_path}\" --from docx --to html`
 	end
 
