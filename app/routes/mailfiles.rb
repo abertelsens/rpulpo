@@ -16,9 +16,11 @@ get '/public/tmp/media/:path' do
 	send_file File.join(settings.public_folder, "tmp/media/#{params[:path]}")
 end
 
+=begin
 # serves files in the sect directory
 get '/mnt/sect/*' do
 	puts "pdf file /#{params[:splat][0]}"
 	headers 'content-type' => "application/pdf"
 	send_file "/mnt/sect/#{params[:splat][0]}"
 end
+=end
