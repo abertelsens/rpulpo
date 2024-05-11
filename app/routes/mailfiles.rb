@@ -17,7 +17,7 @@ get '/public/tmp/media/:path' do
 end
 
 # serves files in the sect directory
-get '/mnt/sect/:path' do
+get '/mnt/sect/*' do
 	puts "pdf file"
-	send_file File("/mnt/sect/#{params[:path]}")
+	send_file File("/#{params[:splat[0]]}")
 end
