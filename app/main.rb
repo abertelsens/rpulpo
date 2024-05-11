@@ -46,8 +46,6 @@ ADMIN_USER = User.find_by(uname: "ale")
 #enables sessions to allow access control
 enable :sessions
 
-set :public_folder, 'public'
-
 #0 do not print anything, 1 print controller info, 2 print params
 SINATRA_LOG_LEVEL = 2
 
