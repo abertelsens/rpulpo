@@ -30,7 +30,8 @@ class MailFile < ActiveRecord::Base
 	# to wrap them around quotation marks
   def	get_html_contents
 		return ""  unless is_word_file?
-		`pandoc \"#{get_path}\" --from docx --to html`
+		`pandoc --extract-media tmp/media \"#{get_path}\" --from docx --to html`
+
 		#PandocRuby.new([get_path], from: 'docx').to_html
 	end
 
