@@ -36,6 +36,7 @@ class MailFile < ActiveRecord::Base
 			`pandoc --extract-media public/tmp \"#{get_path}\" --from pdf --to html`
 		else
 			"<p> could not parse document"
+		end
 	end
 
 	def is_word_file?
