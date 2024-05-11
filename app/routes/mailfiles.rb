@@ -18,5 +18,6 @@ end
 
 # serves files in the sect directory
 get '/mnt/sect/:path' do
-	send_file File("mnt/sect/#{params[:path]}")
+	puts "pdf file"
+	send_file File("/mnt/sect/#{params[:path]}")
 end
