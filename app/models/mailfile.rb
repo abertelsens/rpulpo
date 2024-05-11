@@ -32,8 +32,6 @@ class MailFile < ActiveRecord::Base
   def	get_html_contents
 		if is_word_file?
 			`pandoc --extract-media public/tmp \"#{get_path}\" --from docx --to html`
-		elsif is_pdf_file?
-			`pandoc --extract-media public/tmp \"#{get_path}\" --from pdf --to html`
 		else
 			"<p> could not parse document"
 		end

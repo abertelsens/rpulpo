@@ -19,5 +19,6 @@ end
 # serves files in the sect directory
 get '/mnt/sect/*' do
 	puts "pdf file"
+	headers 'content-type' => "application/pdf"
 	send_file File("/#{params[:splat[0]]}")
 end
