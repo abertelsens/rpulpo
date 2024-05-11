@@ -11,6 +11,6 @@ get '/mailfile/:id' do
 	partial :"form/mail/mailfile"
 end
 
-get '/public/tmp/media/:path'
+get '/public/tmp/media/:path' do
 	send_file File.join(settings.public_folder, 'tmp/media/#{params[:path]}')
 end
