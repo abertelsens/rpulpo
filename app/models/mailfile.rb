@@ -39,7 +39,7 @@ class MailFile < ActiveRecord::Base
 
 
 	def	get_pdf_path
-		puts "asking pdf file"
+		puts "asking pdf file. copying #{mail.get_sources_directory}/#{name} to  app/public/tmp/mail"
 		if is_pdf_file?
 			original_file = "#{mail.get_sources_directory}/#{name}"
 			FileUtils.cp(original_file, "app/public/tmp/mail")
