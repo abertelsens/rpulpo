@@ -8,21 +8,17 @@ require 'sinatra/partial'
 require 'sinatra/reloader'
 require_relative 'sinatra_helpers'  #helpers for the sinatra controllers
 require 'require_all'
-require 'commonmarker'
-require 'github/markup'
 require_rel 'models'
 require_rel 'routes'
 
 include ActiveRecord
 include ExcelRoomImporter
-
 include ExcelImporter
 
 #---------------------------------------------------------------------------------------
 # DB SETUP
 #---------------------------------------------------------------------------------------
 puts Rainbow("PULPO: Starting Configuration").yellow
-
 
 # do not print to console
 old_logger = ActiveRecord::Base.logger
@@ -31,13 +27,13 @@ old_logger = ActiveRecord::Base.logger
 # To turn active record logger back on
 ActiveRecord::Base.logger = old_logger
 
+# if the DB ENVIRONMENT is not set (i.e. was not set via the command line to run the app)
+# we assume we are in development mode.
 DB_ENV ||= 'development'
 
-#load the connection settings fie and open the connection
-
+#load the connection settings file and open the connection
 connection_details = YAML::load(File.open('config/database.yaml'))
 ActiveRecord::Base.establish_connection(connection_details[DB_ENV])
-ADMIN_USER = User.find_by(uname: "ale")
 
 #---------------------------------------------------------------------------------------
 # SINATRA SETUP
@@ -61,7 +57,7 @@ set :partial_template_engine, :slim
 # LOGIN ROUTES
 #---------------------------------------------------------------------------------------
 
-# actons performed before any route.
+# actons performed before any route is run.
 before '/*' do
     print_controller_log
 end
@@ -72,17 +68,11 @@ get '/' do
     @current_user ? (slim :home) : (redirect '/login')
 end
 
-# renders the login page
+# renders the login page. If the auth_error parameter is set, it meams there was an
+# authentication error.
 get '/login' do
-    @auth_error=true if params[:auth_error]=="true"
+    @auth_error = params[:auth_error]=="true"
     slim :login, layout: false
-    #partial :"login"
-end
-
-# renders the navigation bar
-get '/navbar' do
-    @current_user = get_current_user
-    partial :navbar
 end
 
 # reset the current user cookie and redirect to login page
@@ -92,7 +82,7 @@ get '/logout' do
 end
 
 post '/login' do
-    @user = User.authenticate(params[:uname],params[:password])
+    @user = User.authenticate params[:uname], params[:password]
     @auth_error = @user==false
     if @user
         cookies[:current_user_id] = @user.id    #sets the current_user_id in the cookies
@@ -102,26 +92,3 @@ post '/login' do
     end
 end
 
-# adds or removes all the visible people on a table from the current set.
-post '/people/:action' do
-    @peopleset = get_current_peopleset
-    case params[:action]
-        when "select" then @peopleset.add_people params[:person_id].keys
-        when "clear" then @peopleset.remove_people params[:person_id].keys
-    end
-    redirect "/people/peopleset/#{@peopleset.id}/view"
-end
-
-# adds or removes all the visible people on a table from the current set.
-get '/help' do
-    @current_user = get_current_user
-    partial :help
-end
-
-# adds or removes all the visible people on a table from the current set.
-get '/help/:page' do
-    file_body = GitHub::Markup.render("{params[:page].md", File.read("app/views/help/#{params[:page]}.md"))
-    "<turbo-frame id=\"help_frame\" target=\"help_frame\">
-    #{file_body}
-    </turbo-frame>"
-end
