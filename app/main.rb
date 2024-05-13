@@ -1,4 +1,4 @@
-require 'os'
+#require 'os'
 require 'rainbow'
 require 'sinatra'
 require 'sinatra/cookies'
@@ -59,36 +59,35 @@ set :partial_template_engine, :slim
 
 # actons performed before any route is run.
 before '/*' do
-    print_controller_log
+	print_controller_log
 end
 
 # renders the main page
 get '/' do
-    @current_user = get_current_user
-    @current_user ? (slim :home) : (redirect '/login')
+	@current_user = get_current_user
+	@current_user ? (slim :home) : (redirect '/login')
 end
 
 # renders the login page. If the auth_error parameter is set, it meams there was an
 # authentication error.
 get '/login' do
-    @auth_error = params[:auth_error]=="true"
-    slim :login, layout: false
+	@auth_error = params[:auth_error]=="true"
+	slim :login, layout: false
 end
 
 # reset the current user cookie and redirect to login page
 get '/logout' do
-    cookies[:current_user_id] = nil
-    redirect '/login'
+	cookies[:current_user_id] = nil
+	redirect '/login'
 end
 
 post '/login' do
-    @user = User.authenticate params[:uname], params[:password]
-    @auth_error = @user==false
-    if @user
-        cookies[:current_user_id] = @user.id    #sets the current_user_id in the cookies
-        redirect '/'
-    else
-        redirect '/login?auth_error=true'
-    end
+	@user = User.authenticate params[:uname], params[:password]
+	@auth_error = @user==false
+	if @user
+		cookies[:current_user_id] = @user.id    #sets the current_user_id in the cookies
+		redirect '/'
+	else
+		redirect '/login?auth_error=true'
+	end
 end
-

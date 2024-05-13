@@ -1,7 +1,5 @@
 require 'kramdown'
-require 'github/markup'
 
-# adds or removes all the visible people on a table from the current set.
 get '/help' do
   @current_user = get_current_user
   partial :help

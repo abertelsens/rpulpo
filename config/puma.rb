@@ -1,13 +1,8 @@
-require 'localhost'
 
-puts "loading puma configuration file"
+puts Rainbow("PULPO: loading puma configuration file").yellow
 
 name = "rpulpo"
 port 2948
-
-ARGV.each do|a|
-    puts "Argument: #{a}"
-  end
 
 if ARGV.include? "production"
     environment "production"
@@ -16,10 +11,6 @@ else
 end
 
 RUN="/var/www/run/"
-
-#pidfile "#{RUN}/puma-#{name}.pid"
-#bind "unix://#{RUN}/puma-#{name}.sock"
-#state_path "#{RUN}/puma-#{name}.state"
 
 
 preload_app!

@@ -8,7 +8,6 @@
 
 DEFAULT_MAIL_QUERY = {q: "", year:Date.today.year(), direction:"-1", entity:"-1", mail_status:"-1", assigned:"-1"}
 
-# renders the people frame after setting the current peopleset
 get '/mails' do
 	@current_user = get_current_user
 	get_last_query :mails
