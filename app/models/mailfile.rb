@@ -37,6 +37,16 @@ class MailFile < ActiveRecord::Base
 		end
 	end
 
+
+	def	get_pdf_path
+		puts "asking pdf file"
+		if is_pdf_file?
+			original_file = "#{mail.get_sources_directory}/#{name}"
+			FileUtils.cp(original_file, "app/public/tmp/mail")
+			"app/public/tmp/mail/#{name}"
+		end
+	end
+
 	def is_word_file?
 		[".docx", ".doc"].include? extension
 	end
