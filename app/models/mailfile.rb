@@ -43,7 +43,7 @@ class MailFile < ActiveRecord::Base
 		if is_pdf_file?
 			original_file = "#{mail.get_sources_directory}/#{name}"
 			FileUtils.cp(original_file, "app/public/tmp/mail/#{name}")
-			"app/public/tmp/mail/#{name}"
+			"/tmp/mail/#{name}"
 		end
 	end
 
