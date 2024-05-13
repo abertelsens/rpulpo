@@ -1,5 +1,5 @@
 
-puts Rainbow("PULPO: loading puma configuration file").yellow
+puts "PULPO: loading puma configuration file"
 
 name = "rpulpo"
 port 2948
