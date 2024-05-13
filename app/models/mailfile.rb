@@ -12,7 +12,7 @@ class MailFile < ActiveRecord::Base
 	belongs_to  :mail
 	validates 	:name, uniqueness: { scope: :mail_id }
 
-  #enum :file_type: {nota: 0, reference: 1, answer: 2}
+	#enum :file_type: {nota: 0, reference: 1, answer: 2}
 
    # creates a MailFile object given a file and a mail object.
 	def self.create_from_file(file, mail)
@@ -37,9 +37,13 @@ class MailFile < ActiveRecord::Base
 		end
 	end
 
+	def file_age(name)
+		(Time.now - File.ctime(name))/(24*3600)
+	end
 
 	def	get_pdf_path
 		puts "asking pdf file. copying #{mail.get_sources_directory}/#{name} to  app/public/tmp/mail"
+		Dir.glob("app/public/tmp/mail/*.pdf").each { |filename| File.delete(filename) if file_age(filename) > 0 }
 		if is_pdf_file?
 			original_file = "#{mail.get_sources_directory}/#{name}"
 			FileUtils.cp(original_file, "app/public/tmp/mail/#{name}")
