@@ -55,15 +55,17 @@ turbo-frame id="main_frame"
 							.alert.alert-warning.hidden-frame data-mailform-target="answers_alert"
 					
 				.columns.six
-					label asunto
-					- if @object&.topic.blank?
-						&text.u-full-width name="topic" required="true" value=@object&.topic data-mailform-target="topic"
-					- else
-						.columns.ten
-							&text.u-full-width name="topic" required="true" readonly=true value=@object&.topic data-mailform-target="topic"
-						.columns.two
-							a.button data-mailform-target="topicbtn" data-action="click->mailform#toggletopic" edit
-					turbo-frame data-mailform-target="documentlinksframe" id="document-links-frame" data-turbo-frame="related_files_frame" loading="lazy" src="/mail/#{@object.id}/document_links"
+					.row
+						label asunto
+						- if @object&.topic.blank?
+							&text.u-full-width name="topic" required="true" value=@object&.topic data-mailform-target="topic"
+						- else
+							.columns.ten
+								&text.u-full-width name="topic" required="true" readonly=true value=@object&.topic data-mailform-target="topic"
+							.columns.two
+								a.button data-mailform-target="topicbtn" data-action="click->mailform#toggletopic" edit
+					.row
+						turbo-frame data-mailform-target="documentlinksframe" id="document-links-frame" data-turbo-frame="related_files_frame" loading="lazy" src="/mail/#{@object.id}/document_links"
 					
 				.columns.two  style="padding-left:3rem"
 					.row
