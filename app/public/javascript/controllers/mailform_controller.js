@@ -3,12 +3,17 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
     
 Stimulus.register("mailform", class extends Controller {
   
-    static targets = ["documentlinksframe", "formtitle", "entity", "answers", "references", "submit_btn", "direction", "year", "form", "relatedfilesframe", "protocol", "protocol_alert", "references_alert", "answers_alert", "sendfilesbtn", "mailid", "assigned"]; //the button to add a new object
+    static targets = ["topicbtn", "topic", "documentlinksframe", "formtitle", "entity", "answers", "references", "submit_btn", "direction", "year", "form", "relatedfilesframe", "protocol", "protocol_alert", "references_alert", "answers_alert", "sendfilesbtn", "mailid", "assigned"]; //the button to add a new object
   
     connect() {
       console.log("Stimulus Connected: mailform controller");
     }
     
+    toggletopic(event){
+      event.preventDefault();
+      this.topicTarget.removeAttribute('readonly');
+      this.topicbtnTarget.style.display="none";
+    }
     // Return an array of the selected opion values
     // select is an HTML select element
     getSelectValues(select) {
