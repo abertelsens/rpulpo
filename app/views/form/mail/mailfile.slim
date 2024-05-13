@@ -3,4 +3,4 @@ turbo-frame id="mailfile-frame"
 		- if @object.is_word_file?
 			== @object.get_html_contents
 		- elsif @object.is_pdf_file?
-			object data="#{@object.get_path}#toolbar=0&navpanes=0&scrollbar=0" width="100%" height="600"
+			object data="#{@object.get_pdf_path}#toolbar=0&navpanes=0&scrollbar=0" width="100%" height="600"
