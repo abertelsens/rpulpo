@@ -105,19 +105,19 @@ get '/crs/table' do
 
 		when "fidelidad"
 			@title = "Próximas Fidelidades"
-			@objects = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person&.crs&.get_next_fidelidad!=false)}
+			@objects = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person.crs!=nil && person&.crs&.get_next_fidelidad!=false)}
 			@objects = @objects.map {|p| [p.id, p.short_name, p.crs&.get_next_fidelidad.strftime("%d-%m-%y")]}
 		when "admissio"
 			@title = "Próximas Admissio"
-			@objects = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person&.crs&.get_next_admissio!=nil)}
+			@objects = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person.crs!=nil && person&.crs&.get_next_admissio!=nil)}
 			@objects = @objects.map {|p| [p.id, p.short_name, p&.crs&.get_next_admissio.strftime("%d-%m-%y")]}
 		when "lectorado"
 			@title = "Próximos Lectorados"
-			@objects = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person&.crs&.get_next_lectorado!=nil)}
+			@objects = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person.crs!=nil && person&.crs&.get_next_lectorado!=nil)}
 			@objects = @objects.map {|p| [p.id, p.short_name, p.crs&.get_next_lectorado.strftime("%d-%m-%y")]}
 		when "acolitado"
 			@title = "Próximos Acolitados"
-			@objects = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person&.crs&.get_next_acolitado!=nil)}
+			@objects = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person.crs!=nil && person&.crs&.get_next_acolitado!=nil)}
 			@objects = @objects.map {|p| [p.id, p.short_name, p.crs&.get_next_acolitado.strftime("%d-%m-%y")]}
 		end
 
