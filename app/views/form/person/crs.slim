@@ -85,9 +85,9 @@ turbo-frame id="main_frame"
 				.columns.four
 					label cfi
 					select.u-full-width name="cfi"
-						option selected=(@crs.cfi.nil?) value="" = "-"
+						option selected=(@crs&.cfi.nil?) value="" = "-"
 						- Person.all.each do |p| 
-							option selected=(p.id==@crs.cfi) value=p.id = "#{p.family_name}, #{p.first_name}"
+							option selected=(p.id==@crs&.cfi) value=p.id = "#{p.family_name}, #{p.first_name}"
 		
 			.row 
 				.columns.eight.offset-by-two
