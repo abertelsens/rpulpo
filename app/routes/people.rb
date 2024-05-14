@@ -87,6 +87,17 @@ get '/person/:id/:module' do
 	partial :"form/person/#{params[:module]}"
 end
 
+get '/crs/cfi' do
+	#(Crs.where(cfi: p.id).pluck(:person_id)).join("\n")
+	@objects = Person.where(ctr:0).map{|p| {person:p, people: (Person.includes(:crs).where('crs.cfi' => p.id)).pluck(:id, :short_name) }}
+	#@objects = @objects.select {|p| !p[:people].empty?}
+	partial "table/cfi"
+end
+
+# updates the cfi of person with id to value cfi
+post '/crs/cfi/update/:id/:cfi' do
+	(Crs.find_by(person_id:params[:id])).update(cfi: Person.find(params[:cfi]).id)
+end
 
 get '/crs/table' do
 	@has_date = params[:ceremony].present?
@@ -126,7 +137,7 @@ get '/crs/table' do
 		end
 		@total = @objects.size unless @objects.nil?
 		partial "table/ceremony"
-	end
+end
 
 
 # renders a single person view

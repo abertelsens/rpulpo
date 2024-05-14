@@ -4,16 +4,26 @@ turbo-frame id="main_frame"
     .row.header-frame.u-text-center
       h3 CRS+
     .row
-      .columns.one.offset-by-three 
-        a.button.link-button data-turbo-frame="people-frame" href="/crs/table?ceremony=fidelidad" = "fidelidad"
-        a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?ceremony=admissio" = "admissio"
-        a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?ceremony=lectorado" = "lectorado"
-        a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?ceremony=acolitado" = "acolitado"
-        a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?phase=propedeutica" = "propedeútica"
-        a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?phase=discipular" = "discipular"
-        a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?phase=configuracional" = "configuracional"
-        a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?phase=sintesis" = "síntesis"
-      
-      .columns.four 
-        turbo-frame id="people-frame" src="/crs/table?ceremony=fidelidad"
+      .columns.two.offset-by-one 
+        .row 
+          a.button.link-button data-turbo-frame="people-frame" href="/crs/table?ceremony=fidelidad" = "fidelidad"
+        .row 
+          a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?ceremony=admissio" = "admissio"
+        .row 
+          a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?ceremony=lectorado" = "lectorado"
+        .row 
+          a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?ceremony=acolitado" = "acolitado"
+        .row 
+          a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?phase=propedeutica" = "propedeútica"
+        .row 
+          a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?phase=discipular" = "discipular"
+        .row 
+          a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?phase=configuracional" = "configuracional"
+        .row 
+          a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?phase=sintesis" = "síntesis"
+        .row 
+          a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/cfi" = "confidencias"
+
+      .columns.seven data-controller="crs"
+        turbo-frame id="people-frame" src="/crs/table?ceremony=fidelidad" data-crs-target="cfiframe"
     

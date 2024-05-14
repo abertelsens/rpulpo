@@ -222,6 +222,11 @@ attributes:
     type: "string"
     order: "NONE"
     css_class: "long-field"
+  - id: "crs.cfi"
+    name: "cfi"
+    type: "string"
+    order: "NONE"
+    css_class: "long-field"
 default_people_table:
   main_table: people
   related_tables:

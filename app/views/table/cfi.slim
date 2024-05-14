@@ -1,0 +1,18 @@
+turbo-frame id="people-frame" 
+  .columns.three 
+    h4.u-text-right = "Charlas Fraternas"
+  .columns.eight.offset-by-one
+    .row.alert
+      h4.u-text-center.u-full-width style="font-size: 1.6em"
+        i.class.fa-solid.fa-circle-info  
+        |&nbspInstrucciones
+      p.u-text-center style="font-size: .9em"
+      |Para <b>cambiar la cfi</b> de una persona arrastrar su nombre desde la columna izquierda a la columna derecha.
+
+    - @objects.each do |object|  
+      - if !object[:people].empty?
+        .row
+          .columns.six data-crs-id=object[:person].id data-action="drop->crs#drop dragover->crs#dragover" style="font-weight:bold" =  "#{object[:person].short_name} (#{object[:people].size})"
+          .columns.six
+            - object[:people].each do |person|
+              .row.room draggable="true" data-crs-id=person[0] data-action="drop->crs#drop dragstart->crs#dragstart dragenter->crs#dragenter" data-crs-target="cfi" = person[1]       

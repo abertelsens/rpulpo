@@ -6,9 +6,9 @@ class Mail < ActiveRecord::Base
 
 	BASE_DIR= "app/public"
 	BALDAS_BAS_DIR = "/mnt/sect/CORREO-CG/BALDAS"
-	#BALDAS_BAS_DIR = "L:/usuarios/sect/CORREO-CG/BALDAS"
-	#BASE_PATH = "//rafiki.cavabianca.org/datos/usuarios/sect"
 	BASE_PATH = "/mnt/sect"
+	CRSC = "crs+"
+	DEFAULT_PROTOCOL = "crs+ XX/XX"
 
 	enum direction:    		{ entrada: 0, salida: 1}
 	enum mail_status:    	{ pendiente: 0, en_curso: 1, terminado: 2 }
@@ -26,6 +26,8 @@ class Mail < ActiveRecord::Base
 # CALLBACKS
 # -----------------------------------------------------------------------------------------
 
+	# after a mail object is created we add it to the unreadmails table to each one of the
+	# mail users
 	after_create do |mail|
 		User.get_mail_users.each{|user| UnreadMail.create(user: user, mail: mail)}
 	end
@@ -38,10 +40,10 @@ class Mail < ActiveRecord::Base
 	def self.prepare_params(params=nil)
 		if params.nil? # no params provided. We create default params
 			{
-				entity: 		Entity.find_by(sigla: "crs+"),
+				entity: 		Entity.find_by(sigla: CRSC),
 				date:				Date.today,
 				topic:			"",
-				protocol:		"crs+ XX/XX",
+				protocol:		DEFAULT_PROTOCOL,
 				direction:	0,
 				mail_status:0
 			}

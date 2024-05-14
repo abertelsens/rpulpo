@@ -59,6 +59,11 @@ class Person < ActiveRecord::Base
 	# retrieves an attribute of the form "person.att_name"
 	def get_attribute(attribute_string, format=nil)
 		table, attribute = attribute_string.split(".")
+		if attribute=="cfi"
+			#puts "finding person with id #{crs[:cfi]}"
+			return Person.find(crs[:cfi]).short_name unless (crs.nil? || crs[:cfi].nil?)
+			return "-"
+		end
 		res = case table
 			when "person", "people" then self[attribute.to_sym]
 			when "studies"          then (study.nil? ? "" : study[attribute.to_sym])

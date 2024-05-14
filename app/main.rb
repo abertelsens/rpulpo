@@ -91,3 +91,7 @@ post '/login' do
 		redirect '/login?auth_error=true'
 	end
 end
+
+Person.all.each do |p|
+	Crs.create(person_id: p.id) if p.crs.nil?
+end

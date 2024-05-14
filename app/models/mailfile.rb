@@ -12,7 +12,12 @@ class MailFile < ActiveRecord::Base
 	belongs_to  :mail
 	validates 	:name, uniqueness: { scope: :mail_id }
 
-	#enum :file_type: {nota: 0, reference: 1, answer: 2}
+	TMP_DIR = "app/public/tmp/mail"
+	PUBLIC_TMP_DIR = "/tmp/mail"
+
+	# -----------------------------------------------------------------------------------------
+	# CRUD
+	# -----------------------------------------------------------------------------------------
 
    # creates a MailFile object given a file and a mail object.
 	def self.create_from_file(file, mail)
@@ -20,9 +25,12 @@ class MailFile < ActiveRecord::Base
 		MailFile.create(mail: mail, name: file, extension: extension)
 	end
 
+	# -----------------------------------------------------------------------------------------
+	# ACCESSORS
+	# -----------------------------------------------------------------------------------------
+
   def get_path
-		puts "returning path #{mail.get_sources_directory}/#{name}"
-    return "#{mail.get_sources_directory}/#{name}"
+    "#{mail.get_sources_directory}/#{name}"
   end
 
 	# pandoc needs a complete dir of the network to work, otherwise it will not be able
@@ -37,18 +45,20 @@ class MailFile < ActiveRecord::Base
 		end
 	end
 
-	def file_age(name)
-		(Time.now - File.ctime(name))/(24*3600)
+
+	# gets the pdf path of a mailfile. Used to preview an annexes.
+	def	get_pdf_path
+		# Delete all the files in the tmp folder that are older than one day
+		Dir.glob("#{TMP_DIR}/*.pdf").each { |filename| File.delete(filename) if file_age(filename) > 0 }
+
+		original_file = "#{mail.get_sources_directory}/#{name}"
+		FileUtils.cp(original_file, "#{TMP_DIR}/#{name}")
+		"#{PUBLIC_TMP_DIR}/#{name}"
 	end
 
-	def	get_pdf_path
-		puts "asking pdf file. copying #{mail.get_sources_directory}/#{name} to  app/public/tmp/mail"
-		Dir.glob("app/public/tmp/mail/*.pdf").each { |filename| File.delete(filename) if file_age(filename) > 0 }
-		if is_pdf_file?
-			original_file = "#{mail.get_sources_directory}/#{name}"
-			FileUtils.cp(original_file, "app/public/tmp/mail/#{name}")
-			"/tmp/mail/#{name}"
-		end
+	# returns the file age in days
+	def file_age(name)
+		(Time.now - File.ctime(name))/(24*3600)
 	end
 
 	def is_word_file?

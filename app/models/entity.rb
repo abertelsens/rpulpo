@@ -7,6 +7,7 @@ class Entity < ActiveRecord::Base
 
 	has_many :mails,  dependent: :destroy
 
+	CRSC = "crs+"
 # -----------------------------------------------------------------------------------------
 # CALLBACKS
 # -----------------------------------------------------------------------------------------
@@ -26,8 +27,6 @@ class Entity < ActiveRecord::Base
 		params[:id]=="new" ? Entity.create(params) : Entity.find(params[:id]).update(params)
 	end
 
-	# transforms the parameters received from the form into a hash that can be used to create
-	# a user object by the SaxumObject class
 	def self.prepare_params(params)
 	{
 		sigla: 	params[:sigla],
@@ -45,7 +44,7 @@ class Entity < ActiveRecord::Base
 	end
 
 	def self.get_all
-		Entity.all - [Entity.find_by(sigla: "crs+")]
+		Entity.where.not(sigla: CRSC)
 	end
 
 end #class end

@@ -20,7 +20,8 @@ class Crs < ActiveRecord::Base
 		lectorado:    params[:lectorado],
 		cipna:        params[:cipna],
 		notes:        params[:notes],
-		phase:        params[:phase].blank? ? nil : params[:phase]
+		phase:        params[:phase].blank? ? nil : params[:phase],
+		cfi:        	params[:cfi].blank? ? nil : params[:cfi]
 		}
 	end
 

@@ -245,6 +245,7 @@ div.room
   border-style: solid;
   border-width: 1px;
   padding: 1px;
+  padding-left: 5px;
   border-radius: 4px;
 }
 
