@@ -8,7 +8,7 @@ require_relative '../utils/pulpo_query'
 #A class containing the Users data
 class Person < ActiveRecord::Base
 
-	MONTHS_LATIN = [nil, "ianuarius", "februarius", "martius", "aprilis", "maius", "iunius", "iulius", "augustus", "september", "october", "november", "december"]
+	MONTHS_LATIN = [nil, "ianuarii", "februarii", "martii", "aprilis", "maii", "iunii", "iulii", "augusti", "septembris", "octobris", "novembris", "decembris"]
 
 	has_one :crs, dependent: :destroy
 	has_one :personal, dependent: :destroy
