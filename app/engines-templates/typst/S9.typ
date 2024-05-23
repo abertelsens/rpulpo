@@ -27,6 +27,7 @@ footer: [#pad(x:-2.3cm, y: .9cm, text(size: 9pt, [#impreso]))]
 //CONTENTS
 
 Infrascriptus Dr. Ferdinando Crovetto, Collegii Romani Sanctae Crucis Rector, \
+
 TESTATUR AC FIDEM FACIT sequentes huius Praelaturae fideles Ministeria Lectoris et Acolythi exercuisse, uti praescribitur in C.I.C., can. 1035 § 1, ad Diaconatum recipiendum:
 
 #move(

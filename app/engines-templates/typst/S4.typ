@@ -26,7 +26,8 @@ footer: [#pad(x:-2.3cm, y: .9cm, text(size: 9pt, [#impreso]))]
 
 //CONTENTS
 
-Infrascriptus Dr. Ferdinando Crovetto, Collegii Romani Sanctae Crucis Rector, iuxta facultatem sibi a Rev.mo Domino Ferdinando Ocáriz, Praelato Sanctae Crucis et Operis Dei concessam, \
+Infrascriptus Dr. Ferdinando Crovetto, Collegii Romani Sanctae Crucis Rector, iuxta facultatem sibi a Rev.mo Domino Ferdinando Ocáriz, Praelato Sanctae Crucis et Operis Dei concessam,
+
 TESTATUR AC FIDEM FACIT sequentes huius Praelaturae fideles obligationes adquisisse quae ordinandorum sunt propriae:
 
 #move(

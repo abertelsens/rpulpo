@@ -10,8 +10,8 @@
 // Pulpo will prompt the user to set the values of the variables that are      
 // enclosed in $ signs.
 
-#let date = "$$date$$"
-
+#let date_meeting = "$$date of meeting$"
+#let date = "$$date2$$"
 //=================================================================
 //FUNCTIONS 
 //=================================================================
@@ -36,7 +36,7 @@ header: [#pad(x:-1.5cm, y: 1.5cm, text(size: 15pt, [COLLEGIUM ROMANUM SANCTAE CR
 
 //CONTENTS
 
-En sesión colegial del día 26 de marzo de 2021 el Consejo de formadores del Colegio Romano de la Santa Cruz emitió parecer positivo acerca de la idoneidad para recibir las órdenes sagradas del Diaconado y del Presbiterado del candidato $person.first_name$ $person.family_name$.
+En sesión colegial del $$date of meeting$$ el Consejo de formadores del Colegio Romano de la Santa Cruz emitió parecer positivo acerca de la idoneidad para recibir las órdenes sagradas del Diaconado y del Presbiterado del candidato $person.first_name$ $person.family_name$.
 
 #v(60pt)
 

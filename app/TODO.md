@@ -26,4 +26,5 @@
 
 # Ropa
 
- 
+ Informe formadores. poner fecha variable.
+ S3 meses en latin en genitivo
