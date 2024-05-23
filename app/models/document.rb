@@ -95,9 +95,7 @@ class Document < ActiveRecord::Base
 	end
 
 	def get_template_variables
-		File.read(get_full_path).scan(/\$\$(\S|\s)*\$\$/).map{ |var| var.gsub("$$","")}
-
-		#File.read(get_full_path).scan(/\$\$\S*\$\$/).map{ |var| var.gsub("$$","")}
+		File.read(get_full_path).scan(/\$\$\S*\$\$/).map{ |var| var.gsub("$$","")}
 	end
 
 end # class end
