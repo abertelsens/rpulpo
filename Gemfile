@@ -32,7 +32,6 @@ gem 'rainbow'                             # helps to print to the console
 gem 'rubyXL'                              # helps to handle .xlxs documents
 gem 'pandoc-ruby'                         # pandoc is used to render .docx documents to html
 gem 'kramdown'                            # markdown renderer to html. Used to generate help pages
-gem 'nokogiri'
 
 # gem 'github-markup'
 # gem 'os'
