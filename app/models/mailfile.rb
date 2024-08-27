@@ -40,6 +40,7 @@ class MailFile < ActiveRecord::Base
   def	get_html_contents
 		if is_word_file?
 			html_string = `pandoc --extract-media public/tmp \"#{get_path}\" --from docx --to html`
+			puts clean_html_links html_string
 			clean_html_links html_string
 		else
 			"<p> could not parse document"
