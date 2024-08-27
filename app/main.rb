@@ -1,3 +1,5 @@
+
+# main.rb
 #---------------------------------------------------------------------------------------
 # FILE INFO
 
@@ -9,7 +11,8 @@
 # DESCRIPTION
 
 # This file is the main entry point of the webapp.
-# It requires all the necesary files to run the app. The main ones are the models that define
+# It requires all the necesary files to run the app.
+# The main ones are the models that define
 # the objects stored in the DB and the route files that tell sinatra how to handle the
 # different http requests.
 #---------------------------------------------------------------------------------------
@@ -26,6 +29,7 @@ require 'require_all'
 
 # include all the models defined in the 'app/models' directory
 require_rel 'models'
+
 # include all the routes defined in the 'app/routes' directory
 require_rel 'routes'
 

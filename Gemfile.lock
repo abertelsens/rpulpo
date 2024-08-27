@@ -103,6 +103,7 @@ DEPENDENCIES
   encrypted_cookie
   groupdate
   kramdown
+  nokogiri
   pandoc-ruby
   pg (~> 1.5, >= 1.5.4)
   puma

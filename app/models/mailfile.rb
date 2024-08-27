@@ -1,4 +1,5 @@
 require 'pandoc-ruby'
+require 'nogokiri'
 
 # -----------------------------------------------------------------------------------------
 # DESCRIPTION
@@ -39,12 +40,16 @@ class MailFile < ActiveRecord::Base
 	# Embedded media, like images, will be stored in the public/tmp/media/
   def	get_html_contents
 		if is_word_file?
-			`pandoc --extract-media public/tmp \"#{get_path}\" --from docx --to html`
+			html_string = `pandoc --extract-media public/tmp \"#{get_path}\" --from docx --to html`
+			clean_html_links html_string
 		else
 			"<p> could not parse document"
 		end
 	end
 
+	def clean_html_links(html_string)
+		html_string.gsub(/<a.*?>(.+?)<\/a>/, '\1')
+	end
 
 	# gets the pdf path of a mailfile. Used to preview an annexes.
 	def	get_pdf_path

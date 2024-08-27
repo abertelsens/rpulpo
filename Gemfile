@@ -3,6 +3,8 @@
 source 'https://rubygems.org'
 
 ruby '3.3'
+#ruby '3.2.2'
+
 gem 'require_all'                         # gem that simplifies imports of libraries
 
 gem 'rake', '~>13.1.0'
@@ -30,7 +32,7 @@ gem 'rainbow'                             # helps to print to the console
 gem 'rubyXL'                              # helps to handle .xlxs documents
 gem 'pandoc-ruby'                         # pandoc is used to render .docx documents to html
 gem 'kramdown'                            # markdown renderer to html. Used to generate help pages
-
+gem 'nokogiri'
 
 # gem 'github-markup'
 # gem 'os'
