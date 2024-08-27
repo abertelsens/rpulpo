@@ -48,7 +48,7 @@ class MailFile < ActiveRecord::Base
 	end
 
 	def clean_html_links(html_string)
-		html_string.gsub(/<a.*?>(.+?)<\/a>/, '\1')
+		html_string.gsub(/<script.*?>(.+?)<\/script>/, '\1').gsub(/<noscript.*?>(.+?)<\/noscript>/, '\1')
 	end
 
 	# gets the pdf path of a mailfile. Used to preview an annexes.
