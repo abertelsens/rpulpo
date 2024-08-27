@@ -1,13 +1,35 @@
+
+# sinatra_helpers.rb
+#---------------------------------------------------------------------------------------
+# FILE INFO
+
+# autor: alejandrobertelsen@gmail.com
+# last major update: 2024-08-25
+#---------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------
+# DESCRIPTION
+
+# This file define a series of auxiliary methods used in the sinatra routes.
+#---------------------------------------------------------------------------------------
+
 #---------------------------------------------------------------------------------------
 # SINATRA HELPER METHODS
 #---------------------------------------------------------------------------------------
 
 helpers do
 
+	# checks the update result of an object. The method is called after an update operation
+	# on the db
+	# @result: the result object after the update operation
 	def check_update_result(result)
 			puts Rainbow("error while updating\n #{result.error_messages}").yellow unless result
 	end
 
+	# retrieves the last query used by the user in the session. The queries are stored in cookies.
+	# the method is used to remember what query the user was using so that when he goes back
+	# -after updating a record, for example- he will not have to enter it again.
+	# @args a symbol specifing the table
 	def get_last_query(args)
 		case args
 				when :people    then @people_query = session["people_table_query"]
@@ -17,34 +39,25 @@ helpers do
 		get_table_settings args
 	end
 
+	# Retrieves the table settings. The table settings specify which colums should be displayed.
+	# The settings are stored in a cookie.
+	# If no settings are stored then new default table settings are created and stored.
+	# @args a symbol specifing the table.
 	def get_table_settings args
 		case args
-		when :people
-				@people_table_settings = session["people_table_settings"].nil? ? TableSettings.new(table: :people_default) : session["people_table_settings"]
-		when :rooms
-				@rooms_table_settings = session["rooms_table_settings"].nil? ? TableSettings.new(table: :rooms_default) : session["rooms_table_settings"]
+			when :people
+					@people_table_settings = session["people_table_settings"].nil? ? TableSettings.new(table: :people_default) : session["people_table_settings"]
+			when :rooms
+					@rooms_table_settings = session["rooms_table_settings"].nil? ? TableSettings.new(table: :rooms_default) : session["rooms_table_settings"]
 		end
 	end
 
-	def check_permission(resource)
-		@user = User.get_user(session[:current_user_id])
-		partial :"/login" if @user.nil?
-
-		@auth = @user.check_permission(resource)
-		return (partial :"unauthorized") if @auth==User::NONE #if the authorization was not found we redirect to unauthorized page
-		return @auth
-	end
-
+	# Get the current user id. If no user is logged in nil is returned.
 	def get_current_user()
 			(cookies[:current_user_id].nil? || cookies[:current_user_id]&.blank?) ? nil : User.find(cookies[:current_user_id])
 	end
 
-	#checks if the edit/new/delete action produced any errors and redirects to the
-	#corresponding error page
-	def error_screen(object)
-		partial "screen/error", locals: {error: object.error}
-	end
-
+	# Prints a log of the http request. The info varies according to the SINATRA_LOG_LEVEL variable.
 	def print_controller_log()
 		case SINATRA_LOG_LEVEL
 			when 1
@@ -61,4 +74,4 @@ helpers do
 		end
 	end
 
-end
+end #helpers end

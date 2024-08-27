@@ -1,16 +1,35 @@
-#require 'os'
-require 'rainbow'
+#---------------------------------------------------------------------------------------
+# FILE INFO
+
+# autor: alejandrobertelsen@gmail.com
+# last major update: 2024-08-25
+#---------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------
+# DESCRIPTION
+
+# This file is the main entry point of the webapp.
+# It requires all the necesary files to run the app. The main ones are the models that define
+# the objects stored in the DB and the route files that tell sinatra how to handle the
+# different http requests.
+#---------------------------------------------------------------------------------------
+
+require 'rainbow'	# helps to pretty print in the console
 require 'sinatra'
 require 'sinatra/cookies'
 require "sinatra/activerecord"
 require 'slim/include'
 require 'sinatra/partial'
 require 'sinatra/reloader'
-require_relative 'sinatra_helpers'  #helpers for the sinatra controllers
+require_relative 'sinatra_helpers'  # helpers for the sinatra controllers
 require 'require_all'
+
+# include all the models defined in the 'app/models' directory
 require_rel 'models'
+# include all the routes defined in the 'app/routes' directory
 require_rel 'routes'
 
+# modules
 include ActiveRecord
 include ExcelRoomImporter
 include ExcelImporter
@@ -20,44 +39,57 @@ include ExcelImporter
 #---------------------------------------------------------------------------------------
 puts Rainbow("PULPO: Starting Configuration").yellow
 
-# do not print to console
-old_logger = ActiveRecord::Base.logger
-#ActiveRecord::Base.logger = nil
+
+# In order to avoid printing to the console in each request uncomment the following line
+# ActiveRecord::Base.logger = nil
 
 # To turn active record logger back on
-ActiveRecord::Base.logger = old_logger
+# old_logger = ActiveRecord::Base.logger
+# ActiveRecord::Base.logger = old_logger
 
 # if the DB ENVIRONMENT is not set (i.e. was not set via the command line to run the app)
 # we assume we are in development mode.
 DB_ENV ||= 'development'
 
-#load the connection settings file and open the connection
+# load the connection settings file and open the connection
 connection_details = YAML::load(File.open('config/database.yaml'))
+
+# establish the connection
 ActiveRecord::Base.establish_connection(connection_details[DB_ENV])
 
 #---------------------------------------------------------------------------------------
 # SINATRA SETUP
 #---------------------------------------------------------------------------------------
 
-#enables sessions to allow access control
+# enables sinatra sessions to allow access control for different user sessions
 enable :sessions
 
-#0 do not print anything, 1 print controller info, 2 print params
+# I have defined three levels of info displayed in the console for each http request
+# 0 do not print anything, 1 print controller info, 2 print params
+# the levels in the the 'sinatra_helpers' file.
 SINATRA_LOG_LEVEL = 2
 
 #---------------------------------------------------------------------------------------
 # SLIM SETUP
+#
+# Slim is a rendering engine that helps to create html pages via templates with some
+# embedded ruby code.
+# For more info see https://slim-template.github.io/
 #---------------------------------------------------------------------------------------
 
 Slim::Engine.disable_option_validator!
+
+# define some options for slim that help us to write some cleaner templates.
 Slim::Engine.set_options shortcut: {'&' => {tag: 'input', attr: 'type'}, '#' => {attr: 'id'}, '.' => {attr: 'class'}}
 set :partial_template_engine, :slim
 
 #---------------------------------------------------------------------------------------
-# LOGIN ROUTES
+# GENERAL ROUTES
 #---------------------------------------------------------------------------------------
 
-# actons performed before any route is run.
+# We define a method that is called before any route is processed
+# In this case we tell sinatra to call the print_controller_log method defined in the 'sinatra_helpers'
+# This helps to write shorter and cleaner code for each route
 before '/*' do
 	print_controller_log
 end
@@ -67,6 +99,10 @@ get '/' do
 	@current_user = get_current_user
 	@current_user ? (slim :home) : (redirect '/login')
 end
+
+#---------------------------------------------------------------------------------------
+# LOGIN ROUTES
+#---------------------------------------------------------------------------------------
 
 # renders the login page. If the auth_error parameter is set, it meams there was an
 # authentication error.

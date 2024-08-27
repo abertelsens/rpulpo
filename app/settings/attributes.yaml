@@ -62,7 +62,7 @@ attributes:
     name: "Birth Date"
     type: "date"
     order: "NONE"
-    css_class: "short-field"
+    css_class: "medium-field"
   - id: "people.email"
     name: "email"
     type: "string"
@@ -238,12 +238,9 @@ default_people_table:
     - people.family_name
     - people.first_name
     - people.group
-    - people.status
-    - people.ctr
+    - people.clothes
     - people.year
     - people.email
-    - rooms.house
-    - rooms.room
 default_rooms_table:
   main_table: rooms
   related_tables:

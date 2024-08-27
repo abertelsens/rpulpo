@@ -56,8 +56,6 @@ Stimulus.register("crs", class extends Controller {
       reload_cfis()
       {
         this.cfiframeTarget.reload()
-        //const trigger = new CustomEvent("turnosreload");
-        //window.dispatchEvent(trigger);
       }
       
     })

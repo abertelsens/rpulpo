@@ -28,3 +28,5 @@
 
  Informe formadores. poner fecha variable.
  S3 meses en latin en genitivo
+ todos los S6 meses en latin en genitivo
+ S6 footnote 
