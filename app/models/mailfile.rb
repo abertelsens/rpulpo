@@ -36,10 +36,10 @@ class MailFile < ActiveRecord::Base
 	# pandoc needs a complete dir of the network to work, otherwise it will not be able
 	# to find the file. File paths which containt spaces make trouble, therefore we need
 	# to wrap them around quotation marks.
-	# Embedded media, like images, will be stored in the public/tmp/media/
+	# Embedded media, like images, will be stored in the public/tmp/media/ directory
   def	get_html_contents
 		if is_word_file?
-			html_string = `pandoc --extract-media public/tmp \"#{get_path}\" --from docx --to html`
+			html_string = `pandoc --extract-media app/public/tmp \"#{get_path}\" --from docx --to html`
 			puts clean_html_links html_string
 			clean_html_links html_string
 		else
