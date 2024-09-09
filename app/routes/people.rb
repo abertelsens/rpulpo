@@ -103,7 +103,7 @@ get '/crs/table' do
 
 		when "fidelidad"
 			@title = "Próximas Fidelidades"
-			@objects = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person.crs!=nil && person&.crs&.get_next_fidelidad!=false)}
+			@objects = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person.crs!=nil && person&.crs&.get_next_fidelidad!=nil)}
 			@objects = @objects.map {|p| [p.id, p.short_name, p.crs&.get_next_fidelidad.strftime("%d-%m-%y")]}
 		when "admissio"
 			@title = "Próximas Admissio"
