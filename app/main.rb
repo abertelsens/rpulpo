@@ -142,6 +142,6 @@ end
 
 Person.all.each do |person|
 	if person.status=="diacono"
-		person.crs.update(phase:"sintesis") unless person.crs.nil?
+		person.crs.update(phase:"síntesis") unless person.crs.nil?
 	end
 end
