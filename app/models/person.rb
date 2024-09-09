@@ -50,7 +50,7 @@ class Person < ActiveRecord::Base
 	before_save do
 		full_info = "#{(title.nil? ? "" : title+" ")}#{first_name} #{family_name} #{group}"
     full_name = "#{first_name} #{family_name}"
-		if status.diacono?
+		if status=="diacono"
 			puts "found deacon. Updating etapa to discipular"
 			self.crs.update(phase:2)
 		end
