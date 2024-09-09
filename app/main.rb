@@ -142,6 +142,6 @@ end
 
 Person.all.each |person| do
 	if person.status==1
-		person.crs.update(phase: 2)
+		person.crs.update(phase: 2) unless person.crs.nil?
 	end
 end
