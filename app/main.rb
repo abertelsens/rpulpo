@@ -134,13 +134,13 @@ end
 
 
 
-Crs.all.each |crs| do
+Crs.all.each do |crs|
 	if admissio.nil?
 		crs.update(phase: 0)
 	end
 end
 
-Person.all.each |person| do
+Person.all.each do |person|
 	if person.status==1
 		person.crs.update(phase: 2) unless person.crs.nil?
 	end
