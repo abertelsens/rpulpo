@@ -88,9 +88,7 @@ get '/person/:id/:module' do
 end
 
 get '/crs/cfi' do
-	#(Crs.where(cfi: p.id).pluck(:person_id)).join("\n")
 	@objects = Person.where(ctr:0).map{|p| {person:p, people: (Person.includes(:crs).where('crs.cfi' => p.id)).pluck(:id, :short_name) }}
-	#@objects = @objects.select {|p| !p[:people].empty?}
 	partial "table/cfi"
 end
 
