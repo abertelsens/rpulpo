@@ -51,6 +51,7 @@ class Person < ActiveRecord::Base
 		full_info = "#{(title.nil? ? "" : title+" ")}#{first_name} #{family_name} #{group}"
     full_name = "#{first_name} #{family_name}"
 		self.crs.update(phase:"síntesis") if status=="diacono"
+		self.crs.update(phase:nil) if status=="sacerdote"
 	end
 
 	# if a person is destroyed we also delete the associated photo of the person if it exists
