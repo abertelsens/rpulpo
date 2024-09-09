@@ -135,7 +135,7 @@ end
 
 
 Crs.all.each do |crs|
-	if admissio.nil?
+	if crs.admissio.nil?
 		crs.update(phase: 0)
 	end
 end
