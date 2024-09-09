@@ -35,7 +35,7 @@ class Crs < ActiveRecord::Base
 
 	def get_next_fidelidad
 		#fidelidad < Date.today
-		(fidelidad.nil? || oblacion.nil?) ? nil : oblacion.next_year(5)
+		(fidelidad.nil? && !oblacion.nil?) ? oblacion.next_year(5) : nil
 	end
 
 	def get_next_admissio
