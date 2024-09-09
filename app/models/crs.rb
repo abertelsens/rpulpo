@@ -38,7 +38,7 @@ class Crs < ActiveRecord::Base
 		return nil unless fidelidad.nil?
 		if !oblacion.nil?
 			return oblacion.next_year(5)
-		else "falta fecha de la oblación"
+		else Date.today.next_year(5)
 		end
 	end
 
