@@ -138,6 +138,9 @@ Crs.all.each do |crs|
 	if crs.admissio.nil?
 		crs.update(phase: "discipular")
 	end
+	if crs.status="sacerdote"
+		crs.update(phase: nil)
+	end
 end
 
 Person.all.each do |person|
