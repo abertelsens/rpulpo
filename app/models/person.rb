@@ -50,10 +50,7 @@ class Person < ActiveRecord::Base
 	before_save do
 		full_info = "#{(title.nil? ? "" : title+" ")}#{first_name} #{family_name} #{group}"
     full_name = "#{first_name} #{family_name}"
-		if status=="diacono"
-			puts "found deacon. Updating etapa to discipular"
-			self.crs.update(phase:2)
-		end
+		self.crs.update(phase:"sintesis") if status=="diacono"
 	end
 
 	# if a person is destroyed we also delete the associated photo of the person if it exists
