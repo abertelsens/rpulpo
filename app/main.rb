@@ -131,3 +131,17 @@ post '/login' do
 		redirect '/login?auth_error=true'
 	end
 end
+
+
+
+Crs.all.each |crs| do
+	if admissio.nil?
+		crs.update(phase: 0)
+	end
+end
+
+Person.all.each |person| do
+	if person.status==1
+		person.crs.update(phase: 2)
+	end
+end
