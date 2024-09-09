@@ -11,9 +11,9 @@
 # DESCRIPTION
 
 # This file defines the model of a person in pulpo containing its basi information.
-# Each person has also a series of related information: personal info, study, and info 
+# Each person has also a series of related information: personal info, study, and info
 # related to the crs+.
-# These could have been defined in the same person table, but diving the info gives 
+# These could have been defined in the same person table, but diving the info gives
 # more flexibility to regulate access to different users
 #---------------------------------------------------------------------------------------
 
@@ -50,6 +50,10 @@ class Person < ActiveRecord::Base
 	before_save do
 		full_info = "#{(title.nil? ? "" : title+" ")}#{first_name} #{family_name} #{group}"
     full_name = "#{first_name} #{family_name}"
+		if status==1
+			puts "found deacon. Updating etapa to discipular"
+			self.crs.update(phase:2)
+		end
 	end
 
 	# if a person is destroyed we also delete the associated photo of the person if it exists
@@ -69,7 +73,7 @@ class Person < ActiveRecord::Base
 	def self.prepare_params(params)
 		params["student"] = params["student"]=="true"
 		params["full_name"] = "#{params[:first_name]} #{params[:family_name]}"
-		
+
 		# delete from the hash the commit, id and photo_file fields before creating
 		# or updating the object
 		params.except("commit", "id", "photo_file")
@@ -78,7 +82,7 @@ class Person < ActiveRecord::Base
 	# the search method
 	# @search_string: the string containing the query
 	# @table_settings: the settings, i.e. information to be displayed. It is an object that
-	# defines what tables should be included in the query results. This helps us to reduce 
+	# defines what tables should be included in the query results. This helps us to reduce
 	# unnecessary information. For example if we query a person by name but the settings do
 	# not include the rooms table, then we will not retrieve that result. See pulpo_query.rb
 	def self.search(search_string, table_settings=nil)
