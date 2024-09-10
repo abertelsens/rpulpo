@@ -1,5 +1,4 @@
 turbo-frame id="main_frame" 
-  - @people = Person.includes(:room).where(ctr:"cavabianca").order(group: :asc, family_name: :asc)
   
   .container.container-frame
     
@@ -7,6 +6,7 @@ turbo-frame id="main_frame"
       .columns.six.offset-by-three.u-text-center.flex-center
         .columns.eight.offset-by-two
           h3.no-margin.u-full-width VELAS AL SANTíSIMO
+      
         .columns.two.flex-right
           a.button.button-primary.button-medium.no-margin href="/vela/new" data-turbo-frame="editor_frame"
               i.fa-solid.fa-plus style="font-size:small"
