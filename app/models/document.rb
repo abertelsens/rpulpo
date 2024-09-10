@@ -73,7 +73,8 @@ class Document < ActiveRecord::Base
 	end
 
 	def self.get_docs_of_user(user)
-		Document.includes(:pulpo_module).all.order(:pulpo_module_id, :name).select{|doc| user.get_allowed_modules.include? doc.pulpo_module }
+		Document.where(pulpo_module: user.get_allowed_modules)
+		#Document.includes(:pulpo_module).all.order(:pulpo_module_id, :name).select{|doc| user.get_allowed_modules.include? doc.pulpo_module }
 	end
 
 	def self.get_pdf_docs_of_user(user)
