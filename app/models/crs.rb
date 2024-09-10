@@ -1,5 +1,21 @@
+
+# crs.rb
+#---------------------------------------------------------------------------------------
+# FILE INFO
+
+# autor: alejandrobertelsen@gmail.com
+# last major update: 2024-08-25
+#---------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------
+# DESCRIPTION
+
+# This file defines the data used for the information related to the crs+
+#---------------------------------------------------------------------------------------
+
 class Crs < ActiveRecord::Base
 
+	# an enum with the different options for the seminary phases.
   enum phase:     {discipular: 0, configuracional:1, síntesis:2, propedeutica: 4}
 
 	belongs_to 	:person
@@ -43,7 +59,7 @@ class Crs < ActiveRecord::Base
 
 	def get_next_lectorado
 		if !(person.status=="laico" && person.ctr!="se_ha_ido" && !admissio.nil? && lectorado.nil?)
-			return nil
+			nil
 		else
 			get_next_date(10,20)
 		end
@@ -51,17 +67,15 @@ class Crs < ActiveRecord::Base
 
 	def get_next_acolitado
 		if !(person.status=="laico" && person.ctr!="se_ha_ido" && !admissio.nil? && !lectorado.nil? && acolitado.nil?)
-			return nil
+			nil
 		else
 			get_next_date(1,20)
 		end
 	end
 end #class end
 
+# gets the next occurrence of the date day-month.
 def get_next_date(month,day)
-	if Date.today < Date.new(Date.today.year,month,day)
-		Date.new(Date.today.year,month,day)
-	else
-		Date.new(Date.today.year+1,month,day)
-	end
+	date = Date.new(Date.today.year,month,day)
+	(Date.today < date) ? date : date.next_year(1)
 end
