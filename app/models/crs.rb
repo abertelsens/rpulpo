@@ -21,24 +21,10 @@ class Crs < ActiveRecord::Base
 	belongs_to 	:person
 
 	def self.prepare_params(params)
-		{
-		person_id: 		params[:person_id],
-		classnumber:  params[:classnumber],
-		pa:    		 		params[:pa],
-		admision:    	params[:admision],
-		oblacion:     params[:oblacion],
-		fidelidad:    params[:fidelidad],
-		letter:    		params[:letter],
-		admissio:     params[:admissio],
-		presbiterado: params[:presbiterado],
-		diaconado:    params[:diaconado],
-		acolitado:    params[:acolitado],
-		lectorado:    params[:lectorado],
-		cipna:        params[:cipna],
-		notes:        params[:notes],
-		phase:        params[:phase].blank? ? nil : params[:phase],
-		cfi:        	params[:cfi].blank? ? nil : params[:cfi]
-		}
+		params[:phase] = nil if params[:phase].blank?
+		params[:cfi] = nil if params[:cfi].blank?
+		params.except("crs_id", "id", "commit")
+
 	end
 
 	def can_be_deleted?
