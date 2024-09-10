@@ -1,5 +1,5 @@
 
-# user.rb
+# pulpo_module.rb
 #---------------------------------------------------------------------------------------
 # FILE INFO
 
@@ -18,13 +18,8 @@
 #A class containing the Users data
 class PulpoModule < ActiveRecord::Base
 
-
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(name: :asc) }
-
-# -----------------------------------------------------------------------------------------
-# CALLBACKS
-# -----------------------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------------------
 # CRUD METHODS

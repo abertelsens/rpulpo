@@ -35,7 +35,7 @@ turbo-frame id="main_frame"
 
 				.columns.six
 					label for="name" person
-					select.u-full-width name="person"
+					select.u-full-width name="person_id"
 						option selected=(@object&.person_id.blank?) value="" = "empty room"
 						- Person.all.order(family_name: :asc).each do |person|
 							option selected=(@object&.person_id==person.id) value=person.id = "#{person.family_name}, #{person.first_name}" 

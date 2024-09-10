@@ -33,8 +33,8 @@ end
 
 post '/module/:id' do
   case params[:commit]
-    when "save" then PulpoModule.create_update params
-    when "delete" then PulpoModule.destroy params
+    when "save" 	then 	PulpoModule.create_update params
+    when "delete" then 	PulpoModule.destroy params
   end
   redirect '/modules'
 end
