@@ -9,9 +9,7 @@ class Personal < ActiveRecord::Base
 	belongs_to 	:person
 
 	def self.prepare_params(params)
-    {
-			params.except("personal_id", "id")
-		}
+    params.except("personal_id", "id")
   end
 
 end # class end
