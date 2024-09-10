@@ -29,7 +29,7 @@ class Mail < ActiveRecord::Base
 	# after a mail object is created we add it to the unreadmails table to each one of the
 	# mail users
 	after_create do |mail|
-		User.get_mail_users.each{|user| UnreadMail.create(user: user, mail: mail)}
+		User.mail_users.each{|user| UnreadMail.create(user: user, mail: mail)}
 	end
 
 # -----------------------------------------------------------------------------------------

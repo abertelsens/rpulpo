@@ -26,10 +26,6 @@ class Crs < ActiveRecord::Base
 		params.except("crs_id", "id", "commit")
 	end
 
-	def can_be_deleted?
-		true
-	end
-
 	def self.get_editable_attributes()
 		[ {name: "phase", value: "options", description: "etapa (dicasterio)"} ]
 	end

@@ -1,26 +1,42 @@
-# -----------------------------------------------------------------------------------------
+
+# person.rb
+#---------------------------------------------------------------------------------------
+# FILE INFO
+
+# autor: alejandrobertelsen@gmail.com
+# last major update: 2024-08-25
+#---------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------
 # DESCRIPTION
-# A class defininign a user object.
+
+# A class defining a user
 # -----------------------------------------------------------------------------------------
 
 class User < ActiveRecord::Base
 
+	# the related tables have a destroy dependency, i.e. if a user is deleted then also
+	# the matching mails tables as deleted as well.
 	has_many	:unread_mails, dependent: :destroy
 	has_many	:assigned_mails, dependent: :destroy
 	has_many	:assignedmails, :through => :assigned_mails, :source => :mail , dependent: :destroy
 	has_many 	:module_users, dependent: :destroy
 
+	# the default scoped defines the default sort order of the query results
+	default_scope { order(uname: :asc) }
+
+	# an enum defining the type of user.
 	enum usertype: {normal: 0, admin: 1, guest: 2}
 
-# -----------------------------------------------------------------------------------------
-# CALLBACKS
-# -----------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------
 # CRUD METHODS
 # -----------------------------------------------------------------------------------------
 
 	def self.create(params)
+		# creates the user
 		user = super(User.prepare_params params)
+
+		# creates all the modules permissions for the user.
 		if params["module"].present?
 			modules = PulpoModule.find(params["module"].keys)
 			module_users = modules.each do |mod|
@@ -49,14 +65,6 @@ class User < ActiveRecord::Base
 		usertype:		params[:usertype],
 		mail:				!params[:mail].nil?
 	}
-	end
-
-	# -----------------------------------------------------------------------------------------
-	# ACCESSORS
-	# -----------------------------------------------------------------------------------------
-
-	def self.get_all()
-		User.order(uname: :asc)
 	end
 
 	# -----------------------------------------------------------------------------------------
@@ -90,20 +98,19 @@ class User < ActiveRecord::Base
 # ACCSESSORS
 # -----------------------------------------------------------------------------------------
 
-	# admini users can be deleted only if there is more than one.
+	# admin users can be deleted only if there is more than one.
 	def can_be_deleted?
-		return true if usertype!="admin"
-		User.where(usertype: "admin").size() > 1
+		admin? ? admins.size() > 1 : true
 	end
 
 	def get_mails(args)
 		case args
 			when :assigned 	then assignedmails.pluck(:mail)
-			when :unread	then unreadmails.pluck(:mail)
+			when :unread		then unreadmails.pluck(:mail)
 		end
 	end
 
-	def self.get_mail_users
+	def self.mail_users
 		User.where(mail:true)
 	end
 
@@ -121,12 +128,16 @@ class User < ActiveRecord::Base
 		usertype=="admin"
 	end
 
+	def admins
+		User.where(usertype: "admin")
+	end
+
 	def mail_user?
 		mail
 	end
 
 	def get_allowed_modules
-		return PulpoModule.all if self.admin? 		# an admin has all permitions.
+		return PulpoModule.all if admin? 		# an admin has all permitions.
 		(module_users.select {|mu| mu.modulepermission=="allowed"}).map {|mu| mu.pulpo_module}
 	end
 

@@ -51,20 +51,6 @@ get '/people/search' do
 	partial :"table/people"
 end
 
-
-# shows the form to edit a field of all the people in the set
-get '/person/:id/toggle_vela' do
-	@person = Person.find(params[:id])
-	@person.toggle_vela
-	content_type 'text/vnd.turbo-stream.html'
-	vela = @person.vela.nil? ? "" : @person.vela
-	"<turbo-stream action=\"replace\" target=\"person_#{@person.id}\">
-	<template>
-	<div class=\"table-cell-body\" id=\"person_#{@person.id}\"> #{@person.vela.humanize}</div>
-	</template>
-	</turbo-stream>"
-end
-
 # renders a single person view
 get '/person/:id' do
 	@current_user = get_current_user

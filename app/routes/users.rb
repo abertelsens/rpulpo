@@ -14,7 +14,7 @@ end
 
 # renders the users table
 get '/users/table' do
-    @objects = User.get_all
+    @objects = User.all
     partial :"table/user"
 end
 
