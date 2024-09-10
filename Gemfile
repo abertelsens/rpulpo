@@ -5,6 +5,8 @@ source 'https://rubygems.org'
 ruby '3.3'
 #ruby '3.2.2'
 
+
+
 gem 'require_all'                         # gem that simplifies imports of libraries
 
 gem 'rake', '~>13.1.0'
@@ -18,6 +20,7 @@ gem 'slim',               '3.0.8'
 
 # SERVER
 gem 'puma'
+gem 'puma-daemon', require: false
 gem 'rack-ssl-enforcer'
 
 # DB related gems.
