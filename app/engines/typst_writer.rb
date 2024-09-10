@@ -67,7 +67,8 @@ class TypstWriter < DocumentWriter
 		db_variable = !variable_array[1].nil?
 
 		if db_variable
-			person.get_attribute(variable_identifier, variable_array[2])
+			# replace " with ' to avoid typst engine errors
+			person.get_attribute(variable_identifier, variable_array[2]).gsub("\"","'")
 		else
 			set_error WARNING, "Typst Writer: don't know how to replace '#{variable_identifier}'"
 			return nil
