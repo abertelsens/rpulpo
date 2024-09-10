@@ -50,6 +50,8 @@ class Person < ActiveRecord::Base
 	before_save do
 		full_info = "#{(title.nil? ? "" : title+" ")}#{first_name} #{family_name} #{group}"
     full_name = "#{first_name} #{family_name}"
+
+		# if the status of a person changed we also update the phase field
 		self.crs.update(phase:"síntesis") if status=="diacono"
 		self.crs.update(phase:nil) if status=="sacerdote"
 	end
@@ -130,10 +132,10 @@ class Person < ActiveRecord::Base
 			result << (people.map {|person| (table_settings.att.map{|att| (person.get_attribute(att.field).dup)}).join("\t") }).join(("\n"))
 	end
 
-	def toggle_vela
-			options  = ["normal", "no"]
-			update(vela: options[((options.find_index vela)+1)%options.size])
-	end
+	#def toggle_vela
+#			options  = ["normal", "no"]
+#			update(vela: options[((options.find_index vela)+1)%options.size])
+#	end
 
 	def latin_date(date)
 		"die #{date.day} mensis #{MONTHS_LATIN[date.month]} anni #{date.year}"
