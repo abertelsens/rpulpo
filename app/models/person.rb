@@ -107,9 +107,11 @@ class Person < ActiveRecord::Base
 			when "rooms"            then (room.nil? ? "" : room[attribute.to_sym])
 		end
 		res = "-" if (res.nil? || res.blank?)
-		puts "\nfound nil while looking for #{attribute_string}" if res.nil?
-		return res.strftime("%d-%m-%y") if (res.is_a?(Date) && format.nil?)
-		return latin_date(res) if (res.is_a?(Date) && format=="latin")
+		puts Rainbow("\nPULPO: Warning! found nil while looking for #{attribute_string}").orange if res.nil?
+		if res.is_a?(Date)
+			return res.strftime("%d-%m-%y") if format.nil?
+			return latin_date(res) if format=="latin"
+		end
 		res
 	end
 
@@ -131,11 +133,6 @@ class Person < ActiveRecord::Base
 			result = (table_settings.att.map{|att| att.name}).join("\t") + "\n"
 			result << (people.map {|person| (table_settings.att.map{|att| (person.get_attribute(att.field).dup)}).join("\t") }).join(("\n"))
 	end
-
-	#def toggle_vela
-#			options  = ["normal", "no"]
-#			update(vela: options[((options.find_index vela)+1)%options.size])
-#	end
 
 	def latin_date(date)
 		"die #{date.day} mensis #{MONTHS_LATIN[date.month]} anni #{date.year}"

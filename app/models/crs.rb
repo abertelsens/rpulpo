@@ -24,7 +24,6 @@ class Crs < ActiveRecord::Base
 		params[:phase] = nil if params[:phase].blank?
 		params[:cfi] = nil if params[:cfi].blank?
 		params.except("crs_id", "id", "commit")
-
 	end
 
 	def can_be_deleted?
