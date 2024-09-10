@@ -12,7 +12,7 @@ get '/modules' do
 end
 
 get '/modules/table' do
-	@objects = PulpoModule.get_all
+	@objects = PulpoModule.all
 	partial :"table/modules"
 end
 

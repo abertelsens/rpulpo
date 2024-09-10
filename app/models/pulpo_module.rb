@@ -1,10 +1,26 @@
-# -----------------------------------------------------------------------------------------
+
+# user.rb
+#---------------------------------------------------------------------------------------
+# FILE INFO
+
+# autor: alejandrobertelsen@gmail.com
+# last major update: 2024-08-25
+#---------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------
 # DESCRIPTION
-# A class defininign a Module .
+
+# A class defining a Module. As module is a reserved word in ruby we chose to name it
+# pulpo_module
 # -----------------------------------------------------------------------------------------
+
 
 #A class containing the Users data
 class PulpoModule < ActiveRecord::Base
+
+
+	# the default scoped defines the default sort order of the query results
+	default_scope { order(name: :asc) }
 
 # -----------------------------------------------------------------------------------------
 # CALLBACKS
@@ -31,19 +47,7 @@ class PulpoModule < ActiveRecord::Base
 	end
 
 	def self.prepare_params(params)
-		{
-			name: 				params[:name],
-			identifier: 	params[:identifier],
-			description:	params[:description]
-		}
-	end
-
-# -----------------------------------------------------------------------------------------
-# ACCESSORS
-# -----------------------------------------------------------------------------------------
-
-	def self.get_all()
-		PulpoModule.order(name: :asc)
+		params.except("commit", "id")
 	end
 
 # -----------------------------------------------------------------------------------------
