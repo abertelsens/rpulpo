@@ -3,11 +3,14 @@ require_rel '../engines'
 
 class Vela < ActiveRecord::Base
 
-has_many :turnos,  dependent: :destroy
+	has_many :turnos,  dependent: :destroy
 
-TYPST_TEMPLATES_DIR = "app/engines-templates/typst"
-TYPST_PREAMBLE_SEPARATOR = "//CONTENTS"
-HALF_HOUR = 30*60 #in seconds
+	# the default scoped defines the default sort order of the query results
+	default_scope { order(date: :asc) }
+
+	TYPST_TEMPLATES_DIR = "app/engines-templates/typst"
+	TYPST_PREAMBLE_SEPARATOR = "//CONTENTS"
+	HALF_HOUR = 30*60 #in seconds
 
 	# creates a vela objet with default parameters
 	def self.create_new()
