@@ -37,11 +37,19 @@ turbo-frame id="main_frame"
 								label for="e_date" hasta
 								&date.u-full-width id="e_time" name="e_date" required="true" value=(@object.nil? ? Date.today : @object&.e_date)
 			
+						.row
+							.columns.twelve
+								turbo-frame id="people_table" src="/matrix/people""
+
+
 				.columns.eight
 					.row
 						.columns.twelve 
 							- if !@object.nil?
-								turbo-frame id="date_types_table"	src='/matrix/period/#{@object.id}/task_assignment/table'	
+								turbo-frame id="date_types_table"	src='/matrix/period/#{@object.id}/task_assignment/table?week=1'	
+
+
+
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM BUTTONS
 			//----------------------------------------------------------------------------------------------------------------

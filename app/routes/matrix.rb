@@ -144,3 +144,9 @@ get '/matrix/day_schedule/:id/task_assignments' do
 	@object = (params[:id]=="new" ? nil : DaySchedule.includes(:schedule).find(params[:id]))
 	partial :"form/matrix/task_assignments"
 end
+
+
+get '/matrix/people' do
+	@objects = Person.where(student: true, ctr:"cavabianca")
+	partial :"form/matrix/people_table"
+end

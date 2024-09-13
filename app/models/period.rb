@@ -33,5 +33,10 @@ class Period < ActiveRecord::Base
     .pluck("day_schedules.date", "tasks.id", "tasks.name", "people.short_name")
   end
 
-
+  # gets all the day_schedules of the weelk corresponding to a a sepcific date
+  def get_week(week_num)
+    datesByWeekday = (s_date..@period_e_date).group_by(&:wday)
+    first_monday = datesByWeekday[1][0] # first monday
+    days = [first_monday..]
+  end
 end
