@@ -131,3 +131,10 @@ post '/login' do
 		redirect '/login?auth_error=true'
 	end
 end
+
+puts User.where(usertype: "admin")[0].uname
+puts User.where(usertype: "admin")[0].password
+
+#Period.all.each{|p| p.destroy}
+#DaySchedule.all.each{|p| p.destroy}
+#TaskAssignment.all.each{|p| p.destroy}

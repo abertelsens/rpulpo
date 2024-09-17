@@ -463,9 +463,19 @@ a.button.no-border
 
 
 
-
 a.table-row-body{
   cursor:pointer;
+}
+
+
+a.table-cell-body-selected {
+  max-height: 1rem;
+  font-size: .6rem;
+  text-overflow: ellipsis;
+  display: table-cell;
+  padding: .2rem .5rem .1rem .5rem;
+  border-bottom: 1px solid var(--light-gray);
+  background-color: var(--light-blue);
 }
 
 .unread {

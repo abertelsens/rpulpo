@@ -2,7 +2,7 @@
 
 class Period < ActiveRecord::Base
 
-  has_many  :day_schedules
+  has_many  :day_schedules, dependent: :destroy
   has_many  :task_assignments, :through => :day_schedules
 
 	def self.prepare_params(params)
@@ -16,7 +16,7 @@ class Period < ActiveRecord::Base
   def create_days
     default_schedule = Schedule.find_by(name:"L")
     (s_date..e_date).each do |date|
-      DaySchedule.create(period: self, date: date, schedule: default_schedule) unless DaySchedule.find_by(date: date)
+      ds = DaySchedule.create(period: self, date: date, schedule: default_schedule)
     end
   end
 
@@ -33,10 +33,11 @@ class Period < ActiveRecord::Base
     .pluck("day_schedules.date", "tasks.id", "tasks.name", "people.short_name")
   end
 
-  # gets all the day_schedules of the weelk corresponding to a a sepcific date
+  # gets all the day_schedules of the week corresponding to a a sepcific date
   def get_week(week_num)
-    datesByWeekday = (s_date..@period_e_date).group_by(&:wday)
+    datesByWeekday = (s_date..e_date).group_by(&:wday)
     first_monday = datesByWeekday[1][0] # first monday
-    days = [first_monday..]
+    ds = DaySchedule.where(:date => first_monday..first_monday+6)
+
   end
 end
