@@ -21,39 +21,33 @@ turbo-frame id="main_frame"
 			.row
 		
 				.columns.two.offset-by-one 
-					.row
-						.columns.twelve
-							label for="name" name
-							&text.u-full-width id="name" name="name" required="true" value=(@object.nil? ? "nombre del periodo" : @object&.name)
-							
+					label for="name" name
+					&text.u-full-width id="name" name="name" required="true" value=(@object.nil? ? "nombre del periodo" : @object&.name)
+					
 				
-					.row
-						.columns.twelve
-							label for="s_date" desde
-							&date.u-full-width id="s_time" name="s_date" required="true" value=(@object.nil? ? Date.today : @object&.s_date)
-							
+				.columns.two
+					label for="s_date" desde
+					&date.u-full-width id="s_time" name="s_date" required="true" value=(@object.nil? ? Date.today : @object&.s_date)
+					
 
-						.columns.twelve
-								label for="e_date" hasta
-								&date.u-full-width id="e_time" name="e_date" required="true" value=(@object.nil? ? Date.today : @object&.e_date)
-			
-						.row
-							.columns.twelve
-								turbo-frame id="people_table" src="/matrix/people""
+				.columns.two
+					label for="e_date" hasta
+					&date.u-full-width id="e_time" name="e_date" required="true" value=(@object.nil? ? Date.today : @object&.e_date)
 
+				.columns.one
+					a.button data-turbo-frame="date_types_table" href="/matrix/period/#{@object.id}/assign" = "assign tasks"
 
-				.columns.eight
-					.row
-						.columns.twelve 
-							- if !@object.nil?
-								turbo-frame id="date_types_table"	src='/matrix/period/#{@object.id}/task_assignment/table?week=1'	
+			.row
+				.columns.ten.offset-by-one
+					- if !@object.nil?
+						turbo-frame id="date_types_table"	src='/matrix/period/#{@object.id}/task_assignment/table?week=1'	
 
 
 
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM BUTTONS
 			//----------------------------------------------------------------------------------------------------------------
-			.row.center-align
+			.row.center-align.margin-top
 					- if (!@object.nil?) 
 						button.button-secondary data-action="click->modal#open_modal" delete 
 					button.button-primary type="submit" name="commit" value="save" save  

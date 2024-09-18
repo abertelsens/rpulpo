@@ -1,29 +1,25 @@
 turbo-frame id="date_types_table" 
-  - puts "rendering task_assignmentes.slim"
+  
+  div.flex-center style="vertical-align:center;"
+
+    a.button.button-small.button-square-no-color href=(@week>1 ? "/matrix/period/#{@period_id}/task_assignment/table?week=#{@week-1}" : "javascript:void(0)" ) = "-"
+    h4.u-text-center.margin-bottom.margin-left.margin-right = "Weekly Task Assignments"
+    a.button.button-small.button-square-no-color href="/matrix/period/#{@period_id}/task_assignment/table?week=#{@week+1}" = "+"
+
   div.table-container data-controller="drag peoplemodal"
     div.table-table  
       div.table-row-head
         div.table-cell-body  = "task/date"
         - @day_schedules.each do |ds|
-          div.table-cell-body  = ds.date.strftime("%d %b")
+          div.table-cell-body  = ds.date.strftime("%a %d %b")
       - Task.all.each do |task|
-        div.table-row-body
+        div.matrix-row-body 
           div.table-cell-body = task.name
           - @day_schedules.each do |ds|
-            turbo-frame.table-cell-body style="cursor: pointer" id="ds_#{ds.id}_task_#{task.id}" data-task=task.id data-ds=ds.id data-action="click->peoplemodal#open_modal" == (ds.get_task_assignments_to_html task)
-            //- tas = TaskAssignment.where(day_schedule: ds, task: task)
-            //- if tas.empty?
-            //  - ta = TaskAssignment.create(task: task, day_schedule: ds)
-            //      //turbo-frame.table-cell-body id="ta_#{ta.id}" style="cursor: pointer"
-             //     //div data-ta=ta.id  data-peoplemodal-ta=(ta.nil? ? nil : ta.id) data-action="click->peoplemodal#open_modal" = (ta.person.nil? ? "-" : ta.person.short_name)
-            //  div style="cursor: pointer" = (ta.person.nil? ? "-" : ta.person.short_name)
-            //- else
-            //  - puts "task assifnmente is not nil"
-              - tas.each do |ta|
-                //turbo-frame.table-cell-body id="ta_#{ta.id}" style="cursor: pointer"
-                div style="cursor: pointer" = (ta.person.nil? ? "-" : ta.person.short_name)
-                //div data-ta=ta.id data-peoplemodal-ta=(ta.nil? ? nil : ta.id) data-action="click->peoplemodal#open_modal" = (ta.person.nil? ? "-" : ta.person.short_name)
-      
+            - if @object.contains? ds
+              turbo-frame.matrix-cell-body style="cursor: pointer" id="ds_#{ds.id}_task_#{task.id}" data-task=task.id data-ds=ds.id data-action="click->peoplemodal#open_modal" == (ds.get_task_assignments_to_html task)
+            - else 
+              div.matrix-cell-body.matrix-empty-cell
       turbo-frame data-peoplemodal-target="peoplemodal" id="people_modal" src="matrix/people_modal/empty"
 			
         

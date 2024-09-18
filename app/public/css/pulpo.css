@@ -288,6 +288,10 @@ a.button.no-border
   width:3rem; 
 }
 
+.button-square-no-color {
+  width:3rem; 
+}
+
 @media all and (max-width: 1500px) {
   button {
     font-size: .65rem;
@@ -467,6 +471,14 @@ a.table-row-body{
   cursor:pointer;
 }
 
+.matrix-cell-body {
+  max-height: 1rem;
+  text-overflow: ellipsis;
+  display: table-cell;
+  padding: .2rem .5rem .1rem .5rem;
+  border-bottom: 1px solid var(--light-gray);
+  min-width: 150px;
+}
 
 a.table-cell-body-selected {
   max-height: 1rem;
@@ -481,6 +493,67 @@ a.table-cell-body-selected {
 .unread {
   font-weight: 800;
   /*background-color: var(--light-orange);*/
+}
+
+
+.matrix-row-body {
+  position:sticky;
+  color: var(--dark-gray);
+  border-bottom: 1px solid var(--dark-gray);
+  display: table-row;
+  margin: 3px;
+  z-index: 1;
+  text-decoration: none;
+}
+
+.matrix-row-body:hover {
+  color: initial;
+}
+
+
+.matrix-empty-cell
+{
+  background-color: #e6e6e6;
+}
+
+a.matrix-cell
+{
+  font-size: .9rem;
+  cursor:pointer;
+  text-align: left;
+  color: #1e1e1e;
+  text-decoration: none;
+  padding-left: 10pt;
+}
+
+.matrix-cell-body:hover
+{
+  background-color: var(--pale-blue);
+  
+}
+a.matrix-cell:hover
+{
+  font-size: .9rem;
+  cursor:pointer;
+  text-decoration: underline;
+  
+}
+
+a.matrix-cell-selected:hover
+{
+  font-size: .9rem;
+  cursor:pointer;
+  text-decoration: underline;
+}
+
+a.matrix-cell-selected
+{
+  padding-left: 10pt;
+  text-decoration: none;
+  text-align: left;
+  font-size: .9rem;
+  cursor:pointer;
+  color: var(--light-blue)
 }
 
 /*************************************************************************************
@@ -920,6 +993,10 @@ a.button.active {
 
 .margin-left {
   margin-left: 20px;
+}
+
+.margin-bottom {
+  margin-bottom: 20px;
 }
 
 .margin-right {

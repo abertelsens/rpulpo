@@ -108,12 +108,11 @@ post '/matrix/period/:id' do
 end
 
 get '/matrix/period/:id/task_assignment/table' do
+	@period_id = params[:id].to_i
+	@week = (params[:week]=nil? ? 1 : params[:week].to_i)
 	@object = (params[:id]=="new" ? nil : Period.find(params[:id]))
-	@object.get_week 1
-	@day_schedules = @object.get_week 1
-	puts "got #{@day_schedules.size}"
-	#@ta = TaskAssignment.where(day_schedule: @day_schedules)
-	#@assignments = @object.get_task_assignments
+	@day_schedules = @object.get_week @week
+	return if @day_schedules.nil?
 	partial :"table/matrix/task_assignment"
 end
 
@@ -141,6 +140,13 @@ post '/matrix/day_schedule/:id' do
 		TaskAssignment.assign(task, day_schedule, people)
 	end
 	redirect "/matrix/period/#{@object.period.id}"
+end
+
+get '/matrix/period/:id/assign' do
+	Period.find(params[:id]).assign_all_tasks
+	redirect "/matrix/period/#{params[:id]}/task_assignment/table?week=1"
+
+
 end
 
 get '/matrix/day_schedule/:id/task_assignments' do
