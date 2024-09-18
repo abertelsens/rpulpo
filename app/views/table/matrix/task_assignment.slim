@@ -1,5 +1,5 @@
 turbo-frame id="date_types_table" 
-  
+  - schedules = Schedule.all
   div.flex-center style="vertical-align:center;"
 
     a.button.button-small.button-square-no-color href=(@week>1 ? "/matrix/period/#{@period_id}/task_assignment/table?week=#{@week-1}" : "javascript:void(0)" ) = "-"
@@ -11,7 +11,16 @@ turbo-frame id="date_types_table"
       div.table-row-head
         div.table-cell-body  = "task/date"
         - @day_schedules.each do |ds|
-          div.table-cell-body  = ds.date.strftime("%a %d %b")
+          div.table-cell-body
+            div.table-table.u-full-width
+              div.table-row.flex-center  
+                div.table-cell-body.no-border.no-padding.u-full-width  = ds.date.strftime("%a %d %b")
+              div.table-row.u-text.center.flex-center  
+                div.table-cell-body.no-border.no-padding.u-full-width
+                  select.u-full-width.u-text.center.no-margin  name="schedule"
+                    - schedules.each do |sch|
+                      option value=sch.id = sch.name
+              
       - Task.all.each do |task|
         div.matrix-row-body 
           div.table-cell-body = task.name
