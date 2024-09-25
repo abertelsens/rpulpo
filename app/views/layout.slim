@@ -77,7 +77,12 @@ html
             a.button.menu-item data-turbo-frame="main_frame" href='/mails' 
               i.fa-solid.fa-envelope
               | &nbspCorreo
-        
+          
+          - if @current_user.allowed?("matrix")  
+            a.button.menu-item data-turbo-frame="main_frame" href='/matrix' 
+              i.fa-solid.fa-house
+              | &nbspMatrix
+
         div.flex-right  style="flex: 1"
           
           - if @current_user.admin?  
@@ -109,9 +114,7 @@ html
               i.fa-solid.fa-house
               | &nbspEntitites
       
-            a.button.menu-item data-turbo-frame="main_frame" href='/matrix' 
-              i.fa-solid.fa-house
-              | &nbspMatrix
+            
     
     - if !@current_user.nil? 
       turbo-frame id="main_frame" src=(@current_user.mail_user? ? "/mails" : "/people")

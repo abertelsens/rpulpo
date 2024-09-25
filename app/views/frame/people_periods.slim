@@ -1,0 +1,13 @@
+
+turbo-frame id = "people_periods_frame"
+  .row.u-text-center.u-full-width   
+    .columns.nine.flex-left
+      h4.u-text-left Horarios Personales
+
+    .columns.three.flex-right
+      a.button.button-primary.button-small href="/matrix/person_period/new" 
+        i.fa-solid.fa-plus style="font-size:small"
+        |&nbspadd
+
+  .row 
+    turbo-frame id="people_periods" data-turbo-frame="people_periods" src="/matrix/people_periods/table"

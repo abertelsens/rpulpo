@@ -12,7 +12,7 @@ class DaySchedule < ActiveRecord::Base#
   end
 
   def create_assignments()
-    Task.all.each {|task| TaskAssignment.create(day_schedule: self, task: task)} 
+    Task.all.each {|task| TaskAssignment.create(day_schedule: self, task: task)}
   end
 
   def get_number(task)
@@ -25,9 +25,9 @@ class DaySchedule < ActiveRecord::Base#
 
   def get_task_assignments_to_html(task)
     tas = get_task_assignments(task)
-    tas.empty? ? "-" : tas.map {|ta| ta.person.short_name }.join(" - ")
+    tas.empty? ? "-" : tas.map {|ta| ta.person.short_name }.join("<br>")
   end
-  
+
   def get_assigned_people(task)
     tas = get_task_assignments(task)
     tas.empty? ? nil : tas.map {|ta| ta.person}

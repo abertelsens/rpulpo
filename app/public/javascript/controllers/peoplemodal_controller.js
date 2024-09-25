@@ -31,6 +31,24 @@ Stimulus.register("peoplemodal", class extends Controller {
     this.modalframeTarget.style.display="none";
   }  
  
+  selectds(event)
+  {
+    console.log(event.currentTarget)
+    var ds = event.params["ds"] //get the day_schedule id 
+    var schedule = event.currentTarget.value //get the day_schedule id 
+    var url = `/matrix/day_schedule/${ds}/schedule/${schedule}`;
+    console.log(url)
+    fetch(url, 
+      {
+        method: "POST", 
+      })
+      .then(res =>  { console.log("schedule updated") })
+      .catch(err => { throw err });
+    return true
+  }
+    
+
+
   sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }

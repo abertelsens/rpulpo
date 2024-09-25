@@ -19,4 +19,12 @@ class TaskAssignment < ActiveRecord::Base
 		end
 	end
 
+	def get_task_schedule
+		TaskSchedule.find_by(schedule: self.schedule, task: self.task)
+	end
+
+	def get_time
+		get_task_schedule.get_time
+	end
+
 end #class end

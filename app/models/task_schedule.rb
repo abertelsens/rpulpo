@@ -15,4 +15,11 @@ class TaskSchedule < ActiveRecord::Base
 		end
 	end
 
+	def get_time
+		(e_time.hour<=14) ? "AM" : "PM"
+	end
+
+	def self.find_task_schedule(task,day_schedule)
+		TaskSchedule.find_by(task:task, schedule:day_schedule.schedule)
+	end
 end

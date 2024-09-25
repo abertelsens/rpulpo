@@ -1,0 +1,87 @@
+/***************************************************************************************** 
+// FORM for Personal Information about a person
+/*****************************************************************************************
+
+turbo-frame id="people_periods_frame"
+  	
+	form[
+		action="/matrix/person_period/#{(@object.nil? ? "new" : @object.id)}"
+		method="POST" data-controller="modal"] 
+	 
+		.container
+			
+			/-----------------------------------------------------------------------------------
+			/ FORM HEADER
+			/-----------------------------------------------------------------------------------
+			.row.u-text-center
+				
+			/-----------------------------------------------------------------------------------
+			/ DOCUMENT FRAME
+			/-----------------------------------------------------------------------------------
+			.row
+				h3.u-text-center = "Disponibilidad para Encargos"	
+				
+			.row
+				.columns.six 
+					label for="s_date" nombre
+					- available_people = Person.where(student: true, ctr: "cavabianca")
+					select name="person"
+						- available_people.each.with_index do |object, index|
+							option selected =(!@object.nil? && object.id==@object.person.id) value = object.id ="#{object.family_name}, #{object.first_name}" 
+
+				.columns.three 
+					label for="s_date" desde
+					&date.u-full-width.no-margin id="s_date" name="s_date" required="true" value=(@object.nil? ? Date.today : @object&.s_date)
+					
+				.columns.three 
+					label for="e_date" hasta
+					&date.u-full-width.no-margin id="e_date" name="e_date" required="true" value=(@object.nil? ? Date.today : @object&.e_date)
+				
+			.row
+				h4.u-text-center.margin-top.margin-bottom = "Plan Semanal"
+			.row.margin-bottom style="display:flex; flex-direction:row; justify-content: space-between; align-items: center;"
+				div.person-schedule-cell day
+				div.person-schedule-cell mon
+				div.person-schedule-cell tue
+				div.person-schedule-cell wed
+				div.person-schedule-cell thu
+				div.person-schedule-cell fri
+				div.person-schedule-cell sat
+				div.person-schedule-cell sun
+			
+			.row.margin-bottom style="display:flex; flex-direction:row; justify-content: space-between; align-items: center;"
+				div.person-schedule-cell AM
+				input.person-schedule-cell name="AM[1]" type="checkbox" checked=(@object&.is_available?(1,"AM"))
+				input.person-schedule-cell name="AM[2]" type="checkbox" checked=(@object&.is_available?(2,"AM"))
+				input.person-schedule-cell name="AM[3]" type="checkbox" checked=(@object&.is_available?(3,"AM"))
+				input.person-schedule-cell name="AM[4]" type="checkbox" checked=(@object&.is_available?(4,"AM"))
+				input.person-schedule-cell name="AM[5]" type="checkbox" checked=(@object&.is_available?(5,"AM"))
+				input.person-schedule-cell name="AM[6]" type="checkbox" checked=(@object&.is_available?(6,"AM"))
+				input.person-schedule-cell name="AM[0]" type="checkbox" checked=(@object&.is_available?(0,"AM"))
+				
+			.row.margin-bottom style="display:flex; flex-direction:row; justify-content: space-between; align-items: center;"
+				div.person-schedule-cell PM
+				input.person-schedule-cell name="PM[1]" type="checkbox" checked=(@object&.is_available?(1,"PM"))
+				input.person-schedule-cell name="PM[2]" type="checkbox" checked=(@object&.is_available?(2,"PM"))
+				input.person-schedule-cell name="PM[3]" type="checkbox" checked=(@object&.is_available?(3,"PM"))
+				input.person-schedule-cell name="PM[4]" type="checkbox" checked=(@object&.is_available?(4,"PM"))
+				input.person-schedule-cell name="PM[5]" type="checkbox" checked=(@object&.is_available?(5,"PM"))
+				input.person-schedule-cell name="PM[6]" type="checkbox" checked=(@object&.is_available?(6,"PM"))
+				input.person-schedule-cell name="PM[0]" type="checkbox" checked=(@object&.is_available?(0,"PM"))
+				
+			
+			.row
+				.columns.ten.offset-by-one.margin-top style="display: flex; align-items: flex-end;"
+						
+					- if !@object.nil?
+						.columns.four.offset-by-two
+							button.button-primary.no-margin.u-full-width type="submit" name="commit" value="save" save
+						.columns.four
+							button.button-danger.no-margin.u-full-width type="submit" name="commit" value="delete" delete
+					- else
+						.columns.four.offset-by-two
+							button.button-primary.no-margin.u-full-width type="submit" name="commit" value="save" save
+						.columns.four
+							a.button.button-secondary.no-margin.u-full-width formnovalidate="true" href="/matrix/people_periods" cancel
+					  
+				

@@ -999,6 +999,10 @@ a.button.active {
   margin-bottom: 20px;
 }
 
+
+.margin-bottom-small {
+  margin-bottom: 6px;
+}
 .margin-right {
   margin-right: 20px;
 }
@@ -1028,3 +1032,31 @@ a.button.active {
 .idle-frame {
   display: none;
 }
+
+.person-schedule-cell
+{
+  text-align: center;
+  width: 60px;
+  height: 40px;
+  line-height: 40px;
+  padding: 0px;
+  font-size: 1.4rem;
+  color: var(--dark-grey);
+  font-family: 'Bebas Neue';
+  letter-spacing: .1rem;
+  font-weight:400;
+  margin: 0px;
+  border: white;
+  border-radius: 6px;
+}
+
+input.person-schedule-cell
+{
+  width: 60px;
+  text-align: center;
+  padding: 0px;
+  margin: 0px;
+  align-items: center;
+  display: flex;
+}
+

@@ -5,6 +5,15 @@ class Period < ActiveRecord::Base
   has_many  :day_schedules, dependent: :destroy
   has_many  :task_assignments, :through => :day_schedules
 
+  # callback before update. We check if the period dates have changed.
+  before_update do
+    old_period = (self.s_date_was..self.e_date_was).to_a
+    new_period = (self.s_date..self.e_date).to_a
+    default_schedule = Schedule.find_by(name:"L")
+    (new_period-old_period).each {|date| DaySchedule.create(period: self, date: date, schedule: default_schedule)}
+    (old_period-new_period).each {|date| DaySchedule.find_by(date: date).destroy}
+  end
+
 	def self.prepare_params(params)
 		{
 			name: params["name"],
@@ -15,11 +24,7 @@ class Period < ActiveRecord::Base
 
   def create_days
     default_schedule = Schedule.find_by(name:"L")
-    (s_date..e_date).each do |date|
-      puts "creating schedules for "
-      puts date.strftime("%A %m/%d/%Y")
-      ds = DaySchedule.create(period: self, date: date, schedule: default_schedule)
-    end
+    (s_date..e_date).each {|date| DaySchedule.create(period: self, date: date, schedule: default_schedule)}
   end
 
   def get_days
@@ -35,32 +40,45 @@ class Period < ActiveRecord::Base
     .pluck("day_schedules.date", "tasks.id", "tasks.name", "people.short_name")
   end
 
-
   def assign_all_tasks
-    available_people = Person.where(student: true, ctr: "cavabianca")
-    people_size = available_people.size
+    task_assignments.each {|ta| ta.destroy}
     tasks = Task.all
+
     day_schedules.each do |ds|
       tasks.each do |task|
-        person = available_people[rand(0..people_size-1)]
-        TaskAssignment.create(day_schedule: ds, task: task, person: person)
+        people_available = PersonPeriod.find_people_available ds, task
+        #puts "got people available\n\n\n"
+        #people_available.each{|p| puts p.short_name}
+        if !people_available.empty?
+          people_size = people_available.size
+          ts = TaskSchedule.find_by(task: task, schedule: ds.schedule)
+          num = 0 if ts.nil?
+          num = ts.number
+          index = 0
+          while (index < num && people_size>0)
+            person = people_available[rand(0..people_size-1)]
+            TaskAssignment.create(day_schedule: ds, task: task, person: person)
+            index = index +1
+            people_available = people_available - [person]
+            people_size = people_available.size
+          end
+        end
       end
     end
   end
 
   # gets all the day_schedules of the week corresponding to a a sepcific date
   def get_week(week_index)
-    datesByWeekday = (s_date..e_date).group_by(&:wday)
-    first_monday = datesByWeekday[1][week_index-1] # first monday
-    return nil if first_monday.nil?
-    first_monday = first_monday -7 if (first_monday > s_date)
-    puts "\n\n\n\n\nfirst monday"
-    puts first_monday.strftime("%A %m/%d/%Y")
-    puts "end_date"
-    puts (first_monday+6).strftime("%A %m/%d/%Y")
-    puts "\n\n\n\n\n"
-    ds = DaySchedule.where(:date => first_monday..first_monday+6)
+
+    monday = get_previous_day(s_date,1) + (week_index-1) * 7
+    return DaySchedule.where(:date => monday..monday+6).order(date: :asc)
+
   end
+
+  def get_previous_day(date, day_of_week)
+    date - ((date.wday - day_of_week) % 7)
+  end
+
 
   def contains?(ds)
     puts "cheking if #{ds.date} is between  #{s_date} and  #{e_date}"

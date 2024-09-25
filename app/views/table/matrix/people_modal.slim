@@ -2,17 +2,19 @@ turbo-frame id="people_modal" data-peoplemodal-target="peoplemodal"
   .modal data-peoplemodal-target="modalframe" style=(@task.nil? ? "display:none" :  "display:block")
     .modal-content 
       .row.modal-row
-        h4.u-text-center = @task.name		
+        h4.u-text-center = "#{@task.name} - #{@ds.date.strftime("%A %d %b")}"	
+        p.u-text-center = "#{@task_schedule.number} people needed"		
       .row.u-text-center style="margin-bottom:2rem; font-size:1rem"
         div.table-container        
           div.table-table style="display: grid; grid-template-columns: auto auto auto auto;"
-            - @available_people.each.with_index do |object, index|  
-              - if (!@selected_people.nil? && @selected_people.include?(object.id))
-                a.matrix-cell-selected data-action="click->peoplemodal#close_modal" data-turbo-frame=id="ds_#{@ds.id}_task_#{@task.id}" href="/matrix/ds/#{@ds.id}/task/#{@task.id}/person/#{object.id}/remove" = object.short_name
-                //div.table-cell-body data-personid=object.id data-action="click->peoplemodal#select" = object.short_name
-              - else
-                a.matrix-cell data-action="click->peoplemodal#close_modal" data-turbo-frame=id="ds_#{@ds.id}_task_#{@task.id}" href="/matrix/ds/#{@ds.id}/task/#{@task.id}/person/#{object.id}" = object.short_name
-          
+            - if !@available_people.nil?
+              - @available_people.each.with_index do |object, index|  
+                - if (!@selected_people.nil? && @selected_people.include?(object))
+                  a.matrix-cell-selected data-action="click->peoplemodal#close_modal" data-turbo-frame=id="ds_#{@ds.id}_task_#{@task.id}" href="/matrix/ds/#{@ds.id}/task/#{@task.id}/person/#{object.id}/remove" = object.short_name
+                  //div.table-cell-body data-personid=object.id data-action="click->peoplemodal#select" = object.short_name
+                - else
+                  a.matrix-cell data-action="click->peoplemodal#close_modal" data-turbo-frame=id="ds_#{@ds.id}_task_#{@task.id}" href="/matrix/ds/#{@ds.id}/task/#{@task.id}/person/#{object.id}" = object.short_name
+            
       .row.center-align
         a.button.button-secondary data-action="click->peoplemodal#close_modal" href="/matrix/ds/#{@ds.id}/task/#{@task.id}" cancel
           

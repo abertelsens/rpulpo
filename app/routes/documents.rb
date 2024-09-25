@@ -47,7 +47,6 @@ post '/document/:id' do
       	res = @document.update_from_params params
         check_update_result res
       end
-    # if a person was deleted we go back to the screen fo the people table
     when "delete" then @document.destroy
   end
   redirect '/documents'

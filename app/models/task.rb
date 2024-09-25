@@ -7,6 +7,9 @@ class Task < ActiveRecord::Base
 
   has_many :task_schedules
 
+	# the default scoped defines the default sort order of the query results
+	default_scope { order(name: :asc) }
+
   def self.create_update(params)
 		@task = (params[:id]=="new" ? nil : Task.find(params[:id]))
 		@task.nil? ? (@task = Task.create(prepare_params params)) : @task.update(prepare_params params)
