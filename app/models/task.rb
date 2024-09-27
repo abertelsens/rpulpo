@@ -11,10 +11,15 @@ class Task < ActiveRecord::Base
 	default_scope { order(name: :asc) }
 
   def self.create_update(params)
-		@task = (params[:id]=="new" ? nil : Task.find(params[:id]))
-		@task.nil? ? (@task = Task.create(prepare_params params)) : @task.update(prepare_params params)
-    ts_params = @task.map_task_schedules_params params
-    task_schedules = TaskSchedule.create_from_array(ts_params)
+		puts "creating updating task wiht params #{params}"
+		if params[:id]=="new"
+			@task = Task.create(prepare_params params)
+		else
+			@task = Task.find(params[:id])
+			@task.update(prepare_params params)
+		end
+    task_schedule_params = @task.map_task_schedules_params params
+    task_schedules = TaskSchedule.create_from_array task_schedule_params
   end
 
 	# creates an array of parameters that coan be used to create a TaslSchedule object
@@ -32,21 +37,14 @@ class Task < ActiveRecord::Base
 		end
 	end
 
-
 	def self.prepare_params(params)
 	{
 		name: params[:name]
 	}
 	end
 
-	def self.destroy(params)
-		Task.find(params[:id]).destroy
-	end
-
   def parse_time(time_string)
-		puts "parsing time #{time_string}"
-		return nil if time_string.blank?
-    DateTime.strptime(time_string,"%H:%M")
+		DateTime.strptime(time_string,"%H:%M") unless time_string.blank?
   end
 
 end

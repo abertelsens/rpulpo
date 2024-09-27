@@ -41,19 +41,16 @@ class Period < ActiveRecord::Base
   end
 
   def assign_all_tasks
-    task_assignments.each {|ta| ta.destroy}
     tasks = Task.all
 
     day_schedules.each do |ds|
       tasks.each do |task|
         people_available = PersonPeriod.find_people_available ds, task
-        #puts "got people available\n\n\n"
-        #people_available.each{|p| puts p.short_name}
         if !people_available.empty?
           people_size = people_available.size
           ts = TaskSchedule.find_by(task: task, schedule: ds.schedule)
           num = 0 if ts.nil?
-          num = ts.number
+          num = ts.number - ds.get_number_of_assigned_people(task)
           index = 0
           while (index < num && people_size>0)
             person = people_available[rand(0..people_size-1)]
@@ -66,6 +63,7 @@ class Period < ActiveRecord::Base
       end
     end
   end
+
 
   # gets all the day_schedules of the week corresponding to a a sepcific date
   def get_week(week_index)

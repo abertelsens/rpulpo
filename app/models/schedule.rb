@@ -16,10 +16,6 @@ class Schedule < ActiveRecord::Base
 	}
 	end
 
-	def self.destroy(params)
-		Schedule.find(params[:id]).destroy
-	end
-
 	def self.get_all
 		Schedule.all.order(name: :asc)
 	end

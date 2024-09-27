@@ -152,5 +152,4 @@ class User < ActiveRecord::Base
 		settings.nil? ? false : settings.modulepermission=="allowed"
 	end
 
-
 end #class end

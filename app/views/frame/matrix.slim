@@ -2,53 +2,41 @@ turbo-frame id="main_frame"
   
   .container.container-frame
     .row.header-frame.u-text-center
-      h3 Matrix
-    .row
-      .columns.three.offset-by-one
-        .row
-          .columns.nine
-            h4.u-text-left Horarios
-
-          .columns.three.flex-right
-            a.button.button-primary.button-small href="/matrix/schedule/new" 
-              i.fa-solid.fa-plus style="font-size:small"
-              |&nbspadd
-          
-          turbo-frame id="schedules_table" src="/matrix/schedule/table"
+      h1 Matrix
+    
+    .row style="display: flex; justify-content: center; column-gap: 10em;"
+      
+      div style="display: flex; flex-direction: column; row-gap: 4em; max-width: 35em"
         
-        .row.margin-top style="margin-top:40px"
-          .columns.nine 
+        .container.no-margin
+          .row style="display: flex; flex-direction: row; margin-bottom:1em"
+            h4.u-text-left Horarios
+            a.button.no-margin style="margin-left: auto;" href="/matrix/schedule/new" 
+              i.fa-solid.fa-plus style="font-size:small"
+              |&nbspadd
+          .row  
+            turbo-frame id="schedules_table" src="/matrix/schedule/table"
+        
+        .container.no-margin
+          .row style="display: flex; flex-direction: row; margin-bottom:1em"
             h4.u-text-left Encargos
-          
-          .columns.three.flex-right
-            a.button.button-primary.button-small href="/matrix/task/new" 
+            a.button.no-margin style="margin-left: auto;" href="/matrix/task/new" 
               i.fa-solid.fa-plus style="font-size:small"
               |&nbspadd
-          
-          turbo-frame id="tasks_table" src="/matrix/task/table"
+          .row        
+            turbo-frame id="tasks_table" src="/matrix/task/table"
 
-        .row.margin-top style="margin-top:40px"
-          .columns.nine
+        .container.no-margin
+          .row style="display: flex; flex-direction: row; margin-bottom:1em"
             h4.u-text-left Periodos
-          
-          .columns.three.flex-right
-            a.button.button-primary.button-small href="/matrix/period/new" 
+            a.button.no-margin style="margin-left: auto;" href="/matrix/period/new" 
               i.fa-solid.fa-plus style="font-size:small"
               |&nbspadd
-          
-          turbo-frame id="periods_table" src="/matrix/period/table"
+          .row
+            turbo-frame id="periods_table" src="/matrix/period/table"
 
+      
+      div style="display: flex; flex-direction: column; row-gap: 2em;"
+        turbo-frame id="people_periods" src="/matrix/people_periods"
 
-      .columns.five.offset-by-two 
-        turbo-frame id = "people_periods_frame" src="/matrix/people_periods"
-          .row.u-text-center.u-full-width   
-            .columns.nine.flex-left
-              h4.u-text-left Horarios Personales
-
-            .columns.three.flex-right
-              a.button.button-primary.button-small href="/matrix/person_period/new" 
-                i.fa-solid.fa-plus style="font-size:small"
-                |&nbspadd
-
-          .row.flex-left 
-            turbo-frame id="people_periods" data-turbo-frame="people_periods" src="/matrix/people_periods/table"
+        

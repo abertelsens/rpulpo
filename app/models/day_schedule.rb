@@ -1,7 +1,8 @@
 # A class that defines the schedule of a specific date.
 
 class DaySchedule < ActiveRecord::Base#
-	belongs_to	:schedule
+
+  belongs_to	:schedule
   belongs_to	:period
   has_many    :task_assignments, dependent: :destroy
   has_many    :task_schedules, :through => :schedule
@@ -32,4 +33,21 @@ class DaySchedule < ActiveRecord::Base#
     tas = get_task_assignments(task)
     tas.empty? ? nil : tas.map {|ta| ta.person}
   end
+
+  def get_number_of_assigned_people(task)
+    tas = get_task_assignments(task)
+    tas.empty? ? 0 : tas.size
+  end
+
+  # checks the status of the assignments for a specific task
+  def get_assignment_status_class(task)
+    people_assigned =get_task_assignments(task).size
+    people_to_assign = (TaskSchedule.find_task_schedule task, self).number
+    people_needed = people_to_assign-people_assigned
+    puts "PEOPLE NEEDED #{people_needed}"
+    return "matrix-cell-ok" if people_needed==0
+    return "matrix-cell-missing" if people_needed>0
+    return "matrix-cell-over" if people_needed<0
+  end
+
 end

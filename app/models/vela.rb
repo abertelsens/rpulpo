@@ -1,12 +1,31 @@
+# vela.rb
+# ---------------------------------------------------------------------------------------
+# FILE INFO
 
+# autor: alejandrobertelsen@gmail.com
+# last major update: 2024-09-25
+# ---------------------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------------------
+# DESCRIPTION
+
+# An class defining a vela object
+# ---------------------------------------------------------------------------------------
+
+# requires the engines path in order to have access to the typst engine.
 require_rel '../engines'
 
 class Vela < ActiveRecord::Base
 
+	# each vela has many turnos which are destroyed when the parent vela object is destroyed
 	has_many :turnos,  dependent: :destroy
 
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(date: :asc) }
+
+	# ---------------------------------------------------------------------------------------
+	# CLASS CONSTANTS
+	# ---------------------------------------------------------------------------------------
 
 	TYPST_TEMPLATES_DIR = "app/engines-templates/typst"
 	TYPST_PREAMBLE_SEPARATOR = "//CONTENTS"
@@ -14,7 +33,7 @@ class Vela < ActiveRecord::Base
 
 	# creates a vela objet with default parameters
 	def self.create_new()
-		date = DateTime.now()
+		date = DateTime.now
 		params =
 		{
 			date: 					date,
@@ -59,7 +78,6 @@ class Vela < ActiveRecord::Base
 		houses = order.split(" ").select{|index| index!="-1"}
 		current_time = start_time2 + 10*60 # 10 minutes after start_time2, i.e. the Exposition
 
-		puts "building turnos for times #{current_time} and  #{end_time}"
 		while current_time < end_time do
 			turnos << Turno.create(vela: self, start_time: current_time, end_time: current_time + HALF_HOUR )
 			current_time = current_time + HALF_HOUR
@@ -104,8 +122,7 @@ class Vela < ActiveRecord::Base
 
 		File.write typ_file_path, full_doc
 		res =  system("typst compile #{typ_file_path} #{pdf_file_path}")
-		#File.delete typ_file_path
-		res ? (return pdf_file_path) : set_error(FATAL, "Typst Writer: failed to convert document: #{error.message}")
+		res ? pdf_file_path : set_error(FATAL, "Typst Writer: failed to convert document: #{error.message}")
 
 	end
 
@@ -123,4 +140,5 @@ class Vela < ActiveRecord::Base
 	def self.parse_datetime(date,hour,min)
 		DateTime.new(date.year, date.month, date.day,hour,min,0,1)
 	end
+
 end #class end

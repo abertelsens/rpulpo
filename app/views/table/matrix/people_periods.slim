@@ -1,18 +1,18 @@
-turbo-frame id="people_periods" data-turbo-frame="person_view"
+turbo-frame id="people_periods_table"
   div.table-container style="display: flex; align-items: left; justify-content: left;"
     div.table-table  
       div.table-row-head
-        div.table-cell-head style="pointer-events: none" = "family name"
-        div.table-cell-head style="pointer-events: none" = "first name"  
-        div.table-cell-head style="pointer-events: none" = "from"  
-        div.table-cell-head style="pointer-events: none" = "to"  
+        div.table-cell-head.long-field style="pointer-events: none" = "family name"
+        div.table-cell-head.long-field style="pointer-events: none" = "first name"  
+        div.table-cell-head.medium-field style="pointer-events: none" = "from"  
+        div.table-cell-head.medium-field style="pointer-events: none" = "to"  
       - @objects.each.with_index do |object, index|
-        a.table-row-body href="/matrix/person_period/#{object.id}" data-turbo-frame="people_periods_frame" style="cursor:pointer;"
+        a.table-row-body href="/matrix/person_period/#{object.id}" data-turbo-frame="people_periods" style="cursor:pointer;"
           div.table-cell-body = object.person.family_name
           div.table-cell-body = object.person.first_name
           div.table-cell-body = object.s_date.strftime("%d-%m-%y")
           div.table-cell-body = object.e_date.strftime("%d-%m-%y")
 
-  div.row style="display: flex; align-items: left; justify-content: left;"
+  div.row style="display: flex; justify-content: center;"
     div.alert.u-text-center style="width:400px; margin-top:1.5rem" = (@objects.size>0) ? "#{@objects.size} record(s) found" : "No records found. Try something different."
   

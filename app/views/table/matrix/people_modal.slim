@@ -10,13 +10,12 @@ turbo-frame id="people_modal" data-peoplemodal-target="peoplemodal"
             - if !@available_people.nil?
               - @available_people.each.with_index do |object, index|  
                 - if (!@selected_people.nil? && @selected_people.include?(object))
-                  a.matrix-cell-selected data-action="click->peoplemodal#close_modal" data-turbo-frame=id="ds_#{@ds.id}_task_#{@task.id}" href="/matrix/ds/#{@ds.id}/task/#{@task.id}/person/#{object.id}/remove" = object.short_name
-                  //div.table-cell-body data-personid=object.id data-action="click->peoplemodal#select" = object.short_name
+                  a.matrix-cell-selected  data-action="click->peoplemodal#close_modal" data-turbo-frame=id="ds_#{@ds.id}_task_#{@task.id}" href="/matrix/ds/#{@ds.id}/task/#{@task.id}/person/#{object.id}/remove" = object.short_name
                 - else
-                  a.matrix-cell data-action="click->peoplemodal#close_modal" data-turbo-frame=id="ds_#{@ds.id}_task_#{@task.id}" href="/matrix/ds/#{@ds.id}/task/#{@task.id}/person/#{object.id}" = object.short_name
+                  a.matrix-cell data-action="click->peoplemodal#close_modal" data-turbo-frame=id="ds_#{@ds.id}_task_#{@task.id}" href="/matrix/ds/#{@ds.id}/task/#{@task.id}/person/#{object.id}/add" = object.short_name
             
       .row.center-align
-        a.button.button-secondary data-action="click->peoplemodal#close_modal" href="/matrix/ds/#{@ds.id}/task/#{@task.id}" cancel
+        a.button.button-secondary data-turbo-frame=id="ds_#{@ds.id}_task_#{@task.id}" data-action="click->peoplemodal#close_modal" href="/matrix/ds/#{@ds.id}/task/#{@task.id}" cancel
           
 
         

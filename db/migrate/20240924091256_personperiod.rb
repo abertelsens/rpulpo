@@ -11,5 +11,10 @@ class Personperiod < ActiveRecord::Migration[7.1]
       p.integer     :day
       p.integer     :time
     end
+
+    create_table "tasks_available" do |p|
+      p.integer     :person_period_id
+      p.integer     :task_id
+    end
   end
 end

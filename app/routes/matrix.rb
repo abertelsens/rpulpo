@@ -17,14 +17,14 @@ get '/matrix/schedule/table' do
 end
 
 get '/matrix/schedule/:id' do
-	@object = (params[:id]=="new" ? nil : Schedule.find(params[:id]))
+	@object = (params[:id]=="new" ? nil : (Schedule.find params[:id]))
 	partial :"form/matrix/schedule"
 end
 
 post '/matrix/schedule/:id' do
 	case params[:commit]
-		when "save" then Schedule.create_update params
-		when "delete" then Schedule.destroy params
+		when "save" 	then Schedule.create_update params
+		when "delete" then Schedule.find(params[:id]).destroy
 	end
 	redirect :"/matrix"
 end
@@ -32,8 +32,9 @@ end
 # updates the schedule type of a specific day schedule. It is called via a script so therefore
 # there is no need to return a view.
 post '/matrix/day_schedule/:ds/schedule/:schedule' do
-	ds = DaySchedule.find(params[:ds])
-	schedule = Schedule.find(params[:schedule])
+	ds = DaySchedule.find params[:ds]
+	schedule = Schedule.find params[:schedule]
+	ds.update(schedule: schedule)
 end
 
 # -----------------------------------------------------------------------------------------
@@ -41,19 +42,19 @@ end
 # -----------------------------------------------------------------------------------------
 
 get '/matrix/task/table' do
-	@objects = Task.all.order(name: :asc)
+	@objects = Task.all
 	partial :"table/matrix/task"
 end
 
 get '/matrix/task/:id' do
-	@object = (params[:id]=="new" ? nil : Task.find(params[:id]))
+	@object = (params[:id]=="new" ? nil : (Task.find params[:id]))
 	partial :"form/matrix/task"
 end
 
 post '/matrix/task/:id' do
 	case params[:commit]
-	when "save" then Task.create_update params
-	when "delete" then Task.destroy Task.find(params[:id])
+		when "save" 	then Task.create_update params
+		when "delete" then Task.find(params[:id]).destroy
 	end
 	redirect :"/matrix"
 end
@@ -70,16 +71,12 @@ get '/matrix/task_schedule/:id' do
 end
 
 post '/matrix/task_schedule/:id' do
-	@task_schedule = (params[:id]=="new" ? nil : TaskSchedule.find(params[:id]))
+	@task_schedule = (params[:id].nil? ? TaskSchedule.create(TaskSchedule.prepare_params params) : TaskSchedule.find(params[:id]))
 	case params[:commit]
-	when "save"
-		if @task_schedule.nil?
-			@task_schedule = TaskSchedule.create(TaskSchedule.prepare_params params)
-		else
-			@task_schedule.update(TaskSchedule.prepare_params params)
-		end
-	when "delete"
-			@task_schedule.destroy
+		when "save"
+			(params[:id].nil? ? TaskSchedule.create(TaskSchedule.prepare_params params) : TaskSchedule.find(params[:id]))
+		when "delete"
+			TaskSchedule.find(params[:id]).destroy
 	end
 	redirect :"/matrix"
 end
@@ -121,7 +118,6 @@ end
 
 get '/matrix/day_schedule/:id/update' do
 	@object = DaySchedule.find(params[:id])
-	puts Rainbow("got params #{params}").purple
 	schedule = Schedule.find(params[:schedule])
 	@object.update(schedule: schedule)
 	{result: true}.to_json
@@ -134,12 +130,11 @@ end
 
 post '/matrix/day_schedule/:id' do
 	@object = DaySchedule.find(params[:id])
-	puts Rainbow("got params #{params}").purple
 	params["task"].keys.each do |key|
-		task = Task.find(key)
+		task = Task.find key
 		day_schedule = @object
 		people =  params["task"][key].blank? ? nil : Person.find(params["task"][key].values)
-		TaskAssignment.assign(task, day_schedule, people)
+		TaskAssignment.assign task, day_schedule, people
 	end
 	redirect "/matrix/period/#{@object.period.id}"
 end
@@ -159,7 +154,12 @@ get '/matrix/people_modal/empty' do
 end
 
 get '/matrix/people_periods/table' do
-	@objects = PersonPeriod.includes(:person).all
+	@objects = PersonPeriod.includes(:person).all.order("people.family_name")
+	partial :"table/matrix/people_periods"
+end
+
+get '/matrix/people_periods/table/search' do
+	@objects = PersonPeriod.joins(:person).where("people.short_name ILIKE '%#{params[:q]}%'")
 	partial :"table/matrix/people_periods"
 end
 
@@ -173,8 +173,7 @@ get '/matrix/person_period/:id' do
 end
 
 post '/matrix/person_period/:id' do
-	person = Person.find(params[:person])
-	puts "posting a new period for #{person.short_name}"
+	person = Person.find params[:person]
 	if params[:id]=="new"
 		PersonPeriod.create params
 	else
@@ -187,30 +186,28 @@ end
 
 # renders a modal with a list of the people available for a task with a specific day schedule
 get '/matrix/people_modal/ds/:ds/task/:task' do
-	@ds  = (params[:ds].nil? ? nil : DaySchedule.find(params[:ds]))
-	@task  = (params[:task].nil? ? nil : Task.find(params[:task]))
-	@task_schedule = TaskSchedule.find_task_schedule(@task,@ds)
+	@ds  = DaySchedule.find params[:ds]
+	@task  = Task.find params[:task]
+	@task_schedule = TaskSchedule.find_task_schedule @task, @ds
 	@selected_people  = @ds.get_assigned_people @task
-	@available_people = PersonPeriod.find_people_available(@ds, @task)
+	@available_people = PersonPeriod.find_people_available @ds, @task
 	@available_people.concat(@selected_people) unless @selected_people.nil?
 	partial :"table/matrix/people_modal"
 end
 
-
-get '/matrix/ds/:ds/task/:task/person/:person' do
-	@task  = (params[:task].nil? ? nil : Task.find(params[:task]))
-	@ds  = (params[:ds].nil? ? nil : DaySchedule.find(params[:ds]))
-	@person  = (params[:person].nil? ? nil : Person.find(params[:person]))
-	TaskAssignment.create(day_schedule: @ds, task: @task, person: @person )
+get '/matrix/ds/:ds/task/:task' do
+	@task  = Task.find params[:task]
+	@ds  = DaySchedule.find params[:ds]
 	partial :"table/matrix/day_schedule_cell"
 end
 
-# assigs a task assignment to a person and returs the correpsonding cell in the
-# assignments table
-get '/matrix/ds/:ds/task/:task/person/:person/remove' do
-	@task  = (params[:task].nil? ? nil : Task.find(params[:task]))
-	@ds  = (params[:ds].nil? ? nil : DaySchedule.find(params[:ds]))
-	@person  = (params[:person].nil? ? nil : Person.find(params[:person]))
-	TaskAssignment.find_by(day_schedule: @ds, task: @task, person: @person).destroy
+get '/matrix/ds/:ds/task/:task/person/:person/:action' do
+	@task  = Task.find params[:task]
+	@ds  = DaySchedule.find params[:ds]
+	@person = Person.find params[:person]
+	case params[:action]
+		when "add" then TaskAssignment.create(day_schedule: @ds, task: @task, person: @person )
+		when "remove" then TaskAssignment.find_by(day_schedule: @ds, task: @task, person: @person).destroy
+	end
 	partial :"table/matrix/day_schedule_cell"
 end

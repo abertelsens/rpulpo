@@ -1,58 +1,33 @@
-/***************************************************************************************************** 
-// FORM for Personal Information about a person
-/*****************************************************************************************************
-
 turbo-frame id="main_frame"
   	
 	form action="/matrix/period/#{(@object.nil? ? "new" : @object.id)}" method="POST" data-controller="modal"
 	
-		.container
-			
-			/----------------------------------------------------------------------------------------------------------------
-			// FORM HEADER
-			//----------------------------------------------------------------------------------------------------------------
-			.row.u-text-center
+		.container 
+			.row.u-text-center 
 				h3 = (@object.nil? ? "NEW MATRIX PERIOD" : "MATRIX PERIOD: #{@object.name}")
 				
-			/----------------------------------------------------------------------------------------------------------------
-			/----------------------------------------------------------------------------------------------------------------
-			//DOCUMENT FRAME
-			//----------------------------------------------------------------------------------------------------------------
-			.row.margin-bottom style="display: flex; align-items: flex-end; "
-		
-				.columns.two.offset-by-one 
+			.row.margin-bottom style="display: flex; justify-content: center; column-gap: 1em; align-items: end;"
+			
+				div 
 					label for="name" name
 					&text.u-full-width.no-margin id="name" name="name" required="true" value=(@object.nil? ? "nombre del periodo" : @object&.name)
 					
-				
-				.columns.one
+				div 
 					label for="s_date" desde
 					&date.u-full-width.no-margin id="s_time" name="s_date" required="true" value=(@object.nil? ? Date.today : @object&.s_date)
-					
-
-				.columns.one
+				
+				div style="margin-right:10%"
 					label for="e_date" hasta
 					&date.u-full-width.no-margin id="e_time" name="e_date" required="true" value=(@object.nil? ? Date.today : @object&.e_date)
-				
-				.columns.four.offset-by-two style="display: flex; align-items: flex-end;"
-						
-					- if !@object.nil?
-						.columns.four
-							a.button.no-margin.u-full-width data-turbo-frame="date_types_table" href="/matrix/period/#{@object.id}/assign" = "assign tasks"
-						.columns.four
-							button.button-danger.no-margin.u-full-width data-action="click->modal#open_modal" delete period
-					.columns.four
-						button.button-primary.no-margin.u-full-width type="submit" name="commit" value="save" save  
-				
-			.row	
-				.columns.ten.offset-by-one
-					- if !@object.nil?
-						turbo-frame id="date_types_table"	src='/matrix/period/#{@object.id}/task_assignment/table?week=1'	
-
-
-
 			
-					
+				- if !@object.nil?
+					a.button.no-margin data-turbo-frame="date_types_table" href="/matrix/period/#{@object.id}/assign" = "assign tasks"
+					button.button-danger.no-margin data-action="click->modal#open_modal" delete period
+				button.button-success.no-margin type="submit" name="commit" value="save" save  
+			
+			.row	
+				- if !@object.nil?
+					turbo-frame id="date_types_table"	src='/matrix/period/#{@object.id}/task_assignment/table?week=1'	
 
 			.modal data-modal-target="modal" 
 				.modal-content

@@ -2,7 +2,7 @@
 // FORM for Personal Information about a person
 /*****************************************************************************************
 
-turbo-frame id="people_periods_frame"
+turbo-frame id="people_periods"
   	
 	form[
 		action="/matrix/person_period/#{(@object.nil? ? "new" : @object.id)}"
@@ -36,52 +36,46 @@ turbo-frame id="people_periods_frame"
 				.columns.three 
 					label for="e_date" hasta
 					&date.u-full-width.no-margin id="e_date" name="e_date" required="true" value=(@object.nil? ? Date.today : @object&.e_date)
+
+			.row.search-filters style="padding: 20px 20px 20px 20px"
+				h4.u-text-center = "Encargos que puede hacer"
+				div style="display:flex; flex-direction: row; flex-flow:row wrap; justify-content: space-around; column-gap: 2em" 
+					- Task.all.each_with_index do |task, index|
+						div style="display:flex; flex-direction: row" 
+							input.no-margin type="checkbox" id="task_#{task.id}" name="task[#{index}]" value=task.id checked=(@object.nil? ? true : @object&.is_available_for_task?(task))
+							label style="margin: 0 0 0 10px" for="task_#{task.id}" = task.name
+
+					
+			.row.search-filters style="padding: 20px 20px 20px 20px"
+				.row
+					h4.u-text-center.margin-top.margin-bottom = "Plan Semanal"
+				.row.margin-bottom style="display:flex; flex-direction:row; justify-content: space-between; align-items: center;"
+					div.person-schedule-cell mon
+					div.person-schedule-cell tue
+					div.person-schedule-cell wed
+					div.person-schedule-cell thu
+					div.person-schedule-cell fri
+					div.person-schedule-cell sat
+					div.person-schedule-cell sun
 				
-			.row
-				h4.u-text-center.margin-top.margin-bottom = "Plan Semanal"
-			.row.margin-bottom style="display:flex; flex-direction:row; justify-content: space-between; align-items: center;"
-				div.person-schedule-cell day
-				div.person-schedule-cell mon
-				div.person-schedule-cell tue
-				div.person-schedule-cell wed
-				div.person-schedule-cell thu
-				div.person-schedule-cell fri
-				div.person-schedule-cell sat
-				div.person-schedule-cell sun
+				.row.margin-bottom style="display:flex; flex-direction:row; justify-content: space-between; align-items: center;"
+					div.person-schedule-cell AM
+					- [1,2,3,4,5,6,0].each do |index| 	
+						input.person-schedule-cell name="AM[#{index}]" type="checkbox" style="accent-color: #e4e4e4;" checked=(@object.nil? ? true :  @object&.is_available?(index,"AM"))
+					
+					
+				.row.margin-bottom style="display:flex; flex-direction:row; justify-content: space-between; align-items: center;"
+					div.person-schedule-cell PM
+					- [1,2,3,4,5,6,0].each do |index| 	
+						input.person-schedule-cell name="PM[#{index}]" type="checkbox" style="accent-color: ##e4e4e4;" checked=(@object.nil? ? true :  @object&.is_available?(index,"PM"))
+					
+					
 			
-			.row.margin-bottom style="display:flex; flex-direction:row; justify-content: space-between; align-items: center;"
-				div.person-schedule-cell AM
-				input.person-schedule-cell name="AM[1]" type="checkbox" checked=(@object&.is_available?(1,"AM"))
-				input.person-schedule-cell name="AM[2]" type="checkbox" checked=(@object&.is_available?(2,"AM"))
-				input.person-schedule-cell name="AM[3]" type="checkbox" checked=(@object&.is_available?(3,"AM"))
-				input.person-schedule-cell name="AM[4]" type="checkbox" checked=(@object&.is_available?(4,"AM"))
-				input.person-schedule-cell name="AM[5]" type="checkbox" checked=(@object&.is_available?(5,"AM"))
-				input.person-schedule-cell name="AM[6]" type="checkbox" checked=(@object&.is_available?(6,"AM"))
-				input.person-schedule-cell name="AM[0]" type="checkbox" checked=(@object&.is_available?(0,"AM"))
-				
-			.row.margin-bottom style="display:flex; flex-direction:row; justify-content: space-between; align-items: center;"
-				div.person-schedule-cell PM
-				input.person-schedule-cell name="PM[1]" type="checkbox" checked=(@object&.is_available?(1,"PM"))
-				input.person-schedule-cell name="PM[2]" type="checkbox" checked=(@object&.is_available?(2,"PM"))
-				input.person-schedule-cell name="PM[3]" type="checkbox" checked=(@object&.is_available?(3,"PM"))
-				input.person-schedule-cell name="PM[4]" type="checkbox" checked=(@object&.is_available?(4,"PM"))
-				input.person-schedule-cell name="PM[5]" type="checkbox" checked=(@object&.is_available?(5,"PM"))
-				input.person-schedule-cell name="PM[6]" type="checkbox" checked=(@object&.is_available?(6,"PM"))
-				input.person-schedule-cell name="PM[0]" type="checkbox" checked=(@object&.is_available?(0,"PM"))
-				
-			
-			.row
-				.columns.ten.offset-by-one.margin-top style="display: flex; align-items: flex-end;"
-						
-					- if !@object.nil?
-						.columns.four.offset-by-two
-							button.button-primary.no-margin.u-full-width type="submit" name="commit" value="save" save
-						.columns.four
-							button.button-danger.no-margin.u-full-width type="submit" name="commit" value="delete" delete
-					- else
-						.columns.four.offset-by-two
-							button.button-primary.no-margin.u-full-width type="submit" name="commit" value="save" save
-						.columns.four
-							a.button.button-secondary.no-margin.u-full-width formnovalidate="true" href="/matrix/people_periods" cancel
-					  
+			.row style="display: flex; justify-content: center; margin-top:60px"
+				button.margin-left.margin-right type="submit" name="commit" value="save" save
+				- if !@object.nil?
+					button.button-danger style="margin: 0 5px 0px 5px" type="submit" name="commit" value="delete" delete
+				- else
+					a.button.button-secondary style="margin: 0 5px 0px 5px" formnovalidate="true" href="/matrix/people_periods" cancel
+					
 				

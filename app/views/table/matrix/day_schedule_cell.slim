@@ -1,1 +1,3 @@
-turbo-frame.table-cell-body style="cursor: pointer" id="ds_#{@ds.id}_task_#{@task.id}" data-task=@task.id data-ds=@ds.id data-action="click->peoplemodal#open_modal" == (@ds.get_task_assignments_to_html @task)
+
+turbo-frame.matrix-frame-body id="ds_#{@ds.id}_task_#{@task.id}" 
+  div.matrix-cell-body class=(@ds.get_assignment_status_class @task) style="cursor: pointer"  data-task=@task.id data-ds=@ds.id data-action="click->peoplemodal#open_modal" == (@ds.get_task_assignments_to_html @task)

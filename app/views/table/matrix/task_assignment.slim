@@ -1,5 +1,6 @@
 turbo-frame id="date_types_table" 
   - schedules = Schedule.all
+  
   div.flex-center.margin-bottom style="vertical-align:center;"
     div
       a.button.button-small.button-square-no-color.no-margin.button-disabled href=(@week>1 ? "/matrix/period/#{@period_id}/task_assignment/table?week=#{@week-1}" : "javascript:void(0)" )
@@ -11,7 +12,7 @@ turbo-frame id="date_types_table"
       a.button.button-small.button-square-no-color.no-margin.button-disabled href="/matrix/period/#{@period_id}/task_assignment/table?week=#{@week+1}"
         i.fa-solid.fa-plus
   div.table-container data-controller="drag peoplemodal"
-    div.table-table  
+    div.table-table style="height:fit-content" 
       div.table-row-head style="vertical-align:middle;"
         div.table-cell-body  
           h4.margin-bottom-small = "Task/Date"
@@ -24,15 +25,17 @@ turbo-frame id="date_types_table"
                 select.margin-bottom-small style="width:60px" name="schedule" data-peoplemodal-target="dsselect[#{index}]" data-action="change->peoplemodal#selectds" data-peoplemodal-ds-param=ds.id
                   - schedules.each do |sch|
                     option selected=(sch.id==ds.schedule.id) value=sch.id = sch.name
-          
       - Task.all.each do |task|
         div.matrix-row-body 
-          div.table-cell-body = task.name
+          div.table-cell-body style="font-weight:bold" = task.name
           - @day_schedules.each do |ds|
             - if @object.contains? ds
-              turbo-frame.matrix-cell-body style="cursor: pointer" id="ds_#{ds.id}_task_#{task.id}" data-task=task.id data-ds=ds.id data-action="click->peoplemodal#open_modal" == (ds.get_task_assignments_to_html task)
+              turbo-frame.matrix-frame-body id="ds_#{ds.id}_task_#{task.id}"
+                div.matrix-cell-body class=(ds.get_assignment_status_class task)   style="cursor: pointer"  data-task=task.id data-ds=ds.id data-action="click->peoplemodal#open_modal" == (ds.get_task_assignments_to_html task)
             - else 
-              div.matrix-cell-body.matrix-empty-cell
+              turbo-frame style="display:table-cell"
+                div.matrix-cell-body class=(ds.get_assignment_status_class task)
+      
       turbo-frame data-peoplemodal-target="peoplemodal" id="people_modal" src="matrix/people_modal/empty"
 			
         
