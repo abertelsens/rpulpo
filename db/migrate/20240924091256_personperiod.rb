@@ -9,7 +9,9 @@ class Personperiod < ActiveRecord::Migration[7.1]
     create_table "days_available" do |p|
       p.integer     :person_period_id
       p.integer     :day
-      p.integer     :time
+      p.integer     :AM
+      p.integer     :PM1
+      p.integer     :PM2
     end
 
     create_table "tasks_available" do |p|

@@ -5,7 +5,7 @@ require 'rubyXL'
 
 class Task < ActiveRecord::Base
 
-  has_many :task_schedules
+  has_many :task_schedules, dependent: :destroy
 
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(name: :asc) }
@@ -30,6 +30,7 @@ class Task < ActiveRecord::Base
 				schedule_id:  schedule_id,
 				task:         self,
 				number:       params[:number][schedule_id],
+				points:       params[:points][schedule_id],
 				s_time:       parse_time(params[:s_time][schedule_id]),
 				e_time:       parse_time(params[:e_time][schedule_id]),
 				notes:        params[:notes][schedule_id]
@@ -39,7 +40,8 @@ class Task < ActiveRecord::Base
 
 	def self.prepare_params(params)
 	{
-		name: params[:name]
+		name: params[:name],
+		priority: params[:priority]
 	}
 	end
 

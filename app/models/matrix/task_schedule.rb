@@ -1,10 +1,12 @@
 
 class TaskSchedule < ActiveRecord::Base
 
-	belongs_to :schedule
-	belongs_to :task
+	belongs_to 	:schedule
+	belongs_to 	:task
+	has_many 		:task_assignments, dependent: :destroy
 
 	AM_HOUR_LIMIT = 14
+	PM1_HOUR_LIMIT = 17
 
 	def self.create_from_array params_array
 		params_array.each do |params|
@@ -14,7 +16,8 @@ class TaskSchedule < ActiveRecord::Base
 	end
 
 	def get_time
-		(e_time.hour<=AM_HOUR_LIMIT) ? "AM" : (s_time<=AM_HOUR_LIMIT ? "ALL": "PM")
+		time = (e_time.hour<=AM_HOUR_LIMIT) ? "AM" : (s_time<=AM_HOUR_LIMIT ? "ALL": "PM")
+		time
 	end
 
 	def self.find_task_schedule(task,day_schedule)

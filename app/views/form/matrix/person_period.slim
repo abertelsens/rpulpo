@@ -39,17 +39,19 @@ turbo-frame id="people_periods"
 
 			.row.search-filters style="padding: 20px 20px 20px 20px"
 				h4.u-text-center = "Encargos que puede hacer"
-				div style="display:flex; flex-direction: row; flex-flow:row wrap; justify-content: space-around; column-gap: 2em" 
+				div style="padding: 2rem 6rem 0 6rem; display:flex; flex-direction: row; flex-flow:row wrap; justify-content: space-around; column-gap: 2em; row-gap: 1em" 
 					- Task.all.each_with_index do |task, index|
-						div style="display:flex; flex-direction: row" 
-							input.no-margin type="checkbox" id="task_#{task.id}" name="task[#{index}]" value=task.id checked=(@object.nil? ? true : @object&.is_available_for_task?(task))
+						div style="display:flex; flex-direction: row"
+							input.no-margin type="checkbox" id="task_#{task.id}" name="task[#{index}]" value=task.id checked=(@object.nil? ? true : @ta.include?(task.id))
 							label style="margin: 0 0 0 10px" for="task_#{task.id}" = task.name
 
 					
 			.row.search-filters style="padding: 20px 20px 20px 20px"
+				- situations = Situation.all
 				.row
 					h4.u-text-center.margin-top.margin-bottom = "Plan Semanal"
 				.row.margin-bottom style="display:flex; flex-direction:row; justify-content: space-between; align-items: center;"
+					div.person-schedule-cell day
 					div.person-schedule-cell mon
 					div.person-schedule-cell tue
 					div.person-schedule-cell wed
@@ -60,14 +62,24 @@ turbo-frame id="people_periods"
 				
 				.row.margin-bottom style="display:flex; flex-direction:row; justify-content: space-between; align-items: center;"
 					div.person-schedule-cell AM
-					- [1,2,3,4,5,6,0].each do |index| 	
-						input.person-schedule-cell name="AM[#{index}]" type="checkbox" style="accent-color: #e4e4e4;" checked=(@object.nil? ? true :  @object&.is_available?(index,"AM"))
-					
-					
+					- [1,2,3,4,5,6,0].each do |index|
+						select.person-schedule-cell name="AM[#{index}]"
+							- situations.each do |situation|
+								option value=situation.id selected=(@object.nil? ? false : @availability[index]["AM"]==situation.id)  = situation.name
+
 				.row.margin-bottom style="display:flex; flex-direction:row; justify-content: space-between; align-items: center;"
-					div.person-schedule-cell PM
-					- [1,2,3,4,5,6,0].each do |index| 	
-						input.person-schedule-cell name="PM[#{index}]" type="checkbox" style="accent-color: ##e4e4e4;" checked=(@object.nil? ? true :  @object&.is_available?(index,"PM"))
+					div.person-schedule-cell PM1
+					- [1,2,3,4,5,6,0].each do |index|
+						select.person-schedule-cell name="PM1[#{index}]"
+							- situations.each do |situation|
+								option value=situation.id selected=(@object.nil? ? false : @availability[index]["PM1"]==situation.id)  = situation.name
+							
+				.row.margin-bottom style="display:flex; flex-direction:row; justify-content: space-between; align-items: center;"
+					div.person-schedule-cell PM2
+					- [1,2,3,4,5,6,0].each do |index|
+						select.person-schedule-cell name="PM2[#{index}]"
+							- situations.each do |situation|
+								option value=situation.id selected=(@object.nil? ? false : @availability[index]["PM2"]==situation.id)  = situation.name
 					
 					
 			

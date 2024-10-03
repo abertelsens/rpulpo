@@ -29,6 +29,28 @@ post '/matrix/schedule/:id' do
 	redirect :"/matrix"
 end
 
+# -----------------------------------------------------------------------------------------
+# SITUATIONS
+# -----------------------------------------------------------------------------------------
+
+get '/matrix/situation/table' do
+	@objects = Situation.all
+	partial :"table/matrix/situation"
+end
+
+get '/matrix/situation/:id' do
+	@object = (params[:id]=="new" ? nil : (Situation.find params[:id]))
+	partial :"form/matrix/situation"
+end
+
+post '/matrix/situation/:id' do
+	case params[:commit]
+		when "save" 	then Situation.create_update params
+		when "delete" then Situation.find(params[:id]).destroy
+	end
+	redirect :"/matrix"
+end
+
 # updates the schedule type of a specific day schedule. It is called via a script so therefore
 # there is no need to return a view.
 post '/matrix/day_schedule/:ds/schedule/:schedule' do
@@ -48,6 +70,7 @@ end
 
 get '/matrix/task/:id' do
 	@object = (params[:id]=="new" ? nil : (Task.find params[:id]))
+	@task_schedules = TaskSchedule.includes(:schedule).where(task: @object)
 	partial :"form/matrix/task"
 end
 
@@ -58,7 +81,6 @@ post '/matrix/task/:id' do
 	end
 	redirect :"/matrix"
 end
-
 
 get '/matrix/task_schedule/table' do
 	@objects = TaskSchedule.all.order(task_id: :asc)
@@ -92,27 +114,26 @@ get '/matrix/period/:id' do
 end
 
 post '/matrix/period/:id' do
-	@period = (params[:id]=="new" ? nil : Period.find(params[:id]))
+	period = (params[:id]=="new" ? nil : Period.find(params[:id]))
 	case params[:commit]
 	when "save"
-		if @period.nil?
-			@period = Period.create(Period.prepare_params params)
-			@period.create_days
+		if period.nil?
+			period = Period.create(Period.prepare_params params)
 		else
-			@period.update(Period.prepare_params params)
+			period.update(Period.prepare_params params)
 		end
 	when "delete"
-			@period.destroy
+			period.destroy
 	end
 	redirect :"/matrix"
 end
 
+# Shows one week of the the assignments table for the period.
 get '/matrix/period/:id/task_assignment/table' do
 	@period_id = params[:id].to_i
 	@week = (params[:week]=nil? ? 1 : params[:week].to_i)
-	@object = (params[:id]=="new" ? nil : Period.find(params[:id]))
+	@object = Period.find(params[:id])
 	@day_schedules = @object.get_week @week
-	return if @day_schedules.nil?
 	partial :"table/matrix/task_assignment"
 end
 
@@ -169,6 +190,9 @@ end
 
 get '/matrix/person_period/:id' do
 	@object = (params[:id]=="new" ? nil : PersonPeriod.find(params[:id]))
+	@ta = @object.tasks_available.pluck(:task_id)
+	@availability = @object.days_available.order(day: :asc)
+
 	partial :"form/matrix/person_period"
 end
 
@@ -187,10 +211,13 @@ end
 # renders a modal with a list of the people available for a task with a specific day schedule
 get '/matrix/people_modal/ds/:ds/task/:task' do
 	@ds  = DaySchedule.find params[:ds]
+	@period = @ds.period
 	@task  = Task.find params[:task]
 	@task_schedule = TaskSchedule.find_task_schedule @task, @ds
 	@selected_people  = @ds.get_assigned_people @task
 	@available_people = PersonPeriod.find_people_available @ds, @task
+	#@available_people = available_people_hash.map{|ph| ph[:id] }
+	#@available_people_times = @available_people.map{|person| @period.get_assignments_time(person) }
 	@available_people.concat(@selected_people) unless @selected_people.nil?
 	partial :"table/matrix/people_modal"
 end
@@ -205,9 +232,13 @@ get '/matrix/ds/:ds/task/:task/person/:person/:action' do
 	@task  = Task.find params[:task]
 	@ds  = DaySchedule.find params[:ds]
 	@person = Person.find params[:person]
+	@task_schedule = TaskSchedule.find_task_schedule @task, @ds
 	case params[:action]
-		when "add" then TaskAssignment.create(day_schedule: @ds, task: @task, person: @person )
-		when "remove" then TaskAssignment.find_by(day_schedule: @ds, task: @task, person: @person).destroy
+		when "add" then TaskAssignment.create(day_schedule: @ds, task_schedule: @task_schedule, person: @person )
+		when "remove" then TaskAssignment.find_by(day_schedule: @ds, task_schedule: @task_schedule, person: @person).destroy
 	end
+	pp = PeriodPoint.find_by(person: @person, period: @ds.period)
+	pp = PeriodPoint.create(person: @person, period: @ds.period) if pp.nil?
+	pp.update_points
 	partial :"table/matrix/day_schedule_cell"
 end

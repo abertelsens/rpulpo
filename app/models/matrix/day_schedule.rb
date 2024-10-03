@@ -8,8 +8,10 @@ class DaySchedule < ActiveRecord::Base#
   has_many    :task_schedules, :through => :schedule
   has_many    :tasks, :through => :task_schedules
 
+  scope :of_period, ->(period_id) { where("period_id = ?", period_id) }
+
   def get_task_assignments(task)
-    task_assignments.includes(:person).where(task: task.id)
+    task_assignments.includes(:person).joins(:task_schedule).where(task_schedule: {task_id: task.id})
   end
 
   def create_assignments()
@@ -44,10 +46,8 @@ class DaySchedule < ActiveRecord::Base#
     people_assigned =get_task_assignments(task).size
     people_to_assign = (TaskSchedule.find_task_schedule task, self).number
     people_needed = people_to_assign-people_assigned
-    puts "PEOPLE NEEDED #{people_needed}"
     return "matrix-cell-ok" if people_needed==0
     return "matrix-cell-missing" if people_needed>0
     return "matrix-cell-over" if people_needed<0
   end
-
 end

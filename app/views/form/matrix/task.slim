@@ -20,54 +20,73 @@ turbo-frame id="main_frame"
 			.row
 		
 				.columns.two.offset-by-five
-					label.u-text-center for="name" name
+					label for="name" name
 					&text.u-text-center.u-full-width id="name" name="name" required="true" value=@object&.name
+			
+				.columns.one
+					label for="name" priority
+					select.u-full-width name="priority"
+						- Array(1..10).each do |val|
+							option value=val selected=(@object&.priority==val) = val
 			
 			.row
 				.columns.twelve.flex-center
 					table 
 						tr
 							th = "horario"
-							th.u-text-center = "número" 
+							th.u-text-center = "personas" 
+							th.u-text-center = "puntos" 
 							th.u-text-center = "desde" 
 							th.u-text-center = "hasta" 
 							th = "notas" 
-						- Schedule.all.each.with_index do |schedule, index|
-							- task_schedule = schedule.get_task_schedule(@object)
+						- @task_schedules.each.with_index do |ts, index|
 							tr
 								td.u-text-left [style="min-width: 400px; margin-bottom: 0.2rem; margin-top: 0.2rem"
 									class="long-field"] 
-									b = "#{schedule.name} - #{schedule.description}" 
+									b = "#{ts.schedule.name} - #{ts.schedule.description}" 
 								
+										
 								td.u-text-center
 									input[type="number"
 									style="margin-bottom: 0.2rem; margin-top: 0.2rem"
 									class="short-field u-text-center"
 									id="number" 
-									name="number[#{schedule.id}]" 
+									name="number[#{ts.schedule.id}]" 
 									required="true" 
 									min="0"
-									value=(task_schedule.nil? ? 0 : task_schedule.number)]
+									value=(ts.nil? ? 0 : ts.number)]
+								
+								td.u-text-center
+									input[type="number"
+									style="margin-bottom: 0.2rem; margin-top: 0.2rem"
+									class="short-field u-text-center"
+									id="points" 
+									name="points[#{ts.schedule.id}]" 
+									required="true" 
+									min="0"
+									value=(ts.nil? ? 1 : ts.points)]
+									
+
 				
 								td 
 									input[type="text"
 									style="margin-bottom: 0.2rem; margin-top: 0.2rem"
 									class="medium-field u-text-center" 
 									id="s_time" 
-									name="s_time[#{schedule.id}]" 
-									value=(task_schedule.nil? ? "" : task_schedule&.s_time&.strftime("%H:%M"))]
+									name="s_time[#{ts.schedule.id}]" 
+									value=(ts.nil? ? "" : ts&.s_time&.strftime("%H:%M"))]
 								td
 									input[type="text"
 									style="margin-bottom: 0.2rem; margin-top: 0.2rem"
 									class="medium-field u-text-center" 
-									name="e_time[#{schedule.id}]" 
-									value=(task_schedule.nil? ? "" : task_schedule&.e_time&.strftime("%H:%M"))]
+									name="e_time[#{ts.schedule.id}]" 
+									value=(ts.nil? ? "" : ts&.e_time&.strftime("%H:%M"))]
 								td
 									input[type="text"
 									style="margin-bottom: 0.2rem; margin-top: 0.2rem"
 									class="xlong-field" 
-									name="notes[#{schedule.id}]" 
-									value=(task_schedule.nil? ? "" : task_schedule&.notes)]
+									name="notes[#{ts.schedule.id}]" 
+									value=(ts.nil? ? "" : ts&.notes)]
 
 			
 

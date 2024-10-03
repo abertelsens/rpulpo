@@ -1,7 +1,7 @@
 class Schedule < ActiveRecord::Base
 
-	has_many	:task_schedules
-	has_many	:day_schedules
+	has_many	:task_schedules, dependent: :destroy
+	has_many	:day_schedules, dependent: :destroy
 
 
 	def self.create_update(params)

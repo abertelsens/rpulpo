@@ -1,14 +1,13 @@
 
 turbo-frame id = "people_periods"
-  .container.no-margin style="min-width:50em" data-controller="people"
-    
+  .container.no-margin style="min-width:60em" data-controller="people"
     form.form-inline method="GET" isTrusted="true" action="/matrix/people_periods/table/search" data-controller="search" data-turbo-frame="people_periods_table" aria-label="Search" name="q" data-action="input->search#submit keydown.ctrl+f@window->people#search_focus"  
-      .row style="display: flex; flex-direction: row; margin-bottom:1em; column-gap:1em" 
-        h4.u-text-left Horarios Personales
-        input#search_string.u-full-width isTrusted="true" style="max-width:20em; margin-left: auto;" autofocus="autofocus" type="search" data-people-target="search_field" autocomplete="off" placeholder="search" aria-label="Search" name="q" data-action="input->search#submit"
+      .row style="display: flex; flex-direction: row; margin-bottom:1em; column-gap:1em"
+        h4.no-margin data-action="click->matrix#toggle"  Horarios Personales
+        input#search_string.u-full-width.no-margin isTrusted="true" style="max-width:20em; margin-left: auto;" autofocus="autofocus" type="search" data-people-target="search_field" autocomplete="off" placeholder="search" aria-label="Search" name="q" data-action="input->search#submit"
         a.button.no-margin href="/matrix/person_period/new" 
           i.fa-solid.fa-plus style="font-size:small"
           |&nbspadd
 
-      .row
+      row style="display: flex; flex-direction: row; justify-content: center;"
         turbo-frame id="people_periods_table" data-turbo-frame="people_periods" src="/matrix/people_periods/table"

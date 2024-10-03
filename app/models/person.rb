@@ -32,6 +32,10 @@ class Person < ActiveRecord::Base
 	has_one :room
 	has_many :turnos
 
+	# matrix associations
+	has_many :task_assignments, dependent: :destroy
+	has_many :person_periods, dependent: :destroy
+
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(family_name: :asc) }
 

@@ -8,11 +8,12 @@ turbo-frame id="people_modal" data-peoplemodal-target="peoplemodal"
         div.table-container        
           div.table-table style="display: grid; grid-template-columns: auto auto auto auto;"
             - if !@available_people.nil?
-              - @available_people.each.with_index do |object, index|  
+              - @available_people.each.with_index do |object, index| 
+                - points = PeriodPoint.get_points(@period, object) 
                 - if (!@selected_people.nil? && @selected_people.include?(object))
-                  a.matrix-cell-selected  data-action="click->peoplemodal#close_modal" data-turbo-frame=id="ds_#{@ds.id}_task_#{@task.id}" href="/matrix/ds/#{@ds.id}/task/#{@task.id}/person/#{object.id}/remove" = object.short_name
+                  a.matrix-cell-selected  data-action="click->peoplemodal#close_modal" data-turbo-frame=id="ds_#{@ds.id}_task_#{@task.id}" href="/matrix/ds/#{@ds.id}/task/#{@task.id}/person/#{object.id}/remove" = "#{object.short_name} (#{points})"
                 - else
-                  a.matrix-cell data-action="click->peoplemodal#close_modal" data-turbo-frame=id="ds_#{@ds.id}_task_#{@task.id}" href="/matrix/ds/#{@ds.id}/task/#{@task.id}/person/#{object.id}/add" = object.short_name
+                  a.matrix-cell data-action="click->peoplemodal#close_modal" data-turbo-frame=id="ds_#{@ds.id}_task_#{@task.id}" href="/matrix/ds/#{@ds.id}/task/#{@task.id}/person/#{object.id}/add" = "#{object.short_name} (#{points})"
             
       .row.center-align
         a.button.button-secondary data-turbo-frame=id="ds_#{@ds.id}_task_#{@task.id}" data-action="click->peoplemodal#close_modal" href="/matrix/ds/#{@ds.id}/task/#{@task.id}" cancel

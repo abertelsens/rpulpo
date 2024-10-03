@@ -37,8 +37,8 @@ class Vela < ActiveRecord::Base
 		params =
 		{
 			date: 					date,
-			start_time:			parse_datetime(date,21,05),
-			start_time2:		parse_datetime(date,21,20),
+			start_time:			parse_datetime(date,21,00),
+			start_time2:		parse_datetime(date,21,15),
 			end_time:				DateTime.new(date.year, date.month, date.day + 1, 6, 30, 0,1),
 			start1_message: "Examen",
 			start2_message: "Exposición en Nuestra Señora de los Ángeles",
@@ -76,7 +76,7 @@ class Vela < ActiveRecord::Base
 
 		turnos.destroy_all unless turnos.nil?
 		houses = order.split(" ").select{|index| index!="-1"}
-		current_time = start_time2 + 10*60 # 10 minutes after start_time2, i.e. the Exposition
+		current_time = start_time2 + 15*60 # 15 minutes after start_time2, i.e. the Exposition
 
 		while current_time < end_time do
 			turnos << Turno.create(vela: self, start_time: current_time, end_time: current_time + HALF_HOUR )
