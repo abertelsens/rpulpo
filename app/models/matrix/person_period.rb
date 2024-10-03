@@ -18,6 +18,7 @@
 
 # requiere some utilities related to the queries
 
+=begin
 class PersonPeriod < ActiveRecord::Base
 
   belongs_to  :person
@@ -62,17 +63,17 @@ class PersonPeriod < ActiveRecord::Base
 
   # finds the available people for a task with a specific day_schedule. The result depends on
   # on the day of the week and the time of the task
-  def self.find_people_available(day_schedule, task)
-    ts = TaskSchedule.find_by(task: task, schedule: day_schedule.schedule)
-    puts "finding people available. Found ts #{ts}. #{ts.number} people needed"
-    return [] if (ts.nil? || ts.number==0)
-    people_periods = PersonPeriod.includes(:person).where(s_date: ..day_schedule.date , e_date: day_schedule.date..)
-    puts "found available people perdiods. Found#{peopleperiods}"
-    available_periods = people_periods.map{|pp| pp.person.id => pp.get_availability(wday,ts) }
-    free_people = (available_periods.select{|ap| ap.is_free?(day_schedule, ts)}).map{|pp| pp.person}
-    period = day_schedule.period
-    free_people
-  end
+  #def self.find_people_available(day_schedule, task)
+  #  ts = TaskSchedule.find_by(task: task, schedule: day_schedule.schedule)
+  #  puts "finding people available. Found ts #{ts}. #{ts.number} people needed"
+  #  return [] if (ts.nil? || ts.number==0)
+  #  people_periods = PersonPeriod.includes(:person).where(s_date: ..day_schedule.date , e_date: day_schedule.date..)
+  #  puts "found available people perdiods. Found#{peopleperiods}"
+  ##  available_periods = people_periods.map{|pp| pp.person.id => pp.get_availability(wday,ts) }
+  #  free_people = (available_periods.select{|ap| ap.is_free?(day_schedule, ts)}).map{|pp| pp.person}
+  #  period = day_schedule.period
+  #  free_people
+  #end
 
   def get_availability(wday,task_schedule)
     day = days_available.find_by(day: wday) if !wday.nil?
@@ -145,7 +146,7 @@ class DayAvailable < ActiveRecord::Base
        (ts.overlap? task_range) ? index_to_time_slot(index) : ""
     end
     max_value = (overlapping_time_slots.map {|ts| self[ts]}).max
-    max_time_slot = overlapping_time_slots.select {|ts| self[ts]== max_value}
+    #max_time_slot = overlapping_time_slots.select {|ts| self[ts]== max_value}
   end
 
   def index_to_time_slot(index)
@@ -171,3 +172,4 @@ end
 
 
   end
+=end
