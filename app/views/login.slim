@@ -13,21 +13,6 @@ script src="https://kit.fontawesome.com/4f55c9eacf.js" crossorigin="anonymous"
 script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"
 link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet"
 
-/!=============================================================================
-/! JSCRIPTS
-/!=============================================================================
-script type="module"
-  | import hotwiredTurbo from 'https://cdn.skypack.dev/@hotwired/turbo@7.1.0';
-
-script type="module" src="javascript/application.js"
-
-
-/! Load all Stimulus Controllers
-- puts "Current dir: #{Dir.pwd}\n\n\n\n\n\n\n"
-- Dir.glob("app/public/javascript/controllers/*.js").each do |controller|  
-  - controller.slice!("app/public/")
-  script type="module" src=controller
-
 html
   head
     meta charset="utf-8"
@@ -47,11 +32,11 @@ html
 
   body
 
-    .container.u-text-center.login-screen  
-      form#loginForm action="/login" method="POST"
+    .container.login-screen  
+      form action="/login" method="POST"
     
-        .login-box.u-text-center
-          img.u-text-center src="img/cb_icon.jpg" style="width: 50px"
+        .login-box
+          img src="img/cb_icon.jpg"
           h3 PULPO CAVABIANCA
           .row
             label for="uname" user name or email

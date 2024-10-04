@@ -1,52 +1,63 @@
-/***********************************************************************************************
-NAV BAR
-/***********************************************************************************************/
+/* --------------------------------------------------------------------------- */
+/* NAVIGATION BAR																															 */
+/* --------------------------------------------------------------------------- */
+:root {
+	--dark-gray: #333333;
+	--medium-gray: rgb(85, 85, 85);
+	--light-blue: #62cbf4;
+}
 
-  
 .nav-bar {
-    margin: 0px;
-    background-color: #333333;
-    width:100%;
-    display: flex;
+	width:100%;
+	display: flex;
+	margin: 0px;
+	background-color: var(--dark-gray);
 }
 
-.nav-bar .menu-item{
-    color: rgb(213, 213, 213);
-    margin: 0px;
-    background-color: #333333;
-    border-width: 0px;
-    border-radius: 0px;
-    border-bottom-width: 4px;
-    border-color: #333333;
+.nav-bar-secondary {
+	background-color: var(--medium-gray);
 }
 
-.nav-bar-hidden {
-    margin: 0px;
-    background-color: #4d4d4d;
-    width:100%;
+a.menu-item 
+{
+	color: rgb(213, 213, 213);
+	margin: 0px;
+	background-color: var(--dark-gray);
+	border-width: 0px;
+	border-radius: 0px;
+	border-bottom-width: 4px;
+	border-color: var(--dark-gray);
 }
 
-.nav-bar-hidden .menu-item{
-    color: rgb(213, 213, 213);
-    margin: 0px;
-    background-color: #4d4d4d;
-    border-width: 0px;
-    border-radius: 0px;
-    border-bottom-width: 4px;
-    border-color:#4d4d4d;
+.menu-item-secondary
+{
+	color: rgb(213, 213, 213);
+	margin: 0px;
+	background-color: var(--medium-gray);
+	border-width: 0px;
+	border-radius: 0px;
+	border-bottom-width: 4px;
+	border-color: var(--medium-gray);
 }
+
 
 a.menu-item.user-name {
-    color: rgb(46, 182, 236);
-    text-decoration: none
+	color: var(--light-blue);
+	text-decoration: none
 }
 
 a.menu-item:hover {
-  color: rgb(46, 182, 236);
-  border-color: rgb(46, 182, 236);
-  text-decoration: none
+	color: var(--light-blue);
+	border-color: var(--light-blue);
+	text-decoration: none
+}
+
+a.menu-item-secondary:hover {
+	color: var(--light-blue);
+	border-color: var(--light-blue);
+	text-decoration: none
 }
 
 a.menu-item.user-name:hover {
-    border-color: #333333;
+	border-color:var(--dark-gray)
 }

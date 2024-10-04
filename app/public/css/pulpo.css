@@ -167,22 +167,25 @@ div.search-filters
 }
 
 .login-box {
-  /*position: absolute;
-  top: 50%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  
-  
-  */
-  max-width: 500px;
+  max-width: 400px;
   background-color:white; 
   opacity: 1; 
   padding: 30px 60px; 
   border: 1px solid;
   border-color: var(--light-gray);
-  border-radius:10px
+  border-radius:10px;
+  text-align: center
 }
+
+img.login-box
+{
+  width: 50px;
+}
+
+/**********************************************************************
+* FILES BOX
+**********************************************************************/
+
 
 .files-box
 {

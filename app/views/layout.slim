@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 
-/!=============================================================================
+/!--------------------------------------------------------------------------------
 /! FONTS
-/!=============================================================================
+/!--------------------------------------------------------------------------------
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,9 +13,10 @@ script src="https://kit.fontawesome.com/4f55c9eacf.js" crossorigin="anonymous"
 script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"
 link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet"
 
-/!=============================================================================
+/!--------------------------------------------------------------------------------
 /! JSCRIPTS
-/!=============================================================================
+/!--------------------------------------------------------------------------------
+
 script type="module"
   | import hotwiredTurbo from 'https://cdn.skypack.dev/@hotwired/turbo@7.1.0';
 
@@ -36,24 +37,26 @@ html
     meta name="description" content=""
     meta name="viewport" content="width=device-width, initial-scale=1"
 
-    //==================================================================================================
+    /!--------------------------------------------------------------------------------
     //STYLESHEETS
-    //==================================================================================================
+    /!--------------------------------------------------------------------------------
+
     link rel="stylesheet" href="/css/normalize.css"
     link rel="stylesheet" href="/css/skeleton.css"
     link rel="stylesheet" href="/css/pulpo.css"
     link rel="stylesheet" href="/css/menu_styles.css"
     
-
   body data-controller="navbar"
     
-    //==================================================================================================
+    /!--------------------------------------------------------------------------------
     // NAVIGATION BAR
-    //==================================================================================================
+    /!--------------------------------------------------------------------------------
     
     - if !@current_user.nil?
       div.row.nav-bar 
-        div.flex-left
+        
+        // elements of the nav bar aligned to the left
+        .flex-left
           
           a.button.menu-item data-turbo-frame="main_frame" href='/people' 
             i.fa-solid.fa-user
@@ -72,7 +75,6 @@ html
               i.fa-solid.fa-bed
               | &nbspVelas
           
-          
           - if @current_user.mail
             a.button.menu-item data-turbo-frame="main_frame" href='/mails' 
               i.fa-solid.fa-envelope
@@ -83,7 +85,9 @@ html
               i.fa-solid.fa-house
               | &nbspMatrix
 
-        div.flex-right  style="flex: 1"
+        // elements of the nav bar aligned to the left. The flex 1 property will set the with of the 
+        // elemnt to fill all the remaining space
+        .flex-right style="flex: 1"
           
           - if @current_user.admin?  
             a.button.menu-item data-action="click->navbar#toggle" 
@@ -95,27 +99,30 @@ html
           a.button.menu-item.user-name href="/logout" = "user: #{@current_user.uname}"
     
       - if @current_user.admin?      
-        div.row.nav-bar-hidden.hidden-frame data-navbar-target="navbar"
+        div.row.nav-bar.nav-bar-secondary.hidden-frame data-navbar-target="navbar"
+          
           .columns.twelve.u-text-right
       
-            a.button.menu-item data-turbo-frame="main_frame" href='/documents' 
+            a.button.menu-item-secondary data-turbo-frame="main_frame" href='/documents' 
               i.fa-solid.fa-file
               | &nbspDocuments
       
-            a.button.menu-item data-turbo-frame="main_frame" href='/users' 
+            a.button.menu-item-secondary data-turbo-frame="main_frame" href='/users' 
               i.fa-solid.fa-users
               | &nbspUsers
       
-            a.button.menu-item data-turbo-frame="main_frame" href='/modules' 
+            a.button.menu-item-secondary data-turbo-frame="main_frame" href='/modules' 
               i.fa-solid.fa-gear
               | &nbspModules
       
-            a.button.menu-item data-turbo-frame="main_frame" href='/entities' 
+            a.button.menu-item-secondary data-turbo-frame="main_frame" href='/entities' 
               i.fa-solid.fa-house
               | &nbspEntitites
       
-            
-    
+    /!--------------------------------------------------------------------------------
+    /! MAIN FRAME
+    /!--------------------------------------------------------------------------------
+
     - if !@current_user.nil? 
       turbo-frame id="main_frame" src=(@current_user.mail_user? ? "/mails" : "/people")
   
