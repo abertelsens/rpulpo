@@ -34,42 +34,42 @@ turbo-frame id="main_frame"
             // MAIL SEARCH FILTERS
             // ----------------------------------------------------------------------------------- 
             .row.flex-bottom
-              .container.search-filters.flex-center.flex-wrap
-                .flex-columns.u-text-left.medium-field.margin-right
-                  label.medium-field ctr
-                  select.medium-field data-mail-target="entity" name="entity" data-action="change-search#submit"
+              .container.search-filters.flex-center.flex-wrap style="padding-bottom:2rem"
+                .flex-columns.center-align.u-text-left.medium-field.margin-right
+                  label.no-margin ctr
+                  select.medium-field.no-margin data-mail-target="entity" name="entity" data-action="change-search#submit"
                     option selected=(@mails_query[:entity].to_i==-1) value=-1 all
                     - entities.each do |entity|
                       option  selected=(@mails_query[:entity].to_i==entity.id) value=entity.id = entity.sigla 
                   
-                .flex-columns.u-text-left.medium-field.margin-right
-                  label.medium-field tipo
-                  select.medium-field data-mail-target="direction" name="direction" data-action="change-search#submit"
+                .flex-columns.u-text-left.medium-field.margin-right.center-align
+                  label.medium-field.no-margin tipo
+                  select.medium-field.no-margin data-mail-target="direction" name="direction" data-action="change-search#submit"
                     option selected=(@mails_query[:direction].to_i==-1) value=-1 all
                     - Mail.directions.each do |direction|
                       option selected=(@mails_query[:direction].to_i==direction[1]) value=direction[1] = direction[0]
                 
-                .flex-columns.u-text-left.medium-field.margin-right
-                  label.medium-field año
-                  select.medium-field data-mail-target="year" name="year" data-action="change->search#submit"
+                .flex-columns.u-text-left.medium-field.margin-right.center-align
+                  label.no-margin año
+                  select.medium-field.no-margin data-mail-target="year" name="year" data-action="change->search#submit"
                     option selected=(@mails_query[:year].to_i==-1) value=-1 all
                     - Mail.get_years.each do |year|
                       option selected=(@mails_query[:year].to_i==year) value=year = year
                 
-                .flex-columns.u-text-left.xlong-field.margin-right
-                  label.xlong-field asunto
-                  input#search_string.xlong-field data-mail-target="search_field" autofocus="autofocus" type="search" data-people-target="search_field" autocomplete="off" placeholder="Buscar por asunto o protocolo" name="q" data-action="input->search#submit" value=@mails_query[:q]
+                .flex-columns.u-text-left.xlong-field.margin-right.center-align
+                  label.no-margin asunto
+                  input#search_string.xlong-field.no-margin data-mail-target="search_field" autofocus="autofocus" type="search" data-people-target="search_field" autocomplete="off" placeholder="Buscar por asunto o protocolo" name="q" data-action="input->search#submit" value=@mails_query[:q]
                 
-                .flex-columns.u-text-left.medium-field.margin-right
-                  label.medium-field status
-                  select.medium-field id="multiple" name="mail_status" data-mail-target="mail_status" data-action="change->search#submit"
+                .flex-columns.long-field.margin-right.center-align
+                  label.no-margin status
+                  select.medium-field.no-margin id="multiple" name="mail_status" data-mail-target="mail_status" data-action="change->search#submit"
                     option selected=(@mails_query[:mail_status].to_i==-1) value=-1 all
                     - Mail.mail_statuses.each do |st|  
                       option selected=(@mails_query[:mail_status]==st[0]) value=st[0] = st[0].humanize.downcase
                 
-                .flex-columns.u-text-left.medium-field
-                  label.medium-field asignado
-                  select.medium-field id="assigned" name="assigned" data-mail-target="assigned" data-action="change->search#submit"
+                .flex-columns.medium-field.center-align
+                  label.no-margin asignado
+                  select.medium-field.no-margin id="assigned" name="assigned" data-mail-target="assigned" data-action="change->search#submit"
                     option selected=(@mails_query[:assigned].to_i==-1) value=-1 all
                     - mail_users.each do |user|  
                       option selected=(@mails_query[:assigned].to_i==user.id) value=user.id = user.uname

@@ -1,6 +1,6 @@
-/***************************************************************************************************** 
-// FORM for Personal Information about a person
-/*****************************************************************************************************
+/----------------------------------------------------------------------------------------------------------------
+/ FORM for an Document
+/----------------------------------------------------------------------------------------------------------------
 
 turbo-frame id="main_frame"
   	
@@ -8,27 +8,27 @@ turbo-frame id="main_frame"
 		action="/document/#{(@object.nil? ? "new" : @object.id)}" 
 		enctype="multipart/form-data" 
 		method="POST" 
-		data-controller="modal mdfile" 
+		data-controller="modal mdfile form-validator" 
 		data-attachment-target="form"
 		]
 		
-		.container.full-screen-form.screen-box style="max-width:800px"
+		.container.screen-box.medium-form
 			
 			/----------------------------------------------------------------------------------------------------------------
-			// FORM HEADER
-			//----------------------------------------------------------------------------------------------------------------
+			/ FORM HEADER
+			/----------------------------------------------------------------------------------------------------------------
+
 			.row.u-text-center
 				h3 = (@object.nil? ? "NEW DOCUMENT" : "DOCUMENT: #{@object.name}")
 				
 			/----------------------------------------------------------------------------------------------------------------
+			/ FORM FIELDS
 			/----------------------------------------------------------------------------------------------------------------
-			//DOCUMENT FRAME
-			//----------------------------------------------------------------------------------------------------------------
 			.row
 		
 				.columns.six
 					label for="name" name
-					&text.u-full-width name="name" required="true" value=@object&.name
+					&text.u-full-width name="name" required="true" data-action="input->form-validator#validate" value=@object&.name
 				
 				.columns.six
 					label for="name" module
@@ -40,7 +40,6 @@ turbo-frame id="main_frame"
 				.columns.nine
 					label for="description" description
 					&text.u-full-width name="description" value=@object&.description
-			
 
 				.columns.three
 					label for="singlepage" page type
@@ -56,34 +55,40 @@ turbo-frame id="main_frame"
 				
 				.columns.three
 					label data-mdfile-target="pathlabel" &nbsp 
-					label.button.button-success.u-full-width data-mdfile-target="mdfile_btn" data-action="click->mdfile#select_file" = (@object&.path.blank? ? "load" : "change")
-					input accept=".md, .yaml, .typ" style="display:none" data-mdfile-target="mdfile" type="file" name="template" data-action="change->mdfile#load_file"
+					label.button.button-success.u-full-width[
+						data-mdfile-target="mdfile_btn" 
+						data-action="click->mdfile#select_file"] = (@object&.path.blank? ? "load" : "change")
+
+					input[
+						accept=".md, .yaml, .typ" 
+						style="display:none" 
+						data-mdfile-target="mdfile" 
+						type="file" name="template" 
+						data-action="change->mdfile#load_file"]
 				
 				.columns.three
 					label &nbsp 
 					- if @object
-						a.button.button-secondary.u-full-width data-mdfile-target="viewbtn" target="_blank" href=(@object&.path&.blank? ? "#" : "/document/#{@object.id}/viewtemplate") view
+						a.button.button-secondary.u-full-width[
+							data-mdfile-target="viewbtn" 
+							target="_blank" 
+							href=(@object&.path&.blank? ? "#" : "/document/#{@object.id}/viewtemplate")] = "view"
 					
-
 			/----------------------------------------------------------------------------------------------------------------
-			// FORM BUTTONS
-			//----------------------------------------------------------------------------------------------------------------
-			.row.center-align
-					- if (!@object.nil?) 
-						button.button-secondary data-action="click->modal#open_modal" delete 
-					button.button-primary type="submit" name="commit" value="save" save  
-					a.button.button-secondary formnovalidate="true" href="/documents" cancel
-					
+			/ ERROR FRAME
+			/----------------------------------------------------------------------------------------------------------------		
+			.row
+				.columns.twelve
+					.alert.alert-warning.u-full-width.hidden-frame data-form-validator-target="error_frame"
+			
+			/----------------------------------------------------------------------------------------------------------------
+			/ BUTTONS
+			/---------------------------------------------------------------------------------------------------------------
 
-			.modal data-modal-target="modal" 
-				.modal-content
-					.row.modal-row
-						h4.u-text-center
-							i.fa-solid.fa-triangle-exclamation
-							|&nbspConfirm Delete
-					.row.u-text-center style="margin-bottom:2rem; font-size:1rem"
-						p.modal-text  = "Are you sure you want to delete this document?"
-						p.modal-text = "This action cannot be undone!"
-					.row.center-align
-						button.button-danger formnovalidate="true" type="submit" name="commit" value="delete" delete 
-						button.button-secondary data-action="click->modal#close_modal" cancel
+			.row.flex-center
+				- if (@object&.can_be_deleted?)
+					button.button-secondary.margin-right data-action="click->modal#open_modal" delete  
+				button.button-primary.margin-right type="submit" name="commit" value="save" data-form-validator-target="submit_btn" save  
+				a.button.button-secondary formnovalidate="true" href="/documents" cancel
+
+			turbo-frame id="delete_modal" src = "/elements/delete_modal?object_type=document"

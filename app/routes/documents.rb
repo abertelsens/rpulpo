@@ -1,13 +1,23 @@
-# -----------------------------------------------------------------------------------------
-# ROUTES CONTROLLERS FOR THE DOCUMENT OBJECT
-# -----------------------------------------------------------------------------------------
+# documents.rb
+#---------------------------------------------------------------------------------------
+# FILE INFO
+
+# autor: alejandrobertelsen@gmail.com
+# last major update: 2024-10-05
+#---------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------
+# DESCRIPTION
+
+# ROUTES CONTROLLERS FOR THE documents TABLE
+#---------------------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------------------
 # GET ROUTES
 # -----------------------------------------------------------------------------------------
+
 # renders the documents frame
 get '/documents' do
-  @current_user = get_current_user
   partial :"frame/documents"
 end
 
@@ -38,16 +48,17 @@ end
 # -----------------------------------------------------------------------------------------
 
 post '/document/:id' do
-  @document = (params[:id]=="new" ? nil : Document.find(params[:id]))
+  document = Document.find(params[:id]) unless params[:id]=="new"
   case params[:commit]
-    when "save"
-      if @document.nil?
-        @document = Document.create_from_params params
-      else
-      	res = @document.update_from_params params
-        check_update_result res
-      end
-    when "delete" then @document.destroy
+    when "save" then (document==nil ? (Document.create params) : (document.update params))
+    when "delete" then document.destroy
   end
   redirect '/documents'
+end
+
+# Validates if the params received are valid for updating or creating a document object.
+# returns a JSON object of the form {result: boolean, message: string}
+post '/document/:id/validate' do
+	content_type :json
+	(Document.validate params).to_json
 end

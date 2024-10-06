@@ -11,6 +11,9 @@ class Document < ActiveRecord::Base
 
 	belongs_to 	    :pulpo_module
 
+	# the default scoped defines the default sort order of the query results
+	default_scope { order(pulpo_module_id: :asc, name: :asc) }
+
 	EXCEL_TEMPLATES_DIR = "app/engines-templates/excel"
 	TYPST_TEMPLATES_DIR = "app/engines-templates/typst"
 
@@ -27,22 +30,26 @@ class Document < ActiveRecord::Base
 		FileUtils.rm full_path if File.file? full_path
 	end
 
-	def self.create_from_params(params)
-		doc = Document.create Document.prepare_params params
+	# -----------------------------------------------------------------------------------------
+	# CRUD METHODS
+	# -----------------------------------------------------------------------------------------
+
+	def self.create(params)
+		doc = super(Document.prepare_params params)
 
 		# upddates the template file according to the new file received
 		# by the form (in params[:template])
 		doc.update_template_file(params[:template][:tempfile]) unless params[:template].nil?
 	end
 
-	def update_from_params(params)
-		if params[:name]!=name     # the name of the template did not change
-			if params[:template].nil?  		# no new file was provided. We just update the name of the current file
-				target = "#{TYPST_TEMPLATES_DIR}/#{params[:name]}.typ"
-				FileUtils.mv get_full_path, target
-			end
+	def update(params)
+		# the name of the template change but no new file was provided. We just update the name of the current file
+		# the file itself remains unchanged
+		if(params[:name]!=name && params[:template].nil?)
+			target = "#{TYPST_TEMPLATES_DIR}/#{params[:name]}.typ"
+			FileUtils.mv get_full_path, target
 		end
-		res = update Document.prepare_params params
+		res = super(Document.prepare_params params)
 		update_template_file(params[:template][:tempfile]) unless params[:template].nil?
 		return res
 	end
@@ -54,7 +61,6 @@ class Document < ActiveRecord::Base
 	def get_full_path
 		"#{TYPST_TEMPLATES_DIR}/#{path}"
 	end
-
 
 	def self.prepare_params(params)
 		file_suffix = "typ"
@@ -74,7 +80,6 @@ class Document < ActiveRecord::Base
 
 	def self.get_docs_of_user(user)
 		Document.includes(:pulpo_module).where(pulpo_module: user.get_allowed_modules)
-		#Document.includes(:pulpo_module).all.order(:pulpo_module_id, :name).select{|doc| user.get_allowed_modules.include? doc.pulpo_module }
 	end
 
 	def self.get_pdf_docs_of_user(user)
@@ -97,6 +102,23 @@ class Document < ActiveRecord::Base
 
 	def get_template_variables
 		File.read(get_full_path).scan(/\$\$\S*\$\$/).map{ |var| var.gsub("$$","")}
+	end
+
+	def can_be_deleted?
+		true
+	end
+
+	def self.validate(params)
+		warning_message = "Warning: there is already a document with that name."
+		name = params[:name].strip
+		found =
+			if (params[:id])=="new"
+				!Document.find_by(name: name).nil?
+			else
+				document = Document.find_by(name: name)
+				document.nil? ? false : (document.id!=params[:id].to_i)
+			end
+		found ? {result: false, message: warning_message} : {result: true}
 	end
 
 end # class end

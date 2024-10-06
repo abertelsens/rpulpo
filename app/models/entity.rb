@@ -1,16 +1,27 @@
-# -----------------------------------------------------------------------------------------
+# entity.rb
+#---------------------------------------------------------------------------------------
+# FILE INFO
+
+# autor: alejandrobertelsen@gmail.com
+# last major update: 2024-10-05
+#---------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------
 # DESCRIPTION
-# A class defininign an entity object. I.e. a ctr we receive mail from or send mail to.
-# -----------------------------------------------------------------------------------------
+
+# A class defining an entity object. i.e. a ctr we receive mail from or send mail to.
+#---------------------------------------------------------------------------------------
 
 class Entity < ActiveRecord::Base
 
 	has_many :mails,  dependent: :destroy
 
+	# the default scoped defines the default sort order of the query results
+	default_scope { order(sigla: :asc) }
+
 	CRSC = "crs+"
-# -----------------------------------------------------------------------------------------
-# CALLBACKS
-# -----------------------------------------------------------------------------------------
+	PARAMS = ["sigla", "name", "path"]
+
 # -----------------------------------------------------------------------------------------
 # CRUD METHODS
 # -----------------------------------------------------------------------------------------
@@ -19,32 +30,33 @@ class Entity < ActiveRecord::Base
 		super(Entity.prepare_params params)
 	end
 
+	def self.prepare_params(params)
+		params.select{ |key,val| PARAMS.include? key }
+	end
+
 	def update(params)
 		super(Entity.prepare_params params)
 	end
 
-	def self.create_update(params)
-		params[:id]=="new" ? Entity.create(params) : Entity.find(params[:id]).update(params)
-	end
-
-	def self.prepare_params(params)
-	{
-		sigla: 	params[:sigla],
-		name:		params[:name],
-		path:		params[:path]
-	}
-	end
-
-	def self.destroy(params)
-		Entity.find(params[:id]).destroy
+	def self.get_all
+		Entity.where.not(sigla: CRSC)
 	end
 
 	def can_be_deleted?
 		true
 	end
 
-	def self.get_all
-		Entity.where.not(sigla: CRSC)
+	def self.validate(params)
+		warning_message = "Warning: there is already an entity with that name."
+		sigla = params[:sigla].strip
+		found =
+			if (params[:id])=="new"
+				!Entity.find_by(sigla: sigla).nil?
+			else
+				entity = Entity.find_by(sigla: sigla)
+				entity.nil? ? false : (entity.id!=params[:id].to_i)
+			end
+		found ? {result: false, message: warning_message} : {result: true}
 	end
 
 end #class end

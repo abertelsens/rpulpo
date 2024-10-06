@@ -11,9 +11,9 @@
   --pale-blue: #e3f6ff;
   --dark-gray: rgb(64, 64, 64);
   --medium-gray: rgb(85, 85, 85);
-  --medium-orange :#ffcc00;
-  --light-orange :#ffe6c6;
-  --light-green :#c3f8be;
+  --medium-orange: #f9d66e;
+  --light-orange: #ffe6c6;
+  --light-green: #c3f8be;
 }
 
 html, body {
@@ -26,8 +26,6 @@ html, body {
   padding: 0;
   line-height: 1.4rem
 }
-
-
 
 form {
   margin:0px;
@@ -67,9 +65,18 @@ h4.matrix-settings-header:hover
 }
 
 .flex-columns{
-flex-direction: column;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 }
 
+
+.flex-rows{
+  display: flex;
+  flex-direction: column;
+}
+
+  
 .flex-wrap {
   flex-wrap: wrap;
 }
@@ -94,6 +101,14 @@ flex-direction: column;
   justify-content: right; 
   align-items: right;
 }
+
+.flex-top
+{
+  display:flex;
+  justify-content: center; 
+  vertical-align:top;
+}
+
 
 .flex-bottom
 {
@@ -185,7 +200,6 @@ img.login-box
 /**********************************************************************
 * FILES BOX
 **********************************************************************/
-
 
 .files-box
 {
@@ -328,6 +342,22 @@ a.button.no-border
   width:1200px;
 }
 
+.small-form {
+  max-width: 800px
+}
+
+.medium-form {
+  max-width: 800px
+}
+
+.large-form {
+  max-width: 1000px
+}
+
+.x-large-form {
+  max-width: 1200px
+}
+
 .screen-box {
   margin-top: 50px;
   min-width: 400px;
@@ -398,7 +428,8 @@ a.button.no-border
 /*************************************************************************************
  TABLES
  **************************************************************************************/
-.table-container {
+
+ .table-container {
   display: flex;
   justify-content: center;
   max-height: 60vh;
@@ -412,7 +443,6 @@ a.button.no-border
     max-height: 55vh;;
   }
 }
-
 
 .table-table {
   display: table;
@@ -461,6 +491,17 @@ a.button.no-border
   color: initial;
 }
 
+/* Any div that is a child of a div with a table-row-head class. It is the same
+definition as table-cell-head*/
+.table-row-head div
+{
+  text-overflow: ellipsis;
+  display: table-cell;
+  padding: .1rem .5rem 1px .5rem;
+  border-bottom: 1px solid var(--dark-gray);
+  font-weight: 600;
+}
+
 .table-cell-head {
   text-overflow: ellipsis;
   display: table-cell;
@@ -473,7 +514,9 @@ a.button.no-border
   font-size: 1rem;
 }
 
-.table-cell-body {
+/* Any div that is a child of a div with a table-row-body class. It is the same
+definition as table-cell-body*/
+.table-row-body div{
   max-height: 1rem;
   text-overflow: ellipsis;
   display: table-cell;
@@ -481,6 +524,13 @@ a.button.no-border
   border-bottom: 1px solid var(--light-gray);
 }
 
+.table-cell-body {
+  max-height: 1rem;
+  text-overflow: ellipsis;
+  display: table-cell;
+  padding: .2rem .5rem .1rem .5rem;
+  border-bottom: 1px solid var(--light-gray);
+}
 
 
 a.table-row-body{
@@ -500,7 +550,6 @@ a.table-cell-body-selected {
   font-weight: 800;
   /*background-color: var(--light-orange);*/
 }
-
 
 
 .matrix-frame-body {
@@ -818,9 +867,8 @@ h5, h6 {
 }
 
 h5 {
+  font-family: 'Bebas Neue';
   line-height: normal;
-  margin-top: 20px;
-  margin-bottom: 15px;
 }
 
 h6 {
@@ -885,8 +933,8 @@ ALERTS
 }
 
 .alert.alert-warning {
-  background:#ffcc00;
-  border-color: var(var(--light-gray));
+  background: var(--medium-orange);
+  border-color: var(--light-gray)
 }
 
 .alert.alert-notice {
@@ -969,27 +1017,23 @@ a.button.active {
   border-radius:10px
 }
 
-.modal-row
-{
-  margin-bottom:2rem
-}
-
-.modal-text
+div.modal p
 {
   font-size: .9rem;
 }
 
+
+div.modal-content h4
+{
+  text-align: center;
+  width: 100%;
+}
 
 .modal-copy-area
 {
   width: 50rem;
   height: 30rem;
 }
-
-.ss-main {
-  height: 2.5rem;
-}
-
 /*************************************************************************
  UTILITY CLASSES
 **************************************************************************/
@@ -1016,10 +1060,26 @@ a.button.active {
   justify-content: center; 
 }
 
+
+.top-align
+{
+  display:flex;
+  gap: 10px;
+  align-items: top;
+  justify-content: center; 
+}
+
+
 .no-border
 {
   border: none;
   border-bottom: 0px
+}
+
+
+.no-padding
+{
+  padding: 0;
 }
 
 .margin-top {

@@ -4,9 +4,9 @@
 
 turbo-frame id="main_frame"
   	
-	form#personForm action="/person/#{@person.id}/personal" method="POST"
+	form action="/person/#{@person.id}/personal" method="POST"
 	
-		.container.full-screen-form.screen-box
+		.container.x-large-form.screen-box
 			
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM HEADER
@@ -16,10 +16,10 @@ turbo-frame id="main_frame"
 					img.person-photo.small id="photo_image" src= "photos/#{@person.id}.jpg"
 				- else
 					img.person-photo.small id="photo_image" src= "photos/avatar.jpg"
+			
 			.row.u-text-center
 				h3 = "#{@person.short_name} - Datos Personales"
 						
-				
 			/----------------------------------------------------------------------------------------------------------------
 			//PERSONAL FRAME
 			//----------------------------------------------------------------------------------------------------------------

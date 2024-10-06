@@ -1,0 +1,73 @@
+turbo-frame id="nav_bar" 
+
+  .container.no-padding data-controller="navbar" data-turbo-frame="main_frame"
+    
+    - if !@current_user.nil?
+      div.row.nav-bar 
+        
+        // elements of the nav bar aligned to the left
+        .flex-left
+          
+          a.button.menu-item data-turbo-frame="main_frame" href='/people' 
+            i.fa-solid.fa-user
+            | &nbspPeople
+          
+          - if @current_user.admin?
+            a.button.menu-item data-turbo-frame="main_frame" href='/crs' crs+
+          
+          - if @current_user.allowed?("rooms")
+            a.button.menu-item data-turbo-frame="main_frame" href='/rooms' 
+              i.fa-solid.fa-bed
+              | &nbspRooms
+          
+          - if @current_user.allowed?("velas")
+            a.button.menu-item data-turbo-frame="main_frame" href='/velas' 
+              i.fa-solid.fa-bed
+              | &nbspVelas
+          
+          - if @current_user.mail
+            a.button.menu-item data-turbo-frame="main_frame" href='/mails' 
+              i.fa-solid.fa-envelope
+              | &nbspCorreo
+          
+          - if @current_user.allowed?("matrix")  
+            a.button.menu-item data-turbo-frame="main_frame" href='/matrix' 
+              i.fa-solid.fa-house
+              | &nbspMatrix
+
+        // elements of the nav bar aligned to the left. The flex 1 property will set the with of the 
+        // element to fill all the remaining space
+        .flex-right style="flex: 1"
+          
+          - if @current_user.admin?  
+            a.button.menu-item data-action="click->navbar#toggle" 
+              i.fa-solid.fa-gear
+              | &nbspAdmin
+          
+          a.button.menu-item data-turbo-frame="main_frame" href='/help' 
+            i.fa-solid.fa-question
+            | &nbspHelp
+          a.button.menu-item.user-name href="/logout" = "user: #{@current_user.uname}"
+    
+      - if @current_user.admin?      
+        div.row.nav-bar.nav-bar-secondary.hidden-frame data-navbar-target="navbar"
+          
+          .columns.twelve.u-text-right
+      
+            a.button.menu-item-secondary data-turbo-frame="main_frame" href='/documents' 
+              i.fa-solid.fa-file
+              | &nbspDocuments
+      
+            a.button.menu-item-secondary data-turbo-frame="main_frame" href='/users' 
+              i.fa-solid.fa-users
+              | &nbspUsers
+      
+            a.button.menu-item-secondary data-turbo-frame="main_frame" href='/modules' 
+              i.fa-solid.fa-gear
+              | &nbspModules
+      
+            a.button.menu-item-secondary data-turbo-frame="main_frame" href='/entities' 
+              i.fa-solid.fa-house
+              | &nbspEntitites
+        
+      

@@ -1,6 +1,6 @@
 / ----------------------------------------------------------------------------------------
 / FORM for a Model Object
-/ Uses a validation controller tirggered by changes in the uname field
+/ Uses a validation controller tirggered by changes in the identifier field
 /
 / last update: 2024-02-23 
 / ----------------------------------------------------------------------------------------
@@ -46,37 +46,20 @@ turbo-frame id="main_frame"
 					&text.u-full-width name="description" value=@object&.description
 					
 			
-			/ ----------------------------------------------------------------------------------
-			/ ALERT FRAME
-			/ ----------------------------------------------------------------------------------
-			.row	
-				.columns.twelve 
-					.alert.alert-warning.hidden-frame data-form-validator-target="error_frame"
+			/----------------------------------------------------------------------------------------------------------------
+			/ ERROR FRAME
+			/----------------------------------------------------------------------------------------------------------------		
+			.row
+				.columns.twelve
+					.alert.alert-warning.u-full-width.hidden-frame data-form-validator-target="error_frame"
 			
 			/-----------------------------------------------------------------------------------
 			/ BUTTONS
 			/-----------------------------------------------------------------------------------
-			.row.center-align
-					- if (!@object.nil?) 
-						button.button-secondary data-action="click->modal#open_modal" delete  
-					button.button-primary[
-						type="submit"
-					 	name="commit"
-					 	value="save"
-					 	data-form-validator-target="submit_btn"
-					] save  
+			.row.flex-center
+				- if (@object&.can_be_deleted?)
+					button.button-secondary.margin-right data-action="click->modal#open_modal" delete  
+				button.button-primary.margin-right type="submit" name="commit" value="save" data-form-validator-target="submit_btn" save  
+				a.button.button-secondary formnovalidate="true" href="/modules" cancel
 					
-					a.button.button-secondary formnovalidate="true" href="/modules" cancel
-					
-			.modal data-modal-target="modal" 
-				.modal-content
-					.row.modal-row
-						h4.u-text-center
-							i.fa-solid.fa-triangle-exclamation
-							|&nbspConfirm Delete
-					.row.u-text-center style="margin-bottom:2rem; font-size:1rem"
-						p.modal-text  = "Are you sure you want to delete this module?"
-						p.modal-text = "This action cannot be undone!"
-					.row.center-align
-						button.button-danger formnovalidate="true" type="submit" name="commit" value="delete" delete 
-						button.button-secondary data-action="click->modal#close_modal" cancel
+			turbo-frame id="delete_modal" src = "/elements/delete_modal?object_type=module"

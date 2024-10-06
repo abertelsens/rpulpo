@@ -22,6 +22,9 @@ class User < ActiveRecord::Base
 	has_many	:assignedmails, :through => :assigned_mails, :source => :mail , dependent: :destroy
 	has_many 	:module_users, dependent: :destroy
 
+	accepts_nested_attributes_for :module_users #, allow_destroy: true
+
+
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(uname: :asc) }
 
@@ -33,38 +36,42 @@ class User < ActiveRecord::Base
 # -----------------------------------------------------------------------------------------
 
 	def self.create(params)
-		# creates the user
 		user = super(User.prepare_params params)
-
-		# creates all the modules permissions for the user.
-		if params["module"].present?
-			modules = PulpoModule.find(params["module"].keys)
-			module_users = modules.each do |mod|
-				ModuleUser.create(user: user, pulpo_module: mod, modulepermission: params["module"][mod.id.to_s])
-			end
-		end
 	end
 
 	def update(params)
-		super(User.prepare_params params)
-		module_users.each{|mod| mod.update(modulepermission: params["module"][mod.pulpo_module_id.to_s])}
-	end
-
-	def self.create_update(params)
-		params[:id]=="new" ? User.create(params) : User.find(params[:id]).update(params)
+		super(User.prepare_params(params, self))
 	end
 
 	def self.destroy(params)
 		User.find(params[:id]).destroy
 	end
 
-	def self.prepare_params(params)
+	def self.prepare_params(params, user=nil)
 	{
-		uname: 			params[:uname],
-  	password: 	params[:password],
-		usertype:		params[:usertype],
-		mail:				!params[:mail].nil?
+		uname: 										params[:uname],
+  	password: 								params[:password],
+		usertype:									params[:usertype],
+		mail:											!params[:mail].nil?,
+		module_users_attributes:	User.prepare_modules_attributes(params["module"],user)
 	}
+	end
+
+	def update_modules(modules_hash)
+		modules = PulpoModule.find(modules_hash.keys)
+		module_users = modules.each do |mod|
+			ModuleUser.create(user: self, pulpo_module: mod, modulepermission: modules_hash[mod.id.to_s])
+		end
+	end
+
+	def self.prepare_modules_attributes(module_params, user=nil)
+		if user!=nil
+			current_modules = user.module_users.all.map {|mu| { mu.pulpo_module_id => mu.id } }
+			current_modules = current_modules.inject(:merge)
+			module_params.keys.map {|mod_id| {id: current_modules[mod_id.to_i], pulpo_module_id: mod_id, modulepermission: module_params[mod_id]} }
+		else
+			module_params.keys.map {|mod_id| { pulpo_module_id: mod_id, modulepermission: module_params[mod_id]} }
+		end
 	end
 
 	# -----------------------------------------------------------------------------------------

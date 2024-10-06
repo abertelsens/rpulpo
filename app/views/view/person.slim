@@ -1,40 +1,54 @@
 turbo-frame id="main_frame"
   - user_is_person = (@person.email==@current_user.uname)
-  .container.screen-box style="display: flex; justify-content: center;"
-    .columns.one style="display: flex; flex-direction: column;" 
+  
+  .container.screen-box.flex-columns.top-align
+  
+    .columns.one.flex-rows
+  
       - if (@current_user.usertype!="guest"|| user_is_person)
-        a.button.link-button href="/person/#{@person.id}/general" = "general"
+        a.button.link-button.u-full-width.no-padding href="/person/#{@person.id}/general" = "general"
       - ["study","personal","crs"].each do |mod|
         - if ((@current_user.allowed? mod) || user_is_person)
-          a.button.link-button href="/person/#{@person.id}/#{mod}" = mod
-    .columns.two.u-text-center.margin-left
+          a.button.link-button.u-full-width.no-padding href="/person/#{@person.id}/#{mod}" = mod
+  
+    /----------------------------------------------------------------------------------------------------------------
+    / PICTURE FRAME
+    /----------------------------------------------------------------------------------------------------------------
+
+    .columns.two.u-text-center
       - if @person && File.exist?("app/public/photos/#{@person.id}.jpg")
 				img.person-photo.medium id="photo_image" src= "photos/#{@person.id}.jpg"
       - else
 				img.person-photo.medium id="photo_image" src= "photos/avatar.jpg"
     
-    .columns.four.margin-left
-      .row
-        h3.u-text-center style="margin-bottom:0px" = "#{@person.short_name}"
+    /----------------------------------------------------------------------------------------------------------------
+    /GENERAL FRAME
+    /----------------------------------------------------------------------------------------------------------------
 
-      /----------------------------------------------------------------------------------------------------------------
-      //GENERAL FRAME
-      //----------------------------------------------------------------------------------------------------------------
-      
+    .columns.three
+      .row
+        
+      .row
+        h3.u-text-center.no-margin style="margin-bottom:0px" = "#{@person.short_name}"
+  
       .row.u-text-center style="margin-bottom:10px"
           - if @person.ctr!="cavabianca"
             h6 = "#{@person.ctr.humanize(capitalize: false)}"
           - else
             h6 = "#{@person.ctr.humanize(capitalize: true)} - #{@person.room&.room} (#{@person.room&.house})"
+      
       .row
         .columns.three.gray-label = "email:"
         .columns.nine.gray-label = "#{@person.email}"
+      
       .row  
         .columns.three.gray-label = "teléfono:"
         .columns.nine.gray-label = "#{@person.phone}"
+      
       .row  
         .columns.three.gray-label = "grupo:"
         .columns.nine.gray-label = "#{@person.group}"
+      
       .row  
         .columns.three.gray-label = "año:"
         .columns.nine.gray-label = "#{@person.year}"
@@ -43,13 +57,12 @@ turbo-frame id="main_frame"
         - if !@person.celebration_info.blank?    
           .columns.nine.offset-by-three.gray-label = "celebra #{@person.celebration_info}"
       
-      .row.u-text-center
-        .columns.six.offset-by-three
-          a.button.button-primary.u-full-width style="margin-top:40px" autofocus="true" tabindex="0" href="/people" OK
+      .row.center-align
+        a.button.button-primary style="margin-top:40px" autofocus="true" tabindex="0" href="/people" OK
 
-    .columns.two.margin-left
+    .columns.two
       .row
-        h6 = "DOCUMENTS"
+        h5.margin-bottom = "DOCUMENTS"
       - (Document.get_pdf_docs_of_user @current_user).each do |doc|
         .row
           a.table-cell-body.menu-link  style="padding-left:0" href="/people/#{@person.id}/document/#{doc.id}" target=(doc.engine=="excel" ? "_self" : "_blank") = doc.name

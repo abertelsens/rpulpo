@@ -8,7 +8,6 @@ class Period < ActiveRecord::Base
 
   after_create :create_period_days
 
-  # callback before update. We check if the period dates have changed
   before_update do
     old_period = (self.s_date_was..self.e_date_was).to_a
     new_period = (self.s_date..self.e_date).to_a
@@ -26,7 +25,6 @@ class Period < ActiveRecord::Base
 	end
 
   def create_period_days
-    puts "creating days for period"
     default_schedule = Schedule.find_by(name:"L")
     (s_date..e_date).each {|date| DaySchedule.create(period: self, date: date, schedule: default_schedule)}
   end
@@ -78,9 +76,8 @@ class Period < ActiveRecord::Base
 
   # gets all the day_schedules of the week corresponding to a a sepcific date
   def get_week(week_index)
-
     monday = get_previous_day(s_date,1) + (week_index-1) * 7
-    return DaySchedule.where(:date => monday..monday+6).order(date: :asc)
+    DaySchedule.where(:date => monday..monday+6).order(date: :asc)
 
   end
 
@@ -90,9 +87,7 @@ class Period < ActiveRecord::Base
 
 
   def contains?(ds)
-    puts "cheking if #{ds.date} is between  #{s_date} and  #{e_date}"
-    puts ds.date.between?(s_date,e_date)
-    return ds.date.between?(s_date,e_date)
+    ds.date.between?(s_date,e_date)
   end
 
 

@@ -132,7 +132,7 @@ end
 get '/matrix/period/:id/task_assignment/table' do
 	@period_id = params[:id].to_i
 	@week = (params[:week]=nil? ? 1 : params[:week].to_i)
-	@object = Period.find(params[:id])
+	@period = Period.find(params[:id])
 	@day_schedules = @object.get_week @week
 	partial :"table/matrix/task_assignment"
 end

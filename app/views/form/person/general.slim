@@ -7,7 +7,7 @@ turbo-frame id="main_frame"
   	
 	form#personForm action="/person/#{@person ? @person.id : "new"}/general" enctype="multipart/form-data" method="POST" data-controller="modal attachment" data-attachment-target="form"
 	
-		.container.full-screen-form.screen-box
+		.container.x-large-form.screen-box
 			
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM HEADER
@@ -16,31 +16,50 @@ turbo-frame id="main_frame"
 				.columns.ten.offset-by-one.u-text-center
 					
 					// Image of the Person
-					input accept=".jpg" type="file" style="display:none" name="photo_file" id="photo_file" data-attachment-target="photo_file" data-attachment-id-param=(@person ? @person.id : "") data-action="change->attachment#load_image"
-						- if @person && File.exist?("app/public/photos/#{@person.id}.jpg")
-							img.person-photo.small id="photo_image" src= "photos/#{@person.id}.jpg" data-attachment-target= "photo_image" data-attachment-id-param=@person.id data-action="click->attachment#select_image"
-							
-						- else
-							img.person-photo.small id="photo_image" src= "photos/avatar.jpg" data-attachment-target= "photo_image" data-attachment-id-param=(@person ? @person.id : "") data-action="click->attachment#select_image"
-	
-					h3 = (@person ? @person.short_name: "Nueva Ficha")
+					input [
+						accept = ".jpg"
+						type = "file"	
+						style="display:none"
+						name = "photo_file"
+						data-attachment-target = "photo_file"
+						data-attachment-id-param = (@person ? @person.id : "")
+						data-action = "change->attachment#load_image" ]
+					     
+						- if (@person && File.exist?("app/public/photos/#{@person.id}.jpg"))
+							img.person-photo.small [
+								src = "photos/#{@person.id}.jpg" 
+								data-attachment-target = "photo_image" 
+								data-attachment-id-param = @person.id 
+								data-action = "click->attachment#select_image" ]
 						
+						- else
+							img.person-photo.small [
+								src = "photos/avatar.jpg" 
+								data-attachment-target = "photo_image" 
+								data-attachment-id-param = (@person ? @person.id : "") 
+								data-action="click->attachment#select_image" ]
+
+					h3 = (@person ? @person.short_name : "Nueva Ficha")
 								
 			/----------------------------------------------------------------------------------------------------------------
 			// FIELDS
 			//----------------------------------------------------------------------------------------------------------------
 			.row	
+				
 				.columns.two
 					label.tooltip for="title" título
 						<i class="fa-sharp fa-regular fa-circle-question"></i>
 						<span class="tooltiptext">Ej: D., Fr.</span>
 					&text.u-full-width name="title" value=@person&.title
+				
 				.columns.three
 					label for="name" nombre
 					&text.u-full-width name="first_name" required="true" value=@person&.first_name data-validate-target="field" data-action="input->validate#validate"					
+				
 				.columns.three
 					label for="family_name" apellidos
 					&text.u-full-width name="family_name" required="true" value=@person&.family_name data-validate-target="field" data-action="input->validate#validate"
+				
 				.columns.four
 					label for="short_name" nombre completo (forma breve)
 					&text.u-full-width name="short_name" required="true" value=@person&.short_name
@@ -87,55 +106,56 @@ turbo-frame id="main_frame"
 						<i class="fa-sharp fa-regular fa-circle-question"></i>
 						<span class="tooltiptext">(número de ropa)</span>
 					&text.u-full-width name="clothes" value=@person&.clothes
+				
 				.columns.two
 					label.tooltip for="telephone" phone
 						<i class="fa-sharp fa-regular fa-circle-question"></i>
 						<span class="tooltiptext">Ej: +9725425901051</span>
 					&text.u-full-width name="phone" value=@person&.phone
+				
 				.columns.three
 					label for="email" email
 					&email.u-full-width name="email" value=@person&.email
 		
 			.row	
+				
 				.columns.two
 					label for="birth" fecha cumpleaños
 					&date.u-full-width name="birth" value=@person&.birth
+				
 				.columns.two
 					label for="arrival" fecha de llegada
 					&date.u-full-width name="arrival" value=@person&.arrival
+				
 				.columns.two
 					label for="departure" fecha de salida
 					&date.u-full-width name="departure" value=@person&.departure
+				
 				.columns.five
 					label.tooltip for="celebration_info" celebración
 						<i class="fa-sharp fa-regular fa-circle-question"></i>
 						<span class="tooltiptext">Ej: Celebra su (santo, cumpleaños) el 15.08</span>
 					&text.u-full-width name="celebration_info" value=@person&.celebration_info
+				
 				.columns.one 
 				label alumno
 				select name="student"
 					option selected=@person&.student value="true" sí
 					option selected=!@person&.student value="false" no
 		
-				/----------------------------------------------------------------------------------------------------------------
-				// FORM BUTTONS
-				//----------------------------------------------------------------------------------------------------------------
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM BUTTONS
+			//----------------------------------------------------------------------------------------------------------------
+			
 			row.center-align
 				- if (!@person.nil?) 
 					button.button-secondary data-action="click->modal#open_modal" delete
+				
 				button.button-primary autofocus="true" type="submit" data-validate-target="submit_btn" name="commit" value="save" save  
 				a.button.button-secondary formnovalidate="true" href=(@person ? "/person/#{@person.id}" : "/people") cancel
 
-
-			.modal data-modal-target="modal" 
-				.modal-content
-					.row.modal-row
-						h4.u-text-center
-							i.fa-solid.fa-triangle-exclamation
-							|&nbspConfirm Delete
-					.row.u-text-center style="margin-bottom:2rem; font-size:1rem"
-						p.modal-text  = "Are you sure you want to delete this person? All the related data will be erased."
-						p.modal-text = "This action cannot be undone!"
-					.row.center-align
-						button.button-danger formnovalidate="true" type="submit" name="commit" value="delete" delete 
-						button.button-secondary data-action="click->modal#close_modal" cancel	
+			/----------------------------------------------------------------------------------------------------------------
+			// DELETE CONFIRMATION MODAL FORM
+			//----------------------------------------------------------------------------------------------------------------
+			
+			turbo-frame id="delete_modal" src = "/elements/delete_modal?object_type=person"

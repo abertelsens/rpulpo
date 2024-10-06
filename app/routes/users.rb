@@ -35,9 +35,10 @@ post '/user/:id/validate' do
 end
 
 post '/user/:id' do
+  user = User.find(params[:id]) unless params[:id]=="new"
   case params[:commit]
-    when "save" then User.create_update params
-    when "delete" then User.destroy params
+    when "save" then (user==nil ? (User.create params ): (user.update params))
+    when "delete" then user.destroy
   end
   redirect '/users'
 end

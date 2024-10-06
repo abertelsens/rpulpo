@@ -52,12 +52,27 @@ a.menu-item:hover {
 	text-decoration: none
 }
 
+a.menu-item:focus {
+	color: rgb(213, 213, 213);
+	border-color: var(--dark-gray);
+}
+
 a.menu-item-secondary:hover {
 	color: var(--light-blue);
 	border-color: var(--light-blue);
 	text-decoration: none
 }
 
+a.menu-item-secondary:focus {
+	color: rgb(213, 213, 213);
+	border-color: var(--medium-gray);
+}
+
+
 a.menu-item.user-name:hover {
 	border-color:var(--dark-gray)
+}
+
+.hidden-frame {
+  display:none;
 }

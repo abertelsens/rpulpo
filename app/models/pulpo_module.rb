@@ -33,10 +33,6 @@ class PulpoModule < ActiveRecord::Base
 		super(PulpoModule.prepare_params params)
 	end
 
-	def self.create_update(params)
-		params[:id]=="new" ? PulpoModule.create(params) : PulpoModule.find(params[:id]).update(params)
-	end
-
 	def self.destroy(params)
 		PulpoModule.find(params[:id]).destroy
 	end
@@ -45,19 +41,27 @@ class PulpoModule < ActiveRecord::Base
 		params.except("commit", "id")
 	end
 
+	def can_be_deleted?
+		true
+	end
+
 # -----------------------------------------------------------------------------------------
 # VALIDATIONS
 # -----------------------------------------------------------------------------------------
 
-	# Validates the parameters from the user form.
+	# Validates the parameters from the modules form.
 	# Checks whether there is already a user with the provided user name
 	def self.validate(params)
-
-		# tries to find an existing module with the name provided.
-		pmodule  = PulpoModule.find_by(identifier: params[:identifier])
-
-		validation_result = pmodule.nil? ? true : pmodule.id==params[:id].to_i
-		validation_result ? {result: true} : {result: false, message: "module name already in use"}
+		warning_message = "Warning: there is already a module with that name."
+		identifier = params[:identifier].strip
+		found =
+			if (params[:id])=="new"
+				!PulpoModule.find_by(identifier: identifier).nil?
+			else
+				pmodule = PulpoModule.find_by(identifier: identifier)
+				pmodule.nil? ? false : (pmodule.id!=params[:id].to_i)
+			end
+		found ? {result: false, message: warning_message} : {result: true}
 	end
 
 end #class end

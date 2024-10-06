@@ -7,7 +7,6 @@
 # -----------------------------------------------------------------------------------------
 
 get '/modules' do
-	@current_user = get_current_user
 	partial :"frame/modules"
 end
 
@@ -32,9 +31,10 @@ post '/module/:id/validate' do
 end
 
 post '/module/:id' do
-  case params[:commit]
-    when "save" 	then 	PulpoModule.create_update params
-    when "delete" then 	PulpoModule.destroy params
-  end
+  pmodule = PulpoModule.find(params[:id]) unless params[:id]=="new"
+	case params[:commit]
+		when "save" then (pmodule==nil ? (PulpoModule.create params ): (pmodule.update params))
+		when "delete" then pmodule.destroy
+	end
   redirect '/modules'
 end

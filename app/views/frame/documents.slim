@@ -1,6 +1,7 @@
 turbo-frame id="main_frame" 
   
   .container.container-frame
+    
     .row.header-frame.u-text-center
       h3 DOCUMENTS
     
@@ -8,6 +9,6 @@ turbo-frame id="main_frame"
       turbo-frame id="documents_table" data-people-target="documents_table" src="/documents/table"
 
     .row.u-text-center.margin-top
-      a.button.button-primary.button-medium href="/document/new" data-turbo-frame="editor_frame"
+      a.button.button-primary href="/document/new" data-turbo-frame="main_frame"
         i.fa-solid.fa-plus style="font-size:small"
         |&nbspnew

@@ -1,14 +1,15 @@
 turbo-frame id="entities_table"
   div.table-container
     div.table-table  
+      
       div.table-row-head
-        div.table-cell-head.medium-field = "sigla"
-        div.table-cell-head.long-field = "name"
+        .medium-field = "sigla"
+        .long-field = "name"
 
       - @objects.each.with_index do |object, index|
-        a.table-row-body href="/entity/#{object.id}" data-turbo-frame="main_frame"  style="cursor:pointer;"
-          div.table-cell-body  = object.sigla
-          div.table-cell-body = object.name
+        a.table-row-body href="/entity/#{object.id}" data-turbo-frame="main_frame"
+          div = object.sigla
+          div = object.name
          
               
 

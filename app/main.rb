@@ -104,6 +104,15 @@ get '/' do
 	@current_user ? (slim :home) : (redirect '/login')
 end
 
+get '/elements/navbar' do
+	@current_user = get_current_user
+	partial :"elements/navbar"
+end
+
+get '/elements/delete_modal' do
+	@object_type = params[:object_type]
+	partial :"elements/delete_modal"
+end
 #---------------------------------------------------------------------------------------
 # LOGIN ROUTES
 #---------------------------------------------------------------------------------------
