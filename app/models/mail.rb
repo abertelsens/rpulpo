@@ -10,17 +10,17 @@ class Mail < ActiveRecord::Base
 	CRSC = "crs+"
 	DEFAULT_PROTOCOL = "crs+ XX/XX"
 
-	enum direction:    		{ entrada: 0, salida: 1}
-	enum mail_status:    	{ pendiente: 0, en_curso: 1, terminado: 2 }
+	enum direction:    		{ entrada: 		0, salida: 		1}
+	enum mail_status:    	{ pendiente: 	0, en_curso: 	1, terminado: 2 }
 
 	belongs_to 	:entity
-	has_many 	:assigned_mails, dependent: :destroy
-	has_many 	:assignedusers, :through => :assigned_mails, :source => :user, dependent: :destroy
-	has_many 	:references, dependent: :destroy
-	has_many 	:refs,	:through => :references, 	:source => :reference
-	has_many 	:answers, dependent: :destroy
-	has_many 	:ans,	:through => :answers, :source => :answer
-	has_many 	:mail_files, dependent: :destroy
+	has_many		:assigned_mails, 	dependent: :destroy
+	has_many 		:assignedusers, 	:through => :assigned_mails, 	:source => :user, 		dependent: :destroy
+	has_many 		:references, 			dependent: :destroy
+	has_many 		:refs,						:through => :references, 			:source => :reference
+	has_many 		:answers, 				dependent: :destroy
+	has_many 		:ans,							:through => :answers, 				:source => :answer
+	has_many 		:mail_files, 			dependent: :destroy
 
 # -----------------------------------------------------------------------------------------
 # CALLBACKS
@@ -29,7 +29,7 @@ class Mail < ActiveRecord::Base
 	# after a mail object is created we add it to the unreadmails table to each one of the
 	# mail users
 	after_create do |mail|
-		User.mail_users.each{|user| UnreadMail.create(user: user, mail: mail)}
+		UnreadMail.create(User.mail_users.map {|user| {user: user, mail: mail} })
 	end
 
 # -----------------------------------------------------------------------------------------
@@ -104,7 +104,7 @@ class Mail < ActiveRecord::Base
 		{result: res, data: r}
 	end
 
-	# users arry contains an array of users ids
+	# users array contains an array of users ids
 	def set_assigned_users(users_array)
 		users_array.nil? ? AssignedMail.where(mail: self).destroy_all : update(assignedusers: User.find(users_array))
 	end
@@ -123,16 +123,16 @@ class Mail < ActiveRecord::Base
 		current_year = Date.today.year
 		# get all the outgoing mails from the entity this year
 		mails = Mail.where(entity: entity, direction: "salida").and(Mail.where("date_part('year', date)=#{current_year}"))
-		protocols = mails.map {|mail| mail.get_protocol_serial[0].to_i }
-		"crs+#{entity.sigla=="cg" ? "" : "-"+entity.sigla} #{protocols.max + 1}/#{current_year-2000}"
+		next_prot_number = (mails.map {|mail| mail.get_protocol_serial }).max + 1
+		"crs+#{entity.sigla=="cg" ? "" : "-"+entity.sigla} #{next_prot_number}/#{current_year-2000}"
 	end
 
-	# given a protocol retuns and array with the numers corresponding to the number and the year
+	# given a protocol returns and array with the numers corresponding to the number and the year
 	# for example: for a mail with protocol "crs+ 56/24" the result will be [56,24]
 	def get_protocol_serial()
 		m = protocol.match(/(?<num>[0-9]+)\/(?<year>[0-9]{2})/)
-		return [-1,-1] if m.nil?
-		[m[:num].to_i,m[:year].to_i]
+		return 0 if m.nil?
+		m[:num].to_i
 	end
 
 	# users arry contains an array of users ids

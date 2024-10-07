@@ -4,7 +4,7 @@
 # FILE INFO
 
 # autor: alejandrobertelsen@gmail.com
-# last major update: 2024-08-25
+# last major update: 2024-08-24
 #---------------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------------------
@@ -22,8 +22,9 @@ class User < ActiveRecord::Base
 	has_many	:assignedmails, :through => :assigned_mails, :source => :mail , dependent: :destroy
 	has_many 	:module_users, dependent: :destroy
 
+	# enables the creation/update of the association model_users via attributes. 
+	# See the the prepare_params method.
 	accepts_nested_attributes_for :module_users #, allow_destroy: true
-
 
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(uname: :asc) }
@@ -31,12 +32,14 @@ class User < ActiveRecord::Base
 	# an enum defining the type of user.
 	enum usertype: {normal: 0, admin: 1, guest: 2}
 
+	DEFAULT_ADMIN_ATTRIBUTES = {uname: "admin", password: "admni", usertype: "admin", mail: true}
+
 # -----------------------------------------------------------------------------------------
 # CRUD METHODS
 # -----------------------------------------------------------------------------------------
 
 	def self.create(params)
-		user = super(User.prepare_params params)
+		super(User.prepare_params params)
 	end
 
 	def update(params)
@@ -57,13 +60,12 @@ class User < ActiveRecord::Base
 	}
 	end
 
-	def update_modules(modules_hash)
-		modules = PulpoModule.find(modules_hash.keys)
-		module_users = modules.each do |mod|
-			ModuleUser.create(user: self, pulpo_module: mod, modulepermission: modules_hash[mod.id.to_s])
-		end
-	end
-
+	# Prepares the form arguments for the creation or update of a user module permissions.
+	# If called with no user then we assume we are creating and object, therefore the module_users parameters
+	# will have no id.
+	# @module_params: the form's parameters for the creation/update of permissions
+	# @user: the current user, nil if we are creating it.
+	# @returs: a hash that can be used to create/update the module_users association
 	def self.prepare_modules_attributes(module_params, user=nil)
 		if user!=nil
 			current_modules = user.module_users.all.map {|mu| { mu.pulpo_module_id => mu.id } }
@@ -73,6 +75,7 @@ class User < ActiveRecord::Base
 			module_params.keys.map {|mod_id| { pulpo_module_id: mod_id, modulepermission: module_params[mod_id]} }
 		end
 	end
+
 
 	# -----------------------------------------------------------------------------------------
 	# VALIDATIONS
@@ -87,7 +90,7 @@ class User < ActiveRecord::Base
 		end
 		return false if user.nil?
 		user.password==password ? user : false
-  end
+	end
 
 
 	# Validates the parameters from the user form.
@@ -105,9 +108,17 @@ class User < ActiveRecord::Base
 # ACCSESSORS
 # -----------------------------------------------------------------------------------------
 
+	def self.ensure_admin_user
+		User.create DEFAULT_ADMIN_ATTRIBUTES if User.admins.size<1
+	end
+
+	def self.mail_users
+		User.where(mail:true)
+	end
+
 	# admin users can be deleted only if there is more than one.
 	def can_be_deleted?
-		admin? ? admins.size() > 1 : true
+		admin? ? admins.size > 1 : true
 	end
 
 	def get_mails(args)
@@ -117,25 +128,11 @@ class User < ActiveRecord::Base
 		end
 	end
 
-	def self.mail_users
-		User.where(mail:true)
-	end
-
-	# -----------------------------------------------------------------------------------------
-	# PERMISSIONS
-	# -----------------------------------------------------------------------------------------
-
-	# get the permission for a module
-	def get_permission(mod)
-		mu = module_users.find_by(pulpo_module: mod)
-		mu.nil? ? nil : mu.modulepermission
-	end
-
 	def admin?
 		usertype=="admin"
 	end
 
-	def admins
+	def self.admins
 		User.where(usertype: "admin")
 	end
 
@@ -150,13 +147,34 @@ class User < ActiveRecord::Base
 
 	def allowed?(module_identifier)
 		return true if admin?
-		(get_permission PulpoModule.find_by(name: module_identifier))=="allowed"
+		result = (module_users.joins(:pulpo_module).where(pulpo_module: {name: module_identifier})).first
+		return result.nil? ? false : result
 	end
 
 	def is_table_allowed?(table)
-		return true if self.admin? 		# an admin has all permitions.
+		return true if self.admin? 		# an admin has all permissions.
 		settings = module_users.find_by(pulpo_module: PulpoModule.find_by(name: table))
 		settings.nil? ? false : settings.modulepermission=="allowed"
+	end
+
+	def to_s
+		"user credentials: uname: #{uname} password:#{password}"
+	end
+
+	# -----------------------------------------------------------------------------------------
+	# PERMISSIONS
+	# -----------------------------------------------------------------------------------------
+
+	# get the permission for a module
+	def get_permission(mod)
+		mu = module_users.find_by(pulpo_module: mod)
+		mu.nil? ? nil : mu.modulepermission
+	end
+
+	# get the permissions for all modules as a hash of the form {module_id => permission}
+	# The inject method transforms an array of the permissions into a single hash.
+	def get_permissions()
+		(module_users.includes(:pulpo_module).map{|mu| {mu.pulpo_module.id => mu.modulepermission}}).inject(:merge)
 	end
 
 end #class end

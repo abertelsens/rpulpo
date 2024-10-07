@@ -68,19 +68,20 @@ turbo-frame id="main_frame"
 				/ --------------------------------------------------------------------------------
 				.columns.five.offset-by-two
 					h4.u-text-center = "PERMISSIONS"
-					
+					/ get the per
 					/ The iteration will produce a select element for each module
 					- PulpoModule.all().each do |mod|
-						label for="module_permission[#{mod.id}]" = mod.name
+						
+						label for="module_permission[#{mod.id}]" = "#{mod.id} #{mod.name}" 
 						
 						/ PERMISSIONS SELECT, uses the values of an enum object.
 						select.u-full-width id="module_permission[#{mod.id}]" name="module[#{mod.id}]"
 							- ModuleUser.modulepermissions.each do |permission|
 								option[
-									selected=(@object&.get_permission(mod)==permission[0])
+									selected=(@permissions[mod.id]==permission[0])
 									value=permission[0]
 								] = permission[0].humanize(capitalize: false) 
-
+								
 			/ ----------------------------------------------------------------------------------
 			/ ALERT FRAME
 			/ ----------------------------------------------------------------------------------

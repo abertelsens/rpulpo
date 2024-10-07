@@ -75,7 +75,7 @@ class Document < ActiveRecord::Base
 			path:                   "#{params[:name]}.#{file_suffix}",
 			singlepage:             (params[:singlepage].blank? ? true : params[:singlepage]=="true"),
 			template_variables:     template_variables
-	}
+		}
 	end
 
 	def self.get_docs_of_user(user)
