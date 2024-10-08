@@ -32,7 +32,7 @@ Stimulus.register("mailform", class extends Controller {
   /* 
     Updtes the mail object with the new assigned users
   */
-  send_files_to_assigned_users(event){
+  send_files_to_user(event){
     event.preventDefault()
     var selected_users = this.getSelectValues(this.assignedTarget)
     console.log(selected_users)
@@ -41,7 +41,7 @@ Stimulus.register("mailform", class extends Controller {
     const formData = {
       users: this.getSelectValues(this.assignedTarget),
     };
-    const queryString = new URLSearchParams(formData).toString();
+    const queryString = "sendfile";
     // Combine API endpoint with query parameters
     fetch( `/mail/${this.mailidTarget.value}/update?${queryString}`)
     .then(res => res.json())

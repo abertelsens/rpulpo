@@ -169,13 +169,8 @@ class Mail < ActiveRecord::Base
 		assigned_users.pluck(:uname).join("-")
 	end
 
-	def send_related_files_to_users(users_string)
-		return if users_string.strip.blank?
-		update_association_elements users_string.strip, :assigned_users
-		assigned_users.each {|u| (send_related_files_to_user u)}
-	end
-
-	def send_related_files_to_user(user)
+	def send_related_files_to_user()
+		user = current_user
 		target = "#{BALDAS_BAS_DIR}/#{user.uname}"
 		mail_files = find_related_files
 
@@ -184,9 +179,7 @@ class Mail < ActiveRecord::Base
 			target = "#{target}/#{user.uname}#{protocol.gsub("/","-")}"
 			FileUtils.mkdir target unless Dir.exist? target
 		end
-
 		mail_files.each {|mf| FileUtils.cp mf.get_path, "#{target}/#{user.uname}-#{mf.name}" }
-
 	end
 
 	# tries to suggest a direction and the entity fields from a protocol
