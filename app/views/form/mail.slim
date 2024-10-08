@@ -69,7 +69,7 @@ turbo-frame id="main_frame"
 					
 				.columns.two  style="padding-left:3rem"
 					.row
-						- assigned_users = @object&.assignedusers.pluck(:id)
+						- assigned_users = @object&.assigned_users.pluck(:id)
 						label assigned to 
 						select.u-full-width id="multiple" data-mailform-target="assigned" name="assigned[]" multiple=true
 							- User.where(mail: true).each do |u|

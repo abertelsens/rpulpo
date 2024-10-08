@@ -17,12 +17,11 @@ class User < ActiveRecord::Base
 
 	# the related tables have a destroy dependency, i.e. if a user is deleted then also
 	# the matching mails tables as deleted as well.
-	has_many	:unread_mails, dependent: :destroy
-	has_many	:assigned_mails, dependent: :destroy
-	has_many	:assignedmails, :through => :assigned_mails, :source => :mail , dependent: :destroy
-	has_many 	:module_users, dependent: :destroy
+	has_many	:unread_mails, 		dependent: :destroy
+	has_many	:assigned_mails, 	dependent: :destroy
+	has_many 	:module_users, 		dependent: :destroy
 
-	# enables the creation/update of the association model_users via attributes. 
+	# enables the creation/update of the association model_users via attributes.
 	# See the the prepare_params method.
 	accepts_nested_attributes_for :module_users #, allow_destroy: true
 
@@ -123,8 +122,8 @@ class User < ActiveRecord::Base
 
 	def get_mails(args)
 		case args
-			when :assigned 	then assignedmails.pluck(:mail)
-			when :unread		then unreadmails.pluck(:mail)
+			when :assigned 	then assigned_mails.pluck(:mail_id)
+			when :unread		then unread_mails.pluck(:mail_id)
 		end
 	end
 

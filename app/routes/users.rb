@@ -22,7 +22,7 @@ end
 get '/user/:id' do
     @object = (params[:id]=="new" ? nil : User.find(params[:id]))
     # get a has with the permissions of the user
-    @permissions = @object.get_permissions
+    @permissions = @object.get_permissions if @object
     partial :"form/user"
 end
 

@@ -20,16 +20,15 @@ end
 get '/mails/table' do
 	@current_user = get_current_user
 	@objects = Mail.search (get_last_query :mails)
-	@unread = @current_user.unread_mails.pluck(:mail_id)
-	@unread = [] if @unread.nil?
+	@unread = @current_user.get_mails(:unread)
 	partial :"table/mail"
 end
 
 get '/mail/search' do
+	@current_user = get_current_user
 	@mails_query = session["mails_table_query"] = params
 	@objects = Mail.search params
-	@unread = UnreadMail.where(user: get_current_user)
-	@unread = [] if @unread.nil?
+	@unread = @current_user.get_mails(:unread)
 	partial :"table/mail"
 end
 
@@ -43,22 +42,19 @@ get '/mail/:id/document_links' do
 	partial :"form/mail/document_links"
 end
 
-
-# updates the mail objects and sends a json response
+# updates the mail objects and sends a json response.ù
+# This method is called by the mailform controller in order to check with the user input if the
+# strings corresponding ot the protoco, references and answers is well formed.
+# @returns a json object of the form {result: boolean, data: [protocol: string, status: boolean]}
 get '/mail/:id/update' do
-	@object = Mail.find(params[:id])
-	if params.key?(:protocol)
-		(@object.update_protocol params[:protocol]).to_json
-	elsif
-		params.key?(:users)
-		(@object.send_related_files_to_users params[:users]).to_json
-	elsif
-		params.key?(:references)
-		(@object.update_references params[:references]).to_json
-	elsif
-		params.key?(:answers)
-		(@object.update_answers params[:answers]).to_json
+	mail = Mail.find(params[:id])
+	res =
+		if params.key?(:protocol) 			then mail.update_protocol params[:protocol]
+		elsif params.key?(:users) 			then mail.send_related_files_to_users params[:users]
+		elsif params.key?(:references) 	then mail.update_association params[:references], :references
+		elsif params.key?(:answers) 		then mail.update_association params[:answers], :answers
 	end
+	res.to_json
 end
 
 get '/mail/assign_protocol' do
@@ -71,7 +67,7 @@ get '/mail/assign_protocol' do
 		mail_status:	"en_curso",
 		entity:				entity,
 		direction:		"salida",
-		assignedusers: [get_current_user]
+		assigned_users: [get_current_user]
 		}
 	Mail.create(p)
 	redirect '/mails'

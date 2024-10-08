@@ -14,13 +14,17 @@ class Mail < ActiveRecord::Base
 	enum mail_status:    	{ pendiente: 	0, en_curso: 	1, terminado: 2 }
 
 	belongs_to 	:entity
+
 	has_many		:assigned_mails, 	dependent: :destroy
-	has_many 		:assignedusers, 	:through => :assigned_mails, 	:source => :user, 		dependent: :destroy
+	has_many 		:assigned_users, 	:through => :assigned_mails, 	:source => :user, 		dependent: :destroy
 	has_many 		:references, 			dependent: :destroy
-	has_many 		:refs,						:through => :references, 			:source => :reference
 	has_many 		:answers, 				dependent: :destroy
-	has_many 		:ans,							:through => :answers, 				:source => :answer
 	has_many 		:mail_files, 			dependent: :destroy
+	has_many 		:refs,						:through => :references, 			:source => :reference
+	has_many 		:ans,							:through => :answers, 				:source => :answer
+
+	# the default scoped defines the default sort order of the query results
+	default_scope { order(date: :desc, protocol: :desc) }
 
 # -----------------------------------------------------------------------------------------
 # CALLBACKS
@@ -61,52 +65,76 @@ class Mail < ActiveRecord::Base
 		Mail.create(prepare_params params)
 	end
 
+	# afer updating the mail fields we update the associations: assigned users, references and answers.
+	# The assigned users array coming form the form might be nil, in this case we pass an empty array.
 	def update_from_params(params)
-		update(assignedusers: (User.find params[:assigned])) unless params[:assigned].nil?
-		update_references(params[:references])
-		update_answers(params[:answers])
 		update(Mail.prepare_params params)
+		update_association_elements( (params[:assigned].nil? ? [] : params[:assigned]), :assigned_users)
+		update_association(params[:references], :references)
+		update_association(params[:answers], :answers)
 	end
 
-	# checks if a given protocols string contains exisiting mails.
-	def update_references(protocols_string)
-		if protocols_string.strip.blank?
-			references.destroy_all
-			update(refs_string: "")
-			return {result: true}
-		end
-		mails = Mail.find_mails protocols_string
-		r = mails.map{|mail| {protocol: protocol, status: mail!=nil} }
-		res = r.map{|elem| elem[:status]}.inject(:&)
-		update(refs: mails, refs_string: mails.pluck(:protocol).join(", ")) if res
-		if res
-			mails.each do |mail|
-				old_answers =  mail.ans_string
-				new_answers = (old_answers.blank? ? protocol : old_answers + ", " + protocol)
-				mail.update_answers new_answers
-			end
-		end
-		{result: res, data: r}
-	end
 
-	# checks if a given protocols string contains exisiting mails.
-	def update_answers(protocols_string)
-		puts Rainbow("updating answer to #{protocols_string}").purple
+# -----------------------------------------------------------------------------------------
+# ASSOCIATIONS
+# -----------------------------------------------------------------------------------------
+	# returns a hash with the resutls of the update operation
+	def update_association(protocols_string, association)
+		protocols_string = protocols_string.strip
+
+		# if the protocol string is empty
 		if protocols_string.blank?
-			answers.destroy_all
-			update(ans_string: "")
-			return {result: true}
+			update_association_elements([],association)
+			update(ans_string: nil)
+			return {result: true, data: nil}
 		end
-		mails = Mail.find_mails protocols_string
-		r = mails.map{|mail| {protocol: protocol, status: mail!=nil} }
-		res = r.map{|elem| elem[:status]}.inject(:&)
-		update(ans: mails, ans_string: mails.pluck(:protocol).join(", ")) if res
-		{result: res, data: r}
+
+		protocols_array = protocols_string.split(",")
+		new_elements =  Mail.find_mails protocols_string
+		protocols_hash = new_elements.map.with_index do |mail,index|
+			{
+				protocol: (mail.nil? ? protocols_array[index] : mail.protocol),
+				status: 	mail!=nil
+			}
+		end
+		result = new_elements.include?(nil) ? false : true
+		new_elements = new_elements.select{ |ref| !ref.nil? } # eliminate all the nil results
+		update_association_elements(new_elements.pluck(:id), association) unless new_elements[0].nil?
+
+		case association
+			when :answers 		then update(ans_string: new_elements.pluck(:protocol).join(", "))
+			when :references 	then update(refs_string: new_elements.pluck(:protocol).join(", "))
+		end
+		{ result: result, data: protocols_hash }
+
 	end
 
 	# users array contains an array of users ids
-	def set_assigned_users(users_array)
-		users_array.nil? ? AssignedMail.where(mail: self).destroy_all : update(assignedusers: User.find(users_array))
+	def update_association_elements(elements_array, association)
+
+		new_elements = elements_array.map{|element_id| element_id.to_i} unless elements_array.nil?
+
+		current_elements =
+		case association
+			when :assigned_users 	then assigned_users.pluck(:id)
+			when :answers 				then answers.pluck(:answer_id)
+			when :references 			then references.pluck(:reference_id)
+		end
+
+		elements_to_delete = (current_elements.nil? ? nil : (new_elements.nil? ? current_elements : (current_elements-new_elements) ) )
+		elements_to_add = (new_elements.nil? ? nil : (current_elements.nil? ? new_elements : (new_elements-current_elements) ) )
+
+		case association
+		when :assigned_users
+			AssignedMail.where(mail: self, user_id: elements_to_delete).delete_all
+			AssignedMail.create(elements_to_add.map{|user_id| {mail: self, user_id: user_id} })
+		when :answers
+			Answer.where(mail: self, answer: elements_to_delete).delete_all
+			Answer.create(elements_to_add.map{|answer_id| {mail: self, answer_id: answer_id} })
+		when :references
+			Reference.where(mail: self, reference: elements_to_delete).delete_all
+			Reference.create(elements_to_add.map{|reference_id| {mail: self, reference_id: reference_id} })
+		end
 	end
 
 # -----------------------------------------------------------------------------------------
@@ -121,14 +149,15 @@ class Mail < ActiveRecord::Base
 	# given an entity suggest the next protocol for an outgoing mail to that entity
 	def self.assign_protocol(entity)
 		current_year = Date.today.year
+
 		# get all the outgoing mails from the entity this year
 		mails = Mail.where(entity: entity, direction: "salida").and(Mail.where("date_part('year', date)=#{current_year}"))
 		next_prot_number = (mails.map {|mail| mail.get_protocol_serial }).max + 1
 		"crs+#{entity.sigla=="cg" ? "" : "-"+entity.sigla} #{next_prot_number}/#{current_year-2000}"
 	end
 
-	# given a protocol returns and array with the numers corresponding to the number and the year
-	# for example: for a mail with protocol "crs+ 56/24" the result will be [56,24]
+	# given a protocol returns the numeric part of the protocol without the par corresponding to the year
+	# for example: for a mail with protocol "crs+ 56/24" the result will be 56 (int)
 	def get_protocol_serial()
 		m = protocol.match(/(?<num>[0-9]+)\/(?<year>[0-9]{2})/)
 		return 0 if m.nil?
@@ -137,17 +166,13 @@ class Mail < ActiveRecord::Base
 
 	# users arry contains an array of users ids
 	def get_assigned_users()
-		assignedusers.pluck(:uname).join("-")
-	end
-
-	# users arry contains an array of users ids
-	def get_references()
-		res.pluck(:protocol).join("-")
+		assigned_users.pluck(:uname).join("-")
 	end
 
 	def send_related_files_to_users(users_string)
-		set_assigned_users users_string.split(",")
-		assignedusers.each {|u| (send_related_files_to_user u)} unless (assignedusers.nil? || assignedusers.blank?)
+		return if users_string.strip.blank?
+		update_association_elements users_string.strip, :assigned_users
+		assigned_users.each {|u| (send_related_files_to_user u)}
 	end
 
 	def send_related_files_to_user(user)
@@ -166,8 +191,8 @@ class Mail < ActiveRecord::Base
 
 	# tries to suggest a direction and the entity fields from a protocol
 	def update_protocol(protocol_string)
-		data = { "result" => true }
-		error = { "result" => false, "message" => "El protocolo <b>#{protocol_string}</b> está mal formado" }
+		data 	= { result: true }
+		error = { result: false, message: "El protocolo <b>#{protocol_string}</b> está mal formado" }
 
 		# check if the numeric part of the protocol is well formed
 		num = protocol_string.match(/(?<num>[0-9]+)\/(?<year>[0-9]{2})/)
@@ -199,16 +224,14 @@ class Mail < ActiveRecord::Base
 		data
 	end
 
+	# finds all the related files of the mail
+	# @returs: a mailfile object
 	def find_related_files()
 		protocol_num = protocol[0..-4].delete("^0-9").to_i
 		files = Dir.entries(get_sources_directory).select{ |fname| Mail.matches_file(fname, protocol_num)}
 		files = files.sort{|f1, f2| Mail.file_sort(f1,f2)}
-		mfiles = []
-		files = files.each do |f|
-				mf = MailFile.where(mail_id: id, name: f)
-				mfiles << (mf.empty? ? MailFile.create_from_file(f,self) : mf[0])
-		end
-		update(mail_files: mfiles)
+		mail_files.destroy_all	# delete the old mfiles.
+		files.each { |f| MailFile.create_from_file f, self }
 		return mfiles
 	end
 
@@ -224,9 +247,12 @@ class Mail < ActiveRecord::Base
 		end
 	end
 
-	# we check not only the files related to the protocol but also references and answers
+	# check whether a file with name file_name contains the numerical part of the protocol
+	# @file_name: the name of the file
+	# @prot_num: 	the nmerica part of the protocol
+	# @returns: 	a boolean indicating whether there is a match
 	def self.matches_file(file_name, prot_num)
-		return false if (file_name[0]=="." || file_name[0]=="~")
+		return false if (file_name[0]=="." || file_name[0]=="~")	# skip temporary or hidden files that
 		match = /\d+/.match(file_name)
 		match.nil? ? false : (match[0].to_i == prot_num)
 	end
@@ -256,20 +282,24 @@ class Mail < ActiveRecord::Base
 	end
 
 	def self.search(params)
-		puts "got params in search #{params}"
 		condition1 = "topic ILIKE '%#{params[:q]}%'" unless params[:q].nil?
 		condition2 = "protocol ILIKE '%#{params[:q]}%'" unless params[:q].nil?
-		sets = []
-		sets[0] = params[:q].blank? ? Mail.includes(:entity, :assignedusers).all : Mail.includes(:entity).where(condition1)
-		sets[0] = params[:q].blank? ? Mail.includes(:entity, :assignedusers).all : Mail.includes(:entity).where(condition1).or(Mail.includes(:entity).where(condition2))
-		sets[1] = (params[:year]=="-1" ? nil :  Mail.includes(:entity, :assignedusers).where("date_part('year', date)=#{params[:year].to_i}"))
-		sets[2] = (params[:direction]=="-1" ? nil :  Mail.includes(:entity, :assignedusers).where(direction: params[:direction]))
-		sets[3] = (params[:entity]=="-1" ? nil :  Mail.includes(:entity, :assignedusers).where(entity: params[:entity]))
-		sets[4] = (params[:mail_status]=="-1" ? nil :  Mail.includes(:entity, :assignedusers).where(mail_status: params[:mail_status]))
-		sets[5] = (params[:assigned]=="-1" ? nil :  User.find(params[:assigned]).assignedmails.includes(:entity, :assignedusers))
-		(sets.inject{ |res, set| (set.nil? ? res : res.merge(set)) }).order(date: :desc, protocol: :desc)
+		sets[0] = params[:q].blank? ? Mail.includes(:entity, :assigned_users).all : Mail.includes(:entity).where(condition1)
+		sets[0] = params[:q].blank? ? Mail.includes(:entity, :assigned_users).all : Mail.includes(:entity).where(condition1).or(Mail.includes(:entity).where(condition2))
+		sets[1] = (params[:year]=="-1" ? nil :  Mail.includes(:entity, :assigned_users).where("date_part('year', date)=#{params[:year].to_i}"))
+		sets[2] = (params[:direction]=="-1" ? nil :  Mail.includes(:entity, :assigned_users).where(direction: params[:direction]))
+		sets[3] = (params[:entity]=="-1" ? nil :  Mail.includes(:entity, :assigned_users).where(entity: params[:entity]))
+		sets[4] = (params[:mail_status]=="-1" ? nil :  Mail.includes(:entity, :assigned_users).where(mail_status: params[:mail_status]))
+		sets[5] = (params[:assigned]=="-1" ? nil :  User.find(params[:assigned]).assignedmails.includes(:entity, :assigned_users))
+		sets.inject{ |res, set| (set.nil? ? res : res.merge(set)) }
 	end
+
 end #class end
+
+
+# -----------------------------------------------------------------------------------------
+# ASSOCIATED CLASSES
+# -----------------------------------------------------------------------------------------
 
 class UnreadMail < ActiveRecord::Base
 	belongs_to :mail
