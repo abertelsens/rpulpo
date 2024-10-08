@@ -223,8 +223,10 @@ class Mail < ActiveRecord::Base
 		protocol_num = protocol[0..-4].delete("^0-9").to_i
 		files = Dir.entries(get_sources_directory).select{ |fname| Mail.matches_file(fname, protocol_num)}
 		files = files.sort{|f1, f2| Mail.file_sort(f1,f2)}
-		mail_files.destroy_all	# delete the old mfiles.
-		files.map { |f| MailFile.create_from_file f, self }
+		current_files = mail_files.pluck(:name)
+		(current_files - files).each {|file| Mailfile.find_by(mail: self, name: file).destroy }
+		(files - current_files).each {|file| Mailfile.create_from_file(file, self) }
+		mail_files
 	end
 
 	def self.file_sort(f1,f2)
