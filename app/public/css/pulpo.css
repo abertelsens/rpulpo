@@ -776,7 +776,7 @@ div.nota ul ul{
   margin-bottom: 0.5rem;
 }
 
-div.nota ol li{
+div.nota ol li {
   margin-left: 0rem;
   margin-top: 1rem
 }
@@ -788,6 +788,12 @@ div.nota li{
   margin-left: 0rem;
 }
 
+div.nota blockquote{
+  display: inline;
+  margin-bottom: 0rem;
+  margin-top: 0rem;
+  margin-left: 0rem;
+}
 
 div.nota td{
   padding: 0.2rem 1rem

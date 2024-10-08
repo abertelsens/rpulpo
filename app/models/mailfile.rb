@@ -39,7 +39,8 @@ class MailFile < ActiveRecord::Base
 	# Embedded media, like images, will be stored in the public/tmp/media/ directory
   def	get_html_contents
 		if is_word_file?
-			html_string = `pandoc --extract-media tmp \"#{get_path}\" --from docx --to html`
+			html_string = `pandoc --email-obfuscation=none --extract-media tmp \"#{get_path}\" --from docx --to html`
+			--email-obfuscation=none
 			puts clean_html html_string
 			clean_html_links html_string
 		else
