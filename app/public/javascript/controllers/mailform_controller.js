@@ -45,11 +45,11 @@ Stimulus.register("mailform", class extends Controller {
     // Combine API endpoint with query parameters
     fetch( `/mail/${this.mailidTarget.value}/update?${queryString}`)
     .then(res => res.json())
-    .then(res => { this.handle_update_form(res) })
+    .then(res => { this.handle_send_files_to_user(res) })
     .catch(err => { throw err });
   }
 
-  handle_send_files_to_assigned_users(response)
+  handle_send_files_to_user(response)
   {
     console.log("got response")
     console.log(response)

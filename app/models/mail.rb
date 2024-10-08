@@ -180,6 +180,7 @@ class Mail < ActiveRecord::Base
 			FileUtils.mkdir target unless Dir.exist? target
 		end
 		mail_files.each {|mf| FileUtils.cp mf.get_path, "#{target}/#{user.uname}-#{mf.name}" }
+		{result: true}.to_json
 	end
 
 	# tries to suggest a direction and the entity fields from a protocol

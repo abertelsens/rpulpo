@@ -56,12 +56,11 @@ turbo-frame id="main_frame"
 					
 				.columns.six
 					.row
+						label asunto
 						- if @object&.topic.blank?
-							label asunto
 							&text.u-full-width name="topic" required="true" value=@object&.topic data-mailform-target="topic"
 						- else
 							.columns.ten
-								label asunto
 								&text.u-full-width name="topic" required="true" readonly=true value=@object&.topic data-mailform-target="topic"
 							.columns.two
 								a.u-full-width.button data-mailform-target="topicbtn" data-action="click->mailform#toggletopic" edit
@@ -79,7 +78,7 @@ turbo-frame id="main_frame"
 						
 					
 					.row.margin-top
-						button.button-success.u-full-width.no-margin data-action="click->mailform#send_files_to_assigned_users"
+						button.button-success.u-full-width.no-margin data-action="click->mailform#send_files_to_user"
 							i.fa-solid.fa-paper-plane
 							|&nbspenviar a mi balda
 					
