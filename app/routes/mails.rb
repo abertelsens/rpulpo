@@ -39,6 +39,8 @@ end
 
 get '/mail/:id/document_links' do
 	@object = Mail.find(params[:id])
+	@references = @object.refs
+	@answers = @object.ans
 	partial :"form/mail/document_links"
 end
 
