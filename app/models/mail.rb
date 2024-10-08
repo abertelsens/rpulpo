@@ -231,7 +231,7 @@ class Mail < ActiveRecord::Base
 		files = Dir.entries(get_sources_directory).select{ |fname| Mail.matches_file(fname, protocol_num)}
 		files = files.sort{|f1, f2| Mail.file_sort(f1,f2)}
 		mail_files.destroy_all	# delete the old mfiles.
-		files.each { |f| MailFile.create_from_file f, self }
+		files.each do { |f| MailFile.create_from_file f, self }
 		return mfiles
 	end
 
@@ -284,6 +284,7 @@ class Mail < ActiveRecord::Base
 	def self.search(params)
 		condition1 = "topic ILIKE '%#{params[:q]}%'" unless params[:q].nil?
 		condition2 = "protocol ILIKE '%#{params[:q]}%'" unless params[:q].nil?
+		sets = []
 		sets[0] = params[:q].blank? ? Mail.includes(:entity, :assigned_users).all : Mail.includes(:entity).where(condition1)
 		sets[0] = params[:q].blank? ? Mail.includes(:entity, :assigned_users).all : Mail.includes(:entity).where(condition1).or(Mail.includes(:entity).where(condition2))
 		sets[1] = (params[:year]=="-1" ? nil :  Mail.includes(:entity, :assigned_users).where("date_part('year', date)=#{params[:year].to_i}"))
@@ -293,7 +294,6 @@ class Mail < ActiveRecord::Base
 		sets[5] = (params[:assigned]=="-1" ? nil :  User.find(params[:assigned]).assignedmails.includes(:entity, :assigned_users))
 		sets.inject{ |res, set| (set.nil? ? res : res.merge(set)) }
 	end
-
 end #class end
 
 
