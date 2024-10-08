@@ -17,7 +17,7 @@ class Study < ActiveRecord::Base
 
 	belongs_to 	:person
 
-	def self.prepare_params(params)
+  def self.prepare_params(params)
     params.except("studies_id", "id", "commit")
   end
 

@@ -1,7 +1,15 @@
-###########################################################################################
+# table_settings.rb
+#---------------------------------------------------------------------------------------
+# FILE INFO
+
+# autor: alejandrobertelsen@gmail.com
+# last major update: 2024-08-25
+#---------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------
 # DESCRIPTION
-# A class defininign a user object.
-###########################################################################################
+# A class defining a the settings of a table used to view query results
+# -----------------------------------------------------------------------------------------
 
 require_relative '../utils/pulpo_query'
 require 'yaml'
@@ -22,7 +30,7 @@ class TableAttribute
 	
 	def self.create_from_yaml(att_yaml)
 		field = att_yaml["id"]
-		table= field.split(".")[0]
+		table = field.split(".")[0]
 		name = att_yaml["name"]
 		order = att_yaml["order"]
 		css_class = att_yaml["css_class"]
@@ -38,15 +46,23 @@ class TableAttribute
 end #class end
 
 
-#A class containing the Users data
+# A class containing the sttings of a table.
+# A TableSettings has three main attributes.
+# 	1. The attributes to be shown
+# 	2. The main DB table
+# 	3. Related tables
+# For example we can define a view of people that also show their rooms. In that case the 
+# main table is people while rooms will be a related table. 
 class TableSettings
 	
 	attr_accessor :att, :main_table, :related_tables
 	
+	# the path of a yaml file specifying the table settings
 	SETTINGS_FILE_PATH = "app/settings/attributes.yaml"
 	print Rainbow("PULPO: Loading Tables Settings from config file: #{SETTINGS_FILE_PATH} ... ").yellow
 	SETTINGS_YAML = YAML.load_file(SETTINGS_FILE_PATH)
 
+	# initializes the table settings with a ser
 	def initialize(args)	# an array containing the attributtes to be shown in the table
 		case args[:table]
 			when :people_default 		
@@ -137,12 +153,17 @@ class TableSettings
 		@att.select{|a| a.order!="NONE"}.each { |a| order_hash[a.field.to_sym] = (a.order=="ASC" ? :asc : :desc) }
 		return order_hash
 	end
+	
 	# Creates a TableSetting object from the params received from the corresponding form	
 	def self.create_from_params(table,params)
+		
+		# the attributes that will be shown in the table
 		selected_attributes = (params.filter { |key,value| value=="true" }).keys
 		
+		# get the settings for each attribute
 		attributes = selected_attributes.map { |field| TableSettings.get_attribute field }
 		
+		# set the order of the attributes.
 		attributes = attributes.each do |att| 
 			att.set_order(params["#{att.field}.order"].nil? ? "NONE" : params["#{att.field}.order"])
 		end
