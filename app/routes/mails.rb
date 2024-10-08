@@ -50,7 +50,7 @@ get '/mail/:id/update' do
 	mail = Mail.find(params[:id])
 	res =
 		if params.key?(:protocol) 			then mail.update_protocol params[:protocol]
-		elsif params.key?(:sendfile) 		then mail.send_related_files_to_user
+		elsif params.key?(:sendfile) 		then mail.send_related_files_to_user get_current_user
 		elsif params.key?(:references) 	then mail.update_association params[:references], :references
 		elsif params.key?(:answers) 		then mail.update_association params[:answers], :answers
 	end

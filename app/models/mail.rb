@@ -169,8 +169,7 @@ class Mail < ActiveRecord::Base
 		assigned_users.pluck(:uname).join("-")
 	end
 
-	def send_related_files_to_user()
-		user = current_user
+	def send_related_files_to_user(user)
 		target = "#{BALDAS_BAS_DIR}/#{user.uname}"
 		mail_files = find_related_files
 
