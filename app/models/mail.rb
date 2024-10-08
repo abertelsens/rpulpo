@@ -232,7 +232,7 @@ class Mail < ActiveRecord::Base
 		files = files.sort{|f1, f2| Mail.file_sort(f1,f2)}
 		mail_files.destroy_all	# delete the old mfiles.
 		files.each { |f| MailFile.create_from_file f, self }
-		return mfiles
+		return mail_files
 	end
 
 	def self.file_sort(f1,f2)
