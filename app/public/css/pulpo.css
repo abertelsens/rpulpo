@@ -672,13 +672,13 @@ a.matrix-cell-selected
 
 @media all and (max-width: 1500px) {
   .medium-field {
-    width: 100px;
+    width: 120px;
   }
   .long-field {
     width: 180px;
   }
   .xlong-field {
-    width: 500px;
+    width: 400px;
   }
   
 }

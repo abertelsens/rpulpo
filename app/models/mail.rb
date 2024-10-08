@@ -273,7 +273,7 @@ class Mail < ActiveRecord::Base
 	def self.get_years()
 		min_year = Mail.minimum(:date).year
 		current_year = Date.today().year
-		(min_year..current_year).to_a
+		(min_year..current_year).to_a.reverse
 	end
 
 	def get_status
