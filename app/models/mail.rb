@@ -231,7 +231,7 @@ class Mail < ActiveRecord::Base
 		files = Dir.entries(get_sources_directory).select{ |fname| Mail.matches_file(fname, protocol_num)}
 		files = files.sort{|f1, f2| Mail.file_sort(f1,f2)}
 		mail_files.destroy_all	# delete the old mfiles.
-		files.each do { |f| MailFile.create_from_file f, self }
+		files.each { |f| MailFile.create_from_file f, self }
 		return mfiles
 	end
 
