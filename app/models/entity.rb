@@ -50,7 +50,6 @@ class Entity < ActiveRecord::Base
 		mails.all.count
 	end
 
-
 	def self.validate(params)
 		warning_message = "Warning: there is already an entity with that name."
 		sigla = params[:sigla].strip

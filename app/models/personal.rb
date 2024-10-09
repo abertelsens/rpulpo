@@ -17,7 +17,7 @@ class Personal < ActiveRecord::Base
 
 	belongs_to 	:person
 
-	def self.prepare_params(params)
+  def self.prepare_params(params)
     params.except("personal_id", "id", "commit")
   end
 

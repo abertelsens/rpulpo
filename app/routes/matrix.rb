@@ -75,11 +75,12 @@ get '/matrix/task/:id' do
 end
 
 post '/matrix/task/:id' do
+	task = Task.find(params[:id]) unless params[:id]=="new"
 	case params[:commit]
-		when "save" 	then Task.create_update params
-		when "delete" then Task.find(params[:id]).destroy
+		when "save" then (task==nil ? (Task.create params ): (task.update params))
+		when "delete" then task.destroy
 	end
-	redirect :"/matrix"
+	redirect '/matrix'
 end
 
 get '/matrix/task_schedule/table' do

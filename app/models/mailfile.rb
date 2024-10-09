@@ -37,7 +37,7 @@ class MailFile < ActiveRecord::Base
 	# to find the file. File paths which containt spaces make trouble, therefore we need
 	# to wrap them around quotation marks.
 	# Embedded media, like images, will be stored in the public/tmp/media/ directory
-  def	get_html_contents
+	def	get_html_contents
 		if is_word_file?
 			html_string = `pandoc --email-obfuscation=none --extract-media tmp \"#{get_path}\" --from docx --to html`
 			puts clean_html html_string
@@ -53,7 +53,6 @@ class MailFile < ActiveRecord::Base
 
 	# gets the pdf path of a mailfile. Used to preview an annexes.
 	def	get_pdf_path
-
 		# Delete all the files in the tmp folder that are older than one day
 		Dir.glob("#{TMP_DIR}/*.pdf").each { |filename| File.delete(filename) if file_age(filename) > 0 }
 		original_file = "#{mail.get_sources_directory}/#{name}"
