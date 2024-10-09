@@ -110,7 +110,7 @@ class Person < ActiveRecord::Base
 			when "crs"              then (crs.nil? ? "" : crs[attribute.to_sym])
 			when "rooms"            then (room.nil? ? "" : room[attribute.to_sym])
 		end
-		res = "-" if (res.nil? || res.blank?)
+		res = "" if (res.nil? || res.blank?)
 		puts Rainbow("\nPULPO: Warning! found nil while looking for #{attribute_string}").orange if res.nil?
 		if res.is_a?(Date)
 			return res.strftime("%d-%m-%y") if format.nil?
