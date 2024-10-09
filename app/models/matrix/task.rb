@@ -37,17 +37,17 @@ class Task < ActiveRecord::Base
 			task_schedules_attributes:		Task.prepare_task_schedules_attributes(params, task)
 		}
 	end
-	
+
 	# creates an array of parameters that coan be used to create a TaslSchedule object
 	def prepare_task_schedules_attributes(params, task=nil)
 		# if task is nil then we are creating the task_schedules. We create the task_schedules
 		# with the schedule_id and the task_id
-		# If the task exists we need to update the task_schedules, therefore we retrieve the 
-		# task_schedules_ids and create a hash 
+		# If the task exists we need to update the task_schedules, therefore we retrieve the
+		# task_schedules_ids and create a hash
 		if task.nil?
 			schedule_ids = params[:number].keys
 		else
-			task_schedule_ids = (task_schedules.map{|ts| ts.schedule_id => ts.task_id }).inject(:merge)
+			task_schedule_ids = (task_schedules.map{|ts| { ts.schedule_id => ts.task_id } }).inject(:merge)
 		end
 		schedule_ids.map do |schedule_id|
 			hash =	{
