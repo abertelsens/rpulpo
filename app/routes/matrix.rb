@@ -175,8 +175,8 @@ get '/matrix/people_modal/empty' do
 end
 
 get '/matrix/people_periods/table' do
-	@objects = PersonPeriod.includes(:person).all.order("people.family_name")
-	partial :"table/matrix/people_periods"
+	#@objects = PersonPeriod.includes(:person).all.order("people.family_name")
+	#partial :"table/matrix/people_periods"
 end
 
 get '/matrix/people_periods/table/search' do

@@ -224,8 +224,8 @@ class Mail < ActiveRecord::Base
 		files = Dir.entries(get_sources_directory).select{ |fname| Mail.matches_file(fname, protocol_num)}
 		files = files.sort{|f1, f2| Mail.file_sort(f1,f2)}
 		current_files = mail_files.pluck(:name)
-		(current_files - files).each {|file| Mailfile.find_by(mail: self, name: file).destroy }
-		(files - current_files).each {|file| Mailfile.create_from_file(file, self) }
+		(current_files - files).each {|file| MailFile.find_by(mail: self, name: file).destroy }
+		(files - current_files).each {|file| MailFile.create_from_file(file, self) }
 		mail_files
 	end
 
