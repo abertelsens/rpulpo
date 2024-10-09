@@ -101,7 +101,7 @@ class Person < ActiveRecord::Base
 		table, attribute = attribute_string.split(".")
 		if attribute=="cfi"
 			return Person.find(crs[:cfi]).short_name unless (crs.nil? || crs[:cfi].nil?)
-			return "-"
+			return ""
 		end
 		res = case table
 			when "person", "people" then self[attribute.to_sym]

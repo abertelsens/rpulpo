@@ -103,5 +103,5 @@ footer: [#pad(x:0cm, y: 0cm, text(size: 8pt, [#impreso]))]
   label(1,"Antecedentes Médicos"),
   field(5,"$personals.medical_info$"),
   label(1,"Observaciones"),
-  field(5,"$personals.notes$")
+  field(5,"Celebra $person.celebration_info$ \n$studies.profesional_experience$ \n$personals.notes$")
 )
