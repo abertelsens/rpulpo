@@ -3,7 +3,11 @@ class TaskSchedule < ActiveRecord::Base
 
 	belongs_to 	:schedule
 	belongs_to 	:task
+
 	has_many 		:task_assignments, dependent: :destroy
+
+	# the default scoped defines the default sort order of the query results
+	default_scope { order(schedule_id: :asc) }
 
 	AM_HOUR_LIMIT = 14
 	PM1_HOUR_LIMIT = 17
@@ -22,5 +26,9 @@ class TaskSchedule < ActiveRecord::Base
 
 	def self.find_task_schedule(task,day_schedule)
 		TaskSchedule.find_by(task:task, schedule:day_schedule.schedule)
+	end
+
+	def self.create_default(task,schedule)
+		TaskSchedule.create(task: task, schedule: schedule)
 	end
 end

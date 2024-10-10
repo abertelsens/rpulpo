@@ -69,8 +69,9 @@ get '/matrix/task/table' do
 end
 
 get '/matrix/task/:id' do
-	@object = (params[:id]=="new" ? nil : (Task.find params[:id]))
+	@object = (params[:id]=="new" ? Task.create_default : (Task.find params[:id]))
 	@task_schedules = TaskSchedule.includes(:schedule).where(task: @object)
+	puts ""
 	partial :"form/matrix/task"
 end
 

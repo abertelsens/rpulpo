@@ -27,10 +27,10 @@ class Task < ActiveRecord::Base
 	end
 
 	def update(params)
-		super(Task.prepare_params params, self )
+		super(Task.prepare_params params, self)
 	end
 
-	def self.prepare_params(params)
+	def self.prepare_params(params, task=nil)
 		{
 			name: 												params[:name],
 			priority: 										params[:priority],
@@ -39,30 +39,30 @@ class Task < ActiveRecord::Base
 	end
 
 	# creates an array of parameters that coan be used to create a TaslSchedule object
-	def prepare_task_schedules_attributes(params, task=nil)
-		# if task is nil then we are creating the task_schedules. We create the task_schedules
-		# with the schedule_id and the task_id
-		# If the task exists we need to update the task_schedules, therefore we retrieve the
-		# task_schedules_ids and create a hash
-		if task.nil?
-			schedule_ids = params[:number].keys
-		else
-			task_schedule_ids = (task_schedules.map{|ts| { ts.schedule_id => ts.task_id } }).inject(:merge)
-		end
+	def self.prepare_task_schedules_attributes(params, task=nil)
+		schedule_ids = params[:number].keys
+		task_schedule_ids = (task.task_schedules.map{|ts| { ts.schedule_id => ts.id } }).inject(:merge) if task
 		schedule_ids.map do |schedule_id|
-			hash =	{
-				task:         self,
+			{
+				id:						task_schedule_ids[schedule_id.to_i],
+				task_id:      task.id,
+				schedule_id:  schedule_id,
 				number:       params[:number][schedule_id],
 				points:       params[:points][schedule_id],
-				s_time:       parse_time(params[:s_time][schedule_id]),
-				e_time:       parse_time(params[:e_time][schedule_id]),
+				s_time:       Task.parse_time(params[:s_time][schedule_id]),
+				e_time:       Task.parse_time(params[:e_time][schedule_id]),
 				notes:        params[:notes][schedule_id]
 			}
-			task.nil? ? (hash[:schedule_id] = schedule_id) : (hash[:id] = task_schedule_ids[:schedule_id])
 		end
 	end
 
-  def parse_time(time_string)
+	def self.create_default()
+		task = method(:create).super_method.call(name: "new task #{rand(1000)}", priority: 1)
+		Schedule.all.each { |sch| TaskSchedule.create_default(task, sch) }
+		task
+	end
+
+  def self.parse_time(time_string)
 		DateTime.strptime(time_string,"%H:%M") unless time_string.blank?
   end
 
