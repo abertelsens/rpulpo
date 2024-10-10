@@ -1,34 +1,72 @@
 # Google calendar API key AIzaSyA-3PoZaonvgyax2wkRPVGsze0O7ZKJL1A
 
+# period.rb
+#---------------------------------------------------------------------------------------
+# FILE INFO
+
+# autor: alejandrobertelsen@gmail.com
+# last major update: 2024-10-05
+#---------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------
+# DESCRIPTION
+
+# A class defining an period object.
+#---------------------------------------------------------------------------------------
+#
 class Period < ActiveRecord::Base
 
-  has_many  :day_schedules, dependent: :destroy
-  has_many  :task_assignments, :through => :day_schedules
-  has_many  :period_points, dependent: :destroy
+  has_many  :day_schedules,     dependent: :destroy
+  has_many  :task_assignments,  :through => :day_schedules
+  has_many  :period_points,     dependent: :destroy
+
+  
+
+
+# -----------------------------------------------------------------------------------------
+# CALLBACKS
+# -----------------------------------------------------------------------------------------
 
   after_create :create_period_days
-
-  before_update do
-    old_period = (self.s_date_was..self.e_date_was).to_a
-    new_period = (self.s_date..self.e_date).to_a
-    default_schedule = Schedule.find_by(name:"L")
-    (new_period-old_period).each {|date| DaySchedule.create(period: self, date: date, schedule: default_schedule)}
-    (old_period-new_period).each {|date| DaySchedule.find_by(date: date).destroy}
-  end
-
-  	def self.prepare_params(params)
-		{
-			name: params["name"],
-			s_date: 	Date.parse(params["s_date"]),
-			e_date: 	Date.parse(params["e_date"])
-		}
-	end
 
   def create_period_days
     default_schedule = Schedule.find_by(name:"L")
     (s_date..e_date).each {|date| DaySchedule.create(period: self, date: date, schedule: default_schedule)}
   end
 
+  # before updating the period we check what happened with the dates of the period: destroy days
+  # that are no longer in the period or create days that were added.
+  before_update do
+    old_period = (self.s_date_was..self.e_date_was).to_a
+    new_period = (self.s_date..self.e_date).to_a
+    default_schedule = Schedule.find_by(name: "L")
+    (new_period-old_period).each {|date| DaySchedule.create(period: self, date: date, schedule: default_schedule)}
+    (old_period-new_period).each {|date| DaySchedule.find_by(date: date).destroy}
+  end
+
+  # -----------------------------------------------------------------------------------------
+  # CRUD METHODS
+  # -----------------------------------------------------------------------------------------
+
+  def self.create(params)
+		super(Period.prepare_params params)
+  end
+
+	def update(params)
+		super(Period.prepare_params params)
+	end
+
+  def self.prepare_params(params)
+    {
+      name:     params["name"],
+      s_date: 	Date.parse(params["s_date"]),
+      e_date: 	Date.parse(params["e_date"])
+    }
+  end
+
+  # -----------------------------------------------------------------------------------------
+  # ACCESSOR METHODS
+  # -----------------------------------------------------------------------------------------
 
   def get_days
     DateType.where(:date => s_date..e_date)

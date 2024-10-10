@@ -4,24 +4,25 @@
 
 turbo-frame id="main_frame"
   	
-	form action="/matrix/task/#{(@object.nil? ? "new" : @object.id)}" method="POST" data-controller="modal"
+	form action="/matrix/task/{@object.id}" method="POST" data-controller="modal form-validator"
 	
-		.container.screen-box
+		.container.screen-box.x-large-form
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM HEADER
 			//----------------------------------------------------------------------------------------------------------------
 			.row.u-text-center
 				h3 = (@object.nil? ? "NEW TASK" : "TASK: #{@object.name}")
+
+
+			/----------------------------------------------------------------------------------------------------------------
+			/ FORM FIELDS
+			/----------------------------------------------------------------------------------------------------------------
 				
-			/----------------------------------------------------------------------------------------------------------------
-			/----------------------------------------------------------------------------------------------------------------
-			//DOCUMENT FRAME
-			//----------------------------------------------------------------------------------------------------------------
 			.row
-		
+
 				.columns.two.offset-by-five
 					label for="name" name
-					&text.u-text-center.u-full-width id="name" name="name" required="true" value=@object&.name
+					&text.u-text-center.u-full-width id="name" name="name" data-action="input->form-validator#validate" required="true" value=@object&.name
 			
 				.columns.one
 					label for="name" priority
@@ -65,8 +66,6 @@ turbo-frame id="main_frame"
 									required="true" 
 									min="0"
 									value=(ts.nil? ? 1 : ts.points)]
-									
-
 				
 								td 
 									input[type="text"
@@ -88,7 +87,12 @@ turbo-frame id="main_frame"
 									name="notes[#{ts.schedule.id}]" 
 									value=(ts.nil? ? "" : ts&.notes)]
 
-			
+
+			/----------------------------------------------------------------------------------------------------------------
+			/ ERROR FRAME
+			/----------------------------------------------------------------------------------------------------------------		
+			.row
+				.alert.alert-warning.u-full-width.hidden-frame data-form-validator-target="error_frame"
 
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM BUTTONS

@@ -66,4 +66,12 @@ class Task < ActiveRecord::Base
 		DateTime.strptime(time_string,"%H:%M") unless time_string.blank?
   end
 
+	# checks wether there is already a task with the name given in the parameters
+	def self.validate(params)
+		warning_message = "Warning: there is already a task with that name."
+		name = params[:name].strip
+		task = Task.find_by(name: name)
+		found = (task.nil? ? false : (task.id!=params[:id].to_i))
+		found ? {result: false, message: warning_message} : {result: true}
+	end
 end

@@ -22,11 +22,43 @@ get '/matrix/schedule/:id' do
 end
 
 post '/matrix/schedule/:id' do
+	schedule = Schedule.find(params[:id]) unless params[:id]=="new"
 	case params[:commit]
-		when "save" 	then Schedule.create_update params
-		when "delete" then Schedule.find(params[:id]).destroy
+		when "save" 	then (schedule==nil ? (Schedule.create params ): (schedule.update params))
+		when "delete" then schedule.destroy
 	end
 	redirect :"/matrix"
+end
+
+# -----------------------------------------------------------------------------------------
+# TASKS
+# -----------------------------------------------------------------------------------------
+
+get '/matrix/task/table' do
+	@objects = Task.all
+	partial :"table/matrix/task"
+end
+
+get '/matrix/task/:id' do
+	@object = (params[:id]=="new" ? Task.create_default : (Task.find params[:id]))
+	@task_schedules = TaskSchedule.includes(:schedule).where(task: @object)
+	partial :"form/matrix/task"
+end
+
+post '/matrix/task/:id' do
+	task = Task.find(params[:id]) unless params[:id]=="new"
+	case params[:commit]
+		when "save" then (task==nil ? (Task.create params): (task.update params))
+		when "delete" then task.destroy
+	end
+	redirect '/matrix'
+end
+
+# Validates if the params received are valid for updating or creating a task object.
+# returns a JSON object of the form {result: boolean, message: string}
+post '/matrix/task/:id/validate' do
+	content_type :json
+	(Task.validate params).to_json
 end
 
 # -----------------------------------------------------------------------------------------
@@ -44,45 +76,17 @@ get '/matrix/situation/:id' do
 end
 
 post '/matrix/situation/:id' do
+	situation = Situaton.find(params[:id]) unless params[:id]=="new"
 	case params[:commit]
-		when "save" 	then Situation.create_update params
-		when "delete" then Situation.find(params[:id]).destroy
+		when "save" 	then (situation==nil ? (Situation.create params ): (situation.update params))
+		when "delete" then situation.destroy
 	end
 	redirect :"/matrix"
 end
 
-# updates the schedule type of a specific day schedule. It is called via a script so therefore
-# there is no need to return a view.
-post '/matrix/day_schedule/:ds/schedule/:schedule' do
-	ds = DaySchedule.find params[:ds]
-	schedule = Schedule.find params[:schedule]
-	ds.update(schedule: schedule)
-end
-
 # -----------------------------------------------------------------------------------------
-# TASKS
+# TASK SCHEDULES
 # -----------------------------------------------------------------------------------------
-
-get '/matrix/task/table' do
-	@objects = Task.all
-	partial :"table/matrix/task"
-end
-
-get '/matrix/task/:id' do
-	@object = (params[:id]=="new" ? Task.create_default : (Task.find params[:id]))
-	@task_schedules = TaskSchedule.includes(:schedule).where(task: @object)
-	puts ""
-	partial :"form/matrix/task"
-end
-
-post '/matrix/task/:id' do
-	task = Task.find(params[:id]) unless params[:id]=="new"
-	case params[:commit]
-		when "save" then (task==nil ? (Task.create params ): (task.update params))
-		when "delete" then task.destroy
-	end
-	redirect '/matrix'
-end
 
 get '/matrix/task_schedule/table' do
 	@objects = TaskSchedule.all.order(task_id: :asc)
@@ -105,6 +109,10 @@ post '/matrix/task_schedule/:id' do
 	redirect :"/matrix"
 end
 
+# -----------------------------------------------------------------------------------------
+# PERIODS
+# -----------------------------------------------------------------------------------------
+
 get '/matrix/period/table' do
 	@objects = Period.all.order(s_date: :desc)
 	partial :"table/matrix/period"
@@ -116,16 +124,10 @@ get '/matrix/period/:id' do
 end
 
 post '/matrix/period/:id' do
-	period = (params[:id]=="new" ? nil : Period.find(params[:id]))
+	period = Period.find(params[:id]) unless params[:id]=="new"
 	case params[:commit]
-	when "save"
-		if period.nil?
-			period = Period.create(Period.prepare_params params)
-		else
-			period.update(Period.prepare_params params)
-		end
-	when "delete"
-			period.destroy
+		when "save" then (period==nil ? (Period.create params ): (period.update params))
+		when "delete" then period.destroy
 	end
 	redirect :"/matrix"
 end
@@ -138,6 +140,10 @@ get '/matrix/period/:id/task_assignment/table' do
 	@day_schedules = @object.get_week @week
 	partial :"table/matrix/task_assignment"
 end
+
+# -----------------------------------------------------------------------------------------
+# DAY SCHEDULES
+# -----------------------------------------------------------------------------------------
 
 get '/matrix/day_schedule/:id/update' do
 	@object = DaySchedule.find(params[:id])
@@ -161,6 +167,17 @@ post '/matrix/day_schedule/:id' do
 	end
 	redirect "/matrix/period/#{@object.period.id}"
 end
+
+
+
+# updates the schedule type of a specific day schedule. It is called via a script so therefore
+# there is no need to return a view.
+post '/matrix/day_schedule/:ds/schedule/:schedule' do
+	ds = DaySchedule.find params[:ds]
+	schedule = Schedule.find params[:schedule]
+	ds.update(schedule: schedule)
+end
+
 
 get '/matrix/period/:id/assign' do
 	Period.find(params[:id]).assign_all_tasks
