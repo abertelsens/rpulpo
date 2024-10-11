@@ -41,9 +41,14 @@ footer: [#pad(x:-2.3cm, y: 1.2cm, text(size: 9pt, [#impreso]))]
 #set par(justify: true, first-line-indent: 0cm)
 
 
+#set text(
+  font: "Minion Pro",
+  size: 13pt
+)
+
 //CONTENTS
 
-= IUISUIURANDUM FIDELITATIS IN SUSCIPIENDO OFFICIO NOMINE ECCLESIAE EXERCENDO
+= IUISUIURANDUM FIDELITATIS IN SUSCIPIENDO \ OFFICIO NOMINE ECCLESIAE EXERCENDO
 
 Ego $person.first_name$ $person.family_name$ in suscipiendo ordine Diaconatus promitto me cum catholica Ecclesia communionem semper servaturum, sive verbis a me prolatis, sive mea agendi ratione.
 

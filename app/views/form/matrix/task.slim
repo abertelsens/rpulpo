@@ -4,7 +4,7 @@
 
 turbo-frame id="main_frame"
   	
-	form action="/matrix/task/{@object.id}" method="POST" data-controller="modal form-validator"
+	form action="/matrix/task/#{@object.id}" method="POST" data-controller="modal form-validator"
 	
 		.container.screen-box.x-large-form
 			/----------------------------------------------------------------------------------------------------------------
@@ -55,6 +55,7 @@ turbo-frame id="main_frame"
 									name="number[#{ts.schedule.id}]" 
 									required="true" 
 									min="0"
+									data-action="input->form-validator#validate"
 									value=(ts.nil? ? 0 : ts.number)]
 								
 								td.u-text-center
@@ -72,13 +73,15 @@ turbo-frame id="main_frame"
 									style="margin-bottom: 0.2rem; margin-top: 0.2rem"
 									class="medium-field u-text-center" 
 									id="s_time" 
-									name="s_time[#{ts.schedule.id}]" 
+									name="s_time[#{ts.schedule.id}]"
+									data-action="input->form-validator#validate"
 									value=(ts.nil? ? "" : ts&.s_time&.strftime("%H:%M"))]
 								td
 									input[type="text"
 									style="margin-bottom: 0.2rem; margin-top: 0.2rem"
 									class="medium-field u-text-center" 
-									name="e_time[#{ts.schedule.id}]" 
+									name="e_time[#{ts.schedule.id}]"
+									data-action="input->form-validator#validate"
 									value=(ts.nil? ? "" : ts&.e_time&.strftime("%H:%M"))]
 								td
 									input[type="text"
@@ -92,7 +95,7 @@ turbo-frame id="main_frame"
 			/ ERROR FRAME
 			/----------------------------------------------------------------------------------------------------------------		
 			.row
-				.alert.alert-warning.u-full-width.hidden-frame data-form-validator-target="error_frame"
+				.alert.alert-warning.u-full-width.hidden-frame.u-text-center data-form-validator-target="error_frame"
 
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM BUTTONS
@@ -100,7 +103,7 @@ turbo-frame id="main_frame"
 			.row.center-align
 					- if (!@object.nil?) 
 						button.button-secondary data-action="click->modal#open_modal" delete 
-					button.button-primary type="submit" name="commit" value="save" save  
+					button.button-primary type="submit" name="commit" value="save" data-form-validator-target="submit_btn" save  
 					a.button.button-secondary formnovalidate="true" href="/matrix" cancel
 					
 

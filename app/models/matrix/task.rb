@@ -38,7 +38,7 @@ class Task < ActiveRecord::Base
 		}
 	end
 
-	# creates an array of parameters that coan be used to create a TaslSchedule object
+	# creates an array of parameters that can be used to create a TaslSchedule object
 	def self.prepare_task_schedules_attributes(params, task=nil)
 		schedule_ids = params[:number].keys
 		task_schedule_ids = (task.task_schedules.map{|ts| { ts.schedule_id => ts.id } }).inject(:merge) if task
@@ -68,10 +68,39 @@ class Task < ActiveRecord::Base
 
 	# checks wether there is already a task with the name given in the parameters
 	def self.validate(params)
-		warning_message = "Warning: there is already a task with that name."
+
+		# validate the task name
+		name_warning_message = "Warning: there is already a task with that name."
+		name_validation = Task.validate_task_name params
+		return {result: false, message: name_warning_message} unless name_validation
+
+		# validate the time formats
+		time_format_warning_message = "Warning: Some times are not well formed: times should have the format hh:mm"
+		time_format_validation = Task.validate_time_format params
+		return {result: false, message: time_format_warning_message} unless time_format_validation
+
+		{result: true}
+	end
+
+	def self.validate_task_name(params)
 		name = params[:name].strip
 		task = Task.find_by(name: name)
-		found = (task.nil? ? false : (task.id!=params[:id].to_i))
-		found ? {result: false, message: warning_message} : {result: true}
+		validation = (task.nil? ? true : (task.id==params[:id].to_i))
+	end
+
+	def self.validate_time_format(params)
+		params[:number].keys.each do |key|
+			if params[:number][key].to_i > 0
+				begin
+					DateTime.strptime(params[:s_time][key],"%H:%M")
+					DateTime.strptime(params[:e_time][key],"%H:%M")
+				rescue ArgumentError => e
+					puts e
+					puts "failed validation of #{params[:s_time][key]} and #{params[:e_time][key]}"
+					return false
+				end
+			end
+		end
+		return true
 	end
 end

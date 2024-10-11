@@ -14,7 +14,7 @@
 #
 class Situation < ActiveRecord::Base
 
-  has_many :time_situations, dependent: :destroy
+  #has_many :time_situations, dependent: :destroy
 
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(points: :asc) }

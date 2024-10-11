@@ -40,7 +40,7 @@ footer: [#pad(x:-2.3cm, y: .9cm, text(size: 9pt, [#impreso]))]
 
 #set text(
   font: "Minion Pro",
-  size: 11pt
+  size: 13pt
 )
 
 #set par(justify: true, first-line-indent: 0cm)

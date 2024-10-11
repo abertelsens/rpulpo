@@ -13,15 +13,12 @@
 
 # A class defining an period object.
 #---------------------------------------------------------------------------------------
-#
+
 class Period < ActiveRecord::Base
 
   has_many  :day_schedules,     dependent: :destroy
   has_many  :task_assignments,  :through => :day_schedules
   has_many  :period_points,     dependent: :destroy
-
-  
-
 
 # -----------------------------------------------------------------------------------------
 # CALLBACKS

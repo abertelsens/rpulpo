@@ -6,7 +6,7 @@ turbo-frame id="main_frame"
   	
 	form action="/matrix/situation/#{(@object.nil? ? "new" : @object.id)}" method="POST" data-controller="modal"
 	
-		.container.screen-box
+		.container.screen-box.small-form
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM HEADER
 			//----------------------------------------------------------------------------------------------------------------
@@ -19,13 +19,13 @@ turbo-frame id="main_frame"
 			//----------------------------------------------------------------------------------------------------------------
 			.row
 		
-				.columns.one.offset-by-three
+				.columns.three
 					label for="points" points
-					select id="points" name="points" required="true"
+					select.u-full-width id="points" name="points" required="true"
 						- Array(0..10).each do |val| 
 							option value=val selected=(@object&.points==val) = val  
 				
-				.columns.four
+				.columns.nine
 					label for="name" name
 					&text.u-full-width id="name" name="name" required="true" value=@object&.name
 			

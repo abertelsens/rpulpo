@@ -76,7 +76,7 @@ get '/matrix/situation/:id' do
 end
 
 post '/matrix/situation/:id' do
-	situation = Situaton.find(params[:id]) unless params[:id]=="new"
+	situation = Situation.find(params[:id]) unless params[:id]=="new"
 	case params[:commit]
 		when "save" 	then (situation==nil ? (Situation.create params ): (situation.update params))
 		when "delete" then situation.destroy
@@ -84,30 +84,6 @@ post '/matrix/situation/:id' do
 	redirect :"/matrix"
 end
 
-# -----------------------------------------------------------------------------------------
-# TASK SCHEDULES
-# -----------------------------------------------------------------------------------------
-
-get '/matrix/task_schedule/table' do
-	@objects = TaskSchedule.all.order(task_id: :asc)
-	partial :"table/matrix/task_schedule"
-end
-
-get '/matrix/task_schedule/:id' do
-	@object = (params[:id]=="new" ? nil : TaskSchedule.find(params[:id]))
-	partial :"form/matrix/task_schedule"
-end
-
-post '/matrix/task_schedule/:id' do
-	@task_schedule = (params[:id].nil? ? TaskSchedule.create(TaskSchedule.prepare_params params) : TaskSchedule.find(params[:id]))
-	case params[:commit]
-		when "save"
-			(params[:id].nil? ? TaskSchedule.create(TaskSchedule.prepare_params params) : TaskSchedule.find(params[:id]))
-		when "delete"
-			TaskSchedule.find(params[:id]).destroy
-	end
-	redirect :"/matrix"
-end
 
 # -----------------------------------------------------------------------------------------
 # PERIODS
@@ -194,8 +170,8 @@ get '/matrix/people_modal/empty' do
 end
 
 get '/matrix/people_periods/table' do
-	#@objects = PersonPeriod.includes(:person).all.order("people.family_name")
-	#partial :"table/matrix/people_periods"
+	@objects = PersonPeriod.includes(:person).all.order("people.family_name")
+	partial :"table/matrix/people_periods"
 end
 
 get '/matrix/people_periods/table/search' do
@@ -209,9 +185,9 @@ end
 
 get '/matrix/person_period/:id' do
 	@object = (params[:id]=="new" ? nil : PersonPeriod.find(params[:id]))
-	@ta = @object.tasks_available.pluck(:task_id)
-	@availability = @object.days_available.order(day: :asc)
-
+	@ta = @object.nil? ? nil : @object.tasks_available.pluck(:task_id)
+	@availability = @object.nil? ? nil : @object.days_available.order(day: :asc)
+	puts "availability #{@availability.inspect}"
 	partial :"form/matrix/person_period"
 end
 
@@ -221,7 +197,7 @@ post '/matrix/person_period/:id' do
 		PersonPeriod.create params
 	else
 		pp = PersonPeriod.find(params[:id])
-		pp.delete if (params[:commit]=="delete" && !pp.nil?)
+		pp.destroy if (params[:commit]=="delete" && !pp.nil?)
 		pp.update params if (params[:commit]=="save" && !pp.nil?)
 	end
 	partial :"frame/people_periods"

@@ -1,4 +1,20 @@
 
+# Google calendar API key AIzaSyA-3PoZaonvgyax2wkRPVGsze0O7ZKJL1A
+
+# task?schedule.rb
+#---------------------------------------------------------------------------------------
+# FILE INFO
+
+# autor: alejandrobertelsen@gmail.com
+# last major update: 2024-10-05
+#---------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------
+# DESCRIPTION
+
+# A class defining an period object.
+#---------------------------------------------------------------------------------------
+
 class TaskSchedule < ActiveRecord::Base
 
 	belongs_to 	:schedule

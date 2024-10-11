@@ -18,31 +18,75 @@
 
 # requiere some utilities related to the queries
 
-=begin
 class PersonPeriod < ActiveRecord::Base
 
   belongs_to  :person
-  has_many    :days_available,    :class_name => 'DayAvailable', dependent: :destroy
-  has_many    :tasks_available,   :class_name => 'TaskAvailable', dependent: :destroy
+  has_many    :tasks_available,   dependent: :destroy
+  has_many    :days_available,    :class_name => 'DayAvailable',  dependent: :destroy
 
-  def self.prepare_params(params)
-		{
-			person_id:   params["person"].to_i,
-			s_date: 	Date.parse(params["s_date"]),
-			e_date: 	Date.parse(params["e_date"])
+
+  # enables the creation/update of the association model_users via attributes.
+	# See the the prepare_params method.
+	accepts_nested_attributes_for :tasks_available, allow_destroy: true
+  accepts_nested_attributes_for :days_available
+
+  def self.prepare_params(params,pp=nil)
+    attributes = {
+			person_id:    params["person"].to_i,
+			s_date: 	    Date.parse(params["s_date"]),
+			e_date: 	    Date.parse(params["e_date"])
     }
+    # if we we ara updating a person period then we update the tasks available
+    attributes[:tasks_available_attributes] = PersonPeriod.prepare_tasks_available_attributes(params,(pp.nil? ? nil : pp))
+    attributes[:days_available_attributes] = PersonPeriod.prepare_days_available_attributes(params,(pp.nil? ? nil : pp))
+    attributes
 	end
+
+
+  def self.prepare_days_available_attributes(params, pp=nil)
+
+    old_days_available = pp.days_available.map{|da| {da.day => da.id} }.inject(:merge) if pp
+    days_available_attributes = params["AM"].keys.map do |key|
+      hash = {
+        day: key.to_i,
+        AM: params["AM"][key],
+        PM1: params["PM1"][key],
+        PM2: params["PM2"][key]
+      }
+      hash[:id] = old_days_available[key.to_i] if pp
+      hash
+    end
+  end
+
+
+  def self.prepare_tasks_available_attributes(params, pp=nil)
+    # get the tasks available
+    new_available_tasks_array = params[:task].values.map{|task_id| task_id.to_i}
+    if pp
+      old_tasks_available = pp.tasks_available.map{|ta| {ta.task_id => ta.id} }.inject(:merge)
+      old_tasks_available_array = old_tasks_available.keys
+      tasks_to_create = (new_available_tasks_array-old_tasks_available_array)
+      destroy_attributes = (old_tasks_available_array - new_available_tasks_array).map do |task_id|
+        {
+          id:       old_tasks_available[task_id],
+          _destroy: true
+        }
+      end
+    else
+      tasks_to_create = new_available_tasks_array
+      destroy_attributes = []
+    end
+    create_attributes = tasks_to_create.map {|task_id| { task_id: task_id } }
+    create_attributes + destroy_attributes
+  end
+
 
   def self.create(params)
     pp = super(PersonPeriod.prepare_params params)
-    #pp.update_days_available params
-    pp.update_tasks_available params
   end
 
   def update(params)
-    super(PersonPeriod.prepare_params params)
-    update_days_available params
-    update_tasks_available params
+    super(PersonPeriod.prepare_params params, self)
   end
 
   def update_days_available(params)
@@ -125,7 +169,7 @@ class DayAvailable < ActiveRecord::Base
   AM_PM1 = (7.0..14)
   PM1_PM2 = (14..17.5)
   AFTER_PM2 = (17.5..22)
-  TIME_SLOTS = [AM_PM1, PM1_PM2, after_PM2]
+  TIME_SLOTS = [AM_PM1, PM1_PM2, AFTER_PM2]
 
   def self.prepare_params(params)
 		{
@@ -151,25 +195,18 @@ class DayAvailable < ActiveRecord::Base
 
   def index_to_time_slot(index)
     case index
-    when 0 then "AM"
-    when 1 then "PM1"
-    when 2 then "PM2"
-  end
-end
-
-  class TaskAvailable < ActiveRecord::Base
-
-    belongs_to  :person_period
-    belongs_to  :task
-    self.table_name = "tasks_available"
-
-    def self.prepare_params(params)
-    {
-      person_period:    params["person_period"],
-      task: 	          params["task"]
-    }
+      when 0 then "AM"
+      when 1 then "PM1"
+      when 2 then "PM2"
     end
-
-
   end
-=end
+
+end # class end
+
+class TasksAvailable < ActiveRecord::Base
+
+  belongs_to  :person_period
+  belongs_to  :task
+  self.table_name = "tasks_available"
+
+end

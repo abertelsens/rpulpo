@@ -38,12 +38,18 @@ margin: (top:6cm, bottom:3cm, x:3cm),
 footer: [#pad(x:-2.3cm, y: 1.2cm, text(size: 9pt, [#impreso]))]
 )
 
+#set text(
+  font: "Minion Pro",
+  size: 13pt
+)
+
+
 #set par(justify: true, first-line-indent: 0cm)
 
 
 //CONTENTS
 
-= IUISUIURANDUM FIDELITATIS IN SUSCIPIENDO OFFICIO NOMINE ECCLESIAE EXERCENDO
+= IUISUIURANDUM FIDELITATIS IN SUSCIPIENDO \ OFFICIO NOMINE ECCLESIAE EXERCENDO
 
 Ego $person.first_name$ $person.family_name$ in suscipiendo ordine Presbiteratus promitto me cum catholica Ecclesia communionem semper servaturum, sive verbis a me prolatis, sive mea agendi ratione.
 
