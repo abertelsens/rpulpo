@@ -101,7 +101,7 @@ end
 # renders the main page
 get '/' do
 	@current_user = get_current_user
-	@current_user ? (slim :home) : (redirect '/login')
+	@current_user ? (slim :layout) : (redirect '/login')
 end
 
 get '/elements/navbar' do

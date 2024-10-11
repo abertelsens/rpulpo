@@ -84,7 +84,6 @@ post '/matrix/situation/:id' do
 	redirect :"/matrix"
 end
 
-
 # -----------------------------------------------------------------------------------------
 # PERIODS
 # -----------------------------------------------------------------------------------------
@@ -108,6 +107,12 @@ post '/matrix/period/:id' do
 	redirect :"/matrix"
 end
 
+# assigns all tasks for the period
+get '/matrix/period/:id/assign' do
+	Period.find(params[:id]).assign_all_tasks
+	redirect "/matrix/period/#{params[:id]}/task_assignment/table?week=1"
+end
+
 # Shows one week of the the assignments table for the period.
 get '/matrix/period/:id/task_assignment/table' do
 	@period_id = params[:id].to_i
@@ -117,6 +122,39 @@ get '/matrix/period/:id/task_assignment/table' do
 	partial :"table/matrix/task_assignment"
 end
 
+# -----------------------------------------------------------------------------------------
+# PERSON PERIODS
+# -----------------------------------------------------------------------------------------
+
+get '/matrix/people_periods/table' do
+	@objects = PersonPeriod.includes(:person).all.order("people.family_name")
+	partial :"table/matrix/people_periods"
+end
+
+get '/matrix/people_periods/table/search' do
+	@objects = PersonPeriod.joins(:person).where("people.short_name ILIKE '%#{params[:q]}%'").order("people.family_name")
+	partial :"table/matrix/people_periods"
+end
+
+get '/matrix/people_periods' do
+	partial :"frame/people_periods"
+end
+
+get '/matrix/person_period/:id' do
+	@object = (params[:id]=="new" ? nil : PersonPeriod.find(params[:id]))
+	@ta = @object.nil? ? nil : @object.tasks_available.pluck(:task_id)
+	@availability = @object.nil? ? nil : @object.days_available.order(day: :asc)
+	partial :"form/matrix/person_period"
+end
+
+post '/matrix/person_period/:id' do
+	person_period = PersonPeriod.find(params[:id]) unless params[:id]=="new"
+	case params[:commit]
+		when "save" then (person_period==nil ? (PersonPeriod.create params ): (person_period.update params))
+		when "delete" then person_period.destroy
+	end
+	partial :"frame/people_periods"
+end
 # -----------------------------------------------------------------------------------------
 # DAY SCHEDULES
 # -----------------------------------------------------------------------------------------
@@ -144,20 +182,12 @@ post '/matrix/day_schedule/:id' do
 	redirect "/matrix/period/#{@object.period.id}"
 end
 
-
-
 # updates the schedule type of a specific day schedule. It is called via a script so therefore
 # there is no need to return a view.
 post '/matrix/day_schedule/:ds/schedule/:schedule' do
 	ds = DaySchedule.find params[:ds]
 	schedule = Schedule.find params[:schedule]
 	ds.update(schedule: schedule)
-end
-
-
-get '/matrix/period/:id/assign' do
-	Period.find(params[:id]).assign_all_tasks
-	redirect "/matrix/period/#{params[:id]}/task_assignment/table?week=1"
 end
 
 get '/matrix/day_schedule/:id/task_assignments' do
@@ -167,40 +197,6 @@ end
 
 get '/matrix/people_modal/empty' do
 	partial :"table/matrix/people_modal_empty"
-end
-
-get '/matrix/people_periods/table' do
-	@objects = PersonPeriod.includes(:person).all.order("people.family_name")
-	partial :"table/matrix/people_periods"
-end
-
-get '/matrix/people_periods/table/search' do
-	@objects = PersonPeriod.joins(:person).where("people.short_name ILIKE '%#{params[:q]}%'")
-	partial :"table/matrix/people_periods"
-end
-
-get '/matrix/people_periods' do
-	partial :"frame/people_periods"
-end
-
-get '/matrix/person_period/:id' do
-	@object = (params[:id]=="new" ? nil : PersonPeriod.find(params[:id]))
-	@ta = @object.nil? ? nil : @object.tasks_available.pluck(:task_id)
-	@availability = @object.nil? ? nil : @object.days_available.order(day: :asc)
-	puts "availability #{@availability.inspect}"
-	partial :"form/matrix/person_period"
-end
-
-post '/matrix/person_period/:id' do
-	person = Person.find params[:person]
-	if params[:id]=="new"
-		PersonPeriod.create params
-	else
-		pp = PersonPeriod.find(params[:id])
-		pp.destroy if (params[:commit]=="delete" && !pp.nil?)
-		pp.update params if (params[:commit]=="save" && !pp.nil?)
-	end
-	partial :"frame/people_periods"
 end
 
 # renders a modal with a list of the people available for a task with a specific day schedule
