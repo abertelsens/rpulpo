@@ -57,6 +57,10 @@ helpers do
 			(cookies[:current_user_id].nil? || cookies[:current_user_id]&.blank?) ? nil : User.find(cookies[:current_user_id])
 	end
 
+	def save?
+		params[:commit]=="save"
+	end
+
 	# Prints a log of the http request. The info varies according to the SINATRA_LOG_LEVEL variable.
 	def print_controller_log()
 		case SINATRA_LOG_LEVEL

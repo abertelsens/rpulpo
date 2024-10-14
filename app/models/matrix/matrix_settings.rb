@@ -16,7 +16,6 @@ class Matrix < ActiveRecord::Base
   belongs_to  :person
   has_many    :tasks_available,   dependent: :destroy
 
-
   # enables the creation/update of the association model_users via attributes.
 	# See the the prepare_params method.
 	accepts_nested_attributes_for :tasks_available, allow_destroy: true

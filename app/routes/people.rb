@@ -66,7 +66,7 @@ get '/person/:id/:module' do
 		when "personal" then @personal = Personal.find_by(person_id: @person.id)
 		when "study" 		then @study = Study.find_by(person_id: @person.id)
 		when "crs" 			then @crs = Crs.find_by(person_id: @person.id)
-		when "matrix" 
+		when "matrix"
 			@matrix = Matrix.find_by(person_id: @person.id)
 			puts @matrix.inspect
 			@tasks_available = @matrix.tasks_available.pluck(:task_id)
@@ -210,15 +210,9 @@ end
 # post controller of the crs data of a person
 post '/person/:id/matrix' do
 	@current_user = get_current_user
-	@person = Person.find(params[:id])
-	@matrix = params[:matrix_id]=="new" ? nil : Matrix.find(params[:matrix_id])
-	if params[:commit]=="save"
-		if @matrix.nil?
-			@matrix = Matrix.create params
-		else
-			check_update_result (@matrix.update params)
-		end
-	end
+	@person = Person.find params[:id]
+	matrix = params[:matrix_id]=="new" ? nil : Matrix.find(params[:matrix_id])
+	matrix.nil? ? (Matrix.create params) : (matrix.update params) if save?
 	partial :"view/person"
 end
 
