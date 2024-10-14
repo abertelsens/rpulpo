@@ -80,7 +80,6 @@ class Period < ActiveRecord::Base
 
   def assign_all_tasks
     tasks = Task.all
-
     day_schedules.each do |ds|
       tasks.each do |task|
         people_available = PersonPeriod.find_people_available ds, task
@@ -112,8 +111,8 @@ class Period < ActiveRecord::Base
   # gets all the day_schedules of the week corresponding to a a sepcific date
   def get_week(week_index)
     monday = get_previous_day(s_date,1) + (week_index-1) * 7
-    DaySchedule.where(:date => monday..monday+6).order(date: :asc)
-
+    #puts "\ngetting week between ·#{monday} and #{monday+6}\n"
+    DaySchedule.includes(:schedule).where(:date => monday..monday+6).order(date: :asc)
   end
 
   def get_previous_day(date, day_of_week)

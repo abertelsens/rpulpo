@@ -26,15 +26,19 @@ class Person < ActiveRecord::Base
 
 	# the related tables have a destroy dependency, i.e. if a person is deleted then also
 	# the matching table entries are destroyed as well.
-	has_one :crs, dependent: :destroy
-	has_one :personal, dependent: :destroy
-	has_one :study, dependent: :destroy
+	has_one :crs, 							dependent: :destroy
+	has_one :personal, 					dependent: :destroy
+	has_one :study, 						dependent: :destroy
+	has_one :matrix, 						dependent: :destroy
+	has_many :tasks_available, 	:through => :matrix
 	has_one :room
 	has_many :turnos
 
+
 	# matrix associations
 	has_many :task_assignments, dependent: :destroy
-	has_many :person_periods, dependent: :destroy
+	has_many :person_periods, 	dependent: :destroy
+	has_many :period_points, 		dependent: :destroy
 
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(family_name: :asc) }
@@ -142,4 +146,55 @@ class Person < ActiveRecord::Base
 		"die #{date.day} mensis #{MONTHS_LATIN[date.month]} anni #{date.year}"
 	end
 
+	# -----------------------------------------------------------------------------------------
+	# MATRIX METHODS
+	# -----------------------------------------------------------------------------------------
+
+	def self.find_people_available(day_schedule,task)
+
+		task_schedule = TaskSchedule.find_by(task: task, schedule: day_schedule.schedule)
+
+		periods = PersonPeriod.includes(:person).
+		joins(:tasks_available).
+		where(tasks_available: {task: task.id}).
+		where(s_date: ..day_schedule.date, e_date: day_schedule.date..)
+		#.pluck(:id, :short_name, 'person_periods.id')
+
+
+		periods_available = periods.select{|pp| pp.is_free?(day_schedule, task_schedule)}
+		people_available = periods_available.map{|period| {period.person_id => period.days_available.find_by(day:wday).get_situation(ts)} }
+		people_with_assignments = people_with_assignments(day_schedule, task_schedule)
+		people_available = people_available - people_with_assignments
+		people_available.map do |pp|
+      ppoints = PeriodPoint.find_by(person: pp.person, period: period)
+      points = ppoints.nil? ? 0 : ppoints.points
+      {
+        person_id:      pp.person.id,
+        available:      (pp.is_available_for_task? task),
+        name:           pp.person.short_name,
+        situation:      pp.days_available.find_by(day:wday).get_situation(ts),
+        points:         points
+      }
+    end
+		#periods_available =  periods.select {|period| period.is_available_for_task? task }
+		#puts Person.joins(:person_periods).where(person_periods: {s_date: ..day_schedule.date, e_date: day_schedule.date..}).to_sql
+		#TaskAssignment.includes(:task_schedule).joins(:day_schedule).where(day_schedule: {period: period.id}).where(person: person).sum(:points)
+		#people = people.select {|person| person.period.is_available_for_task? task }
+		puts people_available.inspect
+		puts people_with_assignments.inspect
+	end
+
+	# get the person period that defines the availabily of a person for a given day_schedule
+	def get_person_period(day_schedule)
+		person_periods.find_by(s_date: ..day_schedule.date , e_date: day_schedule.date..)
+	end
+
+	def is_available_for_task?(day_schedule,task)
+		get_person_period(day_schedule).is_available_for_task? task
+	end
+
+	# finds all the people that have assignmnets that clash with the given task schedule
+	def self.people_with_assignments(day_schedule, task_schedule)
+		tas = TaskAssignment.where(day_schedule: day_schedule).select{|ta| ta.clashes_with_task? task_schedule}.map{|ta| ta.person_id}
+	end
 end

@@ -30,7 +30,12 @@ class PersonPeriod < ActiveRecord::Base
 	accepts_nested_attributes_for :tasks_available, allow_destroy: true
   accepts_nested_attributes_for :days_available
 
-  def self.prepare_params(params,pp=nil)
+
+  #---------------------------------------------------------------------------------------
+  # CRUD METHODS
+  #---------------------------------------------------------------------------------------
+
+  def self.prepare_params(params, pp=nil)
     attributes = {
 			person_id:    params["person"].to_i,
 			s_date: 	    Date.parse(params["s_date"]),
@@ -38,13 +43,11 @@ class PersonPeriod < ActiveRecord::Base
     }
     # if we we ara updating a person period then we update the tasks available
     attributes[:tasks_available_attributes] = PersonPeriod.prepare_tasks_available_attributes(params,(pp.nil? ? nil : pp))
-    attributes[:days_available_attributes] = PersonPeriod.prepare_days_available_attributes(params,(pp.nil? ? nil : pp))
+    attributes[:days_available_attributes]  = PersonPeriod.prepare_days_available_attributes(params,(pp.nil? ? nil : pp))
     attributes
 	end
 
-
   def self.prepare_days_available_attributes(params, pp=nil)
-
     old_days_available = pp.days_available.map{|da| {da.day => da.id} }.inject(:merge) if pp
     days_available_attributes = params["AM"].keys.map do |key|
       hash = {
@@ -57,7 +60,6 @@ class PersonPeriod < ActiveRecord::Base
       hash
     end
   end
-
 
   def self.prepare_tasks_available_attributes(params, pp=nil)
     # get the tasks available
@@ -89,39 +91,56 @@ class PersonPeriod < ActiveRecord::Base
     super(PersonPeriod.prepare_params params, self)
   end
 
-  def update_days_available(params)
-    daAM = params["AM"]
-    daPM1 = params["PM1"]
-    daPM2 = params["PM2"]
-    days_available.destroy_all
-    days_available = daAM.keys.each {|key| DayAvailable.create(person_period: self, day: key.to_i, AM: daAM[key], PM1: daPM1[key], PM2: daPM2[key] )}
-
-  end
-
-  def update_tasks_available(params)
-    tasks = params["task"].nil? ? nil : params["task"].values
-    tasks_params = tasks.map {|task| { person_period: self, task_id: task.to_i} } unless tasks.nil?
-    tasks_available.destroy_all
-    tasks_available = TaskAvailable.create(tasks_params)
-  end
+  #---------------------------------------------------------------------------------------
+  # ACCESSORS
+  #---------------------------------------------------------------------------------------
 
   # finds the available people for a task with a specific day_schedule. The result depends on
   # on the day of the week and the time of the task
-  #def self.find_people_available(day_schedule, task)
-  #  ts = TaskSchedule.find_by(task: task, schedule: day_schedule.schedule)
-  #  puts "finding people available. Found ts #{ts}. #{ts.number} people needed"
-  #  return [] if (ts.nil? || ts.number==0)
-  #  people_periods = PersonPeriod.includes(:person).where(s_date: ..day_schedule.date , e_date: day_schedule.date..)
-  #  puts "found available people perdiods. Found#{peopleperiods}"
-  ##  available_periods = people_periods.map{|pp| pp.person.id => pp.get_availability(wday,ts) }
-  #  free_people = (available_periods.select{|ap| ap.is_free?(day_schedule, ts)}).map{|pp| pp.person}
-  #  period = day_schedule.period
-  #  free_people
-  #end
+  def self.find_people_available(period, day_schedule, task)
+    ts = TaskSchedule.find_by(task: task, schedule: day_schedule.schedule)
+    wday = day_schedule.date.wday
+    return [] if (ts.nil? || ts.number==0)
+    # find all the people periods that are relevant to this day schedule
 
-  def get_availability(wday,task_schedule)
-    day = days_available.find_by(day: wday) if !wday.nil?
-    day.get_value task_schedule
+    people_periods = PersonPeriod.includes(:person).where(s_date: ..day_schedule.date , e_date: day_schedule.date..)
+
+    # select only the people that are available to do the specific task
+    people_periods = people_periods.select{|pp| pp.is_available_for_task? task}
+
+    # select only the people that are free (have no tasks assigned at that time)
+    people_periods = people_periods.select{|pp| pp.is_free?(day_schedule,ts)}
+
+    # add the people already assigned for the specific task
+    assigned_people_ids = (day_schedule.get_assigned_people task).pluck(:id)
+    assigned_people_periods = PersonPeriod.includes(:person).where(person: assigned_people_ids)
+    people_periods = people_periods.concat(assigned_people_periods)
+
+    people_available = people_periods.map do |pp|
+      ppoints = PeriodPoint.find_by(person: pp.person, period: period)
+      points = ppoints.nil? ? 0 : ppoints.points
+      {
+        person_id:      pp.person.id,
+        available:      (pp.is_available_for_task? task),
+        name:           pp.person.short_name,
+        situation:      pp.days_available.find_by(day:wday).get_situation(ts),
+        points:         points
+      }
+    end
+    people_available = people_available.sort_by { |person_hash| person_hash[:points] }
+    people_available = people_available.sort_by { |person_hash| person_hash[:situation][:points] }
+
+    puts "\n\n\n\n"
+    puts "returning people available"
+    puts people_available.inspect
+    puts "\n\n\n\n"
+    people_available
+  end
+
+
+  def get_availability(wday, task_schedule)
+    return false if !(tasks_available.pluck(:task).include? task_schedule.task.id)
+    return true
   end
 
   def get_availability(week_day, task_schedule)
@@ -132,18 +151,9 @@ class PersonPeriod < ActiveRecord::Base
 
   end
 
-  def is_free?(day_schedule, ts)
-    # get all the task assignments for a specific day
-    puts "\n\n\n\n\n------------------checking if #{person.short_name} is free on ts:"
-    puts ts.inspect
-    puts "checking if #{person.short_name} is free on ts----------------------"
+  def is_free?(day_schedule,task_schedule)
     tas = TaskAssignment.where(person: self.person, day_schedule: day_schedule)
-    puts "------------------checking task assignmens of #{person.short_name}"
-    puts tas.inspect
-    puts "----------------------"
-    return true if tas.empty?
-    # if there are tasks assigned already to the person on that day, check if they fall on the same time
-    (tas.select{|ta| ta.get_time==ts.get_time}).empty?
+    (tas.select{|ta| ta.clashes_with_task? task_schedule}).empty?
   end
 
   def is_available_for_task?(task)
@@ -155,10 +165,6 @@ class PersonPeriod < ActiveRecord::Base
     da.AM1
   end
 
-  #def calculate_assignments_time(period)
-  #  tas = TaskAssignment.where(person: self.person, day_schedule: day_schedule)
-  #end
-
 end
 
 class DayAvailable < ActiveRecord::Base
@@ -166,10 +172,7 @@ class DayAvailable < ActiveRecord::Base
   belongs_to  :person_period
   self.table_name = "days_available"
 
-  AM_PM1 = (7.0..14)
-  PM1_PM2 = (14..17.5)
-  AFTER_PM2 = (17.5..22)
-  TIME_SLOTS = [AM_PM1, PM1_PM2, AFTER_PM2]
+  RANGES =[ (7.0..14), (14..17.5), (17.5..22) ]
 
   def self.prepare_params(params)
 		{
@@ -183,14 +186,13 @@ class DayAvailable < ActiveRecord::Base
 
 
   # gets the situation with the highest priority for the time schedule
-  def get_value(task_schedule)
-    situations = Situation.all
-    task_range = (task_schedule.s_time..task_schedule)
-    overlapping_time_slots = TIME_SLOTS.map.with_index do |ts, index|
-       (ts.overlap? task_range) ? index_to_time_slot(index) : ""
-    end
-    max_value = (overlapping_time_slots.map {|ts| self[ts]}).max
-    #max_time_slot = overlapping_time_slots.select {|ts| self[ts]== max_value}
+  def get_situation(task_schedule)
+    task_range = (task_schedule.s_time.hour..task_schedule.e_time.hour)
+    am  =  Situation.find(self.AM) if task_range.overlap? (7.0..14)
+    pm1 =  Situation.find(self.PM1) if task_range.overlap? (14..17.5)
+    pm2 =  Situation.find(self.PM2) if task_range.overlap? (17.5..22)
+    situations = [am,pm1,pm2].select{|sit| sit!=nil}
+    return situations.max_by {|e| e.points }
   end
 
   def index_to_time_slot(index)

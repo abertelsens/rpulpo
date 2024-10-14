@@ -74,7 +74,7 @@ footer: [#pad(x:0cm, y: 0cm, text(size: 8pt, [#impreso]))]
 #grid(
   columns: (22%, 12%, 18%, 18%, 10%, 10%),
   gutter: 10pt,
-  row-gutter: 1.4em,
+  row-gutter: 1.5em,
   label(2,"Ha manifestado su disposición de ser sacerdote"),
   field(1,"$crs.letter$"),
   label(2,"Hizo la Admissio"),

@@ -1,15 +1,15 @@
 turbo-frame id="date_types_table" 
-  - schedules = Schedule.all
+
   
   div.flex-center.margin-bottom style="vertical-align:center;"
     div
-      a.button.button-small.button-square-no-color.no-margin.button-disabled href=(@week>1 ? "/matrix/period/#{@period_id}/task_assignment/table?week=#{@week-1}" : "javascript:void(0)" )
+      a.button.button-small.button-square-no-color.no-margin.button-disabled href=(@week>1 ? "/matrix/period/#{@period.id}/task_assignment/table?week=#{@week-1}" : "javascript:void(0)" )
         i.fa-solid.fa-minus
         
     div
       h3.u-text-center.margin-left.margin-right = "Weekly Task Assignments"
     div
-      a.button.button-small.button-square-no-color.no-margin.button-disabled href="/matrix/period/#{@period_id}/task_assignment/table?week=#{@week+1}"
+      a.button.button-small.button-square-no-color.no-margin.button-disabled href="/matrix/period/#{@period.id}/task_assignment/table?week=#{@week+1}"
         i.fa-solid.fa-plus
   div.table-container data-controller="drag peoplemodal"
     div.table-table style="height:fit-content" 
@@ -19,15 +19,16 @@ turbo-frame id="date_types_table"
         
         - @day_schedules.each_with_index do |ds,index|
           div.table-cell-body style="min-width: 200px; max-width: 300px;"
-            div.container.flex-center style="display:flex; flex-direction:columns"
-              div  
-                h4.margin-bottom-small style="margin-right: 6px" = ds.date.strftime("%a %d")
-              div 
-                select.margin-bottom-small style="width:60px" name="schedule" data-peoplemodal-target="dsselect[#{index}]" data-action="change->peoplemodal#selectds" data-peoplemodal-ds-param=ds.id
-                  - schedules.each do |sch|
+            div.container.flex-center style="border:0; display:flex; flex-direction:columns"
+              div style="border:0"
+                h4.margin-bottom-small style="border:0; margin-right: 6px" = ds.date.strftime("%a %d")
+              div style="border:0"
+                select.margin-bottom-small style="border:0; width:60px" name="schedule" data-peoplemodal-target="dsselect[#{index}]" data-action="change->peoplemodal#selectds" data-peoplemodal-ds-param=ds.id
+                  - @schedules.each do |sch|
                     option selected=(sch.id==ds.schedule.id) value=sch.id = sch.name
       
-      - Task.all.each do |task|
+      - puts "\n\n\n\n FILLING IN CELLS" 
+      - @tasks.each do |task|
         div.matrix-row-body 
           div.table-cell-body style="font-weight:bold" = task.name
           - @day_schedules.each do |ds|

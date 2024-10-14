@@ -47,4 +47,8 @@ class TaskSchedule < ActiveRecord::Base
 	def self.create_default(task,schedule)
 		TaskSchedule.create(task: task, schedule: schedule)
 	end
+
+	def overlaps?(task_schedule)
+		(s_time..e_time).overlap?(task_schedule.s_time..task_schedule.e_time)
+	end
 end

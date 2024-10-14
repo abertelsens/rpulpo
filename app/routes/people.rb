@@ -66,6 +66,7 @@ get '/person/:id/:module' do
 		when "personal" then @personal = Personal.find_by(person_id: @person.id)
 		when "study" 		then @study = Study.find_by(person_id: @person.id)
 		when "crs" 			then @crs = Crs.find_by(person_id: @person.id)
+		when "matrix" 	then @matrix = Matrix.find_by(person_id: @person.id)
 		when "rooms", "room"
 			@object = Room.find_by(person_id: @person.id)
 			@object.nil? ? (redirect "/person/#{params[:id]}") : (return partial :"form/room")
@@ -137,7 +138,6 @@ get '/crs' do
 	partial :"frame/crs"
 end
 
-
 # -----------------------------------------------------------------------------------------
 # POST
 # -----------------------------------------------------------------------------------------
@@ -204,6 +204,20 @@ post '/person/:id/crs' do
 	partial :"view/person"
 end
 
+# post controller of the crs data of a person
+post '/person/:id/matrix' do
+	@current_user = get_current_user
+	@person = Person.find(params[:id])
+	@matrix = params[:matrix_id]=="new" ? nil : Matrix.find(params[:matrix_id])
+	if params[:commit]=="save"
+		if @matrix.nil?
+			@matrix = Matrix.create params
+		else
+			check_update_result (@matrix.update params)
+		end
+	end
+	partial :"view/person"
+end
 
 # uploads an image
 post '/people/:id/image' do

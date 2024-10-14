@@ -115,10 +115,11 @@ end
 
 # Shows one week of the the assignments table for the period.
 get '/matrix/period/:id/task_assignment/table' do
-	@period_id = params[:id].to_i
 	@week = (params[:week]=nil? ? 1 : params[:week].to_i)
 	@period = Period.find(params[:id])
-	@day_schedules = @object.get_week @week
+	@schedules = Schedule.all
+	@day_schedules = @period.get_week @week
+	@tasks = Task.all
 	partial :"table/matrix/task_assignment"
 end
 
@@ -155,31 +156,14 @@ post '/matrix/person_period/:id' do
 	end
 	partial :"frame/people_periods"
 end
+
 # -----------------------------------------------------------------------------------------
 # DAY SCHEDULES
 # -----------------------------------------------------------------------------------------
 
-get '/matrix/day_schedule/:id/update' do
-	@object = DaySchedule.find(params[:id])
-	schedule = Schedule.find(params[:schedule])
-	@object.update(schedule: schedule)
-	{result: true}.to_json
-end
-
 get '/matrix/day_schedule/:id' do
 	@object = (params[:id]=="new" ? nil : DaySchedule.includes(:schedule).find(params[:id]))
 	partial :"form/matrix/day_schedule"
-end
-
-post '/matrix/day_schedule/:id' do
-	@object = DaySchedule.find(params[:id])
-	params["task"].keys.each do |key|
-		task = Task.find key
-		day_schedule = @object
-		people =  params["task"][key].blank? ? nil : Person.find(params["task"][key].values)
-		TaskAssignment.assign task, day_schedule, people
-	end
-	redirect "/matrix/period/#{@object.period.id}"
 end
 
 # updates the schedule type of a specific day schedule. It is called via a script so therefore
@@ -188,35 +172,28 @@ post '/matrix/day_schedule/:ds/schedule/:schedule' do
 	ds = DaySchedule.find params[:ds]
 	schedule = Schedule.find params[:schedule]
 	ds.update(schedule: schedule)
-end
+	{result: true}.to_json
 
-get '/matrix/day_schedule/:id/task_assignments' do
-	@object = (params[:id]=="new" ? nil : DaySchedule.includes(:schedule).find(params[:id]))
-	partial :"form/matrix/task_assignments"
-end
-
-get '/matrix/people_modal/empty' do
-	partial :"table/matrix/people_modal_empty"
 end
 
 # renders a modal with a list of the people available for a task with a specific day schedule
 get '/matrix/people_modal/ds/:ds/task/:task' do
+
 	@ds  = DaySchedule.find params[:ds]
 	@period = @ds.period
 	@task  = Task.find params[:task]
-	@task_schedule = TaskSchedule.find_task_schedule @task, @ds
-	@selected_people  = @ds.get_assigned_people @task
-	@available_people = PersonPeriod.find_people_available @ds, @task
-	#@available_people = available_people_hash.map{|ph| ph[:id] }
-	#@available_people_times = @available_people.map{|person| @period.get_assignments_time(person) }
-	@available_people.concat(@selected_people) unless @selected_people.nil?
-	partial :"table/matrix/people_modal"
-end
 
-get '/matrix/ds/:ds/task/:task' do
-	@task  = Task.find params[:task]
-	@ds  = DaySchedule.find params[:ds]
-	partial :"table/matrix/day_schedule_cell"
+	puts "\n\n\n\n"
+	puts Rainbow("testin person.rb methods")
+	Person.find_people_available(@ds,@task)
+	puts "\n\n\n\n"
+
+
+	@people_needed = @ds.get_number @task
+	@selected_people  = @ds.get_assigned_people @task
+	@selected_people_ids  = @selected_people.pluck(:id)
+	@available_people = (PersonPeriod.find_people_available @period, @ds, @task)
+	partial :"table/matrix/people_modal"
 end
 
 get '/matrix/ds/:ds/task/:task/person/:person/:action' do
@@ -228,8 +205,5 @@ get '/matrix/ds/:ds/task/:task/person/:person/:action' do
 		when "add" then TaskAssignment.create(day_schedule: @ds, task_schedule: @task_schedule, person: @person )
 		when "remove" then TaskAssignment.find_by(day_schedule: @ds, task_schedule: @task_schedule, person: @person).destroy
 	end
-	pp = PeriodPoint.find_by(person: @person, period: @ds.period)
-	pp = PeriodPoint.create(person: @person, period: @ds.period) if pp.nil?
-	pp.update_points
 	partial :"table/matrix/day_schedule_cell"
 end

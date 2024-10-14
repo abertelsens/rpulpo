@@ -1,0 +1,61 @@
+/***************************************************************************************** 
+// FORM for Personal Information about a person
+/*****************************************************************************************
+
+turbo-frame id="main_frame"
+  	
+	form[
+		action="/person/#{@person.id}/matrix"
+		method="POST"] 
+	 
+		.container.medium-form.screen-box
+			
+			/-----------------------------------------------------------------------------------
+			/ FORM HEADER
+			/-----------------------------------------------------------------------------------
+			.row.u-text-center
+				
+			/-----------------------------------------------------------------------------------
+			/ DOCUMENT FRAME
+			/-----------------------------------------------------------------------------------
+			.row
+				h3.u-text-center = @person.short_name	
+				h4.u-text-center = "Disponibilidad para Encargos"	
+				
+			.row
+				
+
+				/----------------------------------------------------------------------------------------------------------------
+			//PERSONAL FRAME
+			//----------------------------------------------------------------------------------------------------------------
+			.row
+				&hidden name="matrix_id" value=(@matrix.nil? ? "new" : @matrix.id)
+				&hidden name="person_id" value=@person.id
+				
+			div.flex-center style="display:flex; flex-direction: row"
+				div style="padding: 2rem 2rem 0 2rem; display:flex; flex-direction: row; flex-flow:row wrap; justify-content: space-around; column-gap: 2em; row-gap: 1em" 
+					div style="display:flex; flex-direction: row"
+						input.no-margin type="checkbox" id="driver" name="driver" value=@matrix&.driver
+						label style="margin: 0 0 0 10px" for="driver" conductor
+					
+					div style="display:flex; flex-direction: row"
+						input.no-margin type="checkbox" id="choir" name="choir" value=@matrix&.choir
+						label style="margin: 0 0 0 10px" for="choir" coro
+						
+				
+
+			.row.search-filters style="padding: 20px 20px 20px 20px"
+				h4.u-text-center = "Encargos que puede hacer"
+				div style="padding: 2rem 6rem 0 6rem; display:flex; flex-direction: row; flex-flow:row wrap; justify-content: space-around; column-gap: 2em; row-gap: 1em" 
+					- Task.all.each_with_index do |task, index|
+						div style="display:flex; flex-direction: row"
+							input.no-margin type="checkbox" id="task_#{task.id}" name="task[#{index}]" value=task.id checked=(@object.nil? ? true : @ta.include?(task.id))
+							label style="margin: 0 0 0 10px" for="task_#{task.id}" = task.name
+
+					
+					
+			
+			.row style="display: flex; justify-content: center; margin-top:60px"
+				button#save_btn.button-primary.margin-right autofocus="true" type="submit" name="commit" value="save" save  
+				a.button.button-secondary formnovalidate="true" href="/person/#{@person.id}" cancel 	
+				

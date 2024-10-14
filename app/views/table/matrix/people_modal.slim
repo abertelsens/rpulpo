@@ -3,17 +3,27 @@ turbo-frame id="people_modal" data-peoplemodal-target="peoplemodal"
     .modal-content 
       .row.modal-row
         h4.u-text-center = "#{@task.name} - #{@ds.date.strftime("%A %d %b")}"	
-        p.u-text-center = "#{@task_schedule.number} people needed"		
+        p.u-text-center 
+          b = "#{@people_needed} #{@people_needed==1 ? "person" : "people"} needed"		
       .row.u-text-center style="margin-bottom:2rem; font-size:1rem"
         div.table-container        
           div.table-table style="display: grid; grid-template-columns: auto auto auto auto;"
+            
             - if !@available_people.nil?
               - @available_people.each.with_index do |object, index| 
-                - points = PeriodPoint.get_points(@period, object) 
-                - if (!@selected_people.nil? && @selected_people.include?(object))
-                  a.matrix-cell-selected  data-action="click->peoplemodal#close_modal" data-turbo-frame=id="ds_#{@ds.id}_task_#{@task.id}" href="/matrix/ds/#{@ds.id}/task/#{@task.id}/person/#{object.id}/remove" = "#{object.short_name} (#{points})"
-                - else
-                  a.matrix-cell data-action="click->peoplemodal#close_modal" data-turbo-frame=id="ds_#{@ds.id}_task_#{@task.id}" href="/matrix/ds/#{@ds.id}/task/#{@task.id}/person/#{object.id}/add" = "#{object.short_name} (#{points})"
+                - person_id = object[:person_id]
+                - name = object[:name]
+                - available = object[:available]
+                - situation = object[:situation]
+                - points =  object[:points]
+                - is_selected = (@selected_people_ids.include? person_id)
+                - link_class = (is_selected ? "matrix-cell-selected" : "matrix-cell")
+                - link_action = (is_selected ? "remove" : "add")
+                a[
+                  class = link_class
+                  data-action="click->peoplemodal#close_modal" 
+                  data-turbo-frame=id="ds_#{@ds.id}_task_#{@task.id}" 
+                  href="/matrix/ds/#{@ds.id}/task/#{@task.id}/person/#{person_id}/#{link_action}"] = "#{name} (#{situation.name}) (#{points})"
             
       .row.center-align
         a.button.button-secondary data-turbo-frame=id="ds_#{@ds.id}_task_#{@task.id}" data-action="click->peoplemodal#close_modal" href="/matrix/ds/#{@ds.id}/task/#{@task.id}" cancel

@@ -7,7 +7,7 @@ turbo-frame id="main_frame"
   
       - if (@current_user.usertype!="guest"|| user_is_person)
         a.button.link-button.u-full-width.no-padding href="/person/#{@person.id}/general" = "general"
-      - ["study","personal","crs"].each do |mod|
+      - ["study","personal","crs","matrix"].each do |mod|
         - if ((@current_user.allowed? mod) || user_is_person)
           a.button.link-button.u-full-width.no-padding href="/person/#{@person.id}/#{mod}" = mod
   

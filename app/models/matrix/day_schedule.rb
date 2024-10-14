@@ -10,20 +10,15 @@ class DaySchedule < ActiveRecord::Base#
 
   scope :of_period, ->(period_id) { where("period_id = ?", period_id) }
 
-  def get_task_assignments(task)
-    task_assignments.includes(:person).joins(:task_schedule).where(task_schedule: {task_id: task.id})
-  end
-
-  def create_assignments()
-    Task.all.each {|task| TaskAssignment.create(day_schedule: self, task: task)}
-  end
-
-  def get_number(task)
+   # get the number of people needed for a specific task
+   def get_number(task)
     task_schedules.find_by(task: task).number
   end
 
-  def get_task
-    task.order(name: :asc)
+
+  # gets all the assignments of a given task
+  def get_task_assignments(task)
+    task_assignments.includes(:person).joins(:task_schedule).where(task_schedule: {task_id: task.id})
   end
 
   def get_task_assignments_to_html(task)
@@ -32,18 +27,20 @@ class DaySchedule < ActiveRecord::Base#
   end
 
   def get_assigned_people(task)
-    tas = get_task_assignments(task)
-    tas.empty? ? nil : tas.map {|ta| ta.person}
+    get_task_assignments(task).map {|ta| ta.person}
   end
 
   def get_number_of_assigned_people(task)
-    tas = get_task_assignments(task)
-    tas.empty? ? 0 : tas.size
+    get_task_assignments(task).size
+  end
+
+  def create_assignments()
+    Task.all.each {|task| TaskAssignment.create(day_schedule: self, task: task)}
   end
 
   # checks the status of the assignments for a specific task
   def get_assignment_status_class(task)
-    people_assigned =get_task_assignments(task).size
+    people_assigned = get_task_assignments(task).size
     people_to_assign = (TaskSchedule.find_task_schedule task, self).number
     people_needed = people_to_assign-people_assigned
     return "matrix-cell-ok" if people_needed==0

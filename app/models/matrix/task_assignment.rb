@@ -9,7 +9,9 @@ class TaskAssignment < ActiveRecord::Base
 	has_one			:task_type, :through => :day_schedule, :source => :task_type
 	has_one			:task, 			:through => :task_schedule
 
-
+	after_destroy do |ta|
+		PeriodPoint.find_by(person: person, period: day_schedule.period).update_points
+	end
 
 
 	def self.assign(task_schedule, day_schedule, people)
@@ -45,4 +47,9 @@ class TaskAssignment < ActiveRecord::Base
 	def self.get_assignments_of_person(person, period)
 		TaskAssignment.where(person: person).and
 	end
+
+	def clashes_with_task?(task_schedule)
+		self.task_schedule.overlaps? task_schedule
+	end
+
 end #class end
