@@ -41,7 +41,7 @@ class Matrix < ActiveRecord::Base
     puts "got params #{params}"
     new_available_tasks_array = params[:task].values.map{|task_id| task_id.to_i}
     if matrix
-      old_tasks_available = pp.tasks_available.map{|ta| {ta.task_id => ta.id} }.inject(:merge)
+      old_tasks_available = matrix.tasks_available.map{|ta| {ta.task_id => ta.id} }.inject(:merge)
       old_tasks_available_array = old_tasks_available.keys
       tasks_to_create = (new_available_tasks_array-old_tasks_available_array)
       destroy_attributes = (old_tasks_available_array - new_available_tasks_array).map do |task_id|

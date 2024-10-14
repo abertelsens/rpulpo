@@ -66,7 +66,10 @@ get '/person/:id/:module' do
 		when "personal" then @personal = Personal.find_by(person_id: @person.id)
 		when "study" 		then @study = Study.find_by(person_id: @person.id)
 		when "crs" 			then @crs = Crs.find_by(person_id: @person.id)
-		when "matrix" 	then @matrix = Matrix.find_by(person_id: @person.id)
+		when "matrix" 
+			@matrix = Matrix.find_by(person_id: @person.id)
+			puts @matrix.inspect
+			@tasks_available = @matrix.tasks_available.pluck(:task_id)
 		when "rooms", "room"
 			@object = Room.find_by(person_id: @person.id)
 			@object.nil? ? (redirect "/person/#{params[:id]}") : (return partial :"form/room")
