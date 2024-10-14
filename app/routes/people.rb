@@ -14,7 +14,7 @@ get '/people' do
 end
 
 # renders the table of people
-# @objects the people that will be shown in the table
+# @objects: the people that will be shown in the table
 get '/people/table' do
   get_last_query :people
 	@objects = Person.search @people_query, @people_table_settings
@@ -36,11 +36,6 @@ get '/people/table/settings' do
 	get_table_settings :people
 	@table_settings = @people_table_settings
 	partial :"form/table_settings"
-end
-
-post '/people/table/settings' do
-	session["people_table_settings"] = TableSettings.create_from_params "people", params
-	redirect :"/people"
 end
 
 # renders the table of after perfroming a search.
@@ -66,9 +61,8 @@ get '/person/:id/:module' do
 		when "personal" then @personal = Personal.find_by(person_id: @person.id)
 		when "study" 		then @study = Study.find_by(person_id: @person.id)
 		when "crs" 			then @crs = Crs.find_by(person_id: @person.id)
-		when "matrix"
+		when "matrix" 
 			@matrix = Matrix.find_by(person_id: @person.id)
-			puts @matrix.inspect
 			@tasks_available = @matrix.tasks_available.pluck(:task_id)
 		when "rooms", "room"
 			@object = Room.find_by(person_id: @person.id)
@@ -127,7 +121,6 @@ get '/crs/table' do
 		partial "table/ceremony"
 end
 
-
 # renders a single person view
 get '/crs' do
 	@current_user = get_current_user
@@ -141,19 +134,20 @@ get '/crs' do
 	partial :"frame/crs"
 end
 
+# shows the form to edit a field of all the people in the set
+get '/people/edit_field' do
+	partial :"form/set_field"
+end
+
 # -----------------------------------------------------------------------------------------
 # POST
 # -----------------------------------------------------------------------------------------
+# 
 post '/person/:id/general' do
 	@current_user = get_current_user
 	@person = (params[:id]=="new" ? nil : Person.find(params[:id]))
 	case params[:commit]
-		when "save"
-			if @person.nil?
-				@person = Person.create_from_params params
-			else
-				check_update_result (@person.update_from_params params)
-			end
+		when "save" then @person.nil? ? (Person.create params) : (@person.update params) if save?
 		# if a person was deleted we go back to the screen fo the people table
 		when "delete"
 				@person.destroy
@@ -162,65 +156,27 @@ post '/person/:id/general' do
 	partial :"view/person"
 end
 
-# post controller of the personal data of a person
-post '/person/:id/personal' do
-	@current_user = get_current_user()
-    @person = Person.find(params[:id])
-    @personal = params[:personal_id]=="new" ? nil : Personal.find(params[:personal_id])
-    if params[:commit]=="save"
-			if @personal.nil?
-				@personal = Personal.create Personal.prepare_params params
-			else
-				check_update_result (@personal.update Personal.prepare_params params)
-			end
-    end
-    partial :"view/person"
-end
-
-# post controller of the study data of a person
-post '/person/:id/study' do
+# this route handles the moduled: personal, study, crs and matrix
+post '/person/:id/:module' do
 	@current_user = get_current_user
+	klass = Object.const_get(params[:module].capitalize)
+	object_id_param = params["#{params[:module]}_id".to_sym]
 	@person = Person.find(params[:id])
-	@study = params[:studies_id]=="new" ? nil : Study.find(params[:studies_id])
-	if params[:commit]=="save"
-		if @study.nil?
-			@study = Study.create Study.prepare_params params
-		else
-			check_update_result (@study.update Study.prepare_params params)
-		end
-	end
+	object = object_id_param=="new" ? nil : klass.find(object_id_param)
+	object.nil? ? (klass.create params) : (object.update params) if save?
 	partial :"view/person"
 end
 
-# post controller of the crs data of a person
-post '/person/:id/crs' do
-	@current_user = get_current_user
-	@person = Person.find(params[:id])
-	@crs = params[:crs_id]=="new" ? nil : Crs.find(params[:crs_id])
-	if params[:commit]=="save"
-		if @crs.nil?
-			@crs = Crs.create Crs.prepare_params params
-		else
-			check_update_result (@crs.update Crs.prepare_params params)
-		end
-	end
-	partial :"view/person"
-end
-
-# post controller of the crs data of a person
-post '/person/:id/matrix' do
-	@current_user = get_current_user
-	@person = Person.find params[:id]
-	matrix = params[:matrix_id]=="new" ? nil : Matrix.find(params[:matrix_id])
-	matrix.nil? ? (Matrix.create params) : (matrix.update params) if save?
-	partial :"view/person"
-end
 
 # uploads an image
 post '/people/:id/image' do
  FileUtils.cp_r(params[:file][:tempfile], "app/public/photos/#{params[:id]}.jpg", remove_destination: true)
 end
 
+post '/people/table/settings' do
+	session["people_table_settings"] = TableSettings.create_from_params "people", params
+	redirect :"/people"
+end
 
 # -----------------------------------------------------------------------------------------
 # ACTIONS
@@ -238,8 +194,7 @@ get '/people/:id/document/:doc_id' do
 	@document = Document.find(params[:doc_id])
 	@writer = @document.get_writer @people
 	case @writer.status
-		when DocumentWriter::WARNING
-			puts Rainbow(@writer.message).orange
+		when DocumentWriter::WARNING then puts Rainbow(@writer.message).orange
 		when DocumentWriter::FATAL
 			puts Rainbow(@writer.message).red
 			return partial :"errors/writer_error"
@@ -252,8 +207,7 @@ get '/people/:id/document/:doc_id' do
 	end
 
 	case @writer.status
-		when DocumentWriter::WARNING
-			puts Rainbow(@writer.message).orange
+		when DocumentWriter::WARNING then puts Rainbow(@writer.message).orange
 		when DocumentWriter::FATAL
 			puts Rainbow(@writer.message).red
 			return partial :"errors/writer_error"
@@ -265,7 +219,7 @@ post '/people/:id/document/:doc_id' do
 	headers 'content-type' => "application/pdf"
 	if params[:id]=="set"
 		get_last_query :people
-		@people = @people_query.nil? ? Person.all.order(family_name: :asc) : (Person.search @people_query, @people_table_settings).order(family_name: :asc)
+		@people = @people_query.nil? ? Person.all : (Person.search @people_query, @people_table_settings)
 	else
 		@people = [Person.find(params[:id])]
 	end
@@ -281,12 +235,6 @@ post '/people/:id/document/:doc_id' do
 	end
 	send_file @writer.render, :type => :pdf
 end
-
-# shows the form to edit a field of all the people in the set
-get '/people/edit_field' do
-	partial :"form/set_field"
-end
-
 
 post '/people/edit_field' do
 	puts Rainbow("got params #{params}").yellow

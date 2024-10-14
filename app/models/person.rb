@@ -60,8 +60,9 @@ class Person < ActiveRecord::Base
     full_name = "#{first_name} #{family_name}"
 
 		# if the status of a person changed we also update the phase field
-		self.crs.update(phase:"síntesis") if status=="diacono"
-		self.crs.update(phase:nil) if status=="sacerdote"
+		self.crs.phase="síntesis" if status=="diacono"
+		self.crs.phase=nil if status=="sacerdote"
+		self.crs.save
 	end
 
 	# if a person is destroyed we also delete the associated photo of the person if it exists
@@ -69,8 +70,12 @@ class Person < ActiveRecord::Base
 		FileUtils.rm "app/public/photos/#{id}.jpg" if File.exist?("app/public/photos/#{id}.jpg")
 	end
 
-	def self.create_from_params(params)
-		Person.create Person.prepare_params params
+	def self.create(params)
+		super(Person.prepare_params params)
+	end
+
+	def update(params)
+		super(Person.prepare_params params)
 	end
 
 	def update_from_params(params)

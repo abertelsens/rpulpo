@@ -17,8 +17,16 @@ class Study < ActiveRecord::Base
 
 	belongs_to 	:person
 
+  def self.create(params)
+    super(Study.prepare_params params)
+  end
+
+  def update(params)
+    super(Study.prepare_params params)
+  end
+
   def self.prepare_params(params)
-    params.except("studies_id", "id", "commit")
+    params.except("study_id", "id", "commit", "module")
   end
 
 end

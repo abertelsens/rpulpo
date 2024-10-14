@@ -20,10 +20,19 @@ class Crs < ActiveRecord::Base
 
 	belongs_to 	:person
 
+
+	def self.create(params)
+		super(Crs.prepare_params params)
+	end
+
+	def update(params)
+		super(Crs.prepare_params params)
+	end
+
 	def self.prepare_params(params)
 		params[:phase] = nil if params[:phase].blank?
 		params[:cfi] = nil if params[:cfi].blank?
-		params.except("crs_id", "id", "commit")
+		params.except("crs_id", "id", "commit", "module", "cfi")
 	end
 
 	def self.get_editable_attributes()
