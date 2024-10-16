@@ -8,7 +8,7 @@ turbo-frame id="main_frame"
     .flex-columns.flex-top
       
       .flex-rows style="width:10rem"   
-        a.button.link-button.u-full-width data-turbo-frame="people-frame" href="/crs/table?ceremony=fidelidad" = "fidelidad"
+        a.button.link-button data-turbo-frame="people-frame" href="/crs/table?ceremony=fidelidad" = "fidelidad"
         a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?ceremony=admissio" = "admissio"
         a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?ceremony=lectorado" = "lectorado"
         a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?ceremony=acolitado" = "acolitado"
@@ -16,8 +16,7 @@ turbo-frame id="main_frame"
         a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?phase=discipular" = "discipular"
         a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?phase=configuracional" = "configuracional"
         a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/table?phase=sintesis" = "síntesis"
-        a.button.link-button data-turbo-frame="people-frame" data-turbo-preload="true" href="/crs/cfi" = "confidencias"
-
+        
         
       turbo-frame id="people-frame" src="/crs/table?ceremony=fidelidad" data-crs-target="cfiframe"
       

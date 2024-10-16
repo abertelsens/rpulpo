@@ -2,15 +2,15 @@ turbo-frame id="modules_table"
   .table-container
     .table-table  
       .table-row-head
-        .table-cell-head.medium-field = "identifier"
-        .table-cell-head.medium-field = "name"
-        .table-cell-head.xlong-field = "description"
+        .medium-field = "identifier"
+        .medium-field = "name"
+        .xlong-field = "description"
 
-      - @objects.each.with_index do |object, index|
+      - @objects.each do |object|
         a.table-row-body href="/module/#{object.id}" data-turbo-frame="main_frame"
-          .table-cell-body  = object.identifier
-          .table-cell-body = object.name
-          .table-cell-body  = object.description
+          div = object.identifier
+          div = object.name
+          div  = object.description
 
               
                   

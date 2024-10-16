@@ -2,20 +2,22 @@ import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/di
 
   Stimulus.register("template-file", class extends Controller {
     
-    static targets = ["template_file", "template_btn", "path","view_btn"]
+    static targets = ["template_file", "template_btn","view_btn", "path"]
   
     connect() {
-      console.log("Stimulus Connected: mdfile controller");
+      console.log("Stimulus Connected: template-file controller");
     }
     
     select_file() {
-      this.mdfileTarget.click();
+      this.template_fileTarget.click();
     }
 
     load_file(){
       this.pathTarget.value = this.template_fileTarget.value.replace(/^.*[\\/]/, '')
       this.template_btnTarget.innerHTML = "Change"
-      this.view_btnTarget.disabled = (this.pathTarget.value==="")
+      if (this.hasView_btnTargetTarget) {
+        this.view_btnTarget.disabled = (this.pathTarget.value==="")
+      }
     }
   })
     

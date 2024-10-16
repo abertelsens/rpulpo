@@ -58,6 +58,9 @@ DB_ENV ||= 'development'
 # load the connection settings file and open the connection
 connection_details = YAML::load(File.open('config/database.yaml'))
 
+puts Rainbow("PULPO: Loaded Database connection with environment #{DB_ENV}").yellow
+puts Rainbow(connection_details[DB_ENV]).yellow
+
 # establish the connection
 ActiveRecord::Base.establish_connection(connection_details[DB_ENV])
 

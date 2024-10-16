@@ -2,18 +2,18 @@ turbo-frame id="documents_table" data-turbo-frame="documents_view"
   div.table-container
     div.table-table  
       div.table-row-head
-        div.table-cell-head.long-field = "nombre"
-        div.table-cell-head.medium-field = "module"
-        div.table-cell-head.xlong-field = "descripción"
-        div.table-cell-head.long-field = "path"
+        .long-field = "nombre"
+        .medium-field = "module"
+        .xlong-field = "descripción"
+        .long-field = "path"
 
       - @objects.each.with_index do |object, index|
         //turbo-frame id="people_#{object.id}"
         a.table-row-body href="/document/#{object.id}" data-turbo-frame="main_frame"
-          div.table-cell-body = object.name
-          div.table-cell-body = object.pulpo_module.name
-          div.table-cell-body = object.description
-          div.table-cell-body = object.path
+          div = object.name
+          div = object.pulpo_module.name
+          div = object.description
+          div = object.path
             
                   
               

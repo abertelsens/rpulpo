@@ -1,16 +1,18 @@
-turbo-frame id="entities_table"
-  div.table-container
-    div.table-table  
+turbo-frame id="entities_table" 
+  .table-container
+    div.table-table
       
       div.table-row-head
         .medium-field = "sigla"
-        .long-field = "name"
+        .medium-field = "name"
+        .long-field = "path"
 
-      - @objects.each.with_index do |object, index|
+      - @objects.each do |object|
         a.table-row-body href="/entity/#{object.id}" data-turbo-frame="main_frame"
           div = object.sigla
           div = object.name
-         
+          div = object.path
+        
               
 
         

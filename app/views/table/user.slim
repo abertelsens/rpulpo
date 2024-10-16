@@ -1,18 +1,19 @@
+- checkmark = "\u2714".encode('utf-8')
 turbo-frame id="users_table" data-turbo-frame="users_view" 
   div.table-container
     div.table-table  
       div.table-row-head
-        div.table-cell-head.medium-field = "name"
-        div.table-cell-head.medium-field = "password"
-        div.table-cell-head.medium-field = "type"
-        div.table-cell-head.medium-field = "mail user"
+        .medium-field = "name"
+        .medium-field = "password"
+        .medium-field = "type"
+        .medium-field.u-text-center = "mail user"
 
       - @objects.each.with_index do |object, index|
-        a.table-row-body href="/user/#{object.id}" data-turbo-frame="main_frame"  style="cursor:pointer;"
-          div.table-cell-body  = object.uname
-          div.table-cell-body = object.password
-          div.table-cell-body  = object.usertype
-          div.table-cell-body  = object.mail ? "active" : "-"
+        a.table-row-body href="/user/#{object.id}" data-turbo-frame="main_frame"
+          div = object.uname
+          div = object.password
+          div = object.usertype
+          div.u-text-center = object.mail ? checkmark : "-"
               
 
         

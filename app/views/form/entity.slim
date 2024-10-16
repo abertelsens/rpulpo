@@ -4,16 +4,20 @@
 
 turbo-frame id="main_frame"
   	
-	form[
-		action="/entity/#{(@object.nil? ? "new" : @object.id)}" 
-		method="POST" 
-		data-controller="modal form-validator"]
+	
+	
+	/ Center the container of the form
+	.container.screen-box.small-form data-controller="keys modal" data-action="keydown.enter@window->keys#enter"
 		
-		input name="id" type="hidden" value= @object&.id
-		
-		/ Center the container of the form
-		.container.screen-box.small-form
-			
+		form[
+			action="/entity/#{(@object.nil? ? "new" : @object.id)}" 
+			method="POST" 
+			data-keys-target="form"
+			data-controller="form-validator"
+			]
+
+			input name="id" type="hidden" value= @object&.id
+	
 			/----------------------------------------------------------------------------------------------------------------
 			/ FORM HEADER
 			/----------------------------------------------------------------------------------------------------------------
@@ -48,9 +52,9 @@ turbo-frame id="main_frame"
 
 			.row.flex-center.flex-columns
 				- if (@object&.can_be_deleted?)
-					button.button-secondary data-action="click->modal#open_modal" delete  
-				button.button-primary type="submit" name="commit" value="save" data-form-validator-target="submit_btn" save  
-				a.button.button-secondary formnovalidate="true" href="/entities" cancel
+					button.button-secondary data-keys-target="cancel_btn" data-action="click->modal#open_modal" delete  
+				button.button-primary type="submit" name="commit" value="save" data-keys-target="submit_btn" data-form-validator-target="submit_btn" save  
+				a.button.button-secondary formnovalidate="true" data-keys-target="cancel_btn" href="/entities" cancel
 				
 			/----------------------------------------------------------------------------------------------------------------
 			// DELELE CONFIRMATION MODAL FORM

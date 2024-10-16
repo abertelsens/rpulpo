@@ -4,9 +4,14 @@
 
 turbo-frame id="main_frame"
   	
-	form action="/room/#{(@object.nil? ? "new" : @object.id)}" data-controller="modal" method="POST"
+	form[
+		action="/room/#{(@object.nil? ? "new" : @object.id)}" 
+		data-controller="modal keys" 
+		data-keys-target="form"
+		data-action="keydown.enter@window->keys#enter" 
+		method="POST"]
 	
-		.container.full-screen-form.screen-box style="max-width:800px"
+		.container.screen-box.medium-form
 			
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM HEADER
@@ -20,58 +25,58 @@ turbo-frame id="main_frame"
 			.row
 		
 				.columns.four
-					label for="house" house
+					label house
 					select.u-full-width name="house"
 						- Room.houses.each do |house|
 							option selected=(@object&.house==house[0]) value=house[0] = house[0].humanize
 			
 				.columns.two
-					label for="floor" floor
+					label floor
 					&text.u-full-width name="floor" value=@object&.floor
 
 				.columns.six
-					label for="name" room name
+					label room name
 					&text.u-full-width name="room" value=@object&.room
 
 				.columns.six
-					label for="name" person
+					label person
 					select.u-full-width name="person_id"
 						option selected=(@object&.person_id.blank?) value="" = "empty room"
 						- Person.all.order(family_name: :asc).each do |person|
 							option selected=(@object&.person_id==person.id) value=person.id = "#{person.family_name}, #{person.first_name}" 
 
 				.columns.six
-					label for="phone" phone
+					label phone
 					&text.u-full-width name="phone" value=@object&.phone
 			
 			.row
 				.columns.four
-					label for="bed" bed
+					label bed
 					select.u-full-width name="bed"
 						- Room.beds.each do |bed|
 							option selected=(@object&.bed==bed[0]) value=bed[0] = bed[0].humanize
 
 				.columns.four
-					label for="matress" matress
+					label matress
 					&text.u-full-width name="matress" value=@object&.matress
 
 				.columns.four
-					label for="bathroom" bathroom
+					label bathroom
 					select.u-full-width name="bathroom"
 						- Room.bathrooms.each do |bath|
 							option selected=(@object&.bathroom==bath[0]) value=bath[0] = bath[0].humanize
 
 
-			
-
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM BUTTONS
 			//----------------------------------------------------------------------------------------------------------------
-			.row.center-align
-					- if (!@object.nil?) 
+			.row.flex-center.flex-columns
+					- if @object 
 						button data-action="click->modal#open_modal" delete  
 					button.button-primary type="submit" name="commit" value="save" save  
 					a.button.button-secondary formnovalidate="true" href="/rooms" cancel
 					
-
+			/----------------------------------------------------------------------------------------------------------------
+			// DELELE CONFIRMATION MODAL FORM
+			//---------------------------------------------------------------------------------------------------------------
 			turbo-frame id="delete_modal" src = "/elements/delete_modal?object_type=room"

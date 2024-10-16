@@ -2,6 +2,7 @@ app/public/photos
 tmp/
 app/engines-templates
 app/old_code
+schema_db
 .DS_Store
 
 *.pdf

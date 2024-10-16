@@ -23,7 +23,7 @@ require_relative '../utils/pulpo_query'
 class Person < ActiveRecord::Base
 
 	MONTHS_LATIN = [nil, "ianuarii", "februarii", "martii", "aprilis", "maii", "iunii", "iulii", "augusti", "septembris", "octobris", "novembris", "decembris"]
-	CHECKCMARK = "\u2714".encode('utf-8')
+	CHECKMARK = "\u2714".encode('utf-8')
 
 
 	# the related tables have a destroy dependency, i.e. if a person is deleted then also
@@ -123,7 +123,7 @@ class Person < ActiveRecord::Base
 		end
 		res = "" if (res.nil? || res.blank?)
 		puts Rainbow("\nPULPO: Warning! found nil while looking for #{attribute_string}").orange if res.nil?
-		return CHECKCMARK if res==true
+		return CHECKMARK if res==true
 		if res.is_a?(Date)
 			return res.strftime("%d-%m-%y") if format.nil?
 			return latin_date(res) if format=="latin"

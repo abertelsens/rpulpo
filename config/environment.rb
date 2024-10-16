@@ -1,3 +1,5 @@
+puts "\nRunning environment.rb\n"
+
 ENV['SINATRA_ENV'] ||= "development"
 ENV['RACK_ENV'] ||= "development"
 #ENV['SINATRA_OBJECTS'] ||= "./app/settings/sinatra_objects.yml"

@@ -7,17 +7,22 @@ turbo-frame id="people-frame"
       h4.u-text-right = "#{@title}"
       - if !@total.nil?
         h6.u-text-right = "#{@total} persona(s)"
-
+    
+    
+    
     .table-container.u-full-width style="font-size:.9rem; min-width:30rem; margin-right:6rem"
-      .table-table
-        .table-row-head
-          div.table-cell-head.long-field style="pointer-events: none" nombre
-          - if @has_date  
-            div.table-cell-head.u-text-right style="pointer-events: none" fecha  
-
-        - @objects.each.with_index do |object, index|  
-
-          a.table-row-body href="/person/#{object[0]}" data-turbo-frame="main_frame" style="cursor:pointer;"
-            div.table-cell-body = object[1]
+      - if !@objects.empty?
+        .table-table
+          .table-row-head
+            .long-field nombre
             - if @has_date  
-              div.table-cell-body.u-text-right = object[2]
+              .u-text-right fecha  
+          
+          
+          - @objects.each.with_index do |object, index|  
+
+            .table-row-body href="/person/#{object[0]}" data-turbo-frame="main_frame" 
+              div = object[1]
+              - if @has_date  
+                .u-text-right = object[2]
+   

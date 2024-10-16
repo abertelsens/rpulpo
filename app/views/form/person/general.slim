@@ -5,7 +5,14 @@
 /*****************************************************************************************************
 turbo-frame id="main_frame"
   	
-	form#personForm action="/person/#{@person ? @person.id : "new"}/general" enctype="multipart/form-data" method="POST" data-controller="modal attachment" data-attachment-target="form"
+	form#personForm[ 
+		action="/person/#{@person ? @person.id : "new"}/general" 
+		enctype="multipart/form-data" 
+		method="POST" 
+		data-controller="keys modal attachment" 
+		data-keys-target="form"
+		data-action="keydown.enter@window->keys#enter"
+		data-attachment-target="form"]
 	
 		.container.x-large-form.screen-box
 			

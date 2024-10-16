@@ -34,6 +34,7 @@ turbo-frame id="main_frame"
 					select.u-full-width name="module"
 						- PulpoModule.all.each do |mod|
 							option selected=(@object&.pulpo_module_id==mod.id) value=mod.id = mod.name
+			
 			.row		
 
 				.columns.nine
@@ -49,11 +50,11 @@ turbo-frame id="main_frame"
 			.row
 				.columns.six
 					label template path
-					&text.u-full-width name="path" disabled="true" data-mdfile-target="path" value=@object&.path
+					&text.u-full-width name="path" disabled="true" data-template-file-target="path" value=@object&.path
 
 				
 				.columns.three
-					label data-template-file-target="pathlabel" &nbsp 
+					label data-template-file-target="path" &nbsp 
 					label.button.button-success.u-full-width[
 						data-template-file-target="template_btn" 
 						data-action="click->template-file#select_file"] = (@object&.path.blank? ? "load" : "change")

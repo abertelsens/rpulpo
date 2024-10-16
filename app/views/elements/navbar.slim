@@ -3,10 +3,10 @@ turbo-frame id="nav_bar"
   .container.no-padding data-controller="navbar" data-turbo-frame="main_frame"
     
     - if !@current_user.nil?
-      div.row.nav-bar 
+      .row.nav-bar
         
         // elements of the nav bar aligned to the left
-        .flex-left
+        .columns.eight
           
           a.button.menu-item data-turbo-frame="main_frame" href='/people' 
             i.fa-solid.fa-user
@@ -35,7 +35,7 @@ turbo-frame id="nav_bar"
               i.fa-solid.fa-house
               | &nbspMatrix
 
-        // elements of the nav bar aligned to the left. The flex 1 property will set the with of the 
+        // elements of the nav bar aligned to the right. The flex 1 property will set the with of the 
         // element to fill all the remaining space
         .flex-right style="flex: 1"
           

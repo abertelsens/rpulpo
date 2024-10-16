@@ -447,6 +447,7 @@ a.button.no-border
 
 .table-table {
   display: table;
+  table-layout: fixed;
 }
 
 .table-border {
