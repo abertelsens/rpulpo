@@ -117,7 +117,7 @@ class User < ActiveRecord::Base
 
 	# admin users can be deleted only if there is more than one.
 	def can_be_deleted?
-		admin? ? admins.size > 1 : true
+		admin? ? User.admins.size > 1 : true
 	end
 
 	def get_mails(args)

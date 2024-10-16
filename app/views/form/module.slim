@@ -13,7 +13,7 @@ turbo-frame id="main_frame"
 		method="POST"
 		] 
 	
-		.container.full-screen-form.screen-box style="max-width:800px"
+		.container.screen-box.small-form
 			
 			/ ----------------------------------------------------------------------------------
 			/ FORM HEADER
@@ -28,8 +28,7 @@ turbo-frame id="main_frame"
 				
 				.columns.six
 					label for="name" module identifier
-					input.u-full-width[
-						type="text"
+					&text.u-full-width[
 						required="true"
 						name="identifier"
 						value=@object&.identifier
@@ -45,21 +44,19 @@ turbo-frame id="main_frame"
 					label for="name" description
 					&text.u-full-width name="description" value=@object&.description
 					
-			
 			/----------------------------------------------------------------------------------------------------------------
 			/ ERROR FRAME
 			/----------------------------------------------------------------------------------------------------------------		
 			.row
-				.columns.twelve
-					.alert.alert-warning.u-full-width.hidden-frame data-form-validator-target="error_frame"
+				.alert.alert-warning.u-full-width.hidden-frame data-form-validator-target="error_frame"
 			
 			/-----------------------------------------------------------------------------------
 			/ BUTTONS
 			/-----------------------------------------------------------------------------------
-			.row.flex-center
+			.row.flex-center.flex-columns
 				- if (@object&.can_be_deleted?)
-					button.button-secondary.margin-right data-action="click->modal#open_modal" delete  
-				button.button-primary.margin-right type="submit" name="commit" value="save" data-form-validator-target="submit_btn" save  
+					button.button-secondary data-action="click->modal#open_modal" delete  
+				button.button-primary type="submit" name="commit" value="save" data-form-validator-target="submit_btn" save  
 				a.button.button-secondary formnovalidate="true" href="/modules" cancel
 					
-			turbo-frame id="delete_modal" src = "/elements/delete_modal?object_type=module"
+			turbo-frame id="delete_modal" src="/elements/delete_modal?object_type=module"

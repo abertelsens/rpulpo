@@ -8,8 +8,7 @@ turbo-frame id="main_frame"
 		action="/document/#{(@object.nil? ? "new" : @object.id)}" 
 		enctype="multipart/form-data" 
 		method="POST" 
-		data-controller="modal mdfile form-validator" 
-		data-attachment-target="form"
+		data-controller="modal template-file form-validator" 
 		]
 		
 		.container.screen-box.medium-form
@@ -27,50 +26,50 @@ turbo-frame id="main_frame"
 			.row
 		
 				.columns.six
-					label for="name" name
+					label name
 					&text.u-full-width name="name" required="true" data-action="input->form-validator#validate" value=@object&.name
 				
 				.columns.six
-					label for="name" module
+					label module
 					select.u-full-width name="module"
-						- PulpoModule.all.each do |m|
-							option selected=(@object&.pulpo_module_id==m.id) value=m.id = m.name
+						- PulpoModule.all.each do |mod|
+							option selected=(@object&.pulpo_module_id==mod.id) value=mod.id = mod.name
 			.row		
 
 				.columns.nine
-					label for="description" description
+					label description
 					&text.u-full-width name="description" value=@object&.description
 
 				.columns.three
-					label for="singlepage" page type
+					label page type
 					select.u-full-width name="singlepage"
 						option selected=@object&.singlepage value="true" = "single page"
 						option selected=!@object&.singlepage value="false" = "multiple pages"
 
-			.row data-mdfile-target="templateframe"
+			.row
 				.columns.six
-					label for="path" template path
+					label template path
 					&text.u-full-width name="path" disabled="true" data-mdfile-target="path" value=@object&.path
 
 				
 				.columns.three
-					label data-mdfile-target="pathlabel" &nbsp 
+					label data-template-file-target="pathlabel" &nbsp 
 					label.button.button-success.u-full-width[
-						data-mdfile-target="mdfile_btn" 
-						data-action="click->mdfile#select_file"] = (@object&.path.blank? ? "load" : "change")
+						data-template-file-target="template_btn" 
+						data-action="click->template-file#select_file"] = (@object&.path.blank? ? "load" : "change")
 
 					input[
-						accept=".md, .yaml, .typ" 
+						accept=".typ" 
 						style="display:none" 
-						data-mdfile-target="mdfile" 
+						data-template-file-target="template_file" 
 						type="file" name="template" 
-						data-action="change->mdfile#load_file"]
+						data-action="change->template-file#load_file"]
 				
 				.columns.three
 					label &nbsp 
 					- if @object
 						a.button.button-secondary.u-full-width[
-							data-mdfile-target="viewbtn" 
+							data-template-file-target="view_btn" 
 							target="_blank" 
 							href=(@object&.path&.blank? ? "#" : "/document/#{@object.id}/viewtemplate")] = "view"
 					
@@ -78,17 +77,16 @@ turbo-frame id="main_frame"
 			/ ERROR FRAME
 			/----------------------------------------------------------------------------------------------------------------		
 			.row
-				.columns.twelve
-					.alert.alert-warning.u-full-width.hidden-frame data-form-validator-target="error_frame"
+				.alert.alert-warning.u-full-width.hidden-frame data-form-validator-target="error_frame"
 			
 			/----------------------------------------------------------------------------------------------------------------
 			/ BUTTONS
 			/---------------------------------------------------------------------------------------------------------------
 
-			.row.flex-center
+			.row.flex-center.flex-columns
 				- if (@object&.can_be_deleted?)
-					button.button-secondary.margin-right data-action="click->modal#open_modal" delete  
-				button.button-primary.margin-right type="submit" name="commit" value="save" data-form-validator-target="submit_btn" save  
+					button.button-secondary data-action="click->modal#open_modal" delete  
+				button.button-primary type="submit" name="commit" value="save" data-form-validator-target="submit_btn" save  
 				a.button.button-secondary formnovalidate="true" href="/documents" cancel
 
 			turbo-frame id="delete_modal" src = "/elements/delete_modal?object_type=document"

@@ -9,10 +9,10 @@ turbo-frame id="main_frame"
 		method="POST" 
 		data-controller="modal form-validator"]
 		
-		input.u-full-width name="id" type="hidden" value=(@object ? @object.id : "")
+		input name="id" type="hidden" value= @object&.id
 		
 		/ Center the container of the form
-		.container.screen-box.small-form style="max-width:600px"
+		.container.screen-box.small-form
 			
 			/----------------------------------------------------------------------------------------------------------------
 			/ FORM HEADER
@@ -46,10 +46,10 @@ turbo-frame id="main_frame"
 			/ BUTTONS
 			/---------------------------------------------------------------------------------------------------------------
 
-			.row.flex-center
+			.row.flex-center.flex-columns
 				- if (@object&.can_be_deleted?)
-					button.button-secondary.margin-right data-action="click->modal#open_modal" delete  
-				button.button-primary.margin-right type="submit" name="commit" value="save" data-form-validator-target="submit_btn" save  
+					button.button-secondary data-action="click->modal#open_modal" delete  
+				button.button-primary type="submit" name="commit" value="save" data-form-validator-target="submit_btn" save  
 				a.button.button-secondary formnovalidate="true" href="/entities" cancel
 				
 			/----------------------------------------------------------------------------------------------------------------

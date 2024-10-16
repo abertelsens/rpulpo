@@ -15,15 +15,10 @@ turbo-frame id="main_frame"
 		data-validate-objectname="user"
 	]
 		
-		input.u-full-width[ 
-			name="id" 
-			type="hidden" 
-			data-validate-target="field" 
-			value=(@object ? @object.id : "")
-			]
+		input name="id" type="hidden" data-validate-target="field" value=@object&.id
 		
 		// Center the container
-		.container.full-screen-form.screen-box style="max-width:800px"
+		.container.screen-box.medium-form
 			
 			/ ----------------------------------------------------------------------------------
 			/ FORM HEADER
@@ -38,16 +33,11 @@ turbo-frame id="main_frame"
 				/ --------------------------------------------------------------------------------
 				/ USER DATA COLUMN
 				/ --------------------------------------------------------------------------------
-				.columns.five.u-text-left
+				.columns.six.u-text-left
 					h4.u-text-center = "USER DATA"
 							
 					label for="uname" user name
-					input#uname.u-full-width[
-						type="text"
-						name="uname" required="true" 
-						value=@object&.uname 
-						data-action="input->form-validator#validate"
-					] 
+					&text.u-full-width name="uname" required="true" value=@object&.uname data-action="input->form-validator#validate"
 
 					label for="password" password
 					&password.u-full-width name="password" required="true" value=@object&.password
@@ -55,54 +45,47 @@ turbo-frame id="main_frame"
 					/ USER TYPES SELECT, uses the values of an enum object as defined 
 					/ in the User class
 					label for="usertype" user type
-					select#usertype.u-full-width name="usertype"
+					select.u-full-width name="usertype"
 						- User.usertypes.each do |type|
 							option selected=(@object&.usertype==type[0]) value=type[0] = type[0]
 				
 					.div.flex-left
-						input type="checkbox" name="mail" checked=@object&.mail
-						label style="margin-bottom:1.5rem; margin-left:1rem" mail user
+						input#mail type="checkbox" name="mail" checked=@object&.mail
+						label for="mail" style="margin-bottom:1.5rem; margin-left:1rem" mail user
 						
 				/ --------------------------------------------------------------------------------
 				/ PERMISSIONS COLUMN
 				/ --------------------------------------------------------------------------------
-				.columns.five.offset-by-two
+				.columns.six
 					h4.u-text-center = "PERMISSIONS"
-					/ get the per
+					
 					/ The iteration will produce a select element for each module
-					- PulpoModule.all().each do |mod|
-						
-						label for="module_permission[#{mod.id}]" = "#{mod.id} #{mod.name}" 
-						
-						/ PERMISSIONS SELECT, uses the values of an enum object.
-						select.u-full-width id="module_permission[#{mod.id}]" name="module[#{mod.id}]"
-							- ModuleUser.modulepermissions.each do |permission|
-								option[
-									selected=(!@permissions.nil? && @permissions[mod.id]==permission[0])
-									value=permission[0]
-								] = permission[0].humanize(capitalize: false) 
+					- PulpoModule.all.each do |mod|
+						.columns.six
+							label for="module_permission[#{mod.id}]" = mod.name
+							
+							/ PERMISSIONS SELECT, uses the values of an enum object.
+							select.u-full-width id="module_permission[#{mod.id}]" name="module[#{mod.id}]"
+								- ModuleUser.modulepermissions.each do |permission|
+									option[
+										selected=(!@permissions.nil? && @permissions[mod.id]==permission[0])
+										value=permission[0]
+									] = permission[0].humanize(capitalize: false) 
 								
 			/ ----------------------------------------------------------------------------------
 			/ ALERT FRAME
 			/ ----------------------------------------------------------------------------------
 			.row	
-				.columns.twelve 
-					.alert.alert-warning.hidden-frame data-form-validator-target="error_frame"
+				.alert.alert-warning.hidden-frame data-form-validator-target="error_frame"
 			
 			/-----------------------------------------------------------------------------------
 			/ BUTTONS
 			/-----------------------------------------------------------------------------------
-			.row.center-align
+			.row.flex-center.flex-columns
 				- if (@object&.can_be_deleted?)
 					button.button-secondary data-action="click->modal#open_modal" delete  
 				
-				button.button-primary[
-					type="submit"
-					name="commit"
-					value="save"
-					data-form-validator-target="submit_btn"
-				] save  
-				
+				button.button-primary type="submit" name="commit" value="save" data-form-validator-target="submit_btn" save  
 				a.button.button-secondary formnovalidate="true" href="/users" cancel
 				
-			turbo-frame id="delete_modal" src = "/elements/delete_modal?object_type=user"
+			turbo-frame id="delete_modal" src="/elements/delete_modal?object_type=user"
