@@ -1,5 +1,5 @@
 turbo-frame id="main_frame"
-  - user_is_person = (@person.email==@current_user.uname)
+  - user_is_person = (@person.email!=nil && @person.email==@current_user.uname)
   
   .container.screen-box.flex-columns.top-align
   
@@ -7,10 +7,14 @@ turbo-frame id="main_frame"
   
       - if (@current_user.usertype!="guest"|| user_is_person)
         a.button.link-button.u-full-width.no-padding href="/person/#{@person.id}/general" = "general"
+      
+      - allowed_modules = @current_user.get_allowed_modules
+      - allowed_modules_identifiers = allowed_modules.pluck(:identifier)
+      - allowed_modules_ids = allowed_modules.pluck(:id)
       - ["study","personal","crs","matrix"].each do |mod|
-        - if ((@current_user.allowed? mod) || user_is_person)
+        - if ( allowed_modules_identifiers.include?(mod) || user_is_person )
           a.button.link-button.u-full-width.no-padding href="/person/#{@person.id}/#{mod}" = mod
-  
+      
     /----------------------------------------------------------------------------------------------------------------
     / PICTURE FRAME
     /----------------------------------------------------------------------------------------------------------------
@@ -63,7 +67,7 @@ turbo-frame id="main_frame"
     .columns.two
       .row
         h5.margin-bottom = "DOCUMENTS"
-      - (Document.get_pdf_docs_of_user @current_user).each do |doc|
+      - (Document.get_pdf_docs_of_modules allowed_modules_ids).each do |doc|
         .row
           a.table-cell-body.menu-link  style="padding-left:0" href="/people/#{@person.id}/document/#{doc.id}" target=(doc.engine=="excel" ? "_self" : "_blank") = doc.name
       

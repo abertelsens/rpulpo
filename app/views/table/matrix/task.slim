@@ -3,11 +3,13 @@ turbo-frame id="tasks_table"
     div.table-table  
       div.table-row-head
         div.table-cell-head.xlong-field = "nombre"
+        div.table-cell-head.short-field = "prioridad"
 
       - @objects.each.with_index do |object, index|
         //turbo-frame id="people_#{object.id}"
         a.table-row-body href="/matrix/task/#{object.id}" data-turbo-frame="main_frame"
           div.table-cell-body  = object.name
+          div.table-cell-body  = object.priority
          
             
                   

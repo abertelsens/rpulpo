@@ -94,6 +94,10 @@ class Document < ActiveRecord::Base
 		Document.includes(:pulpo_module).all.order(:pulpo_module_id, :name).select{|doc| ((user.get_allowed_modules.include? doc.pulpo_module) && doc.engine!="excel")}
 	end
 
+	def self.get_pdf_docs_of_modules(modules)
+		Document.includes(:pulpo_module).where('pulpo_module.id' => modules)
+	end
+
 	def get_writer(people, template_variables=nil)
 		TypstWriter.new(self, people, template_variables)
 	end

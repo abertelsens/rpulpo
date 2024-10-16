@@ -109,7 +109,7 @@ end
 
 # assigns all tasks for the period
 get '/matrix/period/:id/assign' do
-	Period.find(params[:id]).assign_all_tasks
+	Matrix.assign_all_tasks Period.find(params[:id])
 	redirect "/matrix/period/#{params[:id]}/task_assignment/table?week=1"
 end
 
@@ -143,7 +143,6 @@ end
 
 get '/matrix/person_period/:id' do
 	@object = (params[:id]=="new" ? nil : PersonPeriod.find(params[:id]))
-	@ta = @object.nil? ? nil : @object.tasks_available.pluck(:task_id)
 	@availability = @object.nil? ? nil : @object.days_available.order(day: :asc)
 	partial :"form/matrix/person_period"
 end
@@ -182,17 +181,10 @@ get '/matrix/people_modal/ds/:ds/task/:task' do
 	@ds  = DaySchedule.find params[:ds]
 	@period = @ds.period
 	@task  = Task.find params[:task]
-
-	puts "\n\n\n\n"
-	puts Rainbow("testin person.rb methods")
-	Person.find_people_available(@ds,@task)
-	puts "\n\n\n\n"
-
-
+	@available_people = Matrix.find_hash_people_available(@period,@ds,@task)
 	@people_needed = @ds.get_number @task
 	@selected_people  = @ds.get_assigned_people @task
 	@selected_people_ids  = @selected_people.pluck(:id)
-	@available_people = (PersonPeriod.find_people_available @period, @ds, @task)
 	partial :"table/matrix/people_modal"
 end
 

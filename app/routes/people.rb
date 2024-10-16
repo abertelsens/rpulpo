@@ -61,9 +61,9 @@ get '/person/:id/:module' do
 		when "personal" then @personal = Personal.find_by(person_id: @person.id)
 		when "study" 		then @study = Study.find_by(person_id: @person.id)
 		when "crs" 			then @crs = Crs.find_by(person_id: @person.id)
-		when "matrix" 
+		when "matrix"
 			@matrix = Matrix.find_by(person_id: @person.id)
-			@tasks_available = @matrix.tasks_available.pluck(:task_id)
+			@tasks_available = @matrix.nil? ? [] : @matrix.tasks_available.pluck(:task_id)
 		when "rooms", "room"
 			@object = Room.find_by(person_id: @person.id)
 			@object.nil? ? (redirect "/person/#{params[:id]}") : (return partial :"form/room")
@@ -142,12 +142,12 @@ end
 # -----------------------------------------------------------------------------------------
 # POST
 # -----------------------------------------------------------------------------------------
-# 
+#
 post '/person/:id/general' do
 	@current_user = get_current_user
 	@person = (params[:id]=="new" ? nil : Person.find(params[:id]))
 	case params[:commit]
-		when "save" then @person.nil? ? (Person.create params) : (@person.update params) if save?
+		when "save" then @person.nil? ? (@person =  Person.create params) : (@person.update params) if save?
 		# if a person was deleted we go back to the screen fo the people table
 		when "delete"
 				@person.destroy
@@ -158,10 +158,10 @@ end
 
 # this route handles the moduled: personal, study, crs and matrix
 post '/person/:id/:module' do
+	@person = Person.find(params[:id])
 	@current_user = get_current_user
 	klass = Object.const_get(params[:module].capitalize)
 	object_id_param = params["#{params[:module]}_id".to_sym]
-	@person = Person.find(params[:id])
 	object = object_id_param=="new" ? nil : klass.find(object_id_param)
 	object.nil? ? (klass.create params) : (object.update params) if save?
 	partial :"view/person"

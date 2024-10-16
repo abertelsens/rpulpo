@@ -129,7 +129,7 @@ class AttributeQuery
 
 		att = TableSettings.get_attribute_by_name(@att_name)
 		table, field_name = att.field.split(".")
-		#puts Rainbow("searching @att_name #{@att_name} got #{att} table:#{att.table} filed:#{att.field} type:#{att.type}").yellow
+		#puts Rainbow("searching @att_name: #{@att_name.inspect}. Got #{att} table:#{att.table} field:#{att.field} type:#{att.type} att.value #{@att_value}" ).yellow
 
 		condition = case att.type
 			when "string"
@@ -151,9 +151,10 @@ class AttributeQuery
 				"#{att.field}=#{@att_value=="true"}"
 			end
 
-		puts Rainbow("main table: #{@main_table}").yellow
-		puts Rainbow("tables: #{@tables}").yellow
-		puts Rainbow("main condition: #{condition}").yellow
+		#puts Rainbow("main table: #{@main_table}").yellow
+		#puts Rainbow("tables: #{@tables}").yellow
+		#puts Rainbow("main condition: #{condition}").yellow
+
 		# the code is a bit complex but it allows us to include in the query the tables that are needed to show the records
 		# and avoid n+1 queries
 		case @main_table
@@ -164,6 +165,7 @@ class AttributeQuery
 					when "studies" then (@tables.empty? ? Person.joins(:study).where(condition) : Person.includes(@tables).joins(:study).where(condition))
 					when "crs" then (@tables.empty? ? Person.joins(:crs).where(condition) : Person.includes(@tables).joins(:crs).where(condition))
 					when "rooms" then (@tables.empty? ? Person.joins(:room).where(condition) : Person.includes(@tables).joins(:room).where(condition))
+					when "matrices" then (@tables.empty? ? Person.joins(:matrix).where(condition) : Person.includes(@tables).joins(:matrix).where(condition))
 				end
 			when "rooms"
 				case table

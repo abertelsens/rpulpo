@@ -15,6 +15,9 @@ class DaySchedule < ActiveRecord::Base#
     task_schedules.find_by(task: task).number
   end
 
+  def get_task_schedule(task)
+    TaskSchedule.find_by(task:task, schedule:day_schedule.schedule)
+  end
 
   # gets all the assignments of a given task
   def get_task_assignments(task)

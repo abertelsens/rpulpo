@@ -23,6 +23,8 @@ require_relative '../utils/pulpo_query'
 class Person < ActiveRecord::Base
 
 	MONTHS_LATIN = [nil, "ianuarii", "februarii", "martii", "aprilis", "maii", "iunii", "iulii", "augusti", "septembris", "octobris", "novembris", "decembris"]
+	CHECKCMARK = "\u2714".encode('utf-8')
+
 
 	# the related tables have a destroy dependency, i.e. if a person is deleted then also
 	# the matching table entries are destroyed as well.
@@ -43,12 +45,12 @@ class Person < ActiveRecord::Base
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(family_name: :asc) }
 
+
 	# enums info is stored as an integer in the db but can be queried by the associated
 	# enum symbol.
 	enum status:    {laico: 0, diacono: 1, sacerdote: 2 }
 	enum ctr:       {cavabianca: 0, ctr_dependiente:1, no_ha_llegado:2, se_ha_ido:3   }
 	enum n_agd:     {n:0, agd:1}
-	enum vela:      {normal:0, no:1, primer_turno:2, ultimo_turno:3}
 
 
 	# -----------------------------------------------------------------------------------------
@@ -60,9 +62,8 @@ class Person < ActiveRecord::Base
     full_name = "#{first_name} #{family_name}"
 
 		# if the status of a person changed we also update the phase field
-		self.crs.phase="síntesis" if status=="diacono"
-		self.crs.phase=nil if status=="sacerdote"
-		self.crs.save
+		self.crs.update(phase:"síntesis") if (status=="diacono" && self.crs!=nil)
+		self.crs.update(phase:nil) if (status=="sacerdote" && self.crs!=nil)
 	end
 
 	# if a person is destroyed we also delete the associated photo of the person if it exists
@@ -70,16 +71,16 @@ class Person < ActiveRecord::Base
 		FileUtils.rm "app/public/photos/#{id}.jpg" if File.exist?("app/public/photos/#{id}.jpg")
 	end
 
+	# -----------------------------------------------------------------------------------------
+	# CRUD METHODS
+	# -----------------------------------------------------------------------------------------
+
 	def self.create(params)
 		super(Person.prepare_params params)
 	end
 
 	def update(params)
 		super(Person.prepare_params params)
-	end
-
-	def update_from_params(params)
-		update Person.prepare_params params
 	end
 
 	# prepares the parameters received from the form to an update/create the person object.
@@ -118,9 +119,11 @@ class Person < ActiveRecord::Base
 			when "personals"        then (personal.nil? ? "" : personal[attribute.to_sym])
 			when "crs"              then (crs.nil? ? "" : crs[attribute.to_sym])
 			when "rooms"            then (room.nil? ? "" : room[attribute.to_sym])
+			when "matrices"    	    then (matrix.nil? ? "" : matrix[attribute.to_sym])
 		end
 		res = "" if (res.nil? || res.blank?)
 		puts Rainbow("\nPULPO: Warning! found nil while looking for #{attribute_string}").orange if res.nil?
+		return CHECKCMARK if res==true
 		if res.is_a?(Date)
 			return res.strftime("%d-%m-%y") if format.nil?
 			return latin_date(res) if format=="latin"
@@ -154,6 +157,7 @@ class Person < ActiveRecord::Base
 	# -----------------------------------------------------------------------------------------
 	# MATRIX METHODS
 	# -----------------------------------------------------------------------------------------
+
 
 	def self.find_people_available(day_schedule,task)
 

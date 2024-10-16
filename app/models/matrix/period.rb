@@ -29,7 +29,11 @@ class Period < ActiveRecord::Base
   def create_period_days
     default_schedule = Schedule.find_by(name:"L")
     (s_date..e_date).each {|date| DaySchedule.create(period: self, date: date, schedule: default_schedule)}
+
+    # creates all the period points for the newly created period
+    Matrix.all.each { |m| PeriodPoint.create(period: self, person_id: m.person_id) }
   end
+
 
   # before updating the period we check what happened with the dates of the period: destroy days
   # that are no longer in the period or create days that were added.
@@ -159,6 +163,11 @@ class PeriodPoint < ActiveRecord::Base
   belongs_to :person
 
   default_scope { order(points: :asc) }
+
+  def self.create(params)
+    params[:points]=0 unless params[:points].present?
+    super(params)
+  end
 
   # update the points for a given person
   def update_points

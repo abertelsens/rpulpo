@@ -13,6 +13,9 @@ class TaskAssignment < ActiveRecord::Base
 		PeriodPoint.find_by(person: person, period: day_schedule.period).update_points
 	end
 
+	after_create do |ta|
+		PeriodPoint.find_by(person: person, period: day_schedule.period).update_points
+	end
 
 	def self.assign(task_schedule, day_schedule, people)
 		ta = TaskAssignment.where(day_schedule: day_schedule, task_schedule: task_schedule)

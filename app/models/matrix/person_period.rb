@@ -21,13 +21,11 @@
 class PersonPeriod < ActiveRecord::Base
 
   belongs_to  :person
-  has_many    :tasks_available,   dependent: :destroy
   has_many    :days_available,    :class_name => 'DayAvailable',  dependent: :destroy
 
 
   # enables the creation/update of the association model_users via attributes.
 	# See the the prepare_params method.
-	accepts_nested_attributes_for :tasks_available, allow_destroy: true
   accepts_nested_attributes_for :days_available
 
 
@@ -42,7 +40,6 @@ class PersonPeriod < ActiveRecord::Base
 			e_date: 	    Date.parse(params["e_date"])
     }
     # if we we ara updating a person period then we update the tasks available
-    attributes[:tasks_available_attributes] = PersonPeriod.prepare_tasks_available_attributes(params,(pp.nil? ? nil : pp))
     attributes[:days_available_attributes]  = PersonPeriod.prepare_days_available_attributes(params,(pp.nil? ? nil : pp))
     attributes
 	end
@@ -61,28 +58,6 @@ class PersonPeriod < ActiveRecord::Base
     end
   end
 
-  def self.prepare_tasks_available_attributes(params, pp=nil)
-    # get the tasks available
-    new_available_tasks_array = params[:task].values.map{|task_id| task_id.to_i}
-    if pp
-      old_tasks_available = pp.tasks_available.map{|ta| {ta.task_id => ta.id} }.inject(:merge)
-      old_tasks_available_array = old_tasks_available.keys
-      tasks_to_create = (new_available_tasks_array-old_tasks_available_array)
-      destroy_attributes = (old_tasks_available_array - new_available_tasks_array).map do |task_id|
-        {
-          id:       old_tasks_available[task_id],
-          _destroy: true
-        }
-      end
-    else
-      tasks_to_create = new_available_tasks_array
-      destroy_attributes = []
-    end
-    create_attributes = tasks_to_create.map {|task_id| { task_id: task_id } }
-    create_attributes + destroy_attributes
-  end
-
-
   def self.create(params)
     pp = super(PersonPeriod.prepare_params params)
   end
@@ -94,49 +69,6 @@ class PersonPeriod < ActiveRecord::Base
   #---------------------------------------------------------------------------------------
   # ACCESSORS
   #---------------------------------------------------------------------------------------
-
-  # finds the available people for a task with a specific day_schedule. The result depends on
-  # on the day of the week and the time of the task
-  def self.find_people_available(period, day_schedule, task)
-    ts = TaskSchedule.find_by(task: task, schedule: day_schedule.schedule)
-    wday = day_schedule.date.wday
-    return [] if (ts.nil? || ts.number==0)
-    # find all the people periods that are relevant to this day schedule
-
-    people_periods = PersonPeriod.includes(:person).where(s_date: ..day_schedule.date , e_date: day_schedule.date..)
-
-    # select only the people that are available to do the specific task
-    people_periods = people_periods.select{|pp| pp.is_available_for_task? task}
-
-    # select only the people that are free (have no tasks assigned at that time)
-    people_periods = people_periods.select{|pp| pp.is_free?(day_schedule,ts)}
-
-    # add the people already assigned for the specific task
-    assigned_people_ids = (day_schedule.get_assigned_people task).pluck(:id)
-    assigned_people_periods = PersonPeriod.includes(:person).where(person: assigned_people_ids)
-    people_periods = people_periods.concat(assigned_people_periods)
-
-    people_available = people_periods.map do |pp|
-      ppoints = PeriodPoint.find_by(person: pp.person, period: period)
-      points = ppoints.nil? ? 0 : ppoints.points
-      {
-        person_id:      pp.person.id,
-        available:      (pp.is_available_for_task? task),
-        name:           pp.person.short_name,
-        situation:      pp.days_available.find_by(day:wday).get_situation(ts),
-        points:         points
-      }
-    end
-    people_available = people_available.sort_by { |person_hash| person_hash[:points] }
-    people_available = people_available.sort_by { |person_hash| person_hash[:situation][:points] }
-
-    puts "\n\n\n\n"
-    puts "returning people available"
-    puts people_available.inspect
-    puts "\n\n\n\n"
-    people_available
-  end
-
 
   def get_availability(wday, task_schedule)
     return false if !(tasks_available.pluck(:task).include? task_schedule.task.id)
@@ -204,11 +136,3 @@ class DayAvailable < ActiveRecord::Base
   end
 
 end # class end
-
-class TasksAvailable < ActiveRecord::Base
-
-  belongs_to  :person_period
-  belongs_to  :task
-  self.table_name = "tasks_available"
-
-end

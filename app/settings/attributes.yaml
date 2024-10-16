@@ -82,7 +82,7 @@ attributes:
     name: "Student"
     type: "boolean"
     order: "NONE"
-    css_class: "short-field"
+    css_class: "short-field u-text-center"
   - id: "personals.region"
     name: "region"
     type: "string"
@@ -227,6 +227,16 @@ attributes:
     type: "string"
     order: "NONE"
     css_class: "long-field"
+  - id: "matrices.driver"
+    name: "conductor"
+    type: "boolean"
+    order: "NONE"
+    css_class: "short-field u-text-center"
+  - id: "matrices.choir"
+    name: "coro"
+    type: "boolean"
+    order: "NONE"
+    css_class: "short-field u-text-center"
 default_people_table:
   main_table: people
   related_tables:
@@ -234,6 +244,7 @@ default_people_table:
     - studies
     - crs
     - rooms
+    - matrices
   attributes:
     - people.family_name
     - people.first_name

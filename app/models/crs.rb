@@ -31,7 +31,7 @@ class Crs < ActiveRecord::Base
 
 	def self.prepare_params(params)
 		params[:phase] = nil if params[:phase].blank?
-		params[:cfi] = nil if params[:cfi].blank?
+		#params[:cfi] = nil if params[:cfi].blank?
 		params.except("crs_id", "id", "commit", "module", "cfi")
 	end
 
