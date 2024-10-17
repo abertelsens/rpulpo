@@ -937,7 +937,7 @@ ALERTS
   border-style: solid;
   line-height: 1.4rem;
   color: var(--medium-gray);
-  transition: 2s;
+  transition: 1s;
 }
 
 .alert.alert-warning {

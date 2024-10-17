@@ -7,10 +7,14 @@
   text([#align(right, [#date])])
 )
 
+#set text(
+  size: 13pt
+)
+
 //Pages settings, margins and footer.
 #set page("a4", 
 margin: (top:5cm, bottom:3cm, x:3cm),
-header: [#pad(x:-1.5cm, y: 1.5cm, text(size: 15pt, [COLLEGIUM ROMANUM SANCTAE CRUCIS]))],
+header: [#pad(x:-1.5cm, y: 1.3cm, text(size: 15pt, weight: 500, [COLLEGIUM ROMANUM SANCTAE CRUCIS]))],
 footer: [#pad(x:-2.3cm, y: .9cm, text(size: 9pt, [#impreso]))]
 )
 
@@ -18,7 +22,7 @@ footer: [#pad(x:-2.3cm, y: .9cm, text(size: 9pt, [#impreso]))]
 //Defines the style of the heading of the document
 #show heading: it => {
   set block(below: 30pt)
-  set text(weight: "regular")
+  set text(weight: "bold")
   align(center, smallcaps(it))
 }
 

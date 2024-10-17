@@ -40,7 +40,6 @@ class PulpoQuery
 			query_string = query_string.gsub(/\s+/, ' ')
 
 			#replace the query alias if found
-			#query_string = QUERY_ALIASES[query_string] unless QUERY_ALIASES[query_string].nil?
 			QUERY_ALIASES.each { |pair| query_string.gsub!(/#{pair[:from]}/, pair[:to]) }
 
 			# split the string into AND clauses

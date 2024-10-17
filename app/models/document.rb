@@ -90,6 +90,14 @@ class Document < ActiveRecord::Base
 		Document.includes(:pulpo_module).where(pulpo_module: user.get_allowed_modules)
 	end
 
+
+	def get_attribute(table_attribute)
+		case table_attribute.get_table_name
+			when "documents" 			then self[table_attribute.to_sym]
+			when "pulpo_modules" 	then pulpo_module[table_attribute.get_field_name.to_sym]
+		end
+	end
+
 	def self.get_pdf_docs_of_user(user)
 		Document.includes(:pulpo_module).all.order(:pulpo_module_id, :name).select{|doc| ((user.get_allowed_modules.include? doc.pulpo_module) && doc.engine!="excel")}
 	end

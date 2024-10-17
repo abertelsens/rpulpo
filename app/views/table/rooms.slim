@@ -1,7 +1,7 @@
 turbo-frame id="rooms_table" data-turbo-frame="main_frame"
-  div.table-container
-    div.table-table  
-      div.table-row-head
+  .table-container
+    .table-table  
+      .table-row-head
         - @rooms_table_settings.att.each do |sett|
           div class=sett.css_class style="pointer-events: none" = sett.name.humanize(capitalize: false)  
       - @objects.each.with_index do |object, index|  
@@ -10,7 +10,7 @@ turbo-frame id="rooms_table" data-turbo-frame="main_frame"
             - value = object.get_attribute sett.field
             div class=sett.css_class = sett.type=="enum" ? value&.humanize : value
   
-  div.row.flex-center.margin-top
+  .row.flex-center.margin-top
     .alert.xlong-field.u-text-center = (@objects.size>0) ? "#{@objects.size} record(s) found" : "No records found. Try something different."
   
 

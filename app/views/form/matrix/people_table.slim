@@ -4,5 +4,5 @@ turbo-frame id="people_table" data-turbo-frame="person_view"
       div.table-row-head
         div.table-cell-head style="pointer-events: none" = "name" 
       - @objects.each.with_index do |object, index|  
-        a.table-row-body href="/person/#{object.id}" style="cursor:pointer;"
+        a.table-row-body href="/person/#{object.id}"
           div.table-cell-body = "#{object.family_name}, #{object.first_name}"

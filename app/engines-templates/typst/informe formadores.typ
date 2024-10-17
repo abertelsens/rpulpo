@@ -24,10 +24,10 @@
 //Pages settings, margins and footer.
 #set page("a4", 
 margin: (top:5cm, bottom:3cm, x:3cm),
-header: [#pad(x:-1.5cm, y: 1.5cm, text(size: 15pt, [COLLEGIUM ROMANUM SANCTAE CRUCIS]))]
+header: [#pad(x:-1.5cm, y: 1.5cm, text(size: 15pt, weight: 500, [COLLEGIUM ROMANUM SANCTAE CRUCIS]))]
 )
 
-#set text(12pt)
+#set text(13pt)
 
 #set par(
   first-line-indent: 3em,

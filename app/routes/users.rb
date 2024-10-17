@@ -14,8 +14,9 @@ end
 
 # renders the users table
 get '/users/table' do
-    @objects = User.all
-    partial :"table/user"
+  @table_settings = TableSettings.new(table: :users_default)
+  @objects = User.all
+  partial :"table/simple_template"
 end
 
 # renders a user form

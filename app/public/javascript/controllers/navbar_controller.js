@@ -10,8 +10,6 @@ const hide_class = 'hidden-frame'
 Stimulus.register("navbar", class extends Controller {
   
   static targets = ["navbar"]
-
- 
   
   connect() {
     console.log("Stimulus Connected: navbar controller");

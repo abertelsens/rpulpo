@@ -1,0 +1,28 @@
+// A general template for a table. It receives as parameter a Table Settigns object and 
+// a collecion of objects. The table settings object will set the headers of the table as
+// well as the css clases used to render the table.
+- checkmark = "\u2714".encode('utf-8')
+turbo-frame id="#{@table_settings.get_main_table}_table" 
+  .table-container
+    div.table-table
+      
+      div.table-row-head
+        - @table_settings.att.each do |sett|
+          div class=sett.css_class = sett.name.humanize(capitalize: false)  
+
+      - @objects.each.with_index do |object, index|  
+        a.table-row-body class=(object.respond_to? :get_class ? "" : "" ) href="/#{@table_settings.get_main_model_name}/#{object.id}" data-turbo-frame="main_frame"
+          - @table_settings.att.each do |sett|
+            
+            - if sett.table==@table_settings.get_main_table
+              - value = object[sett.get_field_name]
+              - if sett.type=="enum"
+                div class=sett.css_class = value&.humanize.downcase
+              - elsif sett.type=="boolean"
+                div class=sett.css_class = value ? checkmark : ""
+              - else 
+                div class=sett.css_class = value
+            
+            // we are in a related table
+            - else
+              div class=sett.css_class = object.get_attribute(sett)

@@ -11,11 +11,17 @@ get '/modules' do
 end
 
 get '/modules/table' do
+	@table_settings = TableSettings.new(table: :pulpo_modules_default)
 	@objects = PulpoModule.all
-	partial :"table/modules"
+	partial :"table/simple_template"
 end
 
 get '/module/:id' do
+	@object = (params[:id]=="new" ? nil : PulpoModule.find(params[:id]))
+	partial :"form/module"
+end
+
+get '/pulpomodule/:id' do
 	@object = (params[:id]=="new" ? nil : PulpoModule.find(params[:id]))
 	partial :"form/module"
 end

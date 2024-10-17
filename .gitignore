@@ -1,7 +1,9 @@
-app/public/photos
+# Ignore the photos of people, temporary directory and the templates
+app/public/photos/
 tmp/
-app/engines-templates
-app/old_code
+app/engines-templates/
+
+app/old_code/
 schema_db
 .DS_Store
 

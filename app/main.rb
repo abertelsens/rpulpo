@@ -41,8 +41,8 @@ include ExcelImporter
 #---------------------------------------------------------------------------------------
 # DB SETUP
 #---------------------------------------------------------------------------------------
-puts Rainbow("PULPO: Starting Configuration").yellow
 
+puts Rainbow("PULPO: Starting Configuration").yellow
 
 # In order to avoid printing to the console in each request uncomment the following line
 # ActiveRecord::Base.logger = nil
@@ -53,16 +53,17 @@ puts Rainbow("PULPO: Starting Configuration").yellow
 
 # if the DB ENVIRONMENT is not set (i.e. was not set via the command line to run the app)
 # we assume we are in development mode.
-DB_ENV ||= 'development'
+# The environment variable is set in the puma configuration file puma.rb
+ENV["DB_ENV"] ||= 'development'
 
 # load the connection settings file and open the connection
 connection_details = YAML::load(File.open('config/database.yaml'))
 
-puts Rainbow("PULPO: Loaded Database connection with environment #{DB_ENV}").yellow
-puts Rainbow(connection_details[DB_ENV]).yellow
+puts Rainbow("PULPO: Loaded Database connection with environment #{ENV["DB_ENV"]}").yellow
+puts Rainbow(connection_details[ENV["DB_ENV"]]).yellow
 
 # establish the connection
-ActiveRecord::Base.establish_connection(connection_details[DB_ENV])
+ActiveRecord::Base.establish_connection(connection_details[ENV["DB_ENV"]])
 
 #---------------------------------------------------------------------------------------
 # SINATRA SETUP

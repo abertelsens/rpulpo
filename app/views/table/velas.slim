@@ -6,7 +6,6 @@ turbo-frame id="velas_table"
         div.table-cell-head.long-field = "order"
        
       - @objects.each.with_index do |object, index|
-        //turbo-frame id="people_#{object.id}"
         a.table-row-body href="/vela/#{object.id}" data-turbo-frame="main_frame"
           div.table-cell-body.medium-field  = object.date.strftime('%d-%m-%y')
           div.table-cell-body.xxlong-field  = object.order_to_s

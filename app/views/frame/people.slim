@@ -23,14 +23,14 @@ turbo-frame id="main_frame" data-people-target="people_screen"
       
       .row
 
-        .columns.two.offset-by-two.flex-center style="vertical-align:bottom"
+        .columns.two.offset-by-two.flex-right style="vertical-align:bottom"
           - puts "got people filter in slim $$#{@people_filter}$$"
           select.no-margin name="filter" 
-            option selected=(@people_filter=="cb") value="cb" search in cavabianca
-            option selected=(@people_filter=="all") value="all" search all
+            option selected=(@people_filter=="cb") value="cb" = "search in cavabianca"
+            option selected=(@people_filter=="all") value="all" = "search all"
           
         // SEARCH FIELD
-        
+    
         .columns.four.flex-center
           input#search_string.u-full-width  isTrusted="true" autofocus="autofocus" type="search" data-people-target="search_field" autocomplete="off" placeholder="search" aria-label="Search" name="q" data-action="input->search#submit" value=@people_query
 
@@ -49,31 +49,36 @@ turbo-frame id="main_frame" data-people-target="people_screen"
 
           button.button-small.button-square title="menu (ctrl+p)" data-action="click->modal#open_modal"
             <i style="color:white" class="fa-solid fa-bars"></i>
+      
       .row 
         .modal data-modal-target="modal" 
           .modal-content
             .container.menu
-              - if @current_user.usertype!="guest"  
-                .table-cell-head.cell-header.no-border DOCUMENTS
-                div style="margin-right:2rem"
+              .table-container
+                .table-table style="display: block"
+                  .table-row-head
+                    - if @current_user.usertype!="guest"  
+                      div DOCUMENTS
                   - (Document.get_docs_of_user @current_user).each do |doc|
-                    .row
+                    .table-row-body
                       a.table-cell-body.menu-link  href="/people/set/document/#{doc.id}" target=(doc.engine=="excel" ? "_self" : "_blank") = "#{doc.pulpo_module.name} - #{doc.name}"
-              
-              .table-cell-head.cell-header.no-border ACTIONS
-              div
-                .row 
-                  a.table-cell-body.menu-link href="/people/table/settings" data-turbo-frame="editor_frame" Edit Table Columns
-                - if @current_user.usertype!="guest"  
-                  .row  
-                    a.table-cell-body.menu-link href="/people/edit_field" Edit Field Value
+                
+              .table-container
+                .table-table style="display: block"
+                  .table-row-head
+                    div ACTIONS
+                  .table-row-body   
+                    a.table-cell-body.menu-link href="/people/table/settings" data-turbo-frame="editor_frame" Edit Table Columns
+                  - if @current_user.usertype!="guest"  
+                    .table-row-body 
+                      a.table-cell-body.menu-link href="/people/edit_field" Edit Field Value
+            
             .row.u-text-center style="margin-top: 2rem"
               button.button-primary.no-margin data-action="click->modal#close_modal" cancel
 
 
       .row
         .modal data-clipboard-target="modal" 
-      
           .modal-content.u-text-center
             h5.u-text-center = "Data to copy"
             textarea#copy_field.modal-copy-area isTrusted="true" rows="4" cols="20" data-clipboard-target="copyfield"

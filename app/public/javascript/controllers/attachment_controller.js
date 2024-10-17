@@ -1,7 +1,7 @@
-/************************************************************************************************  
-  A Controller to handle the behaviour of attachments to forms sucha as a picture and 
-  files uploaded.
-************************************************************************************************/ 
+//------------------------------------------------------------------------------------------------  
+//  A Controller to handle the behaviour of attachments to forms sucha as a picture and 
+//  files uploaded.
+//------------------------------------------------------------------------------------------------ 
 
 import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
     
@@ -41,7 +41,6 @@ Stimulus.register("attachment", class extends Controller {
     })
     .then(response => this.photo_imageTarget.src=`photos/${person_id}.jpg?v=${Math.random()}`)
     }
-
 })
     
     

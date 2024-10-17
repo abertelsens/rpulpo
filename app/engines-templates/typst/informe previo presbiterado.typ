@@ -41,9 +41,13 @@ pad(x:7cm, y: 2cm)[
 // PAGE SETTINGS, MARGINS AND BORDERS
 // =================================================================
 
+#set text(
+  size: 13pt
+)
+
 #set page("a4",
 margin: (top:6cm, bottom:3cm, x:3cm),
-header: [#pad(x:-1.5cm, y: 1.5cm, text(size: 15pt, [COLLEGIUM ROMANUM SANCTAE CRUCIS]))]
+header: [#pad(x:-1.5cm, y: 1.5cm, weight: 500, text(size: 15pt, [COLLEGIUM ROMANUM SANCTAE CRUCIS]))]
 )
 
 #set par(justify: true, first-line-indent: 0cm)
