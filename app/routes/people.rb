@@ -10,6 +10,7 @@
 get '/people' do
 	@current_user = get_current_user
 	get_last_query :people
+	get_last_filter :people
   partial :"frame/people"
 end
 
@@ -17,7 +18,9 @@ end
 # @objects: the people that will be shown in the table
 get '/people/table' do
   get_last_query :people
-	@objects = Person.search @people_query, @people_table_settings
+	get_last_filter :people
+	query = @people_filter=="cb" ? "cb AND #{@people_query}" : @people_query
+	@objects = Person.search query, @people_table_settings
 	partial :"table/people"
 end
 
@@ -42,7 +45,9 @@ end
 get '/people/search' do
 	get_table_settings :people
 	@people_query = session["people_table_query"] = params[:q]
-	@objects = Person.search @people_query, @people_table_settings
+	@people_filter = session["people_table_filter"] = params[:filter]
+	query = @people_filter=="cb" ? "cb AND #{@people_query}" : @people_query
+	@objects = Person.search query, @people_table_settings
 	partial :"table/people"
 end
 

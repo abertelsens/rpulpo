@@ -44,6 +44,7 @@ class Person < ActiveRecord::Base
 
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(family_name: :asc) }
+	scope :cavabianca, ->(amount) { where(ctr: "cavabianca")}
 
 
 	# enums info is stored as an integer in the db but can be queried by the associated

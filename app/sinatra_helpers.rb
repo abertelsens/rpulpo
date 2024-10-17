@@ -39,6 +39,12 @@ helpers do
 		get_table_settings args
 	end
 
+	def get_last_filter(args)
+		case args
+				when :people    then @people_filter = session["people_table_filter"]
+		end
+	end
+
 	# Retrieves the table settings. The table settings specify which colums should be displayed.
 	# The settings are stored in a cookie.
 	# If no settings are stored then new default table settings are created and stored.
