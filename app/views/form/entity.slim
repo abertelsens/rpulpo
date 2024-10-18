@@ -3,17 +3,17 @@
 /----------------------------------------------------------------------------------------------------------------
 
 turbo-frame id="main_frame"
-  	
-	
-	
+  
 	/ Center the container of the form
-	.container.screen-box.small-form data-controller="keys modal" data-action="keydown.enter@window->keys#enter"
+	.container.screen-box.small-form data-controller="form-validator keys modal" 
 		
 		form[
 			action="/entity/#{(@object.nil? ? "new" : @object.id)}" 
-			method="POST" 
-			data-keys-target="form"
+			method="POST"
 			data-controller="form-validator"
+			data-keys-target="form"
+			data-modal-target="form"
+			data-action="keydown.enter@window->keys#enter keydown.esc@window->keys#escape"
 			]
 
 			input name="id" type="hidden" value= @object&.id
@@ -32,7 +32,7 @@ turbo-frame id="main_frame"
 			.row
 				
 				label name
-				&text.u-full-width name="name" required="true" value=@object&.name 
+				&text.u-full-width name="name" data-modal-target="first_field" required="true" autofocus="true" value=@object&.name 
 			
 				label sigla
 				&text.u-full-width name="sigla" required="true" data-action="input->form-validator#validate" value=@object&.sigla
@@ -44,7 +44,7 @@ turbo-frame id="main_frame"
 			/ ERROR FRAME
 			/----------------------------------------------------------------------------------------------------------------		
 			.row
-				.alert.alert-warning.u-full-width.hidden-frame data-form-validator-target="error_frame"
+				.alert.alert-warning.u-full-width.hidden-alert data-form-validator-target="error_frame" = "alert message"
 
 			/----------------------------------------------------------------------------------------------------------------
 			/ BUTTONS
@@ -52,7 +52,7 @@ turbo-frame id="main_frame"
 
 			.row.flex-center.flex-columns
 				- if (@object&.can_be_deleted?)
-					button.button-secondary data-keys-target="cancel_btn" data-action="click->modal#open_modal" delete  
+					button.button-secondary data-keys-target="de_btn" tabindex="-1" data-action="click->modal#open_modal" delete  
 				button.button-primary type="submit" name="commit" value="save" data-keys-target="submit_btn" data-form-validator-target="submit_btn" save  
 				a.button.button-secondary formnovalidate="true" data-keys-target="cancel_btn" href="/entities" cancel
 				

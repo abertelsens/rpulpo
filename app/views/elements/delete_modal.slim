@@ -1,5 +1,5 @@
 turbo-frame id="delete_modal"
-  .modal data-modal-target="modal" data-action="keydown.esc@window->modal#close_modal" tabindex="0"
+  .modal data-modal-target="modal" tabindex="1"
     .modal-content
       .row
         h4
@@ -10,4 +10,4 @@ turbo-frame id="delete_modal"
         p = "This action cannot be undone!"
       .row.center-align.margin-top
         button.button-danger formnovalidate="true" type="submit" name="commit" value="delete" delete 
-        button.button-secondary data-action="click->modal#close_modal" cancel	
+        button.button-secondary autofocus="true" data-action="click->modal#close_modal" cancel	

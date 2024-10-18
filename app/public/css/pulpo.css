@@ -942,7 +942,8 @@ ALERTS
 
 .alert.alert-warning {
   background: var(--medium-orange);
-  border-color: var(--light-gray)
+  border-color: var(--light-gray);
+  visibility: visible;
 }
 
 .alert.alert-notice {
@@ -1119,18 +1120,12 @@ div.modal-content h4
   white-space: nowrap;
 }
 
-.hidden-frame {
-  display:none;
-  /*height: 0px;
+.hidden-alert {
   visibility: hidden;
   opacity: 0;
   transition: visibility 1s, opacity 1s linear, height 10s ease-out;
-  0.15s ease-out*/
 }
 
-.active-frame {
-  display: contents;
-}
 
 .idle-frame {
   display: none;

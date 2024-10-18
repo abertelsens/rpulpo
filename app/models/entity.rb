@@ -51,7 +51,7 @@ class Entity < ActiveRecord::Base
 	end
 
 	def self.validate(params)
-		warning_message = "Warning: there is already an entity with that name."
+		warning_message = "Warning: there is already an entity with that sigla."
 		sigla = params[:sigla].strip
 		found =
 			if (params[:id])=="new"

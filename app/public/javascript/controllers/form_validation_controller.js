@@ -80,11 +80,12 @@ Stimulus.register("form-validator", class extends Controller {
   }
   
   hide_frame(frame) {
-    frame.classList.add('hidden-frame')
+    frame.classList.add('hidden-alert')
   }
   
   show_frame(frame) {
-    frame.classList.remove('hidden-frame')
+    console.log("activationg frame")
+    frame.classList.remove('hidden-alert')
   } 
 
 })

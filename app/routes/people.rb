@@ -204,7 +204,7 @@ get '/people/:id/document/:doc_id' do
 			puts Rainbow(@writer.message).red
 			return partial :"errors/writer_error"
 	end
-
+	
 	if @document.has_template_variables?
 			@template_variables = @document.get_template_variables
 			@set = params[:id]

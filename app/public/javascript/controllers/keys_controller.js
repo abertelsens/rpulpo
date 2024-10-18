@@ -13,11 +13,12 @@ Stimulus.register("keys", class extends Controller {
     console.log("Stimulus Controller Connected: keys");
   }
 
-  enter() {   
+  enter(event) {
+    event.preventDefault()   
     this.formTarget.requestSubmit();  
   }
 
-  escape() {   
+  escape() {  
     this.cancel_btnTarget.click();  
   }
 
