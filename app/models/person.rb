@@ -100,7 +100,12 @@ class Person < ActiveRecord::Base
 	# defines what tables should be included in the query results. This helps us to reduce
 	# unnecessary information. For example if we query a person by name but the settings do
 	# not include the rooms table, then we will not retrieve that result. See pulpo_query.rb
-	def self.search(search_string, table_settings=nil)
+	def self.search(search_string, table_settings=nil, filter=nil)
+		#puts "got search_string #{search_string} filter #{filter}"
+		if (filter!=nil && !filter.strip.blank?)
+			search_string = (search_string.nil? || search_string.strip.blank?) ? filter : "#{filter} AND #{search_string}"
+		end
+		#puts Rainbow("searching for ----#{search_string}----").orange
 		(PulpoQuery.new(search_string, table_settings)).execute
 	end
 

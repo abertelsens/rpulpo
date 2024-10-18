@@ -27,7 +27,7 @@ turbo-frame id="main_frame" data-people-target="people_screen"
           - puts "got people filter in slim $$#{@people_filter}$$"
           select.no-margin name="filter" 
             option selected=(@people_filter=="cb") value="cb" = "search in cavabianca"
-            option selected=(@people_filter=="all") value="all" = "search all"
+            option selected=(@people_filter=="") value="" = "search all"
           
         // SEARCH FIELD
     

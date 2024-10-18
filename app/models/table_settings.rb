@@ -76,7 +76,7 @@ class TableSettings
 
 	# initializes the table settings with a ser
 	def initialize(args)	# an array containing the attributtes to be shown in the table
-		puts "initializing table #{args[:table]}"
+		#puts "initializing table #{args[:table]}"
 		case args[:table]
 			when :people_default
 				@att = DEFAULT_PEOPLE_TABLE[:attributes]
@@ -106,7 +106,7 @@ class TableSettings
 				@main_table = args[:main_table]
 				@related_tables = args[:related_tables]
 			end
-		puts Rainbow("initialized table settings with attributes: #{@att} and main_table: #{@main_table} ").yellow
+		#puts Rainbow("initialized table settings with attributes: #{@att} and main_table: #{@main_table} ").yellow
 	end
 
 	ALL_ATTRIBUTES = SETTINGS_YAML["attributes"].map {|att| TableAttribute.create_from_yaml att}

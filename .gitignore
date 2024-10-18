@@ -2,6 +2,7 @@
 app/public/photos/
 tmp/
 app/engines-templates/
+app/engines-templates/typst/
 
 app/old_code/
 schema_db
@@ -9,3 +10,4 @@ schema_db
 
 *.pdf
 *.docx
+*.typ

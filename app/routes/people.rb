@@ -19,8 +19,9 @@ end
 get '/people/table' do
   get_last_query :people
 	get_last_filter :people
-	query = @people_filter=="cb" ? "cb AND #{@people_query}" : @people_query
-	@objects = Person.search query, @people_table_settings
+	# if the people filter is not set yet then we set it to cb as default
+	@people_filter = session["people_table_filter"]="cb" if @people_filter.nil?
+	@objects = Person.search @people_query, @people_table_settings, @people_filter
 	partial :"table/people"
 end
 
@@ -46,8 +47,7 @@ get '/people/search' do
 	get_table_settings :people
 	@people_query = session["people_table_query"] = params[:q]
 	@people_filter = session["people_table_filter"] = params[:filter]
-	query = @people_filter=="cb" ? "cb AND #{@people_query}" : @people_query
-	@objects = Person.search query, @people_table_settings
+	@objects = Person.search @people_query, @people_table_settings, @people_filter
 	partial :"table/people"
 end
 
@@ -204,7 +204,7 @@ get '/people/:id/document/:doc_id' do
 			puts Rainbow(@writer.message).red
 			return partial :"errors/writer_error"
 	end
-	
+
 	if @document.has_template_variables?
 			@template_variables = @document.get_template_variables
 			@set = params[:id]
