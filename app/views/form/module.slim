@@ -6,15 +6,17 @@
 / ----------------------------------------------------------------------------------------
 
 turbo-frame id="main_frame"
-  	
-	form[
-		action="/module/#{(@object.nil? ? "new" : @object.id)}" 
-		data-controller="modal form-validator" 
-		method="POST"
-		] 
-	
-		.container.screen-box.small-form
-			
+
+  .container.screen-box.small-form data-controller="form" 
+
+		form[
+			action="/module/#{(@object.nil? ? "new" : @object.id)}" 
+			data-controller="modal form-validator"
+			data-form-target="form"
+			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape" 
+			method="POST"
+			] 
+		
 			/ ----------------------------------------------------------------------------------
 			/ FORM HEADER
 			/ ----------------------------------------------------------------------------------
@@ -33,6 +35,7 @@ turbo-frame id="main_frame"
 						name="identifier"
 						value=@object&.identifier
 						data-action="input->form-validator#validate"
+						data-form-target="first_field"
 					] 
 					
 				
@@ -55,8 +58,8 @@ turbo-frame id="main_frame"
 			/-----------------------------------------------------------------------------------
 			.row.flex-center.flex-columns
 				- if (@object&.can_be_deleted?)
-					button.button-secondary data-action="click->modal#open_modal" delete  
+					button.button-secondary tabindex="-1" data-action="click->form#open_modal" delete  
 				button.button-primary type="submit" name="commit" value="save" data-form-validator-target="submit_btn" save  
-				a.button.button-secondary formnovalidate="true" href="/modules" cancel
+				a.button.button-secondary data-form-target="cancel_btn" formnovalidate="true" href="/modules" cancel
 					
 			turbo-frame id="delete_modal" src="/elements/delete_modal?object_type=module"

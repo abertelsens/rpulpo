@@ -81,7 +81,7 @@ turbo-frame id="main_frame"
     // MODAL FORM TO ASSIGN A PROTOCOL
     // ----------------------------------------------------------------------------------- 
     form.form-inline method="GET" action="/mail/assign_protocol"  
-      .modal data-protocolmodal-target="protocolmodal" data-action="keydown.esc@window->protocolmodal#close_protocol_modal" tabindex="0"
+      .modal.hidden-frame data-protocolmodal-target="protocolmodal" data-action="keydown.esc@window->protocolmodal#close_protocol_modal" tabindex="0"
         .row
           .modal-content style="min-width: 800px"
             

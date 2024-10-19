@@ -41,7 +41,7 @@ Stimulus.register("validate", class extends Controller {
 
   handle_response(validation_data) {
     if(validation_data!=false) {
-      console.log(`got validation response: ${validation_data.result}`)
+      //console.log(`got validation response: ${validation_data.result}`)
       if(!validation_data.result) {                          //there was a validation problem
         this.show_frame(this.error_frameTarget)
         this.submit_btnTarget.disabled=true

@@ -1,5 +1,5 @@
 turbo-frame id="people_modal" data-peoplemodal-target="peoplemodal"
-  .modal data-peoplemodal-target="modalframe" style=(@task.nil? ? "display:none" :  "display:block")
+  .modal.hidden-frame data-peoplemodal-target="modalframe" style=(@task.nil? ? "display:none" :  "display:block")
     .modal-content 
       .row.modal-row
         h4.u-text-center = "#{@task.name} - #{@ds.date.strftime("%A %d %b")}"	

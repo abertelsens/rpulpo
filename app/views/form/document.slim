@@ -3,15 +3,19 @@
 /----------------------------------------------------------------------------------------------------------------
 
 turbo-frame id="main_frame"
-  	
-	form[ 
-		action="/document/#{(@object.nil? ? "new" : @object.id)}" 
-		enctype="multipart/form-data" 
-		method="POST" 
-		data-controller="modal template-file form-validator" 
-		]
+  
+	.container.screen-box.medium-form data-controller="form" 
+
+		form[ 
+			action="/document/#{(@object.nil? ? "new" : @object.id)}" 
+			enctype="multipart/form-data" 
+			method="POST"
+			data-form-target="form" 
+			data-controller="modal template-file form-validator" 
+			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
+			]
+			
 		
-		.container.screen-box.medium-form
 			
 			/----------------------------------------------------------------------------------------------------------------
 			/ FORM HEADER
@@ -27,7 +31,7 @@ turbo-frame id="main_frame"
 		
 				.columns.six
 					label name
-					&text.u-full-width name="name" required="true" data-action="input->form-validator#validate" value=@object&.name
+					&text.u-full-width name="name" data-form-target="first_field" required="true" data-action="input->form-validator#validate" value=@object&.name
 				
 				.columns.six
 					label module
@@ -86,8 +90,8 @@ turbo-frame id="main_frame"
 
 			.row.flex-center.flex-columns
 				- if (@object&.can_be_deleted?)
-					button.button-secondary data-action="click->modal#open_modal" delete  
+					button.button-secondary tabindex="-1" data-action="click->form#open_modal" delete  
 				button.button-primary type="submit" name="commit" value="save" data-form-validator-target="submit_btn" save  
-				a.button.button-secondary formnovalidate="true" href="/documents" cancel
+				a.button.button-secondary data-form-target="cancel_btn" formnovalidate="true" href="/documents" cancel
 
 			turbo-frame id="delete_modal" src = "/elements/delete_modal?object_type=document"

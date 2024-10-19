@@ -29,7 +29,7 @@ turbo-frame id="main_frame"
 				- if !@object.nil?
 					turbo-frame id="date_types_table"	src='/matrix/period/#{@object.id}/task_assignment/table?week=1'	
 
-			.modal data-modal-target="modal" 
+			.modal.hidden-frame data-modal-target="modal" 
 				.modal-content
 					.row.modal-row
 						h4.u-text-center

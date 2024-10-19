@@ -7,18 +7,21 @@
 
 
 turbo-frame id="main_frame"
-  	
-	form[
-		action="/user/#{(@object.nil? ? "new" : @object.id)}" 
-		method="POST" 
-		data-controller="modal form-validator" 
-		data-validate-objectname="user"
-	]
+
+	// Center the container
+	.container.screen-box.medium-form data-controller="form" 
+
+		form[
+			action="/user/#{(@object.nil? ? "new" : @object.id)}" 
+			method="POST" 
+			data-controller="modal form-validator" 
+			data-validate-objectname="user"
+			data-form-target="form"
+			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape" 
+		]
+			
+			input name="id" type="hidden" data-validate-target="field" value=@object&.id
 		
-		input name="id" type="hidden" data-validate-target="field" value=@object&.id
-		
-		// Center the container
-		.container.screen-box.medium-form
 			
 			/ ----------------------------------------------------------------------------------
 			/ FORM HEADER
@@ -37,7 +40,7 @@ turbo-frame id="main_frame"
 					h4.u-text-center = "USER DATA"
 							
 					label for="uname" user name
-					&text.u-full-width name="uname" required="true" value=@object&.uname data-action="input->form-validator#validate"
+					&text.u-full-width name="uname" required="true" data-form-target="first_field" value=@object&.uname data-action="input->form-validator#validate"
 
 					label for="password" password
 					&password.u-full-width name="password" required="true" value=@object&.password
@@ -83,9 +86,9 @@ turbo-frame id="main_frame"
 			/-----------------------------------------------------------------------------------
 			.row.flex-center.flex-columns
 				- if (@object&.can_be_deleted?)
-					button.button-secondary data-action="click->modal#open_modal" delete  
+					button.button-secondary tabindex="-1" data-action="click->form#open_modal" delete  
 				
 				button.button-primary type="submit" name="commit" value="save" data-form-validator-target="submit_btn" save  
-				a.button.button-secondary formnovalidate="true" href="/users" cancel
+				a.button.button-secondary data-form-target="cancel_btn" formnovalidate="true" href="/users" cancel
 				
 			turbo-frame id="delete_modal" src="/elements/delete_modal?object_type=user"

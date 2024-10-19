@@ -51,7 +51,7 @@ turbo-frame id="main_frame" data-people-target="people_screen"
             <i style="color:white" class="fa-solid fa-bars"></i>
       
       .row 
-        .modal data-modal-target="modal" 
+        .modal.hidden-frame data-modal-target="modal" 
           .modal-content
             .container.menu
               .table-container
@@ -78,7 +78,7 @@ turbo-frame id="main_frame" data-people-target="people_screen"
 
 
       .row
-        .modal data-clipboard-target="modal" 
+        .modal.hidden-frame data-clipboard-target="modal" 
           .modal-content.u-text-center
             h5.u-text-center = "Data to copy"
             textarea#copy_field.modal-copy-area isTrusted="true" rows="4" cols="20" data-clipboard-target="copyfield"

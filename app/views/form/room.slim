@@ -3,15 +3,18 @@
 /*****************************************************************************************************
 
 turbo-frame id="main_frame"
-  	
-	form[
-		action="/room/#{(@object.nil? ? "new" : @object.id)}" 
-		data-controller="modal keys" 
-		data-keys-target="form"
-		data-action="keydown.enter@window->keys#enter" 
-		method="POST"]
-	
-		.container.screen-box.medium-form
+  
+	.container.screen-box.medium-form data-controller="form" 
+
+		form[
+			action="/room/#{(@object.nil? ? "new" : @object.id)}" 
+			data-controller="modal keys" 
+			data-keys-target="form"
+			data-form-target="form"
+			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape" 
+			method="POST"]
+		
+		
 			
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM HEADER
@@ -36,7 +39,7 @@ turbo-frame id="main_frame"
 
 				.columns.six
 					label room name
-					&text.u-full-width name="room" value=@object&.room
+					&text.u-full-width name="room" data-form-target="first_field" value=@object&.room
 
 				.columns.six
 					label person
@@ -72,9 +75,9 @@ turbo-frame id="main_frame"
 			//----------------------------------------------------------------------------------------------------------------
 			.row.flex-center.flex-columns
 					- if @object 
-						button data-action="click->modal#open_modal" delete  
+						button tabindex="-1" data-action="click->form#open_modal" delete  
 					button.button-primary type="submit" name="commit" value="save" save  
-					a.button.button-secondary formnovalidate="true" href="/rooms" cancel
+					a.button.button-secondary data-form-target="cancel_btn" formnovalidate="true" href="/rooms" cancel
 					
 			/----------------------------------------------------------------------------------------------------------------
 			// DELELE CONFIRMATION MODAL FORM
