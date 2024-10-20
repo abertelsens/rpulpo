@@ -31,7 +31,7 @@ import { Controller } from "https://cdn.jsdelivr.net/npm/stimulus@3.2.2/dist/sti
 
 Stimulus.register("form-validator", class extends Controller {
   
-  static targets = ["error_frame", "submit_btn"]
+  static targets = ["errorFrame", "submitButton"]
   warning_html = "<i class='fa-solid fa-triangle-exclamation'></i>"
   
   connect() {
@@ -57,23 +57,23 @@ Stimulus.register("form-validator", class extends Controller {
       
       //there was a validation problem
       if(!validation_data.result) {           
-        if (this.hasError_frameTarget){ 
-          this.show_frame(this.error_frameTarget)
-          this.error_frameTarget.innerHTML = `${this.warning_html} ${validation_data.message}`
+        if (this.hasErrorFrameTarget){ 
+          this.show_frame(this.errorFrameTarget)
+          this.errorFrameTarget.innerHTML = `${this.warning_html} ${validation_data.message}`
         }
-        if (this.hasSubmit_btnTarget) { 
-          this.submit_btnTarget.disabled=true
+        if (this.hasSubmitButtonTarget) { 
+          this.submitButtonTarget.disabled=true
         }
         else {
           console.log("form/validator: no submit button defined as target")
         }
       }
       else {
-        if (this.hasSubmit_btnTarget) { 
-          this.submit_btnTarget.disabled=false
+        if (this.hasSubmitButtonTarget) { 
+          this.submitButtonTarget.disabled=false
         }
-        if (this.hasError_frameTarget){ 
-          this.hide_frame(this.error_frameTarget)
+        if (this.hasErrorFrameTarget){ 
+          this.hide_frame(this.errorFrameTarget)
         }
       }  
     }

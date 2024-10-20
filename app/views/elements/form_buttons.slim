@@ -1,0 +1,29 @@
+.row.flex-center.flex-columns
+				
+  - if (object && (!(object.respond_to? :can_be_deleted?) || object&.can_be_deleted?))
+    a.button.button-secondary[
+      data-keys-target="deleteButton" 
+      tabindex="-1" 
+      data-form-target="deleteButton"
+      data-action="click->form#open_modal"
+      title="ctrl+d"
+      ] delete  
+  
+  button.button-primary[
+    type="submit"
+    tabindex="-1"  
+    name="commit" 
+    value="save"
+    data-form-target="submitButton"
+    data-form-validator-target="submitButton"
+    title="ctrl+enter"
+    ] save
+    
+  
+  a.button.button-secondary[
+    formnovalidate="true" 
+    tabindex="-1" 
+    data-form-target="cancelButton" 
+    href="/#{table_name}"
+    title="esc"
+    ] cancel

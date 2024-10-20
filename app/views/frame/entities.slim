@@ -1,6 +1,6 @@
 turbo-frame id="main_frame" 
   
-  .container.container-frame
+  .container.container-frame data-controller="frame"
       
     .row.header-frame.u-text-center
       h3 ENTITIES
@@ -9,6 +9,12 @@ turbo-frame id="main_frame"
       turbo-frame id="entities_table" src="/entities/table"
 
     .row.u-text-center.margin-top
-      a.button.button-primary href="/entity/new" data-turbo-frame="main_frame"
+      a.button.button-primary[
+        tabindex=-1
+        data-frame-target="newButton"
+        data-action = "keydown.ctrl+enter@window->frame#new keydown.ctrl+n@window->frame#new"
+        href="/entity/new" 
+        data-turbo-frame="main_frame"
+      ]
         i.fa-solid.fa-plus style="font-size:small"
         |&nbspnew

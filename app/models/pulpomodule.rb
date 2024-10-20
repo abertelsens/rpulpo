@@ -1,5 +1,5 @@
 
-# pulpo_module.rb
+# pulpomodule.rb
 #---------------------------------------------------------------------------------------
 # FILE INFO
 
@@ -11,12 +11,14 @@
 # DESCRIPTION
 
 # A class defining a Module. As module is a reserved word in ruby we chose to name it
-# pulpo_module
+# pulpomodule
 # -----------------------------------------------------------------------------------------
 
 
 #A class containing the Users data
-class PulpoModule < ActiveRecord::Base
+class Pulpomodule < ActiveRecord::Base
+
+	self.table_name = "pulpomodules"
 
 	has_many 	:module_users, dependent: :destroy
 
@@ -31,7 +33,7 @@ class PulpoModule < ActiveRecord::Base
 # will be forbidden to access the moudule.
 after_save do
 	puts "creating permissions for new module"
-	ModuleUser.create(User.all.map{|user| {user: user, pulpo_module: self , modulepermission: "forbidden"} })
+	ModuleUser.create(User.all.map{|user| {user: user, pulpomodule: self , modulepermission: "forbidden"} })
 end
 
 # -----------------------------------------------------------------------------------------
@@ -39,15 +41,15 @@ end
 # -----------------------------------------------------------------------------------------
 
 	def self.create(params)
-		super(PulpoModule.prepare_params params)
+		super(Pulpomodule.prepare_params params)
 	end
 
 	def update(params)
-		super(PulpoModule.prepare_params params)
+		super(Pulpomodule.prepare_params params)
 	end
 
 	def self.destroy(params)
-		PulpoModule.find(params[:id]).destroy
+		Pulpomodule.find(params[:id]).destroy
 	end
 
 	def self.prepare_params(params)
@@ -69,9 +71,9 @@ end
 		identifier = params[:identifier].strip
 		found =
 			if (params[:id])=="new"
-				!PulpoModule.find_by(identifier: identifier).nil?
+				!Pulpomodule.find_by(identifier: identifier).nil?
 			else
-				pmodule = PulpoModule.find_by(identifier: identifier)
+				pmodule = Pulpomodule.find_by(identifier: identifier)
 				pmodule.nil? ? false : (pmodule.id!=params[:id].to_i)
 			end
 		found ? {result: false, message: warning_message} : {result: true}

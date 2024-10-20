@@ -4,10 +4,13 @@
 
 turbo-frame id="main_frame"
   
+	- model_name = "room"
+	- table_name = "rooms"
+
 	.container.screen-box.medium-form data-controller="form" 
 
 		form[
-			action="/room/#{(@object.nil? ? "new" : @object.id)}" 
+			action="/#{model_name}/#{(@object.nil? ? "new" : @object.id)}" 
 			data-controller="modal keys" 
 			data-keys-target="form"
 			data-form-target="form"
@@ -28,58 +31,61 @@ turbo-frame id="main_frame"
 			.row
 		
 				.columns.four
-					label house
-					select.u-full-width name="house"
+					label for="house" house
+					select#house.u-full-width name="house"
 						- Room.houses.each do |house|
 							option selected=(@object&.house==house[0]) value=house[0] = house[0].humanize
 			
 				.columns.two
-					label floor
-					&text.u-full-width name="floor" value=@object&.floor
+					label for="floor" floor
+					&text#floor.u-full-width name="floor" value=@object&.floor
 
 				.columns.six
-					label room name
-					&text.u-full-width name="room" data-form-target="first_field" value=@object&.room
+					label for="room" room name
+					&text#room.u-full-width name="room" data-form-target="first_field" value=@object&.room
 
 				.columns.six
-					label person
-					select.u-full-width name="person_id"
+					label for="person_id" person
+					select#person_id.u-full-width name="person_id"
 						option selected=(@object&.person_id.blank?) value="" = "empty room"
 						- Person.all.order(family_name: :asc).each do |person|
 							option selected=(@object&.person_id==person.id) value=person.id = "#{person.family_name}, #{person.first_name}" 
 
 				.columns.six
-					label phone
-					&text.u-full-width name="phone" value=@object&.phone
+					label for="phone" phone
+					&text#phone.u-full-width name="phone" value=@object&.phone
 			
 			.row
 				.columns.four
-					label bed
-					select.u-full-width name="bed"
+					label for="bed" bed
+					select#bed.u-full-width name="bed"
 						- Room.beds.each do |bed|
 							option selected=(@object&.bed==bed[0]) value=bed[0] = bed[0].humanize
 
 				.columns.four
-					label matress
-					&text.u-full-width name="matress" value=@object&.matress
+					label for="matress" matress
+					&text#matress.u-full-width name="matress" value=@object&.matress
 
 				.columns.four
-					label bathroom
-					select.u-full-width name="bathroom"
+					label for="bathroom" bathroom
+					select#bathroom.u-full-width name="bathroom"
 						- Room.bathrooms.each do |bath|
 							option selected=(@object&.bathroom==bath[0]) value=bath[0] = bath[0].humanize
 
+			/-----------------------------------------------------------------------------------
+			/ BUTTONS
+			/-----------------------------------------------------------------------------------
+			
+			== partial :"elements/form_buttons", locals: {object: @object, table_name: table_name}
 
-			/----------------------------------------------------------------------------------------------------------------
-			// FORM BUTTONS
-			//----------------------------------------------------------------------------------------------------------------
-			.row.flex-center.flex-columns
-					- if @object 
-						button tabindex="-1" data-action="click->form#open_modal" delete  
-					button.button-primary type="submit" name="commit" value="save" save  
-					a.button.button-secondary data-form-target="cancel_btn" formnovalidate="true" href="/rooms" cancel
-					
+			/ ----------------------------------------------------------------------------------
+			/ ALERT FRAME
+			/ ----------------------------------------------------------------------------------
+			row
+				.hidden-alert.alert.alert-warning.u-full-width data-form-validator-target="error_frame"
+
 			/----------------------------------------------------------------------------------------------------------------
 			// DELELE CONFIRMATION MODAL FORM
 			//---------------------------------------------------------------------------------------------------------------
-			turbo-frame id="delete_modal" src = "/elements/delete_modal?object_type=room"
+			
+			== partial :"elements/delete_modal", locals: {model_name: model_name}

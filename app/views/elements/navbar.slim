@@ -8,30 +8,30 @@ turbo-frame id="nav_bar"
         // elements of the nav bar aligned to the left
         .columns.eight
           
-          a.button.menu-item data-turbo-frame="main_frame" href='/people' 
+          a.button.menu-item tabindex="-1"  data-turbo-frame="main_frame" href='/people' 
             i.fa-solid.fa-user
             | &nbspPeople
           
           - if @current_user.admin?
-            a.button.menu-item data-turbo-frame="main_frame" href='/crs' crs+
+            a.button.menu-item tabindex="-1"  data-turbo-frame="main_frame" href='/crs' crs+
           
           - if @current_user.allowed?("rooms")
-            a.button.menu-item data-turbo-frame="main_frame" href='/rooms' 
+            a.button.menu-item tabindex="-1"  data-turbo-frame="main_frame" href='/rooms' 
               i.fa-solid.fa-bed
               | &nbspRooms
           
           - if @current_user.allowed?("velas")
-            a.button.menu-item data-turbo-frame="main_frame" href='/velas' 
+            a.button.menu-item tabindex="-1" data-turbo-frame="main_frame" href='/velas' 
               i.fa-solid.fa-bed
               | &nbspVelas
           
           - if @current_user.mail
-            a.button.menu-item data-turbo-frame="main_frame" href='/mails' 
+            a.button.menu-item tabindex="-1"  data-turbo-frame="main_frame" href='/mails' 
               i.fa-solid.fa-envelope
               | &nbspCorreo
           
           - if (@current_user.allowed?("matrix") && ENV["DB_ENV"]=="development")
-            a.button.menu-item data-turbo-frame="main_frame" href='/matrix' 
+            a.button.menu-item tabindex="-1"  data-turbo-frame="main_frame" href='/matrix' 
               i.fa-solid.fa-house
               | &nbspMatrix
 
@@ -40,33 +40,33 @@ turbo-frame id="nav_bar"
         .flex-right style="flex: 1"
           
           - if @current_user.admin?  
-            a.button.menu-item data-action="click->navbar#toggle" 
+            a.button.menu-item tabindex="-1" data-action="click->navbar#toggle" 
               i.fa-solid.fa-gear
               | &nbspAdmin
           
-          a.button.menu-item data-turbo-frame="main_frame" href='/help' 
+          a.button.menu-item tabindex="-1"  data-turbo-frame="main_frame" href='/help' 
             i.fa-solid.fa-question
             | &nbspHelp
-          a.button.menu-item.user-name target="_top" href="/logout" = "user: #{@current_user.uname}"
+          a.button.menu-item.user-name tabindex="-1"  target="_top" href="/logout" = "user: #{@current_user.uname}"
     
       - if @current_user.admin?      
-        div.row.nav-bar.nav-bar-secondary.hidden-frame data-navbar-target="navbar"
+        div.row.nav-bar.nav-bar-secondary.hidden-frame tabindex="-1"  data-navbar-target="navbar"
           
           .columns.twelve.u-text-right
       
-            a.button.menu-item-secondary data-turbo-frame="main_frame" href='/documents' 
+            a.button.menu-item-secondary tabindex="-1"  data-turbo-frame="main_frame" href='/documents' 
               i.fa-solid.fa-file
               | &nbspDocuments
       
-            a.button.menu-item-secondary data-turbo-frame="main_frame" href='/users' 
+            a.button.menu-item-secondary tabindex="-1"  data-turbo-frame="main_frame" href='/users' 
               i.fa-solid.fa-users
               | &nbspUsers
       
-            a.button.menu-item-secondary data-turbo-frame="main_frame" href='/modules' 
+            a.button.menu-item-secondary tabindex="-1"  data-turbo-frame="main_frame" href='/pulpomodules' 
               i.fa-solid.fa-gear
               | &nbspModules
       
-            a.button.menu-item-secondary data-turbo-frame="main_frame" href='/entities' 
+            a.button.menu-item-secondary tabindex="-1"  data-turbo-frame="main_frame" href='/entities' 
               i.fa-solid.fa-house
               | &nbspEntitites
         

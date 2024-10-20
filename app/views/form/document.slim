@@ -4,18 +4,20 @@
 
 turbo-frame id="main_frame"
   
+
+	- model_name = "document"
+	- table_name = "documents"
+
 	.container.screen-box.medium-form data-controller="form" 
 
 		form[ 
-			action="/document/#{(@object.nil? ? "new" : @object.id)}" 
+			action="/#{model_name}/#{(@object.nil? ? "new" : @object.id)}" 
 			enctype="multipart/form-data" 
 			method="POST"
-			data-form-target="form" 
-			data-controller="modal template-file form-validator" 
-			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
+			data-controller="form-validator template-file"
+			data-form-target="form"
+			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape" 
 			]
-			
-		
 			
 			/----------------------------------------------------------------------------------------------------------------
 			/ FORM HEADER
@@ -30,31 +32,36 @@ turbo-frame id="main_frame"
 			.row
 		
 				.columns.six
-					label name
-					&text.u-full-width name="name" data-form-target="first_field" required="true" data-action="input->form-validator#validate" value=@object&.name
+					label for="name" name
+					&text#name.u-full-width[
+						name="name" 
+						required="true"
+						data-form-target="first_field" 
+						data-action="input->form-validator#validate" 
+						value=@object&.name
+					]
 				
 				.columns.six
-					label module
-					select.u-full-width name="module"
-						- PulpoModule.all.each do |mod|
-							option selected=(@object&.pulpo_module_id==mod.id) value=mod.id = mod.name
+					label for="module" module
+					select#module.u-full-width name="module"
+						- Pulpomodule.all.each do |mod|
+							option selected=(@object&.pulpomodule_id==mod.id) value=mod.id = mod.name
 			
 			.row		
-
 				.columns.nine
-					label description
-					&text.u-full-width name="description" value=@object&.description
+					label for="description" description
+					&text#description.u-full-width name="description" value=@object&.description
 
 				.columns.three
-					label page type
-					select.u-full-width name="singlepage"
+					label for="singlepage" page type
+					select#singlepage.u-full-width name="singlepage"
 						option selected=@object&.singlepage value="true" = "single page"
 						option selected=!@object&.singlepage value="false" = "multiple pages"
 
 			.row
 				.columns.six
-					label template path
-					&text.u-full-width name="path" disabled="true" data-template-file-target="path" value=@object&.path
+					label for="path" template path
+					&text#path.u-full-width name="path" disabled="true" data-template-file-target="path" value=@object&.path
 
 				
 				.columns.three
@@ -68,7 +75,8 @@ turbo-frame id="main_frame"
 						style="display:none" 
 						data-template-file-target="template_file" 
 						type="file" name="template" 
-						data-action="change->template-file#load_file"]
+						data-action="change->template-file#load_file"
+						]
 				
 				.columns.three
 					label &nbsp 
@@ -76,7 +84,7 @@ turbo-frame id="main_frame"
 						a.button.button-secondary.u-full-width[
 							data-template-file-target="view_btn" 
 							target="_blank" 
-							href=(@object&.path&.blank? ? "#" : "/document/#{@object.id}/viewtemplate")] = "view"
+							href=(@object&.path&.blank? ? "#" : "/#{model_name}/#{@object.id}/viewtemplate")] = "view"
 					
 			/----------------------------------------------------------------------------------------------------------------
 			/ ERROR FRAME
@@ -88,10 +96,12 @@ turbo-frame id="main_frame"
 			/ BUTTONS
 			/---------------------------------------------------------------------------------------------------------------
 
-			.row.flex-center.flex-columns
-				- if (@object&.can_be_deleted?)
-					button.button-secondary tabindex="-1" data-action="click->form#open_modal" delete  
-				button.button-primary type="submit" name="commit" value="save" data-form-validator-target="submit_btn" save  
-				a.button.button-secondary data-form-target="cancel_btn" formnovalidate="true" href="/documents" cancel
+			== partial :"elements/form_buttons", locals: {object: @object, table_name: table_name}
 
 			turbo-frame id="delete_modal" src = "/elements/delete_modal?object_type=document"
+
+			/----------------------------------------------------------------------------------------------------------------
+			/ DELETE CONFIRMATION MODAL FORM
+			/---------------------------------------------------------------------------------------------------------------
+			
+			== partial :"elements/delete_modal", locals: {model_name: model_name}

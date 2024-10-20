@@ -87,6 +87,7 @@ h4.matrix-settings-header:hover
   text-align: center;
   justify-content: center; 
   align-items: center;
+  margin: 0;
 }
 
 .flex-left {
@@ -343,6 +344,10 @@ a.button.no-border
   width:1200px;
 }
 
+.tiny-form {
+  max-width: 20rem
+}
+
 .small-form {
   max-width: 500px
 }
@@ -489,6 +494,11 @@ a.button.no-border
 }
 
 .table-row-body:hover {
+  background-color: var(--pale-blue);
+  color: initial;
+}
+
+.table-row-active {
   background-color: var(--pale-blue);
   color: initial;
 }
@@ -925,12 +935,11 @@ ALERTS
 
 .alert
 {
+  font-size: .8rem;
   background-color:var(--pale-blue);
   margin-bottom: 20px;
   font-weight: 400;
-  padding: 10px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding: 10 20 10 20;
   border-width: 1px;
   border-color: #dcdcdc;
   border-radius: 5px;
@@ -940,11 +949,28 @@ ALERTS
   transition: 1s;
 }
 
+.alert.alert-warning.hidden-alert {
+  visibility: hidden;
+  opacity: 0;
+  height: 0;
+  margin: 0;
+  border: 0;
+  padding: 0px 10px 0px 10px;
+  overflow: hidden;
+  transition: padding .5s linear, margin .7s linear, visibility 2s linear, opacity 1s linear, max-height 25s ease-out;
+}
+
 .alert.alert-warning {
+
   background: var(--medium-orange);
   border-color: var(--light-gray);
   visibility: visible;
+  height: fit-content;
+  transition: padding 0s, margin .5s linear, visibility .5s ease-in, height 10s ease-in, opacity 1s linear;
 }
+
+
+
 
 .alert.alert-notice {
   background:#e9f7fe;
@@ -1123,12 +1149,6 @@ div.modal-content h4
 
 .no-wrap {
   white-space: nowrap;
-}
-
-.hidden-alert {
-  visibility: hidden;
-  opacity: 0;
-  transition: visibility 1s, opacity 1s linear, height 10s ease-out;
 }
 
 

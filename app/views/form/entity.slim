@@ -8,18 +8,16 @@ turbo-frame id="main_frame"
 	- table_name = "entities"
 
 	/ Center the form in the screen and ajust its size.
-	.container.screen-box.small-form data-controller="form" 
+	.container.screen-box.tiny-form data-controller="form" 
 		
 		form[
 			action="/#{model_name}/#{(@object.nil? ? "new" : @object.id)}" 
 			method="POST"
 			data-controller="form-validator"
 			data-form-target="form"
-			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
+			data-action="keydown.ctrl+d@window->form#delete keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
 			]
 
-			input name="id" type="hidden" value= @object&.id
-	
 			/----------------------------------------------------------------------------------------------------------------
 			/ FORM HEADER
 			/----------------------------------------------------------------------------------------------------------------
@@ -31,41 +29,45 @@ turbo-frame id="main_frame"
 			/ FORM FIELDS
 			/----------------------------------------------------------------------------------------------------------------
 			
-			.row
-				
-				label name
-				&text.u-full-width name="name" data-form-target="first_field" required="true" autofocus="true" value=@object&.name 
+			fieldset data-form-target="fieldset"
 			
-				label sigla
-				&text.u-full-width name="sigla" required="true" data-action="input->form-validator#validate" value=@object&.sigla
+				.row
+					
+					label for="name" name
+					&text#name.u-full-width[
+						name="name" 
+						autocomplete="false" 
+						data-form-target="firstField" 
+						required="true" 
+						autofocus="true" 
+						value=@object&.name 
+						]
+				
+					label for="sigla" sigla
+					&text#sigla.u-full-width[
+						name="sigla" 
+						required="true" 
+						data-action="input->form-validator#validate" 
+						value=@object&.sigla]
 
-				label path
-				&text.u-full-width name="path" value=@object&.path
+					label for="path" path
+					&text#path.u-full-width name="path" value=@object&.path
 
 			/----------------------------------------------------------------------------------------------------------------
 			/ ERROR FRAME
 			/----------------------------------------------------------------------------------------------------------------		
+			
 			.row
-				.alert.alert-warning.u-full-width.hidden-alert data-form-validator-target="error_frame" = "alert message"
+				.hidden-alert.alert.alert-warning.u-full-width data-form-validator-target="errorFrame"
 
 			/----------------------------------------------------------------------------------------------------------------
 			/ BUTTONS
 			/---------------------------------------------------------------------------------------------------------------
 
-			.row.flex-center.flex-columns
-				- if (@object && (!(@object&.respond_to? :can_be_deleted?) || @object&.can_be_deleted?))
-					a.button.button-secondary data-keys-target="delete_btn" tabindex="-1" data-action="click->form#open_modal" delete  
-				
-				button.button-primary[
-					type="submit" 
-					name="commit" 
-					value="save"
-					data-form-target="submit_btn"] save  
-				
-				a.button.button-secondary formnovalidate="true" data-form-target="cancel_btn" href="/#{table_name}" cancel
+			== partial :"elements/form_buttons", locals: {object: @object, table_name: table_name}
 				
 			/----------------------------------------------------------------------------------------------------------------
 			/ DELETE CONFIRMATION MODAL FORM
 			/---------------------------------------------------------------------------------------------------------------
-
-			turbo-frame id="delete_modal" src = "/elements/delete_modal?object_type=#{model_name}"
+			
+			== partial :"elements/delete_modal", locals: {model_name: model_name}

@@ -92,9 +92,9 @@ class TableSettings
 			when :entities_default
 				@att = DEFAULT_ENTITIES_TABLE[:attributes]
 				@main_table = DEFAULT_ENTITIES_TABLE[:main_table]
-			when :pulpo_modules_default
-				@att = DEFAULT_PULPO_MODULES_TABLE[:attributes]
-				@main_table = DEFAULT_PULPO_MODULES_TABLE[:main_table]
+			when :pulpomodules_default
+				@att = DEFAULT_PULPOMODULES_TABLE[:attributes]
+				@main_table = DEFAULT_PULPOMODULES_TABLE[:main_table]
 			when :users_default
 				@att = DEFAULT_USERS_TABLE[:attributes]
 				@main_table = DEFAULT_USERS_TABLE[:main_table]
@@ -135,10 +135,10 @@ class TableSettings
 		attributes: SETTINGS_YAML["default_entities_table"]["attributes"].map {|att| ALL_ATTRIBUTES.find {|ta| ta.field==att }}
 	}
 
-	DEFAULT_PULPO_MODULES_TABLE =
+	DEFAULT_PULPOMODULES_TABLE =
 	{
-		main_table: SETTINGS_YAML["default_pulpo_modules_table"]["main_table"],
-		attributes: SETTINGS_YAML["default_pulpo_modules_table"]["attributes"].map {|att| ALL_ATTRIBUTES.find {|ta| ta.field==att }}
+		main_table: SETTINGS_YAML["default_pulpomodules_table"]["main_table"],
+		attributes: SETTINGS_YAML["default_pulpomodules_table"]["attributes"].map {|att| ALL_ATTRIBUTES.find {|ta| ta.field==att }}
 	}
 
 	DEFAULT_USERS_TABLE =

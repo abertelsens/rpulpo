@@ -113,10 +113,6 @@ get '/elements/navbar' do
 	partial :"elements/navbar"
 end
 
-get '/elements/delete_modal' do
-	@object_type = params[:object_type]
-	partial :"elements/delete_modal"
-end
 #---------------------------------------------------------------------------------------
 # LOGIN ROUTES
 #---------------------------------------------------------------------------------------

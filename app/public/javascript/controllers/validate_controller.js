@@ -8,7 +8,7 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
 
 Stimulus.register("validate", class extends Controller {
   
-  static targets = ["field", "error_frame", "submit_btn"]
+  static targets = ["field", "errorFrame", "submitButton"]
   warning_html = "<i class='fa-solid fa-triangle-exclamation'></i>"
   
   connect() {
@@ -44,11 +44,12 @@ Stimulus.register("validate", class extends Controller {
       //console.log(`got validation response: ${validation_data.result}`)
       if(!validation_data.result) {                          //there was a validation problem
         this.show_frame(this.error_frameTarget)
-        this.submit_btnTarget.disabled=true
-        this.error_frameTarget.innerHTML = `${this.warning_html} ${validation_data.message}`
+        this.submitButtonTarget.disabled=true
+        this.errorFrameTarget.innerHTML = `${this.warning_html} ${validation_data.message}`
       }
       else {
-        this.submit_btnTarget.disabled=false
+        this.submitButtonTarget.disabled=false
+        this.errorFrameTarget.innerHTML = ""
         this.hide_frame(this.error_frameTarget)
       }  
     }

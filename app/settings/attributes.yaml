@@ -252,17 +252,17 @@ attributes:
     type: "string"
     order: "NONE"
     css_class: "long-field"
-  - id: "pulpo_modules.identifier"
+  - id: "pulpomodules.identifier"
     name: "identifier"
     type: "string"
     order: "NONE"
     css_class: "medium-field"
-  - id: "pulpo_modules.name"
+  - id: "pulpomodules.name"
     name: "module"
     type: "string"
     order: "NONE"
     css_class: "medium-field"
-  - id: "pulpo_modules.description"
+  - id: "pulpomodules.description"
     name: "description"
     type: "string"
     order: "NONE"
@@ -333,12 +333,12 @@ default_entities_table:
     - entities.sigla
     - entities.name
     - entities.path
-default_pulpo_modules_table:
-  main_table: pulpo_modules
+default_pulpomodules_table:
+  main_table: pulpomodules
   attributes:
-    - pulpo_modules.identifier
-    - pulpo_modules.name
-    - pulpo_modules.description
+    - pulpomodules.identifier
+    - pulpomodules.name
+    - pulpomodules.description
 default_users_table:
   main_table: users
   attributes:
@@ -349,10 +349,10 @@ default_users_table:
 default_documents_table:
   main_table: documents
   related_tables:
-    - pulpo_modules
+    - pulpomodules
   attributes:
     - documents.name
-    - pulpo_modules.name
+    - pulpomodules.name
     - documents.description
     - documents.path
     

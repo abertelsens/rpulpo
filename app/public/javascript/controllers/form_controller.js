@@ -7,20 +7,21 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
 
 Stimulus.register("form", class extends Controller {
   
-  static targets = ["form", "modal", "submit_btn", "delete_btn", "cancel_btn", "first_field"]
+  static targets = ["form", "fieldset", "modal", "submitButton", "deleteButton", "cancelButton", "modalCancelButton", "firstField"]
   
   connect() {
     console.log("Stimulus Controller Connected: form");
   }
 
   enter(event) {
-    event.preventDefault()   
-    this.formTarget.requestSubmit();  
+    event.preventDefault()
+    console.log("subimitting form");
+    this.submitButtonTarget.click(); // if we submit the form directly the commit parameter will not be submitted
   }
 
   escape() {  
     if (this.modalTarget.classList.contains('hidden-frame')) {
-      this.cancel_btnTarget.click();
+      this.cancelButtonTarget.click();
     }
     else {
       this.close_modal();
@@ -28,7 +29,7 @@ Stimulus.register("form", class extends Controller {
   }
 
   delete() {   
-    this.delete_btnTarget.click();  
+    this.deleteButtonTarget.click();  
   }
 
   move_down()
@@ -40,11 +41,14 @@ Stimulus.register("form", class extends Controller {
     event.preventDefault();
     event.stopPropagation();
     this.modalTarget.classList.remove('hidden-frame')
+    this.fieldsetTarget.disabled=true
   }
   
   close_modal() {   
    this.modalTarget.classList.add('hidden-frame') 
-   this.first_fieldTarget.focus();
+   this.fieldsetTarget.disabled=false
+   this.firstFieldTarget.focus();
+   
   }  
 
 })
