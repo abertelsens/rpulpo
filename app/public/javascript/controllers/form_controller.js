@@ -15,6 +15,7 @@ Stimulus.register("form", class extends Controller {
 
   enter(event) {
     event.preventDefault()
+    event.stopPropagation();   
     console.log("subimitting form");
     this.submitButtonTarget.click(); // if we submit the form directly the commit parameter will not be submitted
   }
@@ -28,13 +29,10 @@ Stimulus.register("form", class extends Controller {
     }
   }
 
-  delete() {   
+  delete(event) {
+    event.preventDefault();
+    event.stopPropagation();   
     this.deleteButtonTarget.click();  
-  }
-
-  move_down()
-  {
-
   }
 
   open_modal(event) {

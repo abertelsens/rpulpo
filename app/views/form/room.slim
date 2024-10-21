@@ -12,9 +12,8 @@ turbo-frame id="main_frame"
 		form[
 			action="/#{model_name}/#{(@object.nil? ? "new" : @object.id)}" 
 			data-controller="modal keys" 
-			data-keys-target="form"
 			data-form-target="form"
-			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape" 
+			data-action="keydown.ctrl+d@window->form#delete keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
 			method="POST"]
 		
 		
@@ -42,14 +41,16 @@ turbo-frame id="main_frame"
 
 				.columns.six
 					label for="room" room name
-					&text#room.u-full-width name="room" data-form-target="first_field" value=@object&.room
+					&text#room.u-full-width name="room" data-form-target="firstField" value=@object&.room
 
 				.columns.six
 					label for="person_id" person
 					select#person_id.u-full-width name="person_id"
 						option selected=(@object&.person_id.blank?) value="" = "empty room"
 						- Person.all.order(family_name: :asc).each do |person|
-							option selected=(@object&.person_id==person.id) value=person.id = "#{person.family_name}, #{person.first_name}" 
+							option[
+								selected=(@object&.person_id==person.id) 
+								value=person.id] = "#{person.family_name}, #{person.first_name}" 
 
 				.columns.six
 					label for="phone" phone
@@ -82,7 +83,7 @@ turbo-frame id="main_frame"
 			/ ALERT FRAME
 			/ ----------------------------------------------------------------------------------
 			row
-				.hidden-alert.alert.alert-warning.u-full-width data-form-validator-target="error_frame"
+				.hidden-alert.alert.alert-warning.u-full-width data-form-validator-target="errorFrame"
 
 			/----------------------------------------------------------------------------------------------------------------
 			// DELELE CONFIRMATION MODAL FORM

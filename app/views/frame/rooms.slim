@@ -1,7 +1,18 @@
 turbo-frame id="main_frame" 
   
-  .container.container-frame data-controller="clipboard search" data-clipboard-tablename="rooms"
-    form.form-inline method="GET" action="/rooms/search" data-controller="search" data-turbo-frame="rooms_table" aria-label="Search" name="q" data-action="input->searchfield#submit"  
+  .container.container-frame[
+    data-controller="clipboard search frame" 
+    data-clipboard-tablename="rooms"
+  ]
+    
+    form.form-inline[
+      method="GET" action="/rooms/search" 
+      data-controller="search" 
+      data-turbo-frame="rooms_table" 
+      aria-label="Search" 
+      name="q" 
+      data-action="input->searchfield#submit"
+      ]
       
       .row.header-frame
         .columns.four.offset-by-five.u-text-center  
@@ -9,14 +20,32 @@ turbo-frame id="main_frame"
       
       .row
         .columns.four.offset-by-five.flex-center
-          input#search_string.u-full-width autofocus="autofocus" type="search" autocomplete="off" placeholder="search" aria-label="Search" name="q" data-action="input->search#submit" value=@rooms_query
+          input#search_string.u-full-width[
+          autofocus="autofocus" 
+          type="search" 
+          autocomplete="off" 
+          placeholder="search" 
+          aria-label="Search" 
+          name="q" 
+          data-action="input->search#submit" 
+          value=@rooms_query
+          ]
 
         .columns.two.flex-left  
-          a.button.button-primary.button-small href="/room/new" data-turbo-frame="editor_frame"
+          a.button.button-primary.button-small[
+            data-action="keydown.ctrl+enter@window->frame#add keydown.ctrl+a@window->frame#add"
+            title="ctr+a or ctr+enter"
+            href="/room/new" data-turbo-frame="editor_frame"
+          ]
             i.fa-solid.fa-plus 
-            |&nbspnew
+            |&nbspadd
           
-          a.button.button-success.button-small title="copies the results to the clipbard" style="width:6rem" data-clipboard-target="copybtn" data-action="click->clipboard#copy"
+          a.button.button-success.button-small[
+            title="copies the results to the clipbard" 
+            style="width:6rem" 
+            data-clipboard-target="copybtn" 
+            data-action="click->clipboard#copy"
+          ]
             i.fa-solid.fa-copy style="font-size:small"
             |&nbspcopy
           
@@ -24,7 +53,7 @@ turbo-frame id="main_frame"
             i.fa-solid.fa-table style="color:white; font-size:small"
             |&nbsp
 
-      .row
+      .row 
         .columns.three style="min-width:100px; padding-right:10px"
           div.table-container
             div.table-table.table-border  
@@ -34,7 +63,7 @@ turbo-frame id="main_frame"
                 div.table-cell-head.small-field = "total"
 
               - Room.get_rooms_count_by_house.each do |house|
-                a.table-row-body href="/rooms/house/#{house["room"]}" data-turbo-frame="rooms_table"
+                a.table-row-body href="/rooms/house/#{house["room"]}" tabindex=-1 data-turbo-frame="rooms_table"
                   div.table-cell-body.no-border = house["room"].humanize
                   div.table-cell-body.no-border.u-text-center = house["empty"]
                   div.table-cell-body.no-border.u-text-center = house["total"]

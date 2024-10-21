@@ -18,7 +18,7 @@
 
 # renders the documents frame
 get '/documents' do
-  partial :"frame/documents"
+  partial :"frame/simple_template",  locals: {title: "DOCUMENTS", model_name: "document", table_name: "documents" }
 end
 
 # renders the table of documents

@@ -3,18 +3,18 @@ turbo-frame id="main_frame"
   .container.container-frame data-controller="frame"
       
     .row.header-frame.u-text-center
-      h3 ENTITIES
+      h3 = title
       
     .row
-      turbo-frame id="entities_table" src="/entities/table"
+      turbo-frame id="#{table_name}_table" src="/#{table_name}/table"
 
     .row.u-text-center.margin-top
       a.button.button-primary[
         tabindex=-1
         data-frame-target="newButton"
-        data-action = "keydown.ctrl+enter@window->frame#new keydown.ctrl+n@window->frame#new"
-        href="/entity/new" 
-        data-turbo-frame="main_frame"
+        data-action = "keydown.ctrl+enter@window->frame#add keydown.ctrl+a@window->frame#add"
+        href="/#{model_name}/new" 
+        title="ctr+a or ctr+enter"
       ]
         i.fa-solid.fa-plus style="font-size:small"
-        |&nbspnew
+        |&nbspadd

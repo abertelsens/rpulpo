@@ -13,8 +13,9 @@ Stimulus.register("frame", class extends Controller {
     console.log("Stimulus Controller Connected: frame");
   }
 
-  new(event) {
+  add(event) {
     event.preventDefault();
+    event.stopPropagation();
     this.newButtonTarget.click();
   }
 

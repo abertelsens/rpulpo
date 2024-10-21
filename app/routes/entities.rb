@@ -18,7 +18,7 @@
 
 # renders the entities frame
 get '/entities' do
-	partial :"frame/entities"
+	partial :"frame/simple_template",  locals: {title: "ENTITIES", model_name: "entity", table_name: "entities" }
 end
 
 # renders the table of entities

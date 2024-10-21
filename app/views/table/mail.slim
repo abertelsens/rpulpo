@@ -1,6 +1,6 @@
 turbo-frame id="mails_table"
-  .table-container
-    .table-table  
+  .table-container data-controller="table" data-table-size-value=@objects.size
+    .table-table data-table-target="table" data-action="mouseover->table#mouseover keydown.down@window->table#down keydown.up@window->table#up keydown.esc@window->table#escape"
       .table-row-head
         .medium-field = "tipo"
         .medium-field = "fecha"
@@ -13,7 +13,17 @@ turbo-frame id="mails_table"
         .medium-field = "resp. en"
 
       - @objects.each.with_index do |object, index|
-        a.table-row-body.mail class=((@unread.include? object.id) ? "unread" : "") href="/mail/#{object.id}" data-turbo-frame="main_frame"  style="cursor:pointer;" class=(object.direction)
+        a.table-row-body.mail[
+          tabindex=-1
+          data-action="keydown.enter@window->table#enter" 
+          data-table-target="row" 
+          data-table-id="index" 
+          class=((@unread.include? object.id) ? "unread" : "") 
+          href="/mail/#{object.id}" 
+          data-turbo-frame="main_frame"  
+          style="cursor:pointer;" 
+          class=(object.direction)
+        ]
           div = object.direction
           div = object.date&.strftime('%d-%m-%y')
           div = object.protocol

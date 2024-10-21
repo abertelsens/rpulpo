@@ -9,7 +9,7 @@
 # renders the users frame
 get '/users' do
     @current_user = get_current_user
-    partial :"frame/users"
+    partial :"frame/simple_template",  locals: {title: "USERS", model_name: "user", table_name: "users" }
 end
 
 # renders the users table
