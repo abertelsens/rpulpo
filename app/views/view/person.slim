@@ -1,19 +1,31 @@
 turbo-frame id="main_frame"
+  
   - user_is_person = (@person.email!=nil && @person.email==@current_user.uname)
   
-  .container.screen-box.flex-columns.top-align
+  .container.screen-box.flex-columns.top-align[
+    data-controller="person-view" 
+    data-action="keydown.esc->person-view#escape \
+      keydown.ctrl+g->person-view#navigate \
+      keydown.ctrl+s->person-view#navigate \
+      keydown.ctrl+p->person-view#navigate \
+      keydown.ctrl+c->person-view#navigate \
+      keydown.ctrl+m->person-view#navigate"
+  ]
   
-    .columns.one.flex-rows
+    .columns.one.flex-rows 
   
       - if (@current_user.usertype!="guest"|| user_is_person)
-        a.button.link-button.u-full-width.no-padding href="/person/#{@person.id}/general" = "general"
+        a.button.link-button.u-full-width.no-padding[
+          data-person-view-target="module" 
+          href="/person/#{@person.id}/general"
+        ] = "general"
       
       - allowed_modules = @current_user.get_allowed_modules
       - allowed_modules_identifiers = allowed_modules.pluck(:identifier)
       - allowed_modules_ids = allowed_modules.pluck(:id)
       - ["study","personal","crs","matrix"].each do |mod|
         - if ( allowed_modules_identifiers.include?(mod) || user_is_person )
-          a.button.link-button.u-full-width.no-padding href="/person/#{@person.id}/#{mod}" = mod
+          a.button.link-button.u-full-width.no-padding data-person-view-target="module" href="/person/#{@person.id}/#{mod}" = "#{mod}"
       
     /----------------------------------------------------------------------------------------------------------------
     / PICTURE FRAME
@@ -62,7 +74,12 @@ turbo-frame id="main_frame"
           .columns.nine.offset-by-three.gray-label = "celebra #{@person.celebration_info}"
       
       .row.center-align
-        a.button.button-primary style="margin-top:40px" autofocus="true" tabindex="0" href="/people" OK
+        a.button.button-primary[
+          style="margin-top:40px" 
+          autofocus="true" 
+          tabindex="0" 
+          data-person-view-target="submitButton"
+          href="/people"] OK
 
     .columns.two
       .row
