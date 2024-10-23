@@ -78,7 +78,7 @@ end
 
 # prepares a text for the current mail entry
 get '/mail/:id/prepare_answer' do
-	@object : Mail.find(params[:id])
+	@object = Mail.find(params[:id])
 	puts "answer"
 	puts "------------------------------------------"
 	puts object.prepare_answer
