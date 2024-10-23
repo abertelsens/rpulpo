@@ -7,7 +7,7 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
 
 Stimulus.register("frame", class extends Controller {
   
-  static targets = ["newButton"]
+  static targets = ["newButton", "tableSettingsButton"]
   
   connect() {
     console.log("Stimulus Controller Connected: frame");
@@ -18,6 +18,13 @@ Stimulus.register("frame", class extends Controller {
     event.stopPropagation();
     this.newButtonTarget.click();
   }
+
+  table_settings(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.tableSettingsButtonTarget.click();
+  }
+
 
 })
     

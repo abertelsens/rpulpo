@@ -32,6 +32,7 @@ class Person < ActiveRecord::Base
 	has_one :personal, 					dependent: :destroy
 	has_one :study, 						dependent: :destroy
 	has_one :matrix, 						dependent: :destroy
+	has_one :permit, 						dependent: :destroy
 	has_many :tasks_available, 	:through => :matrix
 	has_one :room
 	has_many :turnos
@@ -126,6 +127,7 @@ class Person < ActiveRecord::Base
 			when "crs"              then (crs.nil? ? "" : crs[attribute.to_sym])
 			when "rooms"            then (room.nil? ? "" : room[attribute.to_sym])
 			when "matrices"    	    then (matrix.nil? ? "" : matrix[attribute.to_sym])
+			when "permits"    	    then (permit.nil? ? "" : permit[attribute.to_sym])
 		end
 		res = "" if (res.nil? || res.blank?)
 		puts Rainbow("\nPULPO: Warning! found nil while looking for #{attribute_string}").orange if res.nil?

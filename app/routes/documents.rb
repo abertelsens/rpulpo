@@ -24,7 +24,7 @@ end
 # renders the table of documents
 # @objects - the documents that will be shown in the table
 get '/documents/table' do
-  @table_settings = TableSettings.new(table: :documents_default)
+  @table_settings = TableSettings.get(:documents_default)
   @objects = Document.get_docs_of_user get_current_user
   partial :"table/simple_template"
   #partial :"table/documents"

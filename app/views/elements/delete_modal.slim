@@ -1,12 +1,31 @@
+/ A modal form confirming the delete action on an object
+
 .modal.hidden-frame data-form-target="modal" tabindex="1"
   .modal-content
     .row
+      
+      // header
       h4
         i.fa-solid.fa-triangle-exclamation
         |&nbspConfirm Delete
+    
+    //message
     .row.u-text-center.margin-top
       p  = "Are you sure you want to delete this #{model_name}? All related data will be erased."
       p = "This action cannot be undone!"
     .row.center-align.margin-top
-      button.button-danger formnovalidate="true" type="submit" name="commit" value="delete" delete 
-      a.button.button-secondary data-form-target="modalCancelButton" autofocus="true" data-action="click->form#close_modal" cancel	
+      
+      //delete button
+      button.button-danger[
+        formnovalidate="true" 
+        type="submit"
+        name="commit"
+        value="delete" 
+      ] delete 
+      
+      // cancel button
+      a.button.button-secondary[
+        data-form-target="modalCancelButton" 
+        autofocus="true" 
+        data-action="click->form#close_modal" 
+      ] cancel	

@@ -27,51 +27,53 @@ turbo-frame id="main_frame"
 			/----------------------------------------------------------------------------------------------------------------
 			//DOCUMENT FRAME
 			//----------------------------------------------------------------------------------------------------------------
-			.row
-		
-				.columns.four
-					label for="house" house
-					select#house.u-full-width name="house"
-						- Room.houses.each do |house|
-							option selected=(@object&.house==house[0]) value=house[0] = house[0].humanize
 			
-				.columns.two
-					label for="floor" floor
-					&text#floor.u-full-width name="floor" value=@object&.floor
-
-				.columns.six
-					label for="room" room name
-					&text#room.u-full-width name="room" data-form-target="firstField" value=@object&.room
-
-				.columns.six
-					label for="person_id" person
-					select#person_id.u-full-width name="person_id"
-						option selected=(@object&.person_id.blank?) value="" = "empty room"
-						- Person.all.order(family_name: :asc).each do |person|
-							option[
-								selected=(@object&.person_id==person.id) 
-								value=person.id] = "#{person.family_name}, #{person.first_name}" 
-
-				.columns.six
-					label for="phone" phone
-					&text#phone.u-full-width name="phone" value=@object&.phone
+			fieldset data-form-target="fieldset"
+				.row
 			
-			.row
-				.columns.four
-					label for="bed" bed
-					select#bed.u-full-width name="bed"
-						- Room.beds.each do |bed|
-							option selected=(@object&.bed==bed[0]) value=bed[0] = bed[0].humanize
+					.columns.four
+						label for="house" house
+						select#house.u-full-width name="house"
+							- Room.houses.each do |house|
+								option selected=(@object&.house==house[0]) value=house[0] = house[0].humanize
+				
+					.columns.two
+						label for="floor" floor
+						&text#floor.u-full-width name="floor" value=@object&.floor
 
-				.columns.four
-					label for="matress" matress
-					&text#matress.u-full-width name="matress" value=@object&.matress
+					.columns.six
+						label for="room" room name
+						&text#room.u-full-width name="room" data-form-target="firstField" value=@object&.room
 
-				.columns.four
-					label for="bathroom" bathroom
-					select#bathroom.u-full-width name="bathroom"
-						- Room.bathrooms.each do |bath|
-							option selected=(@object&.bathroom==bath[0]) value=bath[0] = bath[0].humanize
+					.columns.six
+						label for="person_id" person
+						select#person_id.u-full-width name="person_id"
+							option selected=(@object&.person_id.blank?) value="" = "empty room"
+							- Person.all.order(family_name: :asc).each do |person|
+								option[
+									selected=(@object&.person_id==person.id) 
+									value=person.id] = "#{person.family_name}, #{person.first_name}" 
+
+					.columns.six
+						label for="phone" phone
+						&text#phone.u-full-width name="phone" value=@object&.phone
+				
+				.row
+					.columns.four
+						label for="bed" bed
+						select#bed.u-full-width name="bed"
+							- Room.beds.each do |bed|
+								option selected=(@object&.bed==bed[0]) value=bed[0] = bed[0].humanize
+
+					.columns.four
+						label for="matress" matress
+						&text#matress.u-full-width name="matress" value=@object&.matress
+
+					.columns.four
+						label for="bathroom" bathroom
+						select#bathroom.u-full-width name="bathroom"
+							- Room.bathrooms.each do |bath|
+								option selected=(@object&.bathroom==bath[0]) value=bath[0] = bath[0].humanize
 
 			/-----------------------------------------------------------------------------------
 			/ BUTTONS

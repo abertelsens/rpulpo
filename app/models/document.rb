@@ -92,9 +92,9 @@ class Document < ActiveRecord::Base
 
 
 	def get_attribute(table_attribute)
-		case table_attribute.get_table_name
+		case table_attribute.table
 			when "documents" 			then self[table_attribute.to_sym]
-			when "pulpomodules" 	then pulpomodule[table_attribute.get_field_name.to_sym]
+			when "pulpomodules" 	then pulpomodule[table_attribute.field.to_sym]
 		end
 	end
 

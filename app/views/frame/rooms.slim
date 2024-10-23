@@ -7,11 +7,13 @@ turbo-frame id="main_frame"
     
     form.form-inline[
       method="GET" action="/rooms/search" 
+      type="search" 
       data-controller="search" 
       data-turbo-frame="rooms_table" 
-      aria-label="Search" 
-      name="q" 
-      data-action="input->searchfield#submit"
+      data-action="input->searchfield#submit \
+        keydown.ctrl+p@window->frame#table_settings \
+        keydown.ctrl+a@window->frame#add \
+        keydown.ctrl+c@window->clipboard#copy"
       ]
       
       .row.header-frame
@@ -21,7 +23,8 @@ turbo-frame id="main_frame"
       .row
         .columns.four.offset-by-five.flex-center
           input#search_string.u-full-width[
-          autofocus="autofocus" 
+          autofocus="autofocus"
+          tabindex="1" 
           type="search" 
           autocomplete="off" 
           placeholder="search" 
@@ -33,15 +36,16 @@ turbo-frame id="main_frame"
 
         .columns.two.flex-left  
           a.button.button-primary.button-small[
-            data-action="keydown.ctrl+enter@window->frame#add keydown.ctrl+a@window->frame#add"
+            data-frame-target="newButton"
             title="ctr+a or ctr+enter"
-            href="/room/new" data-turbo-frame="editor_frame"
+            href="/room/new" 
+            data-turbo-frame="editor_frame"
           ]
             i.fa-solid.fa-plus 
             |&nbspadd
           
           a.button.button-success.button-small[
-            title="copies the results to the clipbard" 
+            title="copies the results to the clipbard ctrl+c" 
             style="width:6rem" 
             data-clipboard-target="copybtn" 
             data-action="click->clipboard#copy"
@@ -49,7 +53,11 @@ turbo-frame id="main_frame"
             i.fa-solid.fa-copy style="font-size:small"
             |&nbspcopy
           
-          a.button.button-small.button-square href="/rooms/table/settings" data-turbo-frame="editor_frame"
+          a.button.button-small.button-square[
+            href="/rooms/table/settings" 
+            data-frame-target="tableSettingsButton" 
+            data-turbo-frame="editor_frame"
+          ]
             i.fa-solid.fa-table style="color:white; font-size:small"
             |&nbsp
 

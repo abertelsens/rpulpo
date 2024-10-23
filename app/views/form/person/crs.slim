@@ -4,10 +4,15 @@
 
 turbo-frame id="main_frame"
   	
-	form#personForm action="/person/#{@person.id}/crs" method="POST"
-	
-		.container.medium-form.screen-box
-			
+	.container.medium-form.screen-box data-controller="form" 
+		
+		form#personForm[
+			action="/person/#{@person.id}/crs" 
+			method="POST" 
+			data-form-target="form"
+			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
+		]
+
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM HEADER
 			//----------------------------------------------------------------------------------------------------------------
@@ -92,10 +97,29 @@ turbo-frame id="main_frame"
 				.columns.twelve
 					label for="notes" notes
 					textarea.u-full-width rows=3 name="notes" = @crs&.notes
-				/----------------------------------------------------------------------------------------------------------------
-				// FORM BUTTONS
-				//----------------------------------------------------------------------------------------------------------------
-			row.center-align
-				button#save_btn.button-primary autofocus="true" type="submit" name="commit" value="save" data-validate-target="submit_btn" save  
-				a.button.button-secondary formnovalidate="true" href=(@person ? "/person/#{@person.id}" : "/people") cancel 	
+				
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM BUTTONS
+			//----------------------------------------------------------------------------------------------------------------
+			.row.flex-center.flex-columns
+
+				button.button-primary[
+					type="submit"
+					tabindex="-1"  
+					name="commit" 
+					value="save"
+					data-form-target="submitButton"
+					title="ctrl+enter"
+					] save
+					
+				
+				a.button.button-secondary[
+					formnovalidate="true" 
+					tabindex="-1" 
+					data-form-target="cancelButton" 
+					href=(@person ? "/person/#{@person.id}" : "/people")
+					title="esc"
+					] cancel
+					
+
 				

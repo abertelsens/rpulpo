@@ -302,57 +302,194 @@ attributes:
     type: "string"
     order: "NONE"
     css_class: "long-field"
-default_people_table:
-  main_table: people
-  related_tables:
-    - personals
-    - studies
-    - crs
-    - rooms
-    - matrices
-  attributes:
-    - people.family_name
-    - people.first_name
-    - people.group
-    - people.clothes
-    - people.year
-    - people.email
-default_rooms_table:
-  main_table: rooms
-  related_tables:
-    - people
-  attributes:
-    - rooms.house
-    - rooms.room
-    - people.family_name
-    - people.first_name
-    - people.group
-default_entities_table:
-  main_table: entities
-  attributes:
-    - entities.sigla
-    - entities.name
-    - entities.path
-default_pulpomodules_table:
-  main_table: pulpomodules
-  attributes:
-    - pulpomodules.identifier
-    - pulpomodules.name
-    - pulpomodules.description
-default_users_table:
-  main_table: users
-  attributes:
-    - users.uname
-    - users.password
-    - users.usertype
-    - users.mail
-default_documents_table:
-  main_table: documents
-  related_tables:
-    - pulpomodules
-  attributes:
-    - documents.name
-    - pulpomodules.name
-    - documents.description
-    - documents.path
-    
+  - id: "permits.title"
+    name: "titolo"
+    type: "string"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.citizenship"
+    name: "cittadinanza"
+    type: "string"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.passport"
+    name: "passaporto"
+    type: "string"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.eu"
+    name: "UE"
+    type: "boolean"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.border"
+    name: "frontiera"
+    type: "date"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.expiry"
+    name: "scadenza"
+    type: "date"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.picked"
+    name: "ritirato"
+    type: "date"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.cf"
+    name: "CF"
+    type: "string"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.team"
+    name: "data team"
+    type: "date"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.ssn_registration"
+    name: "reg. ssn"
+    type: "date"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.ssn_expiry"
+    name: "scad. ssn"
+    type: "date"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.place"
+    name: "residente a"
+    type: "string"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.residence_letter"
+    name: "lettera capo conv."
+    type: "date"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.residence_registration"
+    name: "attestato sogg"
+    type: "date"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.residence_notes"
+    name: "oss. sogg"
+    type: "string"
+    order: "NONE"
+    css_class: "medium-field"
+  - id: "permits.passport_notes"
+    name: "oss. passaporto"
+    type: "string"
+    order: "NONE"
+    css_class: "medium-field"
+  - id: "permits.ssn_notes"
+    name: "oss. ssn"
+    type: "string"
+    order: "NONE"
+    css_class: "medium-field"
+  - id: "permits.permit_notes"
+    name: "oss. sogg"
+    type: "string"
+    order: "NONE"
+    css_class: "medium-field"
+  - id: "permits.first_permit"
+    name: "primo permesso"
+    type: "date"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.permit_certificate"
+    name: "attestato permesso"
+    type: "date"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.permanent_permit_certificate"
+    name: "attestato permesso perm"
+    type: "date"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.registry_cancellation"
+    name: "cancellazione anagrafe"
+    type: "date"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.id_num"
+    name: "num. carta id."
+    type: "string"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.id_expiry"
+    name: "scadenza carta"
+    type: "date"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.inspection"
+    name: "ispettorato"
+    type: "date"
+    order: "NONE"
+    css_class: "short-field"
+  - id: "permits.fingerprints"
+    name: "impronte"
+    type: "date"
+    order: "NONE"
+    css_class: "short-field"
+tables:
+  - people_default:
+    name: people_default
+    main_table: people
+    related_tables:
+      - personals
+      - studies
+      - crs
+      - rooms
+      - matrices
+      - permits
+    attributes:
+      - people.family_name
+      - people.first_name
+      - people.group
+      - people.clothes
+      - people.year
+      - people.email
+  - rooms_default:
+    name: rooms_default
+    main_table: rooms
+    related_tables:
+      - people
+    attributes:
+      - rooms.house
+      - rooms.room
+      - people.family_name
+      - people.first_name
+      - people.group
+  - entities_default:
+    name: entities_default
+    main_table: entities
+    attributes:
+      - entities.sigla
+      - entities.name
+      - entities.path
+  - pulpomodules_default:
+    name: pulpomodules_default
+    main_table: pulpomodules
+    attributes:
+      - pulpomodules.identifier
+      - pulpomodules.name
+      - pulpomodules.description
+  - users_default:
+    name: users_default
+    main_table: users
+    attributes:
+      - users.uname
+      - users.password
+      - users.usertype
+      - users.mail
+  - documents_default:
+    name: documents_default
+    main_table: documents
+    related_tables:
+      - pulpomodules
+    attributes:
+      - documents.name
+      - pulpomodules.name
+      - documents.description
+      - documents.path

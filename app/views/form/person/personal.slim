@@ -4,10 +4,14 @@
 
 turbo-frame id="main_frame"
   	
-	form action="/person/#{@person.id}/personal" method="POST"
+	.container.x-large-form.screen-box data-controller="form" 
 	
-		.container.x-large-form.screen-box
-			
+		form[
+			action="/person/#{@person.id}/personal" 
+			method="POST"
+			data-form-target="form"
+			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
+		]
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM HEADER
 			//----------------------------------------------------------------------------------------------------------------
@@ -96,11 +100,27 @@ turbo-frame id="main_frame"
 						<span class="tooltiptext">Ej: Tiene un hermano sacerdote diocesano y una hermana religiosa.</span>
 					&text.u-full-width name="notes" value=@personal&.notes
 		
-				/----------------------------------------------------------------------------------------------------------------
-				// FORM BUTTONS
-				//----------------------------------------------------------------------------------------------------------------
-			.row.center-align
-				button#save_btn.button-primary autofocus="true" type="submit" name="commit" value="save" data-validate-target="submit_btn" save 
-				a.button.button-secondary formnovalidate="true" href=(@person ? "/person/#{@person.id}" : "/people") cancel 	 
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM BUTTONS
+			//----------------------------------------------------------------------------------------------------------------
+			.row.flex-center.flex-columns
+
+				button.button-primary[
+					type="submit"
+					tabindex="-1"  
+					name="commit" 
+					value="save"
+					data-form-target="submitButton"
+					title="ctrl+enter"
+					] save
+					
+				
+				a.button.button-secondary[
+					formnovalidate="true" 
+					tabindex="-1" 
+					data-form-target="cancelButton" 
+					href=(@person ? "/person/#{@person.id}" : "/people")
+					title="esc"
+					] cancel	 
 
 		

@@ -28,8 +28,8 @@ Stimulus.register("people", class extends Controller {
   // of the main frame.
   add_person(event)
   {
+    console.log("adding person")
     event.preventDefault();
-    //Turbo.visit("/person/new/general", {frame: "main_frame"})
     let frame = document.querySelector("turbo-frame#main_frame")
     frame.src = "/person/new/general"
   }

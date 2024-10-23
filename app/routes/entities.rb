@@ -24,7 +24,7 @@ end
 # renders the table of entities
 # @objects - the entities that will be shown in the table
 get '/entities/table' do
-	@table_settings = TableSettings.new(table: :entities_default)
+	@table_settings = TableSettings.get(:entities_default)
 	@objects = Entity.all
 	partial :"table/simple_template"
 end

@@ -11,12 +11,13 @@ turbo-frame id="main_frame"
 	.container.screen-box.tiny-form data-controller="form" 
 		
 		form[
-			action="/#{model_name}/#{(@object.nil? ? "new" : @object.id)}" 
+			action="/#{model_name}/#{(@object.nil? ? "new" : @object.id)}"
 			method="POST"
 			data-controller="form-validator"
 			data-form-target="form"
-			data-action="keydown.ctrl+d@window->form#delete keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
-			]
+			data-action="keydown.ctrl+d@window->form#delete \
+				keydown.ctrl+enter@window->form#enter \
+				keydown.esc@window->form#escape"]
 
 			/----------------------------------------------------------------------------------------------------------------
 			/ FORM HEADER
@@ -35,23 +36,21 @@ turbo-frame id="main_frame"
 					
 					label for="name" name
 					&text#name.u-full-width[
-						name="name" 
 						autocomplete="false" 
 						data-form-target="firstField" 
-						required="true" 
-						autofocus="true" 
-						value=@object&.name 
-						]
+						required 
+						autofocus
+						value=@object&.name]
 				
+
 					label for="sigla" sigla
-					&text#sigla.u-full-width[
-						name="sigla" 
-						required="true" 
+					&text@sigla.u-full-width[
+						required
 						data-action="input->form-validator#validate" 
 						value=@object&.sigla]
 
 					label for="path" path
-					&text#path.u-full-width name="path" value=@object&.path
+					&text@path.u-full-width value=@object&.path
 
 			/----------------------------------------------------------------------------------------------------------------
 			/ ERROR FRAME

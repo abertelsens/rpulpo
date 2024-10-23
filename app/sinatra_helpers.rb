@@ -52,9 +52,9 @@ helpers do
 	def get_table_settings args
 		case args
 			when :people
-					@people_table_settings = session["people_table_settings"].nil? ? TableSettings.new(table: :people_default) : session["people_table_settings"]
+					@people_table_settings = session["people_table_settings"].nil? ? TableSettings.get(:people_default) : session["people_table_settings"]
 			when :rooms
-					@rooms_table_settings = session["rooms_table_settings"].nil? ? TableSettings.new(table: :rooms_default) : session["rooms_table_settings"]
+					@rooms_table_settings = session["rooms_table_settings"].nil? ? TableSettings.get(:rooms_default) : session["rooms_table_settings"]
 		end
 	end
 

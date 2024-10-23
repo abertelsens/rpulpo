@@ -76,6 +76,18 @@ get '/mail/assign_protocol' do
 end
 
 
+# prepares a text for the current mail entry
+get '/mail/:id/prepare_answer' do
+	@object : Mail.find(params[:id])
+	puts "answer"
+	puts "------------------------------------------"
+	puts object.prepare_answer
+	puts "------------------------------------------"
+
+	# partial :"form/mail"
+end
+
+
 # renders a single document view
 get '/mail/:id' do
 	@object = (params[:id]=="new" ? Mail.create_from_params() : Mail.find(params[:id]))

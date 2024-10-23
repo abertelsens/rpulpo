@@ -1,0 +1,196 @@
+/----------------------------------------------------------------------------------------------------------------
+/ FORM for an Entity
+/----------------------------------------------------------------------------------------------------------------
+
+turbo-frame id="main_frame"
+  
+	- model_name = "permit"
+	- table_name = "permits"
+
+	/ Center the form in the screen and ajust its size.
+	.container.screen-box.x-large-form data-controller="form" 
+		
+		form[
+			action="/person/#{@person.id}/#{model_name}"
+			method="POST"
+			data-controller="form-validator"
+			data-form-target="form"
+			data-action="keydown.ctrl+d@window->form#delete keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
+		]
+
+			/----------------------------------------------------------------------------------------------------------------
+			/ FORM HEADER
+			/----------------------------------------------------------------------------------------------------------------
+			
+			.row.u-text-center
+				h3 = "QUESTURA: #{@permit.person.short_name}"
+				
+			/----------------------------------------------------------------------------------------------------------------
+			/ FORM FIELDS
+			/----------------------------------------------------------------------------------------------------------------
+			//Data frontiera	Scadenza	RITIRATO	Codice Fiscale	Scadenza TEAM	data iscrizione SSN	scadenza iscrizione SSN	residente a	data lettera capo convivenza	data iscrizione convivenza	Data_attestato_reg_sogg	Data_attestato_sogg_permanente	Data_cancellazione_anagrafe	Num_carta_identita	Data_scad_carta_identita	data partenza prevista	osservazioni/ritorno	avvisato ritiro	data ispettorato	appuntamento impronte	consegna a interessato	osservazioni anagrafe	osservazioni passaporto	osservazioni PdS	osservazioni SSN	data primo permesso	UE
+
+			fieldset data-form-target="fieldset"
+				
+				&hidden name="permit_id" value=(@permit.nil? ? "new" : @permit.id)
+				&hidden name="id" value=@person.id
+
+				.row
+					.columns.one
+						label for="title" title
+						&text#title.u-full-width name="title" value=@permit&.title
+					
+					.columns.two
+						label for="citizenship" citizenship
+						&text#citizenship.u-full-width name="citizenship" value=@permit&.citizenship
+
+					.columns.two
+						label for="passport" passaporto
+						&text#passport.u-full-width name="passport" value=@permit&.passport
+					
+					.columns.two
+						label for="eu" UE
+						select#eu.u-full-width name="eu"
+							option value="true" selected=(@permit&.eu) europeo
+							option value="false" selected=(!@permit&.eu) no europeo
+					
+					.columns.two
+						label for="border" data frontiera
+						&date#border.u-full-width name="border" value=@permit&.border
+						//&date.u-full-width name="border" value=@permit&.border
+
+					.columns.three
+						label for="passport_notes" osservazioni passaporto
+						&text#passport_notes.u-full-width name="passport_notes" value=@permit&.passport_notes
+
+				.row
+
+					.columns.two
+						label for="place" residente a
+						&text#place.u-full-width name="place" value=@permit&.place
+					
+					.columns.two
+						label for="cf" codice fiscale
+						&text#cf.u-full-width name="cf" value=@permit&.cf
+				
+				.row
+
+					.columns.two
+						label for="residence_letter" lett. capo di convivenza
+						&date#residence_letter.u-full-width name="residence_letter" value=@permit&.residence_letter
+
+					.columns.two
+						label for="residence_registration" iscrizione convivenza
+						&date#residence_registration.u-full-width name="residence_registration" value=@permit&.residence_registration
+
+					.columns.two
+						label for="registry_cancellation" cancellazione anagrafe
+						&date#registry_cancellation.u-full-width name="registry_cancellation" value=@permit&.registry_cancellation
+
+					.columns.six
+						label for="residence_notes" osservazioni anagrafe
+						&text#residence_notes.u-full-width name="residence_notes" value=@permit&.residence_notes
+
+				
+				
+				.row
+					
+					.columns.two
+						label for="team" scadenza TEAM
+						&date#team.u-full-width name="team" value=@permit&.team
+
+					.columns.two
+						label for="ssn_registration" iscrizione SSN
+						&date#ssn_registration.u-full-width name="ssn_registration" value=@permit&.ssn_registration
+
+					.columns.two
+						label for="ssn_expiry" scadenza SSN
+						&date#ssn_expiry.u-full-width name="ssn_expiry" value=@permit&.ssn_expiry
+
+					.columns.six
+						label for="ssn_notes" osservazioni SSN
+						&text#ssn_notes.u-full-width name="ssn_notes" value=@permit&.ssn_notes
+
+				.row 
+					
+					.columns.two
+						label for="expiry" scadenza
+						&date#expiry.u-full-width name="expiry" value=@permit&.expiry
+
+					.columns.six.offset-by-two
+						label for="permit_notes" osservazioni permesso soggiorno
+						&text#permit_notes.u-full-width name="permit_notes" value=@permit&.permit_notes
+
+					//.columns.two
+					//	input#picked.u-full-width type="checkbox" value="true" name="expiry" selected=@permit&.picked
+					//	label for="picked" ritirato
+						
+				.row
+
+					.columns.two
+						label for="first_permit" primo perm. sogg.
+						&date#first_permit.u-full-width name="first_permit" value=@permit&.first_permit
+
+					.columns.two
+						label for="permit_certificate" attestato perme. sogg.
+						&date#permit_certificate.u-full-width name="permit_certificate" value=@permit&.permit_certificate
+
+					.columns.two
+						label for="permanent_permit_certificate" attestato sogg. permanente
+						&date#permanent_permit_certificate.u-full-width name="permanent_permit_certificate" value=@permit&.permanent_permit_certificate
+
+
+				.row
+
+					.columns.two
+						label for="id_num" num. carta identita
+						&text#id_num.u-full-width name="id_num" value=@permit&.id_num
+
+					.columns.two
+						label for="id_expiry" scadenza carta identita
+						&date#id_expiry.u-full-width name="id_expiry" value=@permit&.id_expiry
+
+					.columns.two
+						label for="inspection" ispettorato
+						&date#inspection.u-full-width name="inspection" value=@permit&.inspection
+
+					.columns.two
+						label for="fingerprints" impronte
+						&date#fingerprints.u-full-width name="fingerprints" value=@permit&.fingerprints
+
+
+			/----------------------------------------------------------------------------------------------------------------
+			/ ERROR FRAME
+			/----------------------------------------------------------------------------------------------------------------		
+			
+			.row
+				.hidden-alert.alert.alert-warning.u-full-width data-form-validator-target="errorFrame"
+
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM BUTTONS
+			//----------------------------------------------------------------------------------------------------------------
+			.row.flex-center.flex-columns
+
+				button.button-primary[
+					type="submit"
+					tabindex="-1"  
+					name="commit" 
+					value="save"
+					data-form-target="submitButton"
+					title="ctrl+enter"
+					] save
+					
+				
+				a.button.button-secondary[
+					formnovalidate="true" 
+					tabindex="-1" 
+					data-form-target="cancelButton" 
+					href=(@person ? "/person/#{@person.id}" : "/people")
+					title="esc"
+					] cancel
+
+			/----------------------------------------------------------------------------------------------------------------
+			/ DELETE CONFIRMATION MODAL FORM
+			/---------------------------------------------------------------------------------------------------------------
+			
+			== partial :"elements/delete_modal", locals: {model_name: model_name}

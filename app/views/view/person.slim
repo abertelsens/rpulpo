@@ -3,6 +3,7 @@ turbo-frame id="main_frame"
   - user_is_person = (@person.email!=nil && @person.email==@current_user.uname)
   
   .container.screen-box.flex-columns.top-align[
+    style="gap:1rem"
     data-controller="person-view" 
     data-action="keydown.esc->person-view#escape \
       keydown.ctrl+g->person-view#navigate \
@@ -12,26 +13,28 @@ turbo-frame id="main_frame"
       keydown.ctrl+m->person-view#navigate"
   ]
   
-    .columns.one.flex-rows 
-  
+    
+    div style="max-width: 8rem"
       - if (@current_user.usertype!="guest"|| user_is_person)
         a.button.link-button.u-full-width.no-padding[
           data-person-view-target="module" 
           href="/person/#{@person.id}/general"
+          title="ctrl+g"
         ] = "general"
       
       - allowed_modules = @current_user.get_allowed_modules
       - allowed_modules_identifiers = allowed_modules.pluck(:identifier)
       - allowed_modules_ids = allowed_modules.pluck(:id)
-      - ["study","personal","crs","matrix"].each do |mod|
+      - ["study","personal","crs","matrix","permit"].each do |mod|
         - if ( allowed_modules_identifiers.include?(mod) || user_is_person )
-          a.button.link-button.u-full-width.no-padding data-person-view-target="module" href="/person/#{@person.id}/#{mod}" = "#{mod}"
-      
+          a.button.link-button.u-full-width.no-padding data-person-view-target="module" title="ctrl+#{mod[0]}" href="/person/#{@person.id}/#{mod}" = "#{mod}"
+        - else 
+          p not allowed
     /----------------------------------------------------------------------------------------------------------------
     / PICTURE FRAME
     /----------------------------------------------------------------------------------------------------------------
 
-    .columns.two.u-text-center
+    div style="max-width: 15rem"
       - if @person && File.exist?("app/public/photos/#{@person.id}.jpg")
 				img.person-photo.medium id="photo_image" src= "photos/#{@person.id}.jpg"
       - else
@@ -41,8 +44,7 @@ turbo-frame id="main_frame"
     /GENERAL FRAME
     /----------------------------------------------------------------------------------------------------------------
 
-    .columns.three
-      .row
+    div style="min-width: 25rem"
         
       .row
         h3.u-text-center.no-margin style="margin-bottom:0px" = "#{@person.short_name}"
@@ -75,13 +77,13 @@ turbo-frame id="main_frame"
       
       .row.center-align
         a.button.button-primary[
-          style="margin-top:40px" 
+          style="margin-top:40px; padding-left:4rem; padding-right:4rem"
           autofocus="true" 
           tabindex="0" 
           data-person-view-target="submitButton"
           href="/people"] OK
 
-    .columns.two
+    div style="min-width: 15rem"
       .row
         h5.margin-bottom = "DOCUMENTS"
       - (Document.get_pdf_docs_of_modules allowed_modules_ids).each do |doc|

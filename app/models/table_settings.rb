@@ -3,23 +3,26 @@
 # FILE INFO
 
 # autor: alejandrobertelsen@gmail.com
-# last major update: 2024-08-25
+# last major update: 2024-10-22
 #---------------------------------------------------------------------------------------
 
-#---------------------------------------------------------------------------------------
-# DESCRIPTION
-# A class defining a the settings of a table used to view query results
-# -----------------------------------------------------------------------------------------
 
 require_relative '../utils/pulpo_query'
 require 'yaml'
 require 'rainbow'
 
+#---------------------------------------------------------------------------------------
+
+# DESCRIPTION
+# A class defining a the settings of fild.
+# -----------------------------------------------------------------------------------------
 class TableAttribute
 
-	attr_accessor :table, :field, :order, :css_class, :type, :name
+	# name: the name to be displayed as the header in the table. It does not need to martch the field name.
+	attr_accessor :name, :table, :field, :order, :css_class, :type
 
 	def initialize(table, field, name, order, css_class, type)
+		puts "initializing attribute #{field}"
 		@table = table
 		@field = field
 		@name = name
@@ -35,24 +38,17 @@ class TableAttribute
 		order = att_yaml["order"]
 		css_class = att_yaml["css_class"]
 		type = att_yaml["type"]
-		return TableAttribute.new(table, field, name, order, css_class, type)
+		TableAttribute.new(table, field, name, order, css_class, type)
+	end
+
+
+	def get_field_name
+		field.split(".")[1]
 	end
 
 	def set_order(order)
 		@order = order
 		return self
-	end
-
-	def get_table_name()
-		field.split(".")[0]
-	end
-
-	def get_module_name()
-		field.split(".")[0].classify.downcase
-	end
-
-	def get_field_name()
-		field.split(".")[1]
 	end
 
 end #class end
@@ -67,93 +63,36 @@ end #class end
 # main table is people while rooms will be a related table.
 class TableSettings
 
-	attr_accessor :att, :main_table, :related_tables
+	attr_accessor :name, :att, :main_table, :related_tables
 
 	# the path of a yaml file specifying the table settings
 	SETTINGS_FILE_PATH = "app/settings/attributes.yaml"
+
 	print Rainbow("PULPO: Loading Tables Settings from config file: #{SETTINGS_FILE_PATH} ... ").yellow
 	SETTINGS_YAML = YAML.load_file(SETTINGS_FILE_PATH)
 
-	# initializes the table settings with a ser
-	def initialize(args)	# an array containing the attributtes to be shown in the table
-		#puts "initializing table #{args[:table]}"
-		case args[:table]
-			when :people_default
-				@att = DEFAULT_PEOPLE_TABLE[:attributes]
-				@main_table = DEFAULT_PEOPLE_TABLE[:main_table]
-				@related_tables = DEFAULT_PEOPLE_TABLE[:related_tables]
-			when :rooms_default
-				@att = DEFAULT_ROOMS_TABLE[:attributes]
-				@main_table = DEFAULT_ROOMS_TABLE[:main_table]
-				@related_tables = DEFAULT_ROOMS_TABLE[:related_tables]
-			when :people_all
-				@att = ALL_PEOPLE_TABLE[:attributes]
-				@main_table = ALL_PEOPLE_TABLE[:main_table]
-			when :entities_default
-				@att = DEFAULT_ENTITIES_TABLE[:attributes]
-				@main_table = DEFAULT_ENTITIES_TABLE[:main_table]
-			when :pulpomodules_default
-				@att = DEFAULT_PULPOMODULES_TABLE[:attributes]
-				@main_table = DEFAULT_PULPOMODULES_TABLE[:main_table]
-			when :users_default
-				@att = DEFAULT_USERS_TABLE[:attributes]
-				@main_table = DEFAULT_USERS_TABLE[:main_table]
-			when :documents_default
-				@att = DEFAULT_DOCUMENTS_TABLE[:attributes]
-				@main_table = DEFAULT_DOCUMENTS_TABLE[:main_table]
-			else
-				@att = args[:attributes]
-				@main_table = args[:main_table]
-				@related_tables = args[:related_tables]
-			end
-		#puts Rainbow("initialized table settings with attributes: #{@att} and main_table: #{@main_table} ").yellow
+	def initialize(arguments)
+		@name = arguments[:name]
+		@main_table = arguments[:main_table]
+		@related_tables = arguments[:related_tables]
+		@att = arguments[:attributes]
 	end
 
-	ALL_ATTRIBUTES = SETTINGS_YAML["attributes"].map {|att| TableAttribute.create_from_yaml att}
-	ALL_PEOPLE_TABLE =
-	{
-		main_table: "people",
-		attributes: ALL_ATTRIBUTES
-	}
-	DEFAULT_PEOPLE_TABLE =
-	{
-		main_table: SETTINGS_YAML["default_people_table"]["main_table"],
-		related_tables: SETTINGS_YAML["default_people_table"]["related_tables"],
-		attributes: SETTINGS_YAML["default_people_table"]["attributes"].map {|att| ALL_ATTRIBUTES.find {|ta| ta.field==att }}
-	}
+	# creates a table from a yaml definition
+	def self.create_from_yaml(yaml_definition)
+		TableSettings.new (
+			{
+				name: 					yaml_definition["name"],
+				attributes: 		yaml_definition["attributes"].map {|att| ALL_ATTRIBUTES.find {|ta| ta.field==att } },
+				main_table: 		yaml_definition["main_table"],
+				related_tables: yaml_definition["related_tables"]
+			})
+	end
 
-	DEFAULT_ROOMS_TABLE =
-	{
-		main_table: SETTINGS_YAML["default_rooms_table"]["main_table"],
-		related_tables: SETTINGS_YAML["default_rooms_table"]["related_tables"],
-		attributes: SETTINGS_YAML["default_rooms_table"]["attributes"].map {|att| ALL_ATTRIBUTES.find {|ta| ta.field==att }}
-	}
+	def self.get(table_symb)
+		ALL_TABLES.find {|ts| ts.name.to_sym == table_symb}
+	end
 
-	DEFAULT_ENTITIES_TABLE =
-	{
-		main_table: SETTINGS_YAML["default_entities_table"]["main_table"],
-		attributes: SETTINGS_YAML["default_entities_table"]["attributes"].map {|att| ALL_ATTRIBUTES.find {|ta| ta.field==att }}
-	}
-
-	DEFAULT_PULPOMODULES_TABLE =
-	{
-		main_table: SETTINGS_YAML["default_pulpomodules_table"]["main_table"],
-		attributes: SETTINGS_YAML["default_pulpomodules_table"]["attributes"].map {|att| ALL_ATTRIBUTES.find {|ta| ta.field==att }}
-	}
-
-	DEFAULT_USERS_TABLE =
-	{
-		main_table: SETTINGS_YAML["default_users_table"]["main_table"],
-		attributes: SETTINGS_YAML["default_users_table"]["attributes"].map {|att| ALL_ATTRIBUTES.find {|ta| ta.field==att }}
-	}
-
-	DEFAULT_DOCUMENTS_TABLE =
-	{
-		main_table: SETTINGS_YAML["default_documents_table"]["main_table"],
-		attributes: SETTINGS_YAML["default_documents_table"]["attributes"].map {|att| ALL_ATTRIBUTES.find {|ta| ta.field==att }}
-	}
-
-	puts Rainbow("done!").yellow
 
 	def self.get_all_attributes
 		return ALL_ATTRIBUTES
@@ -181,6 +120,7 @@ class TableSettings
 	def get_field(field)
 		return @att.find{|a| a.field==field}
 	end
+
 
 	def get_names
 		return @att.map{|a| a.name}
@@ -227,11 +167,21 @@ class TableSettings
 		end
 
 		related_tables = case table
-			when "people" then DEFAULT_PEOPLE_TABLE[:related_tables]
-			when "rooms"  then DEFAULT_ROOMS_TABLE[:related_tables]
+			when "people" then TableSettings.get(:people_default).related_tables
+			when "rooms"  then TableSettings.get(:rooms_default).related_tables
 		end
 
-		TableSettings.new(main_table: table, attributes: attributes, related_tables: related_tables)
+		TableSettings.new(name: name, main_table: table, attributes: attributes, related_tables: related_tables)
 	end
+
+	ALL_ATTRIBUTES = SETTINGS_YAML["attributes"].map {|att| TableAttribute.create_from_yaml att}
+	PEOPLE_ALL = TableSettings.new(name: "people_all", main_table: "people", attributes: ALL_ATTRIBUTES)
+
+	puts PEOPLE_ALL.related_tables
+
+	ALL_TABLES = SETTINGS_YAML["tables"].map {|t| (TableSettings.create_from_yaml t)}
+	ALL_TABLES << PEOPLE_ALL
+
+	puts Rainbow("done!").yellow
 
 end #class end

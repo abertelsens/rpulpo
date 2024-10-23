@@ -4,165 +4,208 @@
 // to load the image once it is selected
 /*****************************************************************************************************
 turbo-frame id="main_frame"
-  	
-	form#personForm[ 
-		action="/person/#{@person ? @person.id : "new"}/general" 
-		enctype="multipart/form-data" 
-		method="POST" 
-		data-controller="keys modal attachment" 
-		data-keys-target="form"
-		data-action="keydown.enter@window->keys#enter"
-		data-attachment-target="form"]
-	
-		.container.x-large-form.screen-box
-			
+
+	- model_name = "person"
+	- table_name = "people"
+
+	.container.x-large-form.screen-box data-controller="form" 
+
+		form#personForm[ 
+			action="/#{model_name}/#{@person ? @person.id : "new"}/general" 
+			enctype="multipart/form-data" 
+			method="POST" 
+			data-controller="keys modal attachment" 
+			data-keys-target="form"
+			data-action="keydown.ctrl+d@window->form#delete keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
+			data-attachment-target="form"]
+		
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM HEADER
 			//----------------------------------------------------------------------------------------------------------------
-			.row				
-				.columns.ten.offset-by-one.u-text-center
-					
-					// Image of the Person
-					input [
-						accept = ".jpg"
-						type = "file"	
-						style="display:none"
-						name = "photo_file"
-						data-attachment-target = "photo_file"
-						data-attachment-id-param = (@person ? @person.id : "")
-						data-action = "change->attachment#load_image" ]
-					     
-						- if (@person && File.exist?("app/public/photos/#{@person.id}.jpg"))
-							img.person-photo.small [
-								src = "photos/#{@person.id}.jpg" 
-								data-attachment-target = "photo_image" 
-								data-attachment-id-param = @person.id 
-								data-action = "click->attachment#select_image" ]
+			fieldset data-form-target="fieldset"
+
+				.row				
+					.columns.ten.offset-by-one.u-text-center
 						
-						- else
-							img.person-photo.small [
-								src = "photos/avatar.jpg" 
-								data-attachment-target = "photo_image" 
-								data-attachment-id-param = (@person ? @person.id : "") 
-								data-action="click->attachment#select_image" ]
-
-					h3 = (@person ? @person.short_name : "Nueva Ficha")
+						// Image of the Person
+						input [
+							accept = ".jpg"
+							type = "file"	
+							style="display:none"
+							name = "photo_file"
+							data-attachment-target = "photo_file"
+							data-attachment-id-param = (@person ? @person.id : "")
+							data-action = "change->attachment#load_image" ]
 								
-			/----------------------------------------------------------------------------------------------------------------
-			// FIELDS
-			//----------------------------------------------------------------------------------------------------------------
-			.row	
-				
-				.columns.two
-					label.tooltip for="title" título
-						<i class="fa-sharp fa-regular fa-circle-question"></i>
-						<span class="tooltiptext">Ej: D., Fr.</span>
-					&text.u-full-width name="title" value=@person&.title
-				
-				.columns.three
-					label for="name" nombre
-					&text.u-full-width name="first_name" required="true" value=@person&.first_name data-validate-target="field" data-action="input->validate#validate"					
-				
-				.columns.three
-					label for="family_name" apellidos
-					&text.u-full-width name="family_name" required="true" value=@person&.family_name data-validate-target="field" data-action="input->validate#validate"
-				
-				.columns.four
-					label for="short_name" nombre completo (forma breve)
-					&text.u-full-width name="short_name" required="true" value=@person&.short_name
-				
-				
-			.row	
-				.columns.one
-					label.tooltip for="status" sacd
-						<i class="fa-sharp fa-regular fa-circle-question"></i>
-						<span class="tooltiptext">(sacerdote, laico o diácono)</span>
-					select.u-full-width name="status"
-						- Person.statuses.each do |st| 
-							option selected=(@person&.status==st[0]) value=st[0] = st[0]
-				
-				.columns.one
-					label.tooltip for="n_agd" n/agd 
-						<i class="fa-sharp fa-regular fa-circle-question"></i>
-						<span class="tooltiptext">(numerario o agregado)</span>
-					select.u-full-width name="n_agd"
-						- Person.n_agds.each do |st| 
-							option selected=(@person&.n_agd==st[0]) value=st[0] = st[0]
-				 
-				.columns.two
-					label for="ctr" ctr
-					select.u-full-width name="ctr"
-						- Person.ctrs.each do |st| 
-							option selected=(@person&.ctr==st[0]) value=st[0] = st[0].humanize(capitalize: false) 
-				 
-				
-				.columns.one
-					label.tooltip for="group" grupo 
-						<i class="fa-sharp fa-regular fa-circle-question"></i>
-						<span class="tooltiptext">(1, 2, 3, 4, dir)</span>
-					&text.u-full-width name="group" value=@person&.group
-				
-				.columns.one
-					label.tooltip for="año" año
-						<i class="fa-sharp fa-regular fa-circle-question"></i>
-						<span class="tooltiptext">(1, 2, 3, 4, ...)</span>
-					&text.u-full-width name="year" value=@person&.year
-			
-				.columns.one
-					label.tooltip for="ropa" ropa
-						<i class="fa-sharp fa-regular fa-circle-question"></i>
-						<span class="tooltiptext">(número de ropa)</span>
-					&text.u-full-width name="clothes" value=@person&.clothes
-				
-				.columns.two
-					label.tooltip for="telephone" phone
-						<i class="fa-sharp fa-regular fa-circle-question"></i>
-						<span class="tooltiptext">Ej: +9725425901051</span>
-					&text.u-full-width name="phone" value=@person&.phone
-				
-				.columns.three
-					label for="email" email
-					&email.u-full-width name="email" value=@person&.email
-		
-			.row	
-				
-				.columns.two
-					label for="birth" fecha cumpleaños
-					&date.u-full-width name="birth" value=@person&.birth
-				
-				.columns.two
-					label for="arrival" fecha de llegada
-					&date.u-full-width name="arrival" value=@person&.arrival
-				
-				.columns.two
-					label for="departure" fecha de salida
-					&date.u-full-width name="departure" value=@person&.departure
-				
-				.columns.five
-					label.tooltip for="celebration_info" celebración
-						<i class="fa-sharp fa-regular fa-circle-question"></i>
-						<span class="tooltiptext">Ej: Celebra su (santo, cumpleaños) el 15.08</span>
-					&text.u-full-width name="celebration_info" value=@person&.celebration_info
-				
-				.columns.one 
-				label alumno
-				select name="student"
-					option selected=@person&.student value="true" sí
-					option selected=!@person&.student value="false" no
-		
-			/----------------------------------------------------------------------------------------------------------------
-			// FORM BUTTONS
-			//----------------------------------------------------------------------------------------------------------------
-			
-			row.center-align
-				- if (!@person.nil?) 
-					button.button-secondary data-action="click->modal#open_modal" delete
-				
-				button.button-primary autofocus="true" type="submit" data-validate-target="submit_btn" name="commit" value="save" save  
-				a.button.button-secondary formnovalidate="true" href=(@person ? "/person/#{@person.id}" : "/people") cancel
+							- if (@person && File.exist?("app/public/photos/#{@person.id}.jpg"))
+								img.person-photo.small [
+									src = "photos/#{@person.id}.jpg" 
+									data-attachment-target = "photo_image" 
+									data-attachment-id-param = @person.id 
+									data-action = "click->attachment#select_image" ]
+							
+							- else
+								img.person-photo.small [
+									src = "photos/avatar.jpg" 
+									data-attachment-target = "photo_image" 
+									data-attachment-id-param = (@person ? @person.id : "") 
+									data-action="click->attachment#select_image" ]
 
-			/----------------------------------------------------------------------------------------------------------------
-			// DELETE CONFIRMATION MODAL FORM
-			//----------------------------------------------------------------------------------------------------------------
+						h3 = (@person ? @person.short_name : "Nueva Ficha")
+									
+				/----------------------------------------------------------------------------------------------------------------
+				// FIELDS
+				//----------------------------------------------------------------------------------------------------------------
+				.row	
+					
+					.columns.two
+						label.tooltip for="title" título
+							<i class="fa-sharp fa-regular fa-circle-question"></i>
+							<span class="tooltiptext">Ej: D., Fr.</span>
+						&text.u-full-width name="title" value=@person&.title
+					
+					.columns.three
+						label for="name" nombre
+						&text.u-full-width[
+							data-form-target="firstField"
+							name="first_name"
+							required="true"
+							value=@person&.first_name
+							data-validate-target="field"
+							data-action="input->validate#validate"
+						]			
+					
+					.columns.three
+						label for="family_name" apellidos
+						&text.u-full-width[
+							name="family_name"
+							required="true"
+							value=@person&.family_name
+							data-validate-target="field"
+							data-action="input->validate#validate"
+						]
+					
+					.columns.four
+						label for="short_name" nombre completo (forma breve)
+						&text.u-full-width name="short_name" required="true" value=@person&.short_name
+					
+					
+				.row	
+					.columns.one
+						label.tooltip for="status" sacd
+							<i class="fa-sharp fa-regular fa-circle-question"></i>
+							<span class="tooltiptext">(sacerdote, laico o diácono)</span>
+						select.u-full-width name="status"
+							- Person.statuses.each do |st| 
+								option selected=(@person&.status==st[0]) value=st[0] = st[0]
+					
+					.columns.one
+						label.tooltip for="n_agd" n/agd 
+							<i class="fa-sharp fa-regular fa-circle-question"></i>
+							<span class="tooltiptext">(numerario o agregado)</span>
+						select.u-full-width name="n_agd"
+							- Person.n_agds.each do |st| 
+								option selected=(@person&.n_agd==st[0]) value=st[0] = st[0]
+					
+					.columns.two
+						label for="ctr" ctr
+						select.u-full-width name="ctr"
+							- Person.ctrs.each do |st| 
+								option selected=(@person&.ctr==st[0]) value=st[0] = st[0].humanize(capitalize: false) 
+					
+					
+					.columns.one
+						label.tooltip for="group" grupo 
+							<i class="fa-sharp fa-regular fa-circle-question"></i>
+							<span class="tooltiptext">(1, 2, 3, 4, dir)</span>
+						&text.u-full-width name="group" value=@person&.group
+					
+					.columns.one
+						label.tooltip for="año" año
+							<i class="fa-sharp fa-regular fa-circle-question"></i>
+							<span class="tooltiptext">(1, 2, 3, 4, ...)</span>
+						&text.u-full-width name="year" value=@person&.year
+				
+					.columns.one
+						label.tooltip for="ropa" ropa
+							<i class="fa-sharp fa-regular fa-circle-question"></i>
+							<span class="tooltiptext">(número de ropa)</span>
+						&text.u-full-width name="clothes" value=@person&.clothes
+					
+					.columns.two
+						label.tooltip for="telephone" phone
+							<i class="fa-sharp fa-regular fa-circle-question"></i>
+							<span class="tooltiptext">Ej: +9725425901051</span>
+						&text.u-full-width name="phone" value=@person&.phone
+					
+					.columns.three
+						label for="email" email
+						&email.u-full-width name="email" value=@person&.email
 			
-			turbo-frame id="delete_modal" src = "/elements/delete_modal?object_type=person"
+				.row	
+					
+					.columns.two
+						label for="birth" fecha cumpleaños
+						&date.u-full-width name="birth" value=@person&.birth
+					
+					.columns.two
+						label for="arrival" fecha de llegada
+						&date.u-full-width name="arrival" value=@person&.arrival
+					
+					.columns.two
+						label for="departure" fecha de salida
+						&date.u-full-width name="departure" value=@person&.departure
+					
+					.columns.five
+						label.tooltip for="celebration_info" celebración
+							<i class="fa-sharp fa-regular fa-circle-question"></i>
+							<span class="tooltiptext">Ej: Celebra su (santo, cumpleaños) el 15.08</span>
+						&text.u-full-width name="celebration_info" value=@person&.celebration_info
+					
+					.columns.one 
+					label alumno
+					select name="student"
+						option selected=@person&.student value="true" sí
+						option selected=!@person&.student value="false" no
+			
+			/----------------------------------------------------------------------------------------------------------------
+			/ BUTTONS
+			/---------------------------------------------------------------------------------------------------------------
+
+			.row.flex-center.flex-columns
+				
+				- if (@person && (!(@person.respond_to? :can_be_deleted?) || @persson&.can_be_deleted?))
+					a.button.button-secondary[
+						data-keys-target="deleteButton" 
+						tabindex="-1" 
+						data-form-target="deleteButton"
+						data-action="click->form#open_modal"
+						title="ctrl+d"
+						] delete  
+				
+				button.button-primary[
+					type="submit"
+					tabindex="-1"  
+					name="commit" 
+					value="save"
+					data-form-target="submitButton"
+					data-form-validator-target="submitButton"
+					title="ctrl+enter"
+					] save
+					
+				
+				a.button.button-secondary[
+					formnovalidate="true" 
+					tabindex="-1" 
+					data-form-target="cancelButton" 
+					href=(@person ? "/person/#{@person.id}" : "/people")
+					title="esc"
+					] cancel
+				
+			/----------------------------------------------------------------------------------------------------------------
+			/ DELETE CONFIRMATION MODAL FORM
+			/---------------------------------------------------------------------------------------------------------------
+			
+			== partial :"elements/delete_modal", locals: {model_name: model_name}
+			
+			

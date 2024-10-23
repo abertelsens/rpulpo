@@ -37,11 +37,11 @@ turbo-frame id="main_frame"
 				.columns.six.u-text-left
 					h4.u-text-center = "USER DATA"
 							
-					label for="uuname" user name
+					label for="uname" user name
 					&text#uname.u-full-width[
 						name="uname" 
 						required="true" 
-						data-form-target="first_field" 
+						data-form-target="firstField" 
 						value=@object&.uname 
 						data-action="input->form-validator#validate"
 					]

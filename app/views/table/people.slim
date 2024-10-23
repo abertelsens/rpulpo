@@ -6,7 +6,7 @@ turbo-frame id="people_table" data-turbo-frame="person_view"
           div class=sett.css_class style="pointer-events: none" = sett.name.humanize(capitalize: false)  
       - @objects.each.with_index do |object, index|  
         a.table-row-body[
-          href="/person/#{object.id}" 
+          href="/person/#{object.id}"
           tabindex=-1
           data-action="keydown.enter@window->table#enter" 
           data-table-target="row" 

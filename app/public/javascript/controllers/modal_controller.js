@@ -7,7 +7,7 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
 
 Stimulus.register("modal", class extends Controller {
   
-  static targets = ["form", "modal", "first_field"]
+  static targets = ["form", "modal", "firstField"]
   
   connect() {
     console.log("Stimulus Controller Connected: modal");
@@ -15,15 +15,16 @@ Stimulus.register("modal", class extends Controller {
 
   open_modal(event) {    
     event.preventDefault();
+    event.stopPropagation();
     this.modalTarget.style.display="block";
-    this.formTarget.setAttribute("data-action", ""); 
+    if(this.hasFormTarget) { this.formTarget.setAttribute("data-action", ""); }
     this.modalTarget.setAttribute("data-action", "keydown.esc@window->modal#close_modal"); 
   }
   close_modal(event) {    
     this.modalTarget.setAttribute("data-action", "");
-    this.formTarget.setAttribute("data-action", "keydown.esc@window->keys#escape");  
+    if(this.hasFormTarget) { this.formTarget.setAttribute("data-action", "keydown.esc@window->keys#escape"); } 
     this.modalTarget.style.display="none";
-    this.first_fieldTarget.focus();
+    if(this.hasFirstFieldTarget) { this.firstFieldTarget.focus(); } 
   }  
 })
     

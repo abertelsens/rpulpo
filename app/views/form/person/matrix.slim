@@ -3,13 +3,16 @@
 /*****************************************************************************************
 
 turbo-frame id="main_frame"
-  	
-	form[
-		action="/person/#{@person.id}/matrix"
-		method="POST"] 
-	 
-		.container.medium-form.screen-box
-			
+
+	.container.medium-form.screen-box data-controller="form"
+	  	
+		form[
+			action="/person/#{@person.id}/matrix"
+			method="POST"
+			data-form-target="form"
+			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
+		] 
+		
 			/-----------------------------------------------------------------------------------
 			/ FORM HEADER
 			/-----------------------------------------------------------------------------------
@@ -55,7 +58,26 @@ turbo-frame id="main_frame"
 					
 					
 			
-			.row style="display: flex; justify-content: center; margin-top:60px"
-				button#save_btn.button-primary.margin-right autofocus="true" type="submit" name="commit" value="save" save  
-				a.button.button-secondary formnovalidate="true" href="/person/#{@person.id}" cancel 	
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM BUTTONS
+			//----------------------------------------------------------------------------------------------------------------
+			.row.flex-center.flex-columns
+
+				button.button-primary[
+					type="submit"
+					tabindex="-1"  
+					name="commit" 
+					value="save"
+					data-form-target="submitButton"
+					title="ctrl+enter"
+					] save
+					
+				
+				a.button.button-secondary[
+					formnovalidate="true" 
+					tabindex="-1" 
+					data-form-target="cancelButton" 
+					href=(@person ? "/person/#{@person.id}" : "/people")
+					title="esc"
+					] cancel
 				

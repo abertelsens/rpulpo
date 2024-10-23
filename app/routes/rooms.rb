@@ -28,7 +28,6 @@ get '/rooms/clipboard/copy' do
   get_last_query :rooms
 	@objects = Room.search @rooms_query, @rooms_table_settings
 	export_string = Room.collection_to_csv @objects,  @rooms_table_settings
-	Clipboard.copy export_string
 	{result: true, data: export_string}.to_json
 end
 
@@ -77,6 +76,7 @@ end
 get '/rooms/table/settings' do
 	@current_user = get_current_user
 	get_table_settings :rooms
+	puts "\n\n\ngot table settings #{@rooms_table_settings.inspect}\n\n\n"
 	@table_settings = @rooms_table_settings
 	partial :"form/table_settings"
 end

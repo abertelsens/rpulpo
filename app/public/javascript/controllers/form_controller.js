@@ -21,6 +21,10 @@ Stimulus.register("form", class extends Controller {
   }
 
   escape() {  
+    if (!this.hasModalTarget) {
+      this.cancelButtonTarget.click();
+      return;
+    }
     if (this.modalTarget.classList.contains('hidden-frame')) {
       this.cancelButtonTarget.click();
     }

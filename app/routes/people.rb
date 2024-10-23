@@ -63,9 +63,13 @@ get '/person/:id/:module' do
 	@current_user = get_current_user()
 	@person = (params[:id]=="new" ? nil : Person.find(params[:id]))
 	case params[:module]
-		when "personal" then @personal = Personal.find_by(person_id: @person.id)
-		when "study" 		then @study = Study.find_by(person_id: @person.id)
-		when "crs" 			then @crs = Crs.find_by(person_id: @person.id)
+		when "personal" 	then @personal = Personal.find_by(person_id: @person.id)
+		when "study" 			then @study = Study.find_by(person_id: @person.id)
+		when "crs" 				then @crs = Crs.find_by(person_id: @person.id)
+		when "permit"
+			@permit = Permit.find_by(person_id: @person.id)
+			puts "found @permit #{@permit}"
+			@permit = Permit.create(person: @person) unless @permit
 		when "matrix"
 			@matrix = Matrix.find_by(person_id: @person.id)
 			@tasks_available = @matrix.nil? ? [] : @matrix.tasks_available.pluck(:task_id)

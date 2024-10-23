@@ -11,7 +11,7 @@ get '/pulpomodules' do
 end
 
 get '/pulpomodules/table' do
-	@table_settings = TableSettings.new(table: :pulpomodules_default)
+	@table_settings = TableSettings.get(:pulpomodules_default)
 	@objects = Pulpomodule.all
 	partial :"table/simple_template"
 end

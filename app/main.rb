@@ -88,7 +88,15 @@ SINATRA_LOG_LEVEL = 2
 Slim::Engine.disable_option_validator!
 
 # define some options for slim that help us to write some cleaner templates.
-Slim::Engine.set_options shortcut: {'&' => {tag: 'input', attr: 'type'}, '#' => {attr: 'id'}, '.' => {attr: 'class'}}
+Slim::Engine.set_options shortcut:
+	{
+		'&' => {tag: 'input', attr: 'type'},
+		'#' => {attr: 'id'},
+		'.' => {attr: 'class'},
+		'@' => {attr: ['id', 'name']},
+	}
+
+	{}
 set :partial_template_engine, :slim
 
 #---------------------------------------------------------------------------------------

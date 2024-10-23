@@ -3,105 +3,139 @@
 /*****************************************************************************************************
 
 turbo-frame id="main_frame"
-  	
+  
+	- model_name = "mail"
+	- table_name = "mails"
+
 	javascript:
 		new SlimSelect({ select: '#multiple', settings: {showSearch: false, placeholderText: 'select users'} })
 	
 
-	form id="mail_form" action="/mail/#{(@object.nil? ? "new" : @object.id)}" method="POST" data-controller="modal mailform" data-mailform-target="form" data-validate-objectname="mail"
+	form id="mail_form" action="/mail/#{(@object.nil? ? "new" : @object.id)}" method="POST" data-controller="form mailform" data-mailform-target="form" data-validate-objectname="mail" data-action="keydown.ctrl+d@window->form#delete keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
 		
 		
 		input.u-full-width name="id" type="hidden" data-mailform-target="mailid" data-validate-target="field" value=(@object ? @object.id : "new")
 		
 		// Center the container
 		.container
-			 
-			/----------------------------------------------------------------------------------------------------------------
-			// FORM HEADER
-			//----------------------------------------------------------------------------------------------------------------
-			.row.u-text-center
-				h3 data-mailform-target="formtitle" style="margin-bottom:0px" = (@object.nil? ? "NUEVO CORREO" : "CORREO: #{@object.protocol}")
 				
-			.row
-				/----------------------------------------------------------------------------------------------------------------
-				// USER DATA COLUMN
-				//----------------------------------------------------------------------------------------------------------------	
-				.columns.two.offset-by-one style="padding-right:3rem"
-					.row
-						.columns.twelve
-							label protocol
-							&text.u-full-width name="protocol" required="true" data-mailform-target="protocol" data-action="change->mailform#update_protocol" value=@object&.protocol
-					
-					
-					.row
-						.columns.twelve
-							label fecha
-							&date.u-full-width name="date" required="true" value=(@object.nil? ? Date.today : @object&.date)
-					
-					.row
-						.columns.twelve
-							label referencias
-							&text.u-full-width name="references" data-mailform-target="references" data-action="change->mailform#update_references" value=(@object.nil? ? "" : @object&.refs_string)
+			fieldset data-form-target="fieldset"
 
-					.row
-						.columns.twelve
-							label respuesta en:
-							&text.u-full-width name="answers" data-mailform-target="answers" data-action="change->mailform#update_answers" value=(@object.nil? ? "" : @object&.ans_string)
+				/----------------------------------------------------------------------------------------------------------------
+				// FORM HEADER
+				//----------------------------------------------------------------------------------------------------------------
+				.row.u-text-center
+					h3 data-mailform-target="formtitle" style="margin-bottom:0px" = (@object.nil? ? "NUEVO CORREO" : "CORREO: #{@object.protocol}")
 					
-					.row
-						.columns.twelve
-							.alert.alert-warning.hidden-frame data-mailform-target="references_alert"
-							.alert.alert-warning.hidden-frame data-mailform-target="protocol_alert"
-							.alert.alert-warning.hidden-frame data-mailform-target="answers_alert"
-					
-				.columns.six
-					.row
-						label asunto
-						- if @object&.topic.blank?
-							&text.u-full-width name="topic" required="true" value=@object&.topic data-mailform-target="topic"
-						- else
-							.columns.ten
-								&text.u-full-width name="topic" required="true" readonly=true value=@object&.topic data-mailform-target="topic"
-							.columns.two
-								a.u-full-width.button data-mailform-target="topicbtn" data-action="click->mailform#toggletopic" edit
-					.row
-						.columns.twelve
-							turbo-frame data-mailform-target="documentlinksframe" id="document-links-frame" data-turbo-frame="related_files_frame" loading="lazy" src="/mail/#{@object.id}/document_links"
-					
-				.columns.two  style="padding-left:3rem"
-					.row
-						- assigned_users = @object&.assigned_users.pluck(:id)
-						label assigned to 
-						select.u-full-width id="multiple" data-mailform-target="assigned" name="assigned[]" multiple=true
-							- User.where(mail: true).each do |u|
-								option selected=(!u.nil? && (!assigned_users.nil? && (assigned_users.include? u.id))) value="#{u.id}"= u.uname				
+				.row
+					/----------------------------------------------------------------------------------------------------------------
+					// USER DATA COLUMN
+					//----------------------------------------------------------------------------------------------------------------	
+					.columns.two.offset-by-one style="padding-right:3rem"
+						.row
+							.columns.twelve
+								label protocol
+								&text.u-full-width data-form-target="firstField" name="protocol" required="true" data-mailform-target="protocol" data-action="change->mailform#update_protocol" value=@object&.protocol
 						
-					
-					.row.margin-top
-						button.button-success.u-full-width.no-margin data-action="click->mailform#send_files_to_user"
-							i.fa-solid.fa-paper-plane
-							|&nbspenviar a mi balda
-					
-					.row.margin-top
-							label status:
-							select.u-full-width name="mail_status" 
-								- Mail.mail_statuses.each do |st|
-									option selected=(st[0]==@object&.mail_status) value=st[0] = st[0].humanize.downcase
-					
+						.row
+							.columns.twelve
+								label fecha
+								&date.u-full-width name="date" required="true" value=(@object.nil? ? Date.today : @object&.date)
+						
+						.row
+							.columns.twelve
+								label referencias
+								&text.u-full-width name="references" data-mailform-target="references" data-action="change->mailform#update_references" value=(@object.nil? ? "" : @object&.refs_string)
+
+						.row
+							.columns.twelve
+								label respuesta en:
+								&text.u-full-width name="answers" data-mailform-target="answers" data-action="change->mailform#update_answers" value=(@object.nil? ? "" : @object&.ans_string)
+						
+						.row
+							.columns.twelve
+								.alert.alert-warning.hidden-frame data-mailform-target="references_alert"
+								.alert.alert-warning.hidden-frame data-mailform-target="protocol_alert"
+								.alert.alert-warning.hidden-frame data-mailform-target="answers_alert"
+						
+					.columns.six
+						.row
+							label asunto
+							- if @object&.topic.blank?
+								&text.u-full-width name="topic" required="true" value=@object&.topic data-mailform-target="topic"
+							- else
+								.columns.ten
+									&text.u-full-width name="topic" required="true" readonly=true value=@object&.topic data-mailform-target="topic"
+								.columns.two
+									a.u-full-width.button data-mailform-target="topicbtn" data-action="click->mailform#toggletopic" edit
+						.row
+							.columns.twelve
+								turbo-frame data-mailform-target="documentlinksframe" id="document-links-frame" data-turbo-frame="related_files_frame" loading="lazy" src="/mail/#{@object.id}/document_links"
+						
+					.columns.two  style="padding-left:3rem"
+						.row
+							- assigned_users = @object&.assigned_users.pluck(:id)
+							label assigned to 
+							select.u-full-width id="multiple" data-mailform-target="assigned" name="assigned[]" multiple=true
+								- User.where(mail: true).each do |u|
+									option selected=(!u.nil? && (!assigned_users.nil? && (assigned_users.include? u.id))) value="#{u.id}"= u.uname				
+							
+						
+						.row.margin-top
+							button.button-success.u-full-width.no-margin data-action="click->mailform#send_files_to_user"
+								i.fa-solid.fa-paper-plane
+								|&nbspenviar a mi balda
+						
+						.row.margin-top
+								label status:
+								select.u-full-width name="mail_status" 
+									- Mail.mail_statuses.each do |st|
+										option selected=(st[0]==@object&.mail_status) value=st[0] = st[0].humanize.downcase
+
+								a.button href="/mail/#{@object.id}/prepare_answer" target="_blank" prepare text
+						
 		
 			/----------------------------------------------------------------------------------------------------------------
 			// BUTTONS
 			//---------------------------------------------------------------------------------------------------------------
-			.row.center-align.margin-top
-				- if (@object&.can_be_deleted?)
-					button.button-secondary data-action="click->modal#open_modal" delete  
-				button.button-primary type="submit" name="commit" value="save" data-mailform-target="submit_btn" Done  
-	
+			.row.flex-center.flex-columns
+				
+				a.button.button-secondary[
+					data-keys-target="deleteButton" 
+					tabindex="-1" 
+					data-form-target="deleteButton"
+					data-action="click->form#open_modal"
+					title="ctrl+d"
+				] delete  
+				
+				button.button-primary[
+					type="submit"
+					tabindex="-1"
+					name="commit" 
+					value="save"
+					data-form-target="submitButton"
+					data-mailform-target="submit_btn"
+					data-form-validator-target="submitButton"
+					title="ctrl+enter"
+				] save
+					
+				
+				a.button.button-secondary[
+					formnovalidate="true" 
+					tabindex="-1" 
+					data-form-target="cancelButton" 
+					href="/#{table_name}"
+					title="esc"
+					] cancel
+				
+				 
+      
 	
 			/----------------------------------------------------------------------------------------------------------------
 			// MODALS
 			//---------------------------------------------------------------------------------------------------------------
-			turbo-frame id="delete_modal" src = "/elements/delete_modal?object_type=entry"
+			
+			== partial :"elements/delete_modal", locals: {model_name: "mail"}
 
 
 			

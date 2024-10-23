@@ -11,6 +11,7 @@ turbo-frame id="main_frame" data-people-target="people_screen"
       aria-label="Search" 
       name="q" 
       data-action="input->search#submit 
+        keydown.ctrl+t@window->frame#table_settings 
         keydown.ctrl+p@window->modal#open_modal 
         keydown.esc@window->modal#close_modal 
         keydown.ctrl+c@window->clipboard#copy 
@@ -24,7 +25,6 @@ turbo-frame id="main_frame" data-people-target="people_screen"
       .row
 
         .columns.two.offset-by-two.flex-right style="vertical-align:bottom"
-          - puts "got people filter in slim $$#{@people_filter}$$"
           select.no-margin name="filter" 
             option selected=(@people_filter=="cb") value="cb" = "search in cavabianca"
             option selected=(@people_filter=="") value="" = "search all"
@@ -32,18 +32,41 @@ turbo-frame id="main_frame" data-people-target="people_screen"
         // SEARCH FIELD
     
         .columns.four.flex-center
-          input#search_string.u-full-width  isTrusted="true" autofocus="autofocus" type="search" data-people-target="search_field" autocomplete="off" placeholder="search" aria-label="Search" name="q" data-action="input->search#submit" value=@people_query
+          input#search_string.u-full-width[
+            data-form-target="firstField" 
+            isTrusted="true" 
+            autofocus="autofocus" 
+            type="search" 
+            data-people-target="search_field" 
+            autocomplete="off" 
+            placeholder="search" 
+            aria-label="Search" 
+            name="q" 
+            data-action="input->search#submit" 
+            value=@people_query
+            ]
 
         
         // BUTTONS
         .columns.three.flex-left
           - if @current_user.usertype!="guest"  
-            a.button.button-primary.button-small title="adds a new person to the database (ctrl+a)" href="/person/new/general" data-turbo-frame="editor_frame"
+            a.button.button-primary.button-small[
+              title="adds a new person to the database (ctrl+a)" 
+              href="/person/new/general" 
+              data-turbo-frame="editor_frame"
+            ]
               i.fa-solid.fa-plus style="font-size:small"
               |&nbspadd
             
+            
           
-            a.button.button-success.button-small isTrusted="true" title="(ctrl+c)" style="width:6rem" data-clipboard-target="copybtn" data-action="click->clipboard#copy"
+            a.button.button-success.button-small[
+              isTrusted="true" 
+              title="(ctrl+c)" 
+              style="width:6rem" 
+              data-clipboard-target="copybtn" 
+              data-action="click->clipboard#copy"
+            ]
               i.fa-solid.fa-copy style="font-size:small"
               |&nbspcopy
 
@@ -68,7 +91,7 @@ turbo-frame id="main_frame" data-people-target="people_screen"
                   .table-row-head
                     div ACTIONS
                   .table-row-body   
-                    a.table-cell-body.menu-link href="/people/table/settings" data-turbo-frame="editor_frame" Edit Table Columns
+                    a.table-cell-body.menu-link data-frame-target="tableSettingsButton" href="/people/table/settings" data-turbo-frame="editor_frame" Edit Table Columns
                   - if @current_user.usertype!="guest"  
                     .table-row-body 
                       a.table-cell-body.menu-link href="/people/edit_field" Edit Field Value
@@ -78,7 +101,7 @@ turbo-frame id="main_frame" data-people-target="people_screen"
 
 
       .row
-        .modal.hidden-frame data-clipboard-target="modal" 
+        .modal.hidden-frame data-clipboard-target="modal" data-modal-target="modal" 
           .modal-content.u-text-center
             h5.u-text-center = "Data to copy"
             textarea#copy_field.modal-copy-area isTrusted="true" rows="4" cols="20" data-clipboard-target="copyfield"

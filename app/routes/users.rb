@@ -14,7 +14,7 @@ end
 
 # renders the users table
 get '/users/table' do
-  @table_settings = TableSettings.new(table: :users_default)
+  @table_settings = TableSettings.get(:users_default)
   @objects = User.all
   partial :"table/simple_template"
 end
