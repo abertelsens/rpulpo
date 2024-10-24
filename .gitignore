@@ -9,5 +9,4 @@ schema_db
 .DS_Store
 
 *.pdf
-*.docx
 *.typ

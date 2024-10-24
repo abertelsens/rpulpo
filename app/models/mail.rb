@@ -297,7 +297,7 @@ class Mail < ActiveRecord::Base
 					</style>\n"
 
 		# add the signature boxes
-		html = "<table><tr><td>#{users[0]}<br>»</td><td>#{users[1]}<br>»</td><td>#{users[2]}<br>»</td><td><br>»</td><td><br>»</td></tr></table>\n"
+		html = css << "<table><tr><td>#{users[0]}<br>»</td><td>#{users[1]}<br>»</td><td>#{users[2]}<br>»</td><td><br>»</td><td><br>»</td></tr></table>\n"
 		html << "<h2>Asunto: #{topic}</h2>\n"
 
 		# add the references
@@ -309,7 +309,7 @@ class Mail < ActiveRecord::Base
 		references_string = refs.empty? ? "" : "Ref. #{refs_string}"
 		header = "<p>#{references_string}     #{protocol}</p>"
 		body = "<ol><li><p>Agradecemos...<p></li></ol>"
-		footer = "<p><div custom-style=\"protocol\">Roma, #{Time.now.strftime("%d-%m-%y")}</div></p>"
+		footer = "<p>Roma, #{Time.now.strftime("%d-%m-%y")}</p>"
 		html << header << body << footer
 	end
 
