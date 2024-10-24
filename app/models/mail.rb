@@ -293,7 +293,7 @@ class Mail < ActiveRecord::Base
 		users = ["r", "sect", "vr"] if user.uname=="rector"
 
 		css = "<style>
-					table {border: 1px solid black; border-collapse: collapse; ; width:100%}\n
+					table {border: 1px solid black; border-collapse: collapse; width:100%}\n
 					</style>\n"
 
 		# add the signature boxes
