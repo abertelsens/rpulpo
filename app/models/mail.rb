@@ -11,14 +11,15 @@
 
 # A class defining a mail object
 # -----------------------------------------------------------------------------------------
+TAB = "\u0009".encode('utf-8')
 
 class Mail < ActiveRecord::Base
 
 	BASE_DIR= "app/public"
 	BALDAS_BAS_DIR = "/mnt/sect/CORREO-CG/BALDAS"
-	BALDAS_BAS_DIR = "L:/Usuarios/sect/CORREO-CG/BALDAS"
+	#BALDAS_BAS_DIR = "L:/Usuarios/sect/CORREO-CG/BALDAS"
 	BASE_PATH = "/mnt/sect"
-	BASE_PATH = "L:/Usuarios/sect"
+	#BASE_PATH = "L:/Usuarios/sect"
 	CRSC = "crs+"
 	DEFAULT_PROTOCOL = "crs+ XX/XX"
 
@@ -45,7 +46,7 @@ class Mail < ActiveRecord::Base
 	# after a mail object is created we add it to the unreadmails table to each one of the
 	# mail users
 	after_create :mark_as_unread
-		
+
 # -----------------------------------------------------------------------------------------
 # CRUD
 # -----------------------------------------------------------------------------------------
@@ -228,7 +229,7 @@ class Mail < ActiveRecord::Base
 	end
 
 	# finds all the related files of the mail
-	# @returs [[mailfile]]: an array of mailfiles objects mailfile 
+	# @returs [[mailfile]]: an array of mailfiles objects mailfile
 	def find_related_files()
 		protocol_num = protocol[0..-4].delete("^0-9").to_i
 		begin
@@ -286,36 +287,35 @@ class Mail < ActiveRecord::Base
 		mail_status
 	end
 
-	def prepare_answer(user)
-		users = ["sect", "vr", "r"] if user.uname="sect"
-		users = ["vr", "sect", "r"] if user.uname="vice"
-		users = ["r", "sect", "vr"] if user.uname="rector"
+	def prepare_text(user)
+		users = ["sect", "vr", "r"] if user.uname=="sect"
+		users = ["vr", "sect", "r"] if user.uname=="vice"
+		users = ["r", "sect", "vr"] if user.uname=="rector"
 
 		css = "<style>
 					table {border: 1px solid black; border-collapse: collapse; ; width:100%}\n
 					</style>\n"
-		
+
 		# add the signature boxes
-		html = css << "<table><tr><td>#{users[0]}<br>»</td><td>#{users[1]}<br>»</td><td>#{users[2]}<br>»</td><td><br>>></td><td><br>»</td></tr></table>\n"
+		html = "<table><tr><td>#{users[0]}<br>»</td><td>#{users[1]}<br>»</td><td>#{users[2]}<br>»</td><td><br>»</td><td><br>»</td></tr></table>\n"
 		html << "<h2>Asunto: #{topic}</h2>\n"
-		
+
 		# add the references
 		html << "<h2>Antecedentes:</h2>\n"
-		html << refs.inject { |res,ref| res << "<blockquote>#{ref.mail2html}</blockquote>" } unless refs.nil?
-		#refs.each do |ref|
-		html << "<br>-----------<br>"
-		#end
+		html = refs.inject(html){ |res,ref| (res << "<blockquote>#{ref.mail2html}</blockquote>\n") } unless refs.nil?
+		html << "- - -<br>"
+
 		# the header of the draft. It includes the references and the protocol
-		references_string = refs.nil? ? "" : "Ref. #{refs_string}"
-		header = "<table><tr><td>#{references_string}</td><td><div custom-style=\"protocol\">#{protocol}</div></td></tr></table>"
-		body = "<ol><li></li></ol>"
+		references_string = refs.empty? ? "" : "Ref. #{refs_string}"
+		header = "<p>#{references_string}     #{protocol}</p>"
+		body = "<ol><li><p>Agradecemos...<p></li></ol>"
 		footer = "<p><div custom-style=\"protocol\">Roma, #{Time.now.strftime("%d-%m-%y")}</div></p>"
 		html << header << body << footer
 	end
 
 	# provides an html text of the files related to the mail object.
 	def mail2html
-		"<h3>#{protocol}</h3>\n" << find_related_files.inject {|res, mf| res << mf.get_html_contents << "\n"} 
+			find_related_files.inject("<h3>#{protocol}</h3>\n"){|res, mf|  (res << (mf.get_html_contents) << "\n") }
 	end
 
 	def self.search(params)

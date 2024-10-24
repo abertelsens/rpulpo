@@ -1,0 +1,21 @@
+! Unable to load application: NameError: undefined local variable or method `logger' for main:Object
+H:/docs/GitHub/rpulpo/app/main.rb:174:in `<top (required)>': undefined local variable or method `logger' for main:Object (NameError)
+
+logger.info "PULPO: admin #{User.admins[0].to_s}"
+^^^^^^
+	from <internal:C:/Ruby32-x64/lib/ruby/site_ruby/3.2.0/rubygems/core_ext/kernel_require.rb>:86:in `require'
+	from <internal:C:/Ruby32-x64/lib/ruby/site_ruby/3.2.0/rubygems/core_ext/kernel_require.rb>:86:in `require'
+	from config.ru:1:in `block in <main>'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/rack-2.2.6.4/lib/rack/builder.rb:116:in `eval'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/rack-2.2.6.4/lib/rack/builder.rb:116:in `new_from_string'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/rack-2.2.6.4/lib/rack/builder.rb:105:in `load_file'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/rack-2.2.6.4/lib/rack/builder.rb:66:in `parse_file'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/puma-6.4.2/lib/puma/configuration.rb:368:in `load_rackup'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/puma-6.4.2/lib/puma/configuration.rb:290:in `app'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/puma-6.4.2/lib/puma/runner.rb:162:in `load_and_bind'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/puma-6.4.2/lib/puma/single.rb:44:in `run'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/puma-6.4.2/lib/puma/launcher.rb:194:in `run'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/puma-6.4.2/lib/puma/cli.rb:75:in `run'
+	from C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/puma-6.4.2/bin/puma:10:in `<top (required)>'
+	from C:/Ruby32-x64/bin/puma:32:in `load'
+	from C:/Ruby32-x64/bin/puma:32:in `<main>'

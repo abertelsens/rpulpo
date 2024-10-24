@@ -77,6 +77,7 @@ enable :sessions
 # the levels in the the 'sinatra_helpers' file.
 SINATRA_LOG_LEVEL = 2
 
+
 #---------------------------------------------------------------------------------------
 # SLIM SETUP
 #
@@ -96,7 +97,6 @@ Slim::Engine.set_options shortcut:
 		'@' => {attr: ['id', 'name']},
 	}
 
-	{}
 set :partial_template_engine, :slim
 
 #---------------------------------------------------------------------------------------
@@ -152,4 +152,6 @@ end
 # make sure there is at least one admin user.
 User.ensure_admin_user	#make sure there is at least one admin user.
 # Credentials of the first admin user.
+
+#logger.info "PULPO: admin #{User.admins[0].to_s}"
 puts Rainbow("PULPO: admin #{User.admins[0].to_s}").yellow

@@ -10,6 +10,7 @@ require 'pandoc-ruby'
 DEFAULT_MAIL_QUERY = {q: "", year:Date.today.year(), direction:"-1", entity:"-1", mail_status:"-1", assigned:"-1"}
 PANDOC_REFERENCE = "app/engines-templates/word/custom-reference.docx"
 
+
 get '/mails' do
 	@current_user = get_current_user
 	get_last_query :mails
@@ -79,18 +80,31 @@ end
 
 
 # prepares a text for the current mail entry
-get '/mail/:id/prepare_answer' do
-	headers 'content-type' => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-	@object = Mail.find(params[:id])
-	puts "answer"
-	puts "------------------------------------------"
-	#puts @object.prepare_answer
-	puts "------------------------------------------"
-	html = @object.prepare_answer(get_current_user)
-	file = PandocRuby.html(html, :standalone, "--reference-doc \"#{PANDOC_REFERENCE}\"").to_docx
-	# partial :"form/mail"
+get '/mail/:id/answer' do
+	mail = Mail.find(params[:id])
+	answer_protocol = Mail.assign_protocol(mail.entity)
+	answer = Mail.create(entity: mail.entity, topic: "Respondemos sobre #{mail.topic}", protocol: answer_protocol, direction: "salida", refs_string: mail.protocol, date: DateTime.now)
+	Reference.create(mail: answer, reference: mail)
+	Answer.create(mail: mail, answer: answer)
+	mail.update(ans_string: mail.ans.pluck(:protocol).join(", "))
+	@object = answer
+	partial :"form/mail"
 end
 
+# Regular Expression Matching
+get %r{/mail/draft-([\w]+)} do |id|
+	headers 'content-type' => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+	html_src = Mail.find(id).prepare_text(get_current_user)
+	PandocRuby.html(html_src, :standalone, "--reference-doc \"#{PANDOC_REFERENCE}\" --preserve-tabs=true").to_docx
+end
+
+# renders a single document view
+get '/mail/mark_as_read' do
+	get_current_user.unread_mails.destroy_all
+	@objects = Mail.search (get_last_query :mails)
+	@unread = []
+	partial :"table/mail"
+end
 
 # renders a single document view
 get '/mail/:id' do

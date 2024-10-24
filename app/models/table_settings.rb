@@ -22,7 +22,6 @@ class TableAttribute
 	attr_accessor :name, :table, :field, :order, :css_class, :type
 
 	def initialize(table, field, name, order, css_class, type)
-		puts "initializing attribute #{field}"
 		@table = table
 		@field = field
 		@name = name
@@ -176,8 +175,6 @@ class TableSettings
 
 	ALL_ATTRIBUTES = SETTINGS_YAML["attributes"].map {|att| TableAttribute.create_from_yaml att}
 	PEOPLE_ALL = TableSettings.new(name: "people_all", main_table: "people", attributes: ALL_ATTRIBUTES)
-
-	puts PEOPLE_ALL.related_tables
 
 	ALL_TABLES = SETTINGS_YAML["tables"].map {|t| (TableSettings.create_from_yaml t)}
 	ALL_TABLES << PEOPLE_ALL

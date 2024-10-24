@@ -81,10 +81,10 @@ turbo-frame id="main_frame"
 									option selected=(!u.nil? && (!assigned_users.nil? && (assigned_users.include? u.id))) value="#{u.id}"= u.uname				
 							
 						
-						.row.margin-top
-							button.button-success.u-full-width.no-margin data-action="click->mailform#send_files_to_user"
-								i.fa-solid.fa-paper-plane
-								|&nbspenviar a mi balda
+						/.row.margin-top
+						/	button.button-success.u-full-width.no-margin data-action="click->mailform#send_files_to_user"
+						/		i.fa-solid.fa-paper-plane
+						/		|&nbspenviar a mi balda
 						
 						.row.margin-top
 								label status:
@@ -92,7 +92,13 @@ turbo-frame id="main_frame"
 									- Mail.mail_statuses.each do |st|
 										option selected=(st[0]==@object&.mail_status) value=st[0] = st[0].humanize.downcase
 
-								a.button href="/mail/#{@object.id}/prepare_answer" target="_blank" prepare text
+								- if (!@object.protocol.nil? && @object.direction=="entrada")
+									a.button.button-primary.u-full-width.button.button-primary href="/mail/#{@object.id}/answer" responder
+								
+								- if (!@object.protocol.nil? && @object.find_related_files.empty?)
+									a.u-full-width.button.button-success href="/mail/draft-#{@object.id}" target="_self" 
+										i.fa-regular.fa-file-word
+										|&nbsppreparar texto
 						
 		
 			/----------------------------------------------------------------------------------------------------------------

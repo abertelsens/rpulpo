@@ -27,10 +27,16 @@ turbo-frame id="main_frame"
             // -----------------------------------------------------------------------------------   
             .row.header-frame.margin-top
               
-              .columns.three.flex-left
-                a.button.no-border data-action="click->protocolmodal#open_protocol_modal"
+              .columns.three.flex-left syle="gap: .5rem"
+               
+
+                a.button.button-secondary data-turbo-frame="mails_table" href="/mail/mark_as_read"
+                  i.fa-solid.fa-ckeck style="font-size:small"
+                  |&nbspmark as read
+
+                a.button.button-secondary.margin-left data-action="click->protocolmodal#open_protocol_modal"
                   i.fa-solid.fa-lock style="font-size:small"
-                  |&nbspreservar protocolo
+                  |&nbspreservar prot.
               
               .columns.four.offset-by-one.flex-center
                 img.cb-icon src="img/cb_icon.jpg"
