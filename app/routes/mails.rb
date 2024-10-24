@@ -5,8 +5,10 @@
 # -----------------------------------------------------------------------------------------
 # GET ROUTES
 # -----------------------------------------------------------------------------------------
+require 'pandoc-ruby'
 
 DEFAULT_MAIL_QUERY = {q: "", year:Date.today.year(), direction:"-1", entity:"-1", mail_status:"-1", assigned:"-1"}
+PANDOC_REFERENCE = "app/engines-templates/word/custom-reference.docx"
 
 get '/mails' do
 	@current_user = get_current_user
@@ -78,12 +80,14 @@ end
 
 # prepares a text for the current mail entry
 get '/mail/:id/prepare_answer' do
+	headers 'content-type' => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 	@object = Mail.find(params[:id])
 	puts "answer"
 	puts "------------------------------------------"
-	puts object.prepare_answer
+	#puts @object.prepare_answer
 	puts "------------------------------------------"
-
+	html = @object.prepare_answer(get_current_user)
+	file = PandocRuby.html(html, :standalone, "--reference-doc \"#{PANDOC_REFERENCE}\"").to_docx
 	# partial :"form/mail"
 end
 

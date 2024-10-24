@@ -6,6 +6,7 @@ require 'pandoc-ruby'
 # -----------------------------------------------------------------------------------------
 
 
+
 class MailFile < ActiveRecord::Base
 
 	# the objet belongs to a mail object. Each mailfile can have only one mail file of a given name

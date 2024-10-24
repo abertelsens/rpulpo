@@ -16,7 +16,9 @@ class Mail < ActiveRecord::Base
 
 	BASE_DIR= "app/public"
 	BALDAS_BAS_DIR = "/mnt/sect/CORREO-CG/BALDAS"
+	BALDAS_BAS_DIR = "L:/Usuarios/sect/CORREO-CG/BALDAS"
 	BASE_PATH = "/mnt/sect"
+	BASE_PATH = "L:/Usuarios/sect"
 	CRSC = "crs+"
 	DEFAULT_PROTOCOL = "crs+ XX/XX"
 
@@ -289,8 +291,30 @@ class Mail < ActiveRecord::Base
 		return mail_status
 	end
 
-	def prepare_answer
-		html = references.find_related_files.inject{|html, mf| html << mf.get_html_contents }
+	def prepare_answer(user)
+		users = ["sect", "vr", "r"] if user.uname="sect"
+		users = ["vr", "sect", "r"] if user.uname="vice"
+		users = ["r", "sect", "vr"] if user.uname="rector"
+
+		css = "<style>
+						table {border: 1px solid black; border-collapse: collapse; ; width:100%}\n
+						td {border: 1px solid black; border-collapse: collapse; padding: .5rem}\n
+					</style>\n"
+		html = css << "<table><tr><td>#{users[0]}<br>»</td><td>#{users[1]}<br>»</td><td>#{users[2]}<br>»</td><td><br>>></td><td><br>»</td></tr></table>\n"
+		html << "<h2>Asunto: #{topic}</h2>\n"
+		html << "<h2>Antecedentes:</h2>\n"
+		refs.each do |ref|
+			html << "<blockquote>#{ref.mail2html}</blockquote><br>-----------<br>"
+		end
+		html  << "<p>Ref. <p>"
+	end
+
+	def mail2html
+		html = "<h3>#{protocol}</h3>"
+		find_related_files.each do |mf|
+			html << mf.get_html_contents
+		end
+		html << "\n"
 	end
 
 	def self.search(params)
