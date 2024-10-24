@@ -1,7 +1,7 @@
 # Ignore the photos of people, temporary directory and the templates
 app/public/photos/
 tmp/
-app/engines-templates/
+app/engines-templates/excel
 app/engines-templates/typst/
 
 app/old_code/
