@@ -95,7 +95,7 @@ end
 get %r{/mail/draft-([\w]+)} do |id|
 	headers 'content-type' => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 	html_src = Mail.find(id).prepare_text(get_current_user)
-	PandocRuby.html(html_src, :standalone, "--reference-doc \"#{PANDOC_REFERENCE}\" --preserve-tabs=true").to_docx
+	PandocRuby.html(html_src, :standalone, "--reference-doc \"#{PANDOC_REFERENCE}\" --preserve-tabs").to_docx
 end
 
 # renders a single document view
