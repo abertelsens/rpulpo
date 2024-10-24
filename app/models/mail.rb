@@ -44,10 +44,8 @@ class Mail < ActiveRecord::Base
 
 	# after a mail object is created we add it to the unreadmails table to each one of the
 	# mail users
-	after_create do |mail|
-		UnreadMail.create(User.mail_users.map {|user| {user: user, mail: mail} })
-	end
-
+	after_create :mark_as_unread
+		
 # -----------------------------------------------------------------------------------------
 # CRUD
 # -----------------------------------------------------------------------------------------
@@ -230,7 +228,7 @@ class Mail < ActiveRecord::Base
 	end
 
 	# finds all the related files of the mail
-	# @returs: a mailfile object
+	# @returs [[mailfile]]: an array of mailfiles objects mailfile 
 	def find_related_files()
 		protocol_num = protocol[0..-4].delete("^0-9").to_i
 		begin
@@ -248,19 +246,16 @@ class Mail < ActiveRecord::Base
 	def self.file_sort(f1,f2)
 		f1_name, f1_ext = f1.split(".")
 		f2_name, f2_ext = f2.split(".")
-		if (f1_name.include? f2_name)
-			1
-		elsif (f2_name.include? f1_name)
-			-1
-		else
-			f1 <=> f2
+		if (f1_name.include? f2_name) 		then 1
+		elsif (f2_name.include? f1_name) 	then -1
+		else f1 <=> f2
 		end
 	end
 
 	# check whether a file with name file_name contains the numerical part of the protocol
-	# @file_name: the name of the file
-	# @prot_num: 	the nmerica part of the protocol
-	# @returns: 	a boolean indicating whether there is a match
+	# @file_name 	[String]: 	the name of the file
+	# @prot_num 	[String]: 	the numerical part of the protocol
+	# @returns 		[Boolean]: 	whether there is a match
 	def self.matches_file(file_name, prot_num)
 		return false if (file_name[0]=="." || file_name[0]=="~")	# skip temporary or hidden files that
 		match = /\d+/.match(file_name)
@@ -288,7 +283,7 @@ class Mail < ActiveRecord::Base
 	end
 
 	def get_status
-		return mail_status
+		mail_status
 	end
 
 	def prepare_answer(user)
@@ -297,24 +292,30 @@ class Mail < ActiveRecord::Base
 		users = ["r", "sect", "vr"] if user.uname="rector"
 
 		css = "<style>
-						table {border: 1px solid black; border-collapse: collapse; ; width:100%}\n
-						td {border: 1px solid black; border-collapse: collapse; padding: .5rem}\n
+					table {border: 1px solid black; border-collapse: collapse; ; width:100%}\n
 					</style>\n"
+		
+		# add the signature boxes
 		html = css << "<table><tr><td>#{users[0]}<br>»</td><td>#{users[1]}<br>»</td><td>#{users[2]}<br>»</td><td><br>>></td><td><br>»</td></tr></table>\n"
 		html << "<h2>Asunto: #{topic}</h2>\n"
+		
+		# add the references
 		html << "<h2>Antecedentes:</h2>\n"
-		refs.each do |ref|
-			html << "<blockquote>#{ref.mail2html}</blockquote><br>-----------<br>"
-		end
-		html  << "<p>Ref. <p>"
+		html << refs.inject { |res,ref| res << "<blockquote>#{ref.mail2html}</blockquote>" } unless refs.nil?
+		#refs.each do |ref|
+		html << "<br>-----------<br>"
+		#end
+		# the header of the draft. It includes the references and the protocol
+		references_string = refs.nil? ? "" : "Ref. #{refs_string}"
+		header = "<table><tr><td>#{references_string}</td><td><div custom-style=\"protocol\">#{protocol}</div></td></tr></table>"
+		body = "<ol><li></li></ol>"
+		footer = "<p><div custom-style=\"protocol\">Roma, #{Time.now.strftime("%d-%m-%y")}</div></p>"
+		html << header << body << footer
 	end
 
+	# provides an html text of the files related to the mail object.
 	def mail2html
-		html = "<h3>#{protocol}</h3>"
-		find_related_files.each do |mf|
-			html << mf.get_html_contents
-		end
-		html << "\n"
+		"<h3>#{protocol}</h3>\n" << find_related_files.inject {|res, mf| res << mf.get_html_contents << "\n"} 
 	end
 
 	def self.search(params)
@@ -332,6 +333,9 @@ class Mail < ActiveRecord::Base
 	end
 end #class end
 
+def mark_as_unread
+	UnreadMail.create(User.mail_users.map {|user| {user: user, mail: self} })
+end
 # -----------------------------------------------------------------------------------------
 # ASSOCIATED CLASSES
 # -----------------------------------------------------------------------------------------

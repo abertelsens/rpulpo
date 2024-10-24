@@ -17,7 +17,7 @@ turbo-frame id="main_frame"
 			method="POST"
 			data-controller="form-validator"
 			data-form-target="form"
-			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape" 
+			data-action="keydown.ctrl+d@window->form#delete keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape" 
 			] 
 		
 			/ ----------------------------------------------------------------------------------
@@ -60,6 +60,7 @@ turbo-frame id="main_frame"
 			/-----------------------------------------------------------------------------------
 			/ BUTTONS
 			/-----------------------------------------------------------------------------------
+			
 			== partial :"elements/form_buttons", locals: {object: @object, table_name: table_name}
 			
 			/----------------------------------------------------------------------------------------------------------------
