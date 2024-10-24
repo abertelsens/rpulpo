@@ -294,6 +294,7 @@ class Mail < ActiveRecord::Base
 
 		css = "<style>
 					table {border: 1px solid black; border-collapse: collapse; width:100%}\n
+					td {width:20%}\n
 					</style>\n"
 
 		# add the signature boxes
@@ -310,7 +311,9 @@ class Mail < ActiveRecord::Base
 		header = "<p>#{references_string}     #{protocol}</p>"
 		body = "<ol><li><p>Agradecemos...<p></li></ol>"
 		footer = "<p>Roma, #{Time.now.strftime("%d-%m-%y")}</p>"
-		html << header << body << footer
+		res = html << header << body << footer
+		puts res
+		res
 	end
 
 	# provides an html text of the files related to the mail object.
