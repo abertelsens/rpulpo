@@ -11,7 +11,7 @@ turbo-frame id="main_frame"
 	.container.screen-box.x-large-form data-controller="form" 
 		
 		form[
-			action="/person/#{@person.id}/#{model_name}"
+			action="/person/#{@person.id}/#{model_name}/#{@permit.nil? ? "new" : @permit.id)}"
 			method="POST"
 			data-controller="form-validator"
 			data-form-target="form"
@@ -32,9 +32,6 @@ turbo-frame id="main_frame"
 
 			fieldset data-form-target="fieldset"
 				
-				&hidden name="permit_id" value=(@permit.nil? ? "new" : @permit.id)
-				&hidden name="id" value=@person.id
-
 				.row
 					.columns.one
 						label for="title" title

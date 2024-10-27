@@ -40,10 +40,10 @@ end
 # --------------------------------------------------------------------------------------
 
 post '/entity/:id' do
-	puts Rainbow("posting entity").orange
+	#puts Rainbow("posting entity").orange
 	entity = Entity.find(params[:id]) unless params[:id]=="new"
 	case params[:commit]
-		when "save" then (entity==nil ? (Entity.create params ): (entity.update params))
+		when "save" 	then (entity==nil ? (Entity.create params ): (entity.update params))
 		when "delete" then entity.destroy
 	end
 	redirect '/entities'

@@ -1,4 +1,3 @@
-
 # crs.rb
 #---------------------------------------------------------------------------------------
 # FILE INFO
@@ -14,12 +13,22 @@
 #---------------------------------------------------------------------------------------
 
 class Crs < ActiveRecord::Base
+	
+	self.table_name = "crs"
+
+	belongs_to 	:person
+
+	# default dates of ceremonies
+	ADMISSIO_DATE = {day: 15, month: 10}
+	LECTORADO_DATE = {day: 20, month: 10}
+	ACOLITADO_DATE = {day: 20, month: 1}
 
 	# an enum with the different options for the seminary phases.
   enum phase:     {discipular: 0, configuracional:1, síntesis:2, propedeutica: 4}
 
-	belongs_to 	:person
-
+#---------------------------------------------------------------------------------------
+# CRUD METHODS
+#---------------------------------------------------------------------------------------
 
 	def self.create(params)
 		super(Crs.prepare_params params)
@@ -28,44 +37,38 @@ class Crs < ActiveRecord::Base
 	def update(params)
 		super(Crs.prepare_params params)
 	end
-
+	
+	# make sure just parameters belonging to the model are passed to the constructor
+  # @params [hash]: the parameters received from the form
 	def self.prepare_params(params)
-		params[:phase] = nil if params[:phase].blank?
-		#params[:cfi] = nil if params[:cfi].blank?
-		params.except("crs_id", "id", "commit", "module", "cfi")
+		params.select{|param| Crs.attribute_names.include? param}
 	end
+
+	#---------------------------------------------------------------------------------------
+	# ACCESSORS
+	#---------------------------------------------------------------------------------------
 
 	def self.get_editable_attributes()
 		[ {name: "phase", value: "options", description: "etapa (dicasterio)"} ]
 	end
 
-	def get_next_fidelidad
-		(!oblacion.nil? && fidelidad.nil?) ? oblacion.next_year(5) : nil
-	end
-
-	def get_next_admissio
-		admissio.nil? ? get_next_date(10,15) : nil
-	end
-
-	def get_next_lectorado
-		if !(person.status=="laico" && person.ctr!="se_ha_ido" && !admissio.nil? && lectorado.nil?)
-			nil
-		else
-			get_next_date(10,20)
+	def get_next(ceremony)
+		if (ceremony==:fidelidad) then ((oblacion && !fidelidad) ? oblacion.next_year(5) : nil)
+		else get_next_date(ceremony)
 		end
 	end
 
-	def get_next_acolitado
-		if !(person.status=="laico" && person.ctr!="se_ha_ido" && !admissio.nil? && !lectorado.nil? && acolitado.nil?)
-			nil
-		else
-			get_next_date(1,20)
+	# gets the next occurrence of the date day-month.
+	def get_next_date(ceremony)
+		date = case ceremony
+			when :admissio 	then Date.new(Date.today.year, ADMISSIO_DATE[:month], 	ADMISSIO_DATE[:day])
+			when :lectorado then Date.new(Date.today.year, LECTORADO_DATE[:month], 	LECTORADO_DATE[:day])
+			when :acolitado then Date.new(Date.today.year, ACOLITADO_DATE[:month], 	ACOLITADO_DATE[:day])
 		end
+		(Date.today < date) ? date : date.next_year(1)
 	end
+
+
 end #class end
 
-# gets the next occurrence of the date day-month.
-def get_next_date(month,day)
-	date = Date.new(Date.today.year,month,day)
-	(Date.today < date) ? date : date.next_year(1)
-end
+

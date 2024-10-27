@@ -26,18 +26,6 @@ class Entity < ActiveRecord::Base
 # CRUD METHODS
 # -----------------------------------------------------------------------------------------
 
-	def self.create(params)
-		super(Entity.prepare_params params)
-	end
-
-	def self.prepare_params(params)
-		params.select{ |key,val| PARAMS.include? key }
-	end
-
-	def update(params)
-		super(Entity.prepare_params params)
-	end
-
 	def self.get_all
 		Entity.where.not(sigla: CRSC)
 	end
@@ -50,12 +38,15 @@ class Entity < ActiveRecord::Base
 		mails.all.count
 	end
 
+	# validates the params received from the form. The only parameter that needs to 
+	# be unique is sigla
+	# @params [hash]: the parameters received form the form
+	# @returns [hash]: a hash with the result of the form {result: boolean, message: string}
 	def self.validate(params)
 		warning_message = "Warning: there is already an entity with that sigla."
 		sigla = params[:sigla].strip
 		found =
-			if (params[:id])=="new"
-				!Entity.find_by(sigla: sigla).nil?
+			if (params[:id])=="new" then !Entity.find_by(sigla: sigla).nil?
 			else
 				entity = Entity.find_by(sigla: sigla)
 				entity.nil? ? false : (entity.id!=params[:id].to_i)

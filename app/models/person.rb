@@ -24,8 +24,8 @@ class Person < ActiveRecord::Base
 
 	MONTHS_LATIN = [nil, "ianuarii", "februarii", "martii", "aprilis", "maii", "iunii", "iulii", "augusti", "septembris", "octobris", "novembris", "decembris"]
 	CHECKMARK = "\u2714".encode('utf-8')
-
-
+	PHOTO_DIR = "app/public/photos"
+		
 	# the related tables have a destroy dependency, i.e. if a person is deleted then also
 	# the matching table entries are destroyed as well.
 	has_one :crs, 							dependent: :destroy
@@ -37,7 +37,6 @@ class Person < ActiveRecord::Base
 	has_one :room
 	has_many :turnos
 
-
 	# matrix associations
 	has_many :task_assignments, dependent: :destroy
 	has_many :person_periods, 	dependent: :destroy
@@ -46,31 +45,36 @@ class Person < ActiveRecord::Base
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(family_name: :asc) }
 	scope :cavabianca, ->(amount) { where(ctr: "cavabianca")}
-
+	scope :laicos, -> { where(status:"laico") }
+	scope :in_rome, -> { where.not(ctr:"se_ha_ido") }
+	
+	# A scope that looks at all the people in a specific phase. Example: Person.phase("configuracional")
+	scope :phase, -> (phase) { joins(:crs).where(crs: {phase: phase}) }
 
 	# enums info is stored as an integer in the db but can be queried by the associated
 	# enum symbol.
 	enum status:    {laico: 0, diacono: 1, sacerdote: 2 }
-	enum ctr:       {cavabianca: 0, ctr_dependiente:1, no_ha_llegado:2, se_ha_ido:3   }
+	enum ctr:       {cavabianca: 0, ctr_dependiente:1, no_ha_llegado:2, se_ha_ido: 3   }
 	enum n_agd:     {n:0, agd:1}
-
 
 	# -----------------------------------------------------------------------------------------
 	# CALLBACKS
 	# -----------------------------------------------------------------------------------------
 
 	before_save do
-		full_info = "#{(title.nil? ? "" : title+" ")}#{first_name} #{family_name} #{group}"
-    full_name = "#{first_name} #{family_name}"
-
 		# if the status of a person changed we also update the phase field
-		self.crs.update(phase:"síntesis") if (status=="diacono" && self.crs!=nil)
-		self.crs.update(phase:nil) if (status=="sacerdote" && self.crs!=nil)
+		crs.update(phase:"síntesis") if (status=="diacono" && crs)
+		crs.update(phase:nil) if (status=="sacerdote" && crs)
+		self.full_name = "#{first_name} #{family_name}" 
 	end
 
 	# if a person is destroyed we also delete the associated photo of the person if it exists
 	before_destroy do
-		FileUtils.rm "app/public/photos/#{id}.jpg" if File.exist?("app/public/photos/#{id}.jpg")
+		begin
+			FileUtils.rm "#{PHOTO_DIR}/#{id}.jpg" if File.exist?("#{PHOTO_DIR}/#{id}.jpg")
+		rescue
+			puts Rainbow("PULPO: could not delete photo of #{short_name} (id: #{id})").orange
+		end
 	end
 
 	# -----------------------------------------------------------------------------------------
@@ -85,14 +89,9 @@ class Person < ActiveRecord::Base
 		super(Person.prepare_params params)
 	end
 
-	# prepares the parameters received from the form to an update/create the person object.
+	# delete from the hash all the parameters that do not belong to the model.
 	def self.prepare_params(params)
-		params["student"] = params["student"]=="true"
-		params["full_name"] = "#{params[:first_name]} #{params[:family_name]}"
-
-		# delete from the hash the commit, id and photo_file fields before creating
-		# or updating the object
-		params.except("commit", "id", "photo_file")
+		params.select{|param| Person.attribute_names.include? param}
 	end
 
 	# the search method
@@ -116,18 +115,10 @@ class Person < ActiveRecord::Base
 	# in its latin form.
 	def get_attribute(attribute_string, format=nil)
 		table, attribute = attribute_string.split(".")
-		if attribute=="cfi"
-			return Person.find(crs[:cfi]).short_name unless (crs.nil? || crs[:cfi].nil?)
-			return ""
-		end
+	 	associations = Person.reflect_on_all_associations(:has_one).map{|ass|{ass.plural_name => ass.class_name.downcase}}.reduce({}, :merge)
 		res = case table
 			when "person", "people" then self[attribute.to_sym]
-			when "studies"          then (study.nil? ? "" : study[attribute.to_sym])
-			when "personals"        then (personal.nil? ? "" : personal[attribute.to_sym])
-			when "crs"              then (crs.nil? ? "" : crs[attribute.to_sym])
-			when "rooms"            then (room.nil? ? "" : room[attribute.to_sym])
-			when "matrices"    	    then (matrix.nil? ? "" : matrix[attribute.to_sym])
-			when "permits"    	    then (permit.nil? ? "" : permit[attribute.to_sym])
+			else send(@@associations[table].to_sym)&.send(attribute.to_sym)
 		end
 		res = "" if (res.nil? || res.blank?)
 		puts Rainbow("\nPULPO: Warning! found nil while looking for #{attribute_string}").orange if res.nil?
@@ -214,4 +205,7 @@ class Person < ActiveRecord::Base
 	def self.people_with_assignments(day_schedule, task_schedule)
 		tas = TaskAssignment.where(day_schedule: day_schedule).select{|ta| ta.clashes_with_task? task_schedule}.map{|ta| ta.person_id}
 	end
+
+	@@associations = Person.reflect_on_all_associations(:has_one).map{|ass|{ass.plural_name => ass.class_name.downcase}}.reduce({}, :merge)
+	
 end

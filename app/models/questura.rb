@@ -26,9 +26,7 @@ class Permit < ActiveRecord::Base
   end
 
   def self.prepare_params(params)
-    params[:picked]=params[:picked]=="true" if params[:picked].present?
-    params[:eu]=params[:eu]=="true" if params[:eu].present?
-    params.except("permit_id", "id", "commit", "module")
+    params.select{|param| Permit.attribute_names.include? param}
   end
 
 end

@@ -25,8 +25,10 @@ class Personal < ActiveRecord::Base
 		super(Personal.prepare_params params)
 	end
 
+  # make sure just parameters belonging to the model are passed to the constructor
+  # @params [hash]: the parameters received from the form
   def self.prepare_params(params)
-    params.except("personal_id", "id", "commit", "module")
+    params.select{|param| Personal.attribute_names.include? param}
   end
 
 end # class end

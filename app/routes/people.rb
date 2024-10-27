@@ -63,12 +63,11 @@ get '/person/:id/:module' do
 	@current_user = get_current_user()
 	@person = (params[:id]=="new" ? nil : Person.find(params[:id]))
 	case params[:module]
-		when "personal" 	then @personal = Personal.find_by(person_id: @person.id)
-		when "study" 			then @study = Study.find_by(person_id: @person.id)
-		when "crs" 				then @crs = Crs.find_by(person_id: @person.id)
+		when "personal" 	then @personal 	= Personal.find_by(person_id: @person.id)
+		when "study" 			then @study 		= Study.find_by(person_id: @person.id)
+		when "crs" 				then @crs 			= Crs.find_by(person_id: @person.id)
 		when "permit"
 			@permit = Permit.find_by(person_id: @person.id)
-			puts "found @permit #{@permit}"
 			@permit = Permit.create(person: @person) unless @permit
 		when "matrix"
 			@matrix = Matrix.find_by(person_id: @person.id)
@@ -80,66 +79,40 @@ get '/person/:id/:module' do
 	partial :"form/person/#{params[:module]}"
 end
 
-get '/crs/cfi' do
-	@objects = Person.where(ctr:0).map{|p| {person:p, people: (Person.includes(:crs).where('crs.cfi' => p.id)).pluck(:id, :short_name) }}
-	partial "table/cfi"
-end
-
-# updates the cfi of person with id to value cfi
-post '/crs/cfi/update/:id/:cfi' do
-	(Crs.find_by(person_id:params[:id])).update(cfi: Person.find(params[:cfi]).id)
-end
-
 get '/crs/table' do
 	@has_date = params[:ceremony].present?
-	case params[:ceremony]
-
-		when "fidelidad"
-			@title = "Próximas Fidelidades"
-			@objects = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person.crs!=nil && person&.crs&.get_next_fidelidad!=nil)}
-			@objects = @objects.map {|p| [p.id, p.short_name, p.crs&.get_next_fidelidad.strftime("%d-%m-%y")]}
-		when "admissio"
-			@title = "Próximas Admissio"
-			@objects = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person.crs!=nil && person&.crs&.get_next_admissio!=nil)}
-			@objects = @objects.map {|p| [p.id, p.short_name, p&.crs&.get_next_admissio.strftime("%d-%m-%y")]}
-		when "lectorado"
-			@title = "Próximos Lectorados"
-			@objects = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person.crs!=nil && person&.crs&.get_next_lectorado!=nil)}
-			@objects = @objects.map {|p| [p.id, p.short_name, p.crs&.get_next_lectorado.strftime("%d-%m-%y")]}
-		when "acolitado"
-			@title = "Próximos Acolitados"
-			@objects = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person.crs!=nil && person&.crs&.get_next_acolitado!=nil)}
-			@objects = @objects.map {|p| [p.id, p.short_name, p.crs&.get_next_acolitado.strftime("%d-%m-%y")]}
+	
+	if params[:ceremony].present?
+		@objects = Person.includes(:crs).laicos.in_rome.select{|person| (person.crs&.get_next(params[:ceremony].to_sym)!=nil)}
+		@objects = @objects.map {|p| [p.id, p.short_name, p.crs.get_next(params[:ceremony].to_sym).strftime("%d-%m-%y")]}
+		
+		@title = case params[:ceremony]
+			when "fidelidad" 	then 	"Próximas Fidelidades"
+			when "admissio" 	then	"Próximas Admissio"
+			when "lectorado"	then	"Próximos Lectorados"
+			when "acolitado"	then 	"Próximos Acolitados"
 		end
+	end
+	
+	if params[:phase].present?
+		@objects = Person.phase(params[:phase]).pluck(:id, :short_name)
+		@title = "Etapa #{Crs.phases.key(params[:phase].to_i)}".capitalize
+	end
 
-	case params[:phase]
-		when "propedeutica"
-			@title = "Estapa Propedeútica"
-			@objects = Person.joins(:crs).where('crs.phase' => "propedeutica").pluck(:id, :short_name)
-		when "discipular"
-			@title = "Etapa Discipular"
-			@objects = Person.joins(:crs).where('crs.phase' => "discipular").pluck(:id, :short_name)
-		when "configuracional"
-			@title = "Etapa Configuracional"
-			@objects = Person.joins(:crs).where('crs.phase' => "configuracional").pluck(:id, :short_name)
-		when "sintesis"
-			@title = "Etapa de Síntesis"
-			@objects = Person.joins(:crs).where('crs.phase' => "síntesis").pluck(:id, :short_name)
-		end
-		@total = @objects.size unless @objects.nil?
-		partial "table/ceremony"
+	@total = @objects.size unless @objects.nil?
+	partial "table/ceremony"
 end
 
 # renders a single person view
 get '/crs' do
-	@current_user = get_current_user
-	@people_o = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person&.crs&.get_next_fidelidad!=false)}
-	@people_a = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person&.crs&.get_next_admissio!=false)}
-	@people_l = Person.includes(:crs).where(status: 0).where.not(ctr:3).select{|person| (person&.crs&.get_next_lectorado!=false)}
-	@people_propedeutica =  Person.joins(:crs).where('crs.phase' => "propedeutica")
-	@people_discipular =  Person.joins(:crs).where('crs.phase' => "discipular")
-	@people_configuracional = Person.joins(:crs).where('crs.phase' => "configuracional")
-	@people_sintesis = Person.joins(:crs).where('crs.phase' => "síntesis")
+	#@current_user = get_current_user
+	#@people_o = Person.includes(:crs).laicos.in_rome.select{|person| (person&.crs&.get_next(:fidelidad)!=false)}
+	#@people_a = Person.includes(:crs).laicos.in_rome.select{|person| (person&.crs&.get_next(:admissio)!=false)}
+	#@people_l = Person.includes(:crs).laicos.in_rome.select{|person| (person&.crs&.get_next(:lectorado)!=false)}
+	#@people_propedeutica =  Person.phase("propedeutica")
+	#@people_discipular = Person.phase("discipular")
+	#@people_configuracional = Person.phase("configuracional")
+	#@people_sintesis = Person.phase("síntesis")
 	partial :"frame/crs"
 end
 
@@ -166,12 +139,11 @@ post '/person/:id/general' do
 end
 
 # this route handles the moduled: personal, study, crs and matrix
-post '/person/:id/:module' do
-	@person = Person.find(params[:id])
+post '/person/:person_id/:module/:id' do
+	@person = Person.find(params[:person_id])
 	@current_user = get_current_user
 	klass = Object.const_get(params[:module].capitalize)
-	object_id_param = params["#{params[:module]}_id".to_sym]
-	object = object_id_param=="new" ? nil : klass.find(object_id_param)
+	object = params[:id]=="new" ? nil : klass.find(params[:id])
 	object.nil? ? (klass.create params) : (object.update params) if save?
 	partial :"view/person"
 end

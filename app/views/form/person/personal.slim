@@ -7,7 +7,7 @@ turbo-frame id="main_frame"
 	.container.x-large-form.screen-box data-controller="form" 
 	
 		form[
-			action="/person/#{@person.id}/personal" 
+			action="/person/#{@person.id}/personal/#{(@personal.nil? ? "new" : @personal.id)}" 
 			method="POST"
 			data-form-target="form"
 			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
@@ -28,8 +28,6 @@ turbo-frame id="main_frame"
 			//PERSONAL FRAME
 			//----------------------------------------------------------------------------------------------------------------
 			.row
-				&hidden name="personal_id" value=(@personal.nil? ? "new" : @personal.id)
-				&hidden name="person_id" value=@person.id
 				
 				.columns.two
 					label for="region" región
