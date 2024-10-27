@@ -95,7 +95,7 @@ turbo-frame id="main_frame"
 								- if (!@object.protocol.nil? && @object.direction=="entrada")
 									a.button.button-primary.u-full-width.button.button-primary href="/mail/#{@object.id}/answer" responder
 								
-								- if (!@object.protocol.nil? && @object.find_related_files.empty?)
+								- if (!@object.protocol.nil? && !@object.find_related_files.nil? && @object.find_related_files.empty?)
 									a.u-full-width.button.button-success href="/mail/draft-#{@object.id}" target="_self" 
 										i.fa-regular.fa-file-word
 										|&nbsppreparar texto

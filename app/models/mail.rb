@@ -94,7 +94,7 @@ class Mail < ActiveRecord::Base
 		protocols_string = protocols_string.strip
 
 		# if the protocol string is empty
-		if protocols_string.blank?
+		if (protocols_string.nil? || protocols_string.blank?)
 			update_association_elements([],association)
 			update(ans_string: nil)
 			return {result: true, data: nil}
