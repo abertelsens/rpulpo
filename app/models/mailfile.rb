@@ -23,10 +23,11 @@ class MailFile < ActiveRecord::Base
    # creates a MailFile object given a file and a mail object.
 	def self.create_from_file(file, mail)
 		extension = File.extname(File.basename(file))
+		path = "#{mail.get_sources_directory}/#{file}"
 		# create the mail file
-		mf = MailFile.create(mail: mail, name: file, extension: extension, mod_time: File.mtime(file))
+		mf = MailFile.create(mail: mail, name: file, extension: extension, mod_time: File.mtime(path))
 		# update the html contents
-		mf.update(html: mf.get_html_contents) if mf.is_word_file
+		mf.update(html: mf.get_html_contents) if mf.is_word_file?
 	end
 
 	# -----------------------------------------------------------------------------------------
