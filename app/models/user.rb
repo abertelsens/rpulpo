@@ -20,6 +20,8 @@ class User < ActiveRecord::Base
 	has_many	:unread_mails, 		dependent: :destroy
 	has_many	:assigned_mails, 	dependent: :destroy
 	has_many 	:module_users, 		dependent: :destroy
+	has_many 	:module_users, 		dependent: :destroy
+	has_many 	:pulpomodules, 		:through => :module_users
 
 	# enables the creation/update of the association model_users via attributes.
 	# See the the prepare_params method.
@@ -98,7 +100,6 @@ class User < ActiveRecord::Base
 
 		# tries to find an existing user with the name provided.
 		user  = User.find_by(uname: params[:uname])
-
 		validation_result = user.nil? ? true : user.id==params[:id].to_i
 		validation_result ? {result: true} : {result: false, message: "user name already in use"}
 	end
@@ -141,13 +142,14 @@ class User < ActiveRecord::Base
 
 	def get_allowed_modules
 		return Pulpomodule.all if admin? 		# an admin has all permitions.
-		Pulpomodule.joins(:module_users).where(module_users: { modulepermission:"allowed" })
+		#pulpomodules.joins(:module_user).where(modulepermission: "allowed")
+		(module_users.select {|mu| mu.modulepermission=="allowed"}).map {|mu| mu.pulpomodule}
 	end
 
 	def allowed?(module_identifier)
 		return true if admin?
-		settings = module_users.find_by(pulpomodule: Pulpomodule.find_by(identifier: module_identifier))
-		settings.nil? ? false : settings.modulepermission=="allowed"
+		result = (module_users.joins(:pulpomodule).where(pulpomodule: {name: module_identifier})).first
+		return result.nil? ? false : result
 	end
 
 	def is_table_allowed?(table)

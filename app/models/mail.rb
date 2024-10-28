@@ -38,6 +38,13 @@ class Mail < ActiveRecord::Base
 
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(date: :desc, protocol: :desc) }
+	scope :with_entity, 		-> (entity) { includes(:entity, assigned_users).where(entity: entity) }
+	scope :with_direction, 	-> (direction) { includes(:entity, assigned_users).includes(:entity, assigned_users).
+																				where(direction: direction) }
+	scope :with_status, 		-> (status) { includes(:entity, assigned_users).where(mail_status: status) }
+	scope :is_assigned_to, 	-> (user) { includes(:entity, assigned_users).joins(:assigned_mails)
+																				.where(assigend_mails: {user: user}) }
+	scope :with_year, 			-> (year) { includes(:entity, assigned_users).where("date_part('year', date)=#{date}") }
 
 # -----------------------------------------------------------------------------------------
 # CALLBACKS
@@ -328,11 +335,11 @@ class Mail < ActiveRecord::Base
 		sets = []
 		sets[0] = params[:q].blank? ? Mail.includes(:entity, :assigned_users).all : Mail.includes(:entity).where(condition1)
 		sets[0] = params[:q].blank? ? Mail.includes(:entity, :assigned_users).all : Mail.includes(:entity).where(condition1).or(Mail.includes(:entity).where(condition2))
-		sets[1] = (params[:year]=="-1" ? nil :  Mail.includes(:entity, :assigned_users).where("date_part('year', date)=#{params[:year].to_i}"))
-		sets[2] = (params[:direction]=="-1" ? nil :  Mail.includes(:entity, :assigned_users).where(direction: params[:direction]))
-		sets[3] = (params[:entity]=="-1" ? nil :  Mail.includes(:entity, :assigned_users).where(entity: params[:entity]))
-		sets[4] = (params[:mail_status]=="-1" ? nil :  Mail.includes(:entity, :assigned_users).where(mail_status: params[:mail_status]))
-		sets[5] = (params[:assigned]=="-1" ? nil :  User.find(params[:assigned]).assignedmails.includes(:entity, :assigned_users))
+		sets[1] = (params[:year].present? ?  Mail.with_year(params[:year].to_i) : nil)
+		sets[2] = (params[:direction].present? ? Mail.with_direction(params[:direction]) : nil)
+		sets[3] = (params[:entity].present? ? Mail.with_entity(params[:entity]) : nil)
+		sets[4] = (params[:mail_status].present? ? Mail.with_status(params[:mail_status]) : nil )
+		sets[5] = (params[:assigned].present? ? Mail.is_assighed_to(params[:assigned]) : nil )
 		sets.inject{ |res, set| (set.nil? ? res : res.merge(set)) }
 	end
 end #class end

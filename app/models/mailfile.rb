@@ -23,8 +23,9 @@ class MailFile < ActiveRecord::Base
    # creates a MailFile object given a file and a mail object.
 	def self.create_from_file(file, mail)
 		extension = File.extname(File.basename(file))
+		# create the mail file
 		mf = MailFile.create(mail: mail, name: file, extension: extension, mod_time: File.mtime(file))
-		puts "updating html contents"
+		# update the html contents
 		mf.update(html: mf.get_html_contents) if mf.is_word_file
 	end
 
@@ -47,7 +48,7 @@ class MailFile < ActiveRecord::Base
 	# to find the file. File paths which containt spaces make trouble, therefore we need
 	# to wrap them around quotation marks.
 	# Embedded media, like images, will be stored in the public/tmp/media/ directory
-	def	get_html_contents
+	def	get_html_contents()
 		if is_word_file?
 			html_string = `pandoc --email-obfuscation=none --extract-media tmp \"#{get_path}\" --from docx --to html`
 			#puts clean_html html_string
@@ -85,23 +86,17 @@ class MailFile < ActiveRecord::Base
 
 	# updates the html field is the file in the file system has been modified.
 	def update_html
-		if (is_word_file? && (has_been_modified? || html==nil))
-			puts Rainbow("updating html contents").orange
-			update(html: get_html_contents, mod_time: Time.now)
-		else
-			puts  Rainbow("nothing to update").orange
-		end
+		update(html: get_html_contents, mod_time: Time.now)	if (is_word_file? && (has_been_modified? || html==nil))
 	end
 
 	# checks whether the modification time of the file in the file system is later
 	# than the version we have in the db. If we have no modification time in the db
 	# we return true.
 	def has_been_modified?
-		if mod_time==nil
+		if mod_time then (File.mtime(get_path) > mod_time)
+		else
 			update(mod_time: File.mtime(get_path))
 			true
-		else
-			File.mtime(get_path) > mod_time
 		end
 	end
 end	#class end

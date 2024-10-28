@@ -114,13 +114,17 @@ class Person < ActiveRecord::Base
 	# @format: a string defining a special format. For example a date can be retrieved
 	# in its latin form.
 	def get_attribute(attribute_string, format=nil)
+		# get the taable and attribute name
 		table, attribute = attribute_string.split(".")
-	 	associations = Person.reflect_on_all_associations(:has_one).map{|ass|{ass.plural_name => ass.class_name.downcase}}.reduce({}, :merge)
+	 	# if the table is people then we have just to get the attribute
+		# if it is a related table we first fetch the related object via the @@associations variable
+		# which contains a mapping of the kind table_name => class_name
+		# the send(attribute.to_sym) method calls object.method_name 
 		res = case table
 			when "person", "people" then self[attribute.to_sym]
 			else send(@@associations[table].to_sym)&.send(attribute.to_sym)
 		end
-		res = "" if (res.nil? || res.blank?)
+		res = "" if res.nil?
 		puts Rainbow("\nPULPO: Warning! found nil while looking for #{attribute_string}").orange if res.nil?
 		return CHECKMARK if res==true
 		if res.is_a?(Date)
@@ -144,7 +148,7 @@ class Person < ActiveRecord::Base
 			attributes.map {|att| {att => get_attribute(att)} }
 	end
 
-	def self.collection_to_csv(people,table_settings)
+	def self.collection_to_csv(people, table_settings)
 			result = (table_settings.att.map{|att| att.name}).join("\t") + "\n"
 			result << (people.map {|person| (table_settings.att.map{|att| (person.get_attribute(att.field).dup)}).join("\t") }).join(("\n"))
 	end

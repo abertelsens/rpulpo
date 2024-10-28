@@ -59,21 +59,21 @@ turbo-frame id="main_frame"
                 .flex-columns.center-align.u-text-left.medium-field.margin-right.margin-bottom
                   label.no-margin ctr
                   select.medium-field.no-margin data-mail-target="entity" name="entity" data-action="change-search#submit"
-                    option selected=(@mails_query[:entity].to_i==-1) value=-1 all
+                    option selected=(@mails_query[:entity].to_i==-1) value="" all
                     - entities.each do |entity|
                       option  selected=(@mails_query[:entity].to_i==entity.id) value=entity.id = entity.sigla 
                   
                 .flex-columns.u-text-left.margin-right.center-align.medium-field.margin-bottom
                   label.no-margin tipo
                   select.medium-field.no-margin data-mail-target="direction" name="direction" data-action="change-search#submit"
-                    option selected=(@mails_query[:direction].to_i==-1) value=-1 all
+                    option selected=(@mails_query[:direction].to_i==-1) value="" all
                     - Mail.directions.each do |direction|
                       option selected=(@mails_query[:direction].to_i==direction[1]) value=direction[1] = direction[0]
                 
                 .flex-columns.u-text-left.medium-field.margin-right.center-align.margin-bottom
                   label.no-margin año
                   select.medium-field.no-margin data-mail-target="year" name="year" data-action="change->search#submit"
-                    option selected=(@mails_query[:year].to_i==-1) value=-1 all
+                    option selected=(@mails_query[:year].to_i==-1) value="" all
                     - Mail.get_years.each do |year|
                       option selected=(@mails_query[:year].to_i==year) value=year = year
                 
