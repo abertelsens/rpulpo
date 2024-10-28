@@ -14,6 +14,8 @@ Stimulus.register("form", class extends Controller {
   }
 
   enter(event) {
+    console.log(event)
+    console.log(event.target)
     event.preventDefault()
     event.stopPropagation();   
     console.log("subimitting form");

@@ -1,5 +1,6 @@
 turbo-frame id="document-links-frame" 
 	- first_file = nil
+	
 	div.container.files-box data-controller="documentlinks"
 		.row
 			
@@ -11,22 +12,32 @@ turbo-frame id="document-links-frame"
 					- related_files&.each do |rf|
 						.row
 							.columns.twelve
-								a data-value="referencelink" data-action="click->documentlinks#activatebox" data-turbo-frame="mailfile-frame" href="/mailfile/#{rf&.id}?type=referencia" = rf&.name 
+								a[
+									data-value="referencelink" 
+									data-action="click->documentlinks#activatebox" 
+									data-turbo-frame="mailfile-frame" 
+									href="/mailfile/#{rf&.id}?type=referencia"] = rf&.name 
+								
 								label.tooltip style="margin: 0"
 									|&nbsp&nbsp
 									<i class="fa-regular fa-folder"></i>
 									<span class="tooltiptext">#{rf&.get_path}</span>
-								//name  
+								  
 			
-			- related_files = @object&.find_related_files()		
 			.columns.four.ref-box.active-ref-box data-documentlinks-target="notes"
 				h4 Nota y Anexos
-				- related_files&.each_with_index do |rf,index|
+				- @related_files&.each_with_index do |rf,index|
 					- if index==0 
 						- first_file = rf
 					.row
 						.columns.twelve
-							a data-turbo-preload="true" data-value="noteslink" data-action="click->documentlinks#activatebox" data-turbo-frame="mailfile-frame" href="/mailfile/#{rf&.id}?type=nota" = rf&.name  
+							a[
+								data-turbo-preload="true" 
+								data-value="noteslink" 
+								data-action="click->documentlinks#activatebox" 
+								data-turbo-frame="mailfile-frame" 
+								href="/mailfile/#{rf&.id}?type=nota"] = rf&.name  
+							
 							label.tooltip style="margin: 0"
 									|&nbsp&nbsp
 									<i class="fa-regular fa-folder"></i>
@@ -40,14 +51,21 @@ turbo-frame id="document-links-frame"
 					- related_files&.each do |rf|
 						.row
 							.columns.twelve
-								a data-value="answerslink" data-action="click->documentlinks#activatebox" data-turbo-frame="mailfile-frame" href="/mailfile/#{rf&.id}?type=respuesta%20en" = rf&.name  
+								a[
+									data-value="answerslink" 
+									data-action="click->documentlinks#activatebox" 
+									data-turbo-frame="mailfile-frame" 
+									href="/mailfile/#{rf&.id}?type=respuesta%20en"] = rf&.name  
+								
 								label.tooltip style="margin: 0"
 									|&nbsp&nbsp
 									<i class="fa-regular fa-folder"></i>
 									<span class="tooltiptext">#{rf&.get_path}</span>
+		
 		- if !first_file.nil?
 			.row
 				turbo-frame id="mailfile-frame" data-mailform-target="mailfile_frame" src="/mailfile/#{first_file.id}?type=nota"
+		
 		- else
 			.row.u-text-center
 				turbo-frame id="mailfile-frame" data-mailform-target="mailfile_frame"

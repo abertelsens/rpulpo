@@ -23,7 +23,9 @@ class MailFile < ActiveRecord::Base
    # creates a MailFile object given a file and a mail object.
 	def self.create_from_file(file, mail)
 		extension = File.extname(File.basename(file))
-		MailFile.create(mail: mail, name: file, extension: extension)
+		mf = MailFile.create(mail: mail, name: file, extension: extension, mod_time: File.mtime(file))
+		puts "updating html contents"
+		mf.update(html: mf.get_html_contents) if mf.is_word_file
 	end
 
 	# -----------------------------------------------------------------------------------------
@@ -33,6 +35,13 @@ class MailFile < ActiveRecord::Base
   def get_path
     "#{mail.get_sources_directory}/#{name}"
   end
+
+	# gets the html of the file. We first check if the html field is up to date.
+	# @returs [string] The html contents fo the file.
+	def get_html
+		update_html
+		html
+	end
 
 	# pandoc needs a complete dir of the network to work, otherwise it will not be able
 	# to find the file. File paths which containt spaces make trouble, therefore we need
@@ -74,4 +83,25 @@ class MailFile < ActiveRecord::Base
 		[".pdf"].include? extension
 	end
 
+	# updates the html field is the file in the file system has been modified.
+	def update_html
+		if (is_word_file? && (has_been_modified? || html==nil))
+			puts Rainbow("updating html contents").orange
+			update(html: get_html_contents, mod_time: Time.now)
+		else
+			puts  Rainbow("nothing to update").orange
+		end
+	end
+
+	# checks whether the modification time of the file in the file system is later
+	# than the version we have in the db. If we have no modification time in the db
+	# we return true.
+	def has_been_modified?
+		if mod_time==nil
+			update(mod_time: File.mtime(get_path))
+			true
+		else
+			File.mtime(get_path) > mod_time
+		end
+	end
 end	#class end

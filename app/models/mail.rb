@@ -16,10 +16,10 @@ TAB = "\u0009".encode('utf-8')
 class Mail < ActiveRecord::Base
 
 	BASE_DIR= "app/public"
-	BALDAS_BAS_DIR = "/mnt/sect/CORREO-CG/BALDAS"
-	#BALDAS_BAS_DIR = "L:/Usuarios/sect/CORREO-CG/BALDAS"
-	BASE_PATH = "/mnt/sect"
-	#BASE_PATH = "L:/Usuarios/sect"
+	#BALDAS_BAS_DIR = "/mnt/sect/CORREO-CG/BALDAS"
+	BALDAS_BAS_DIR = "L:/Usuarios/sect/CORREO-CG/BALDAS"
+	#BASE_PATH = "/mnt/sect"
+	BASE_PATH = "L:/Usuarios/sect"
 	CRSC = "crs+"
 	DEFAULT_PROTOCOL = "crs+ XX/XX"
 
@@ -180,18 +180,17 @@ class Mail < ActiveRecord::Base
 		assigned_users.pluck(:uname).join("-")
 	end
 
-	def send_related_files_to_user(user)
-		target = "#{BALDAS_BAS_DIR}/#{user.uname}"
-		mail_files = find_related_files
+	#def send_related_files_to_user(user)
+	#	target = "#{BALDAS_BAS_DIR}/#{user.uname}"
+	#	mail_files = find_related_files
 
-		# if we need to send more than one file we create a directory and send the mails there
-		if (mail_files.size>1)
-			target = "#{target}/#{user.uname}#{protocol.gsub("/","-")}"
-			FileUtils.mkdir target unless Dir.exist? target
-		end
-		mail_files.each {|mf| FileUtils.cp mf.get_path, "#{target}/#{user.uname}-#{mf.name}" }
-		{result: true}.to_json
-	end
+	# if we need to send more than one file we create a directory and send the mails there
+	#	if (mail_files.size>1)
+	#		target = "#{target}/#{user.uname}#{protocol.gsub("/","-")}"
+	#		FileUtils.mkdir target unless Dir.exist? target
+	#	end
+	#	{result: true}.to_json
+	#end
 
 	# tries to suggest a direction and the entity fields from a protocol
 	def update_protocol(protocol_string)
@@ -228,19 +227,21 @@ class Mail < ActiveRecord::Base
 		data
 	end
 
-	# finds all the related files of the mail
-	# @returs [[mailfile]]: an array of mailfiles objects mailfile
+	# finds all the related files of the mail. If no files are found the method returns an empty array/
+	# @returs [[mailfile]]: an array of mailfiles objects mailfile.
+	#
 	def find_related_files()
 		protocol_num = protocol[0..-4].delete("^0-9").to_i
 		begin
 			files = Dir.entries(get_sources_directory).select{ |fname| Mail.matches_file(fname, protocol_num)}
 			files = files.sort{|f1, f2| Mail.file_sort(f1,f2)}
+
 			current_files = mail_files.pluck(:name)
 			(current_files - files).each {|file| MailFile.find_by(mail: self, name: file).destroy }
 			(files - current_files).each {|file| MailFile.create_from_file(file, self) }
-			mail_files
+			mail_files.nil? ? [] : mail_files.to_a
 		rescue
-			nil
+			[]
 		end
 	end
 
@@ -318,7 +319,7 @@ class Mail < ActiveRecord::Base
 
 	# provides an html text of the files related to the mail object.
 	def mail2html
-			find_related_files.inject("<h3>#{protocol}</h3>\n"){|res, mf|  (res << (mf.get_html_contents) << "\n") }
+			find_related_files.inject("<h3>#{protocol}</h3>\n"){|res, mf|  (res << (mf.get_html) << "\n") }
 	end
 
 	def self.search(params)

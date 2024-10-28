@@ -42,6 +42,7 @@ end
 
 get '/mail/:id/document_links' do
 	@object = Mail.find(params[:id])
+	@related_files = @object.find_related_files
 	@references = @object.refs
 	@answers = @object.ans
 	partial :"form/mail/document_links"
@@ -111,6 +112,7 @@ get '/mail/:id' do
 	@object = (params[:id]=="new" ? Mail.create_from_params() : Mail.find(params[:id]))
 	unread = UnreadMail.find_by(mail: @object, user: get_current_user)
 	unread.destroy unless (unread.nil? || params[:id]=="new")
+	@related_files = @object.find_related_files
 	partial :"form/mail"
 end
 
@@ -121,6 +123,7 @@ end
 ########################################################################################
 
 post '/mail/:id' do
+	puts Rainbow("posting mail").orange
 	@mail = (params[:id]=="new" ? nil : Mail.find(params[:id]))
 	case params[:commit]
 		when "save"
