@@ -153,8 +153,4 @@ end
 User.ensure_admin_user	#make sure there is at least one admin user.
 # Credentials of the first admin user.
 
-#logger.info "PULPO: admin #{User.admins[0].to_s}"
-puts Rainbow("PULPO: admin #{User.admins[0].to_s}").yellow
-
-puts "associations of Person"
-puts Person.reflect_on_all_associations(:has_one).map{|ass|{ass.plural_name => ass.class_name.downcase}}
+puts Rainbow("PULPO: admin #{User.admin[0].to_s}").yellow

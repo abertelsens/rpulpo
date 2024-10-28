@@ -7,7 +7,7 @@
 # -----------------------------------------------------------------------------------------
 require 'pandoc-ruby'
 
-DEFAULT_MAIL_QUERY = {q: "", year:Date.today.year(), direction:"-1", entity:"-1", mail_status:"-1", assigned:"-1"}
+DEFAULT_MAIL_QUERY = {q: "", year:Date.today.year(), direction:"", entity:"", mail_status:"", assigned:""}
 PANDOC_REFERENCE = "app/engines-templates/word/custom-reference.docx"
 
 
@@ -23,7 +23,7 @@ end
 get '/mails/table' do
 	@current_user = get_current_user
 	@objects = Mail.search (get_last_query :mails)
-	@unread = @current_user.get_mails(:unread)
+	@unread = @current_user.unread_mails
 	partial :"table/mail"
 end
 
@@ -31,7 +31,7 @@ get '/mail/search' do
 	@current_user = get_current_user
 	@mails_query = session["mails_table_query"] = params
 	@objects = Mail.search params
-	@unread = @current_user.get_mails(:unread)
+	@unread = @current_user.unread_mails
 	partial :"table/mail"
 end
 

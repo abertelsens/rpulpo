@@ -29,6 +29,7 @@ class User < ActiveRecord::Base
 
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(uname: :asc) }
+	scope :mail_users, -> {where(mail:true)}
 
 	# an enum defining the type of user.
 	enum usertype: {normal: 0, admin: 1, guest: 2}
@@ -109,32 +110,14 @@ class User < ActiveRecord::Base
 # -----------------------------------------------------------------------------------------
 
 	def self.ensure_admin_user
-		User.create DEFAULT_ADMIN_ATTRIBUTES if User.admins.size<1
-	end
-
-	def self.mail_users
-		User.where(mail:true)
+		User.create DEFAULT_ADMIN_ATTRIBUTES if User.admin.size<1
 	end
 
 	# admin users can be deleted only if there is more than one.
 	def can_be_deleted?
-		admin? ? User.admins.size > 1 : true
+		admin? ? User.admin.size > 1 : true
 	end
 
-	def get_mails(args)
-		case args
-			when :assigned 	then assigned_mails.pluck(:mail_id)
-			when :unread		then unread_mails.pluck(:mail_id)
-		end
-	end
-
-	def admin?
-		usertype=="admin"
-	end
-
-	def self.admins
-		User.where(usertype: "admin")
-	end
 
 	def mail_user?
 		mail

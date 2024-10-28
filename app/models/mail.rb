@@ -16,10 +16,10 @@ TAB = "\u0009".encode('utf-8')
 class Mail < ActiveRecord::Base
 
 	BASE_DIR= "app/public"
-	#BALDAS_BAS_DIR = "/mnt/sect/CORREO-CG/BALDAS"
-	BALDAS_BAS_DIR = "L:/Usuarios/sect/CORREO-CG/BALDAS"
-	#BASE_PATH = "/mnt/sect"
-	BASE_PATH = "L:/Usuarios/sect"
+	BALDAS_BAS_DIR = "/mnt/sect/CORREO-CG/BALDAS"
+	#BALDAS_BAS_DIR = "L:/Usuarios/sect/CORREO-CG/BALDAS"
+	BASE_PATH = "/mnt/sect"
+	#BASE_PATH = "L:/Usuarios/sect"
 	CRSC = "crs+"
 	DEFAULT_PROTOCOL = "crs+ XX/XX"
 
@@ -38,13 +38,12 @@ class Mail < ActiveRecord::Base
 
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(date: :desc, protocol: :desc) }
-	scope :with_entity, 		-> (entity) { includes(:entity, assigned_users).where(entity: entity) }
-	scope :with_direction, 	-> (direction) { includes(:entity, assigned_users).includes(:entity, assigned_users).
-																				where(direction: direction) }
-	scope :with_status, 		-> (status) { includes(:entity, assigned_users).where(mail_status: status) }
-	scope :is_assigned_to, 	-> (user) { includes(:entity, assigned_users).joins(:assigned_mails)
-																				.where(assigend_mails: {user: user}) }
-	scope :with_year, 			-> (year) { includes(:entity, assigned_users).where("date_part('year', date)=#{date}") }
+
+	scope :with_entity, 		-> (entity) 		{ includes(:entity, :assigned_users).where(entity: entity) }
+	scope :with_direction, 	-> (direction) 	{ includes(:entity, :assigned_users).where(direction: direction) }
+	scope :with_status, 		-> (status) 		{ includes(:entity, :assigned_users).where(mail_status: status) }
+	scope :is_assigned_to, 	-> (user) 			{ includes(:entity, :assigned_users).joins(:assigned_mails).where(assigned_mails: {user: user}) }
+	scope :with_year, 			-> (year) 			{ includes(:entity, :assigned_users).where("date_part('year', date)=#{year}") }
 
 # -----------------------------------------------------------------------------------------
 # CALLBACKS
@@ -83,7 +82,7 @@ class Mail < ActiveRecord::Base
 		Mail.create(prepare_params params)
 	end
 
-	# afer updating the mail fields we update the associations: assigned users, references and answers.
+	# after updating the mail fields we update the associations: assigned users, references and answers.
 	# The assigned users array coming form the form might be nil, in this case we pass an empty array.
 	def update_from_params(params)
 		update(Mail.prepare_params params)
@@ -98,13 +97,18 @@ class Mail < ActiveRecord::Base
 # -----------------------------------------------------------------------------------------
 	# returns a hash with the resutls of the update operation
 	def update_association(protocols_string, association)
+
+		# make sure the protocol string is clean of blank spaces
 		protocols_string = protocols_string.strip
 
 		# if the protocol string is empty
 		if (protocols_string.nil? || protocols_string.blank?)
-			update_association_elements([],association)
-			update(ans_string: nil)
-			return {result: true, data: nil}
+			update_association_elements [], association
+			case association
+				when :answers 		then update(ans_string: nil)
+				when :references 	then update(refs_string: nil)
+			end
+		return {result: true, data: nil}
 		end
 
 		protocols_array = protocols_string.split(",")
@@ -115,13 +119,15 @@ class Mail < ActiveRecord::Base
 				status: 	mail!=nil
 			}
 		end
-		result = new_elements.include?(nil) ? false : true
-		new_elements = new_elements.select{ |ref| !ref.nil? } # eliminate all the nil results
-		update_association_elements(new_elements.pluck(:id), association) unless new_elements[0].nil?
+		result = !new_elements.include?(nil)	# if there is a nil element then there was an error.
 
-		case association
-			when :answers 		then update(ans_string: new_elements.pluck(:protocol).join(", "))
-			when :references 	then update(refs_string: new_elements.pluck(:protocol).join(", "))
+		if result
+			#new_elements = new_elements.select{ |ref| !ref.nil? } # eliminate all the nil results
+			update_association_elements(new_elements.pluck(:id), association) unless new_elements[0].nil?
+			case association
+				when :answers 		then update(ans_string: new_elements.pluck(:protocol).join(", "))
+				when :references 	then update(refs_string: new_elements.pluck(:protocol).join(", "))
+			end
 		end
 		{ result: result, data: protocols_hash }
 
@@ -134,7 +140,7 @@ class Mail < ActiveRecord::Base
 
 		current_elements =
 		case association
-			when :assigned_users 	then assigned_users.pluck(:id)
+			when :assigned_users 	then assigned_user_ids
 			when :answers 				then answers.pluck(:answer_id)
 			when :references 			then references.pluck(:reference_id)
 		end
@@ -186,18 +192,6 @@ class Mail < ActiveRecord::Base
 	def get_assigned_users()
 		assigned_users.pluck(:uname).join("-")
 	end
-
-	#def send_related_files_to_user(user)
-	#	target = "#{BALDAS_BAS_DIR}/#{user.uname}"
-	#	mail_files = find_related_files
-
-	# if we need to send more than one file we create a directory and send the mails there
-	#	if (mail_files.size>1)
-	#		target = "#{target}/#{user.uname}#{protocol.gsub("/","-")}"
-	#		FileUtils.mkdir target unless Dir.exist? target
-	#	end
-	#	{result: true}.to_json
-	#end
 
 	# tries to suggest a direction and the entity fields from a protocol
 	def update_protocol(protocol_string)
@@ -335,11 +329,11 @@ class Mail < ActiveRecord::Base
 		sets = []
 		sets[0] = params[:q].blank? ? Mail.includes(:entity, :assigned_users).all : Mail.includes(:entity).where(condition1)
 		sets[0] = params[:q].blank? ? Mail.includes(:entity, :assigned_users).all : Mail.includes(:entity).where(condition1).or(Mail.includes(:entity).where(condition2))
-		sets[1] = (params[:year].present? ?  Mail.with_year(params[:year].to_i) : nil)
-		sets[2] = (params[:direction].present? ? Mail.with_direction(params[:direction]) : nil)
-		sets[3] = (params[:entity].present? ? Mail.with_entity(params[:entity]) : nil)
-		sets[4] = (params[:mail_status].present? ? Mail.with_status(params[:mail_status]) : nil )
-		sets[5] = (params[:assigned].present? ? Mail.is_assighed_to(params[:assigned]) : nil )
+		sets[1] = (params[:year].blank? ? nil : Mail.with_year(params[:year].to_i))
+		sets[2] = (params[:direction].blank? ? nil : Mail.with_direction(params[:direction]))
+		sets[3] = (params[:entity].blank? ? nil : Mail.with_entity(params[:entity]))
+		sets[4] = (params[:mail_status].blank? ? nil : Mail.with_status(params[:mail_status]))
+		sets[5] = (params[:assigned].blank? ? nil : Mail.is_assigned_to(params[:assigned]))
 		sets.inject{ |res, set| (set.nil? ? res : res.merge(set)) }
 	end
 end #class end

@@ -1,7 +1,8 @@
 ! Unable to load application: NameError: undefined local variable or method `logger' for main:Object
 H:/docs/GitHub/rpulpo/app/main.rb:174:in `<top (required)>': undefined local variable or method `logger' for main:Object (NameError)
 
-logger.info "PULPO: admin #{User.admins[0].to_s}"
+logger.info "PULPO: admin #{User.admin[0].to_s}"
+
 ^^^^^^
 	from <internal:C:/Ruby32-x64/lib/ruby/site_ruby/3.2.0/rubygems/core_ext/kernel_require.rb>:86:in `require'
 	from <internal:C:/Ruby32-x64/lib/ruby/site_ruby/3.2.0/rubygems/core_ext/kernel_require.rb>:86:in `require'
