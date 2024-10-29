@@ -25,10 +25,10 @@ class Person < ActiveRecord::Base
 	MONTHS_LATIN = [nil, "ianuarii", "februarii", "martii", "aprilis", "maii", "iunii", "iulii", "augusti", "septembris", "octobris", "novembris", "decembris"]
 	CHECKMARK = "\u2714".encode('utf-8')
 	PHOTO_DIR = "app/public/photos"
-		
+
 	# the related tables have a destroy dependency, i.e. if a person is deleted then also
 	# the matching table entries are destroyed as well.
-	has_one :crs, 							dependent: :destroy
+	has_one :crsrecord, 				dependent: :destroy, class_name: "Crsrecord"
 	has_one :personal, 					dependent: :destroy
 	has_one :study, 						dependent: :destroy
 	has_one :matrix, 						dependent: :destroy
@@ -47,9 +47,9 @@ class Person < ActiveRecord::Base
 	scope :cavabianca, ->(amount) { where(ctr: "cavabianca")}
 	scope :laicos, -> { where(status:"laico") }
 	scope :in_rome, -> { where.not(ctr:"se_ha_ido") }
-	
+
 	# A scope that looks at all the people in a specific phase. Example: Person.phase("configuracional")
-	scope :phase, -> (phase) { joins(:crs).where(crs: {phase: phase}) }
+	scope :phase, -> (phase) { joins(:crsrecord).where(crsrecord: {phase: phase}) }
 
 	# enums info is stored as an integer in the db but can be queried by the associated
 	# enum symbol.
@@ -63,9 +63,9 @@ class Person < ActiveRecord::Base
 
 	before_save do
 		# if the status of a person changed we also update the phase field
-		crs.update(phase:"síntesis") if (status=="diacono" && crs)
-		crs.update(phase:nil) if (status=="sacerdote" && crs)
-		self.full_name = "#{first_name} #{family_name}" 
+		crs_record.update(phase:"síntesis") if (status=="diacono" && crs)
+		crs_record.update(phase:nil) if (status=="sacerdote" && crs)
+		self.full_name = "#{first_name} #{family_name}"
 	end
 
 	# if a person is destroyed we also delete the associated photo of the person if it exists
@@ -94,6 +94,15 @@ class Person < ActiveRecord::Base
 		params.select{|param| Person.attribute_names.include? param}
 	end
 
+	#just to make sure I did not mess up the names.
+	#def crs
+		#self.crsrecord
+	#end
+
+	def self.associations
+		@@associations
+	end
+
 	# the search method
 	# @search_string: the string containing the query
 	# @table_settings: the settings, i.e. information to be displayed. It is an object that
@@ -101,7 +110,7 @@ class Person < ActiveRecord::Base
 	# unnecessary information. For example if we query a person by name but the settings do
 	# not include the rooms table, then we will not retrieve that result. See pulpo_query.rb
 	def self.search(search_string, table_settings=nil, filter=nil)
-		#puts "got search_string #{search_string} filter #{filter}"
+		puts "got search_string #{search_string} filter #{filter}"
 		if (filter!=nil && !filter.strip.blank?)
 			search_string = (search_string.nil? || search_string.strip.blank?) ? filter : "#{filter} AND #{search_string}"
 		end
@@ -119,7 +128,7 @@ class Person < ActiveRecord::Base
 	 	# if the table is people then we have just to get the attribute
 		# if it is a related table we first fetch the related object via the @@associations variable
 		# which contains a mapping of the kind table_name => class_name
-		# the send(attribute.to_sym) method calls object.method_name 
+		# the send(attribute.to_sym) method calls object.method_name
 		res = case table
 			when "person", "people" then self[attribute.to_sym]
 			else send(@@associations[table].to_sym)&.send(attribute.to_sym)
@@ -211,5 +220,5 @@ class Person < ActiveRecord::Base
 	end
 
 	@@associations = Person.reflect_on_all_associations(:has_one).map{|ass|{ass.plural_name => ass.class_name.downcase}}.reduce({}, :merge)
-	
+	puts "associations: ·#{@@associations}"
 end

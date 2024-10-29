@@ -26,8 +26,7 @@ class PulpoQuery
 		@tables = (@tables-[@main_table]).map {|table| TABLES_MODELS[table]}
 
 
-		if query_string.nil?
-			@query_array = []
+		if query_string.nil? then @query_array = []
 		else
 
 			# clean any ' character
@@ -41,7 +40,7 @@ class PulpoQuery
 
 			#replace the query alias if found
 			QUERY_ALIASES.each { |pair| query_string.gsub!(/#{pair[:from]}/, pair[:to]) }
-
+			#puts "after replacements #{query_string}"
 			# split the string into AND clauses
 			@query_array = query_string.split(Regexp.union(AND_DELIMITERS))
 		end
@@ -56,8 +55,9 @@ class PulpoQuery
 		# execute the OR clauses
 		res_array = @query_array.map{|or_clauses| execute_or_clauses(or_clauses)}
 
+		puts "got res array #{res_array.inspect}"
 		# execute the AND clauses
-		result = res_array.inject{ |carry, res| (res.nil? || carry.nil?) ? nil : carry.and(res) }
+		result = res_array.inject{ |carry, res| (res.nil? || carry.nil?) ? nil : carry.merge(res) }
 
 		result.nil? ? [] : result.order(@order)
 	end
@@ -135,36 +135,38 @@ class AttributeQuery
 				"#{att.field} ILIKE '%#{@att_value}%'"
 			when "integer", "enum"
 				# if the value cannot be cast into an integer we set a value of -1 to return an empty set
-				if Integer(@att_value, exception: false).nil?
-					{att.field.to_sym => -1}
-				else
-					{att.field.to_sym => @att_value}
+				if Integer(@att_value, exception: false).nil? then	"#{att.field}=-1"
+				else	"#{att.field}=#{@att_value}"
 				end
 			when "date"
-				if Integer(@att_value, exception: false).nil?
-					"date_part('year', #{att.field})=-1"
-				else
-					"date_part('year', #{att.field})=#{@att_value}"
+				if Integer(@att_value, exception: false).nil? then "date_part('year', #{att.field})=-1"
+				else "date_part('year', #{att.field})=#{@att_value}"
 				end
-			when "boolean"
-				"#{att.field}=#{@att_value=="true"}"
+			when "boolean" then "#{att.field}=#{@att_value=="true"}"
 			end
 
 		#puts Rainbow("main table: #{@main_table}").yellow
 		#puts Rainbow("tables: #{@tables}").yellow
 		#puts Rainbow("main condition: #{condition}").yellow
+		puts Rainbow("table:  #{table}").yellow
+		puts Person.associations
 
 		# the code is a bit complex but it allows us to include in the query the tables that are needed to show the records
 		# and avoid n+1 queries
+		#model_sym = Person.associations[table].to_sym unless table.nil? || table=="people"
 		case @main_table
 			when "people"
 				case table
 					when "people" then (@tables.empty? ? Person.where(condition) : Person.includes(@tables).where(condition))
-					when "personals" then (@tables.empty? ? Person.joins(:personal).where(condition) : Person.includes(@tables).joins(:personal).where(condition))
-					when "studies" then (@tables.empty? ? Person.joins(:study).where(condition) : Person.includes(@tables).joins(:study).where(condition))
-					when "crs" then (@tables.empty? ? Person.joins(:crs).where(condition) : Person.includes(@tables).joins(:crs).where(condition))
-					when "rooms" then (@tables.empty? ? Person.joins(:room).where(condition) : Person.includes(@tables).joins(:room).where(condition))
-					when "matrices" then (@tables.empty? ? Person.joins(:matrix).where(condition) : Person.includes(@tables).joins(:matrix).where(condition))
+					else
+						model_sym = Person.associations[table].to_sym
+						(@tables.empty? ? Person.joins(model_sym).where(condition) : Person.includes(@tables).joins(model_sym).where(condition))
+
+					#when "personals" then (@tables.empty? ? Person.joins(:personal).where(condition) : Person.includes(@tables).joins(:personal).where(condition))
+					#when "studies" then (@tables.empty? ? Person.joins(:study).where(condition) : Person.includes(@tables).joins(:study).where(condition))
+					##when "crsrecords" then (@tables.empty? ? Person.joins(:crsrecord).where(condition) : Person.includes(@tables).joins(:crs).where(condition))
+					#when "rooms" then (@tables.empty? ? Person.joins(:room).where(condition) : Person.includes(@tables).joins(:room).where(condition))
+					#when "matrices" then (@tables.empty? ? Person.joins(:matrix).where(condition) : Person.includes(@tables).joins(:matrix).where(condition))
 				end
 			when "rooms"
 				case table

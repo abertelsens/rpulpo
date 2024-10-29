@@ -16,10 +16,10 @@ TAB = "\u0009".encode('utf-8')
 class Mail < ActiveRecord::Base
 
 	BASE_DIR= "app/public"
-	BALDAS_BAS_DIR = "/mnt/sect/CORREO-CG/BALDAS"
-	#BALDAS_BAS_DIR = "L:/Usuarios/sect/CORREO-CG/BALDAS"
-	BASE_PATH = "/mnt/sect"
-	#BASE_PATH = "L:/Usuarios/sect"
+	#BALDAS_BAS_DIR = "/mnt/sect/CORREO-CG/BALDAS"
+	BALDAS_BAS_DIR = "L:/Usuarios/sect/CORREO-CG/BALDAS"
+	#BASE_PATH = "/mnt/sect"
+	BASE_PATH = "L:/Usuarios/sect"
 	CRSC = "crs+"
 	DEFAULT_PROTOCOL = "crs+ XX/XX"
 
@@ -53,6 +53,9 @@ class Mail < ActiveRecord::Base
 	# mail users
 	after_create :mark_as_unread
 
+	def mark_as_unread
+		UnreadMail.create(User.mail_users.map {|user| {user: user, mail: self} })
+	end
 # -----------------------------------------------------------------------------------------
 # CRUD
 # -----------------------------------------------------------------------------------------
@@ -61,11 +64,11 @@ class Mail < ActiveRecord::Base
 	def self.prepare_params(params=nil)
 		if params.nil? # no params provided. We create default params
 			{
-				entity: 		Entity.find_by(sigla: CRSC),
+				entity: 		Entity.find_by(sigla: "cg"),
 				date:				Date.today,
 				topic:			"",
-				protocol:		DEFAULT_PROTOCOL,
-				direction:	0,
+				protocol:		"XX/#{Time.now.year.to_s[2..3]}",
+				direction:	"entrada",
 				mail_status:0
 			}
 		else
@@ -101,63 +104,35 @@ class Mail < ActiveRecord::Base
 		# make sure the protocol string is clean of blank spaces
 		protocols_string = protocols_string.strip
 
-		# if the protocol string is empty
-		if (protocols_string.nil? || protocols_string.blank?)
-			update_association_elements [], association
-			case association
-				when :answers 		then update(ans_string: nil)
-				when :references 	then update(refs_string: nil)
-			end
-		return {result: true, data: nil}
-		end
-
-		protocols_array = protocols_string.split(",")
-		new_elements =  Mail.find_mails protocols_string
-		protocols_hash = new_elements.map.with_index do |mail,index|
+		# Find all the mails that correspond to the protocols string that was
+		# received.
+		elements = (protocols_string.blank? ? [] : Mail.find_mails(protocols_string))
+		elements_hash = elements.map.with_index do |mail,index|
 			{
 				protocol: (mail.nil? ? protocols_array[index] : mail.protocol),
 				status: 	mail!=nil
 			}
 		end
-		result = !new_elements.include?(nil)	# if there is a nil element then there was an error.
 
-		if result
-			#new_elements = new_elements.select{ |ref| !ref.nil? } # eliminate all the nil results
-			update_association_elements(new_elements.pluck(:id), association) unless new_elements[0].nil?
-			case association
-				when :answers 		then update(ans_string: new_elements.pluck(:protocol).join(", "))
-				when :references 	then update(refs_string: new_elements.pluck(:protocol).join(", "))
-			end
+		error = elements.include? nil	# if there is a nil element then there was an error.
+		return {result: error, data: elements_hash} if error
+
+		update_association_elements(elements.pluck(:id), association)
+		case association
+			when :answers 		then update(ans_string: elements.pluck(:protocol).join(", "))
+			when :references 	then update(refs_string: elements.pluck(:protocol).join(", "))
 		end
-		{ result: result, data: protocols_hash }
+		return {result: true, data: nil}
 
 	end
 
-	# users array contains an array of users ids
-	def update_association_elements(elements_array, association)
-
-		new_elements = elements_array.map{|element_id| element_id.to_i} unless elements_array.nil?
-
-		current_elements =
-		case association
-			when :assigned_users 	then assigned_user_ids
-			when :answers 				then answers.pluck(:answer_id)
-			when :references 			then references.pluck(:reference_id)
-		end
-
-		elements_to_delete = (current_elements.nil? ? nil : (new_elements.nil? ? current_elements : (current_elements-new_elements) ) )
-		elements_to_add = (new_elements.nil? ? nil : (current_elements.nil? ? new_elements : (new_elements-current_elements) ) )
+	# users array contains an array of mail ids or users ids
+	def update_association_elements(elements, association)
 
 		case association
-		when :assigned_users
-			AssignedMail.where(mail: self, user_id: elements_to_delete).delete_all
-			AssignedMail.create(elements_to_add.map{|user_id| {mail: self, user_id: user_id} })
-		when :answers
-			Answer.where(mail: self, answer: elements_to_delete).delete_all
-			Answer.create(elements_to_add.map{|answer_id| {mail: self, answer_id: answer_id} })
-		when :references
-			Reference.where(mail: self, reference: elements_to_delete).delete_all
-			Reference.create(elements_to_add.map{|reference_id| {mail: self, reference_id: reference_id} })
+		when :assigned_users 	then self.assigned_users = User.find(elements)
+		when :answers 				then self.ans = Mail.find(elements)
+		when :references 			then self.refs = Mail.find(elements)
 		end
 	end
 
@@ -241,7 +216,6 @@ class Mail < ActiveRecord::Base
 		(files - current_files).each {|file| MailFile.create_from_file(file, self) }
 		#puts "found related files #{mail_files.inspect}"
 		mail_files.nil? ? [] : mail_files.to_a
-
 	end
 
 	def self.file_sort(f1,f2)
@@ -270,7 +244,7 @@ class Mail < ActiveRecord::Base
 		else
 			"#{base}/#{date.year}/#{entity.sigla}/#{(direction=="entrada" ? "ENTRADAS" : "SALIDAS")}"
 		end
-		return (File.directory?(dir_path) ? dir_path : false)
+		(File.directory?(dir_path) ? dir_path : false)
 	end
 
 	def can_be_deleted?
@@ -336,9 +310,7 @@ class Mail < ActiveRecord::Base
 	end
 end #class end
 
-def mark_as_unread
-	UnreadMail.create(User.mail_users.map {|user| {user: user, mail: self} })
-end
+
 # -----------------------------------------------------------------------------------------
 # ASSOCIATED CLASSES
 # -----------------------------------------------------------------------------------------

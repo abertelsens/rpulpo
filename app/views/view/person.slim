@@ -23,11 +23,11 @@ turbo-frame id="main_frame"
         ] = "general"
       
       - allowed_modules = @current_user.get_allowed_modules
-      - allowed_modules_identifiers = allowed_modules.pluck(:identifier)
-      - allowed_modules_ids = allowed_modules.pluck(:id)
-      - ["study","personal","crs","matrix","permit"].each do |mod|
-        - if ( allowed_modules_identifiers.include?(mod) || user_is_person )
-          a.button.link-button.u-full-width.no-padding data-person-view-target="module" title="ctrl+#{mod[0]}" href="/person/#{@person.id}/#{mod}" = "#{mod}"
+      - puts allowed_modules.inspect
+      - Pulpomodule.where(identifier: ["study","personal","crsrecord","matrix","permit"]).each do |mod|
+        - puts mod.identifier
+        - if ( allowed_modules.include?(mod) || user_is_person )
+          a.button.link-button.u-full-width.no-padding data-person-view-target="module" title="ctrl+#{mod.identifier[0]}" href="/person/#{@person.id}/#{mod.identifier}" = "#{mod.name}"
         - else 
           p not allowed
     /----------------------------------------------------------------------------------------------------------------
@@ -86,7 +86,7 @@ turbo-frame id="main_frame"
     div style="min-width: 15rem"
       .row
         h5.margin-bottom = "DOCUMENTS"
-      - (Document.get_pdf_docs_of_modules allowed_modules_ids).each do |doc|
+      - (Document.get_pdf_docs_of_modules allowed_modules).each do |doc|
         .row
           a.table-cell-body.menu-link  style="padding-left:0" href="/people/#{@person.id}/document/#{doc.id}" target=(doc.engine=="excel" ? "_self" : "_blank") = doc.name
       

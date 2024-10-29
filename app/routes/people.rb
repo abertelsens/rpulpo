@@ -63,9 +63,9 @@ get '/person/:id/:module' do
 	@current_user = get_current_user()
 	@person = (params[:id]=="new" ? nil : Person.find(params[:id]))
 	case params[:module]
-		when "personal" 	then @personal 	= Personal.find_by(person_id: @person.id)
-		when "study" 			then @study 		= Study.find_by(person_id: @person.id)
-		when "crs" 				then @crs 			= Crs.find_by(person_id: @person.id)
+		when "personal" 	then @personal 		= Personal.find_by(person_id: @person.id)
+		when "study" 			then @study 			= Study.find_by(person_id: @person.id)
+		when "crsrecord" 	then @crs 				= Crsrecord.find_by(person_id: @person.id)
 		when "permit"
 			@permit = Permit.find_by(person_id: @person.id)
 			@permit = Permit.create(person: @person) unless @permit
@@ -81,11 +81,11 @@ end
 
 get '/crs/table' do
 	@has_date = params[:ceremony].present?
-	
+
 	if params[:ceremony].present?
-		@objects = Person.includes(:crs).laicos.in_rome.select{|person| (person.crs&.get_next(params[:ceremony].to_sym)!=nil)}
-		@objects = @objects.map {|p| [p.id, p.short_name, p.crs.get_next(params[:ceremony].to_sym).strftime("%d-%m-%y")]}
-		
+		@objects = Person.includes(:crsrecord).laicos.in_rome.select{|person| (person.crsrecord&.get_next(params[:ceremony].to_sym)!=nil)}
+		@objects = @objects.map {|p| [p.id, p.short_name, p.crsrecord.get_next(params[:ceremony].to_sym).strftime("%d-%m-%y")]}
+
 		@title = case params[:ceremony]
 			when "fidelidad" 	then 	"Próximas Fidelidades"
 			when "admissio" 	then	"Próximas Admissio"
@@ -93,10 +93,10 @@ get '/crs/table' do
 			when "acolitado"	then 	"Próximos Acolitados"
 		end
 	end
-	
+
 	if params[:phase].present?
 		@objects = Person.phase(params[:phase]).pluck(:id, :short_name)
-		@title = "Etapa #{Crs.phases.key(params[:phase].to_i)}".capitalize
+		@title = "Etapa #{Crsrecord.phases.key(params[:phase].to_i)}".capitalize
 	end
 
 	@total = @objects.size unless @objects.nil?
@@ -105,14 +105,6 @@ end
 
 # renders a single person view
 get '/crs' do
-	#@current_user = get_current_user
-	#@people_o = Person.includes(:crs).laicos.in_rome.select{|person| (person&.crs&.get_next(:fidelidad)!=false)}
-	#@people_a = Person.includes(:crs).laicos.in_rome.select{|person| (person&.crs&.get_next(:admissio)!=false)}
-	#@people_l = Person.includes(:crs).laicos.in_rome.select{|person| (person&.crs&.get_next(:lectorado)!=false)}
-	#@people_propedeutica =  Person.phase("propedeutica")
-	#@people_discipular = Person.phase("discipular")
-	#@people_configuracional = Person.phase("configuracional")
-	#@people_sintesis = Person.phase("síntesis")
 	partial :"frame/crs"
 end
 
@@ -223,8 +215,8 @@ post '/people/edit_field' do
 	get_last_query :people
 	@people = @people_query.nil? ? Person.all.order(family_name: :asc) : (Person.search @people_query, @people_table_settings).order(family_name: :asc)
 	if params[:att_name]=="phase"
-		crs = @people.map {|person| person.crs}
-		crs.each {|crs| crs&.update(params[:att_name].to_sym => params[params[:att_name]])}
+		crs_record = @people.map {|person| person.crs_record}
+		crs_record.each {|crs| crs&.update(params[:att_name].to_sym => params[params[:att_name]])}
 	else
 		@people.each {|person| person.update(params[:att_name].to_sym => params[params[:att_name]])}
 	end

@@ -14,8 +14,8 @@ turbo-frame id="main_frame"
           a.button.link-button data-turbo-frame="people-frame" href="/crs/table?ceremony=#{ceremony}" = ceremony
         
         / build all the links for the different crs phases
-        - Crs.phases.keys.each do |key|
-          a.button.link-button data-turbo-frame="people-frame" href="/crs/table?phase=#{Crs.phases[key]}" = key
+        - Crsrecord.phases.keys.each do |key|
+          a.button.link-button data-turbo-frame="people-frame" href="/crs/table?phase=#{Crsrecord.phases[key]}" = key
         
       turbo-frame id="people-frame" src="/crs/table?ceremony=fidelidad" data-crs-target="cfiframe"
       

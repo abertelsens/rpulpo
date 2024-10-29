@@ -12,9 +12,9 @@
 # This file defines the data used for the information related to the crs+
 #---------------------------------------------------------------------------------------
 
-class Crs < ActiveRecord::Base
-	
-	self.table_name = "crs"
+class Crsrecord < ActiveRecord::Base
+
+	self.table_name = "crsrecords"
 
 	belongs_to 	:person
 
@@ -31,17 +31,17 @@ class Crs < ActiveRecord::Base
 #---------------------------------------------------------------------------------------
 
 	def self.create(params)
-		super(Crs.prepare_params params)
+		super(Crsrecord.prepare_params params)
 	end
 
 	def update(params)
-		super(Crs.prepare_params params)
+		super(Crsrecord.prepare_params params)
 	end
-	
+
 	# make sure just parameters belonging to the model are passed to the constructor
   # @params [hash]: the parameters received from the form
 	def self.prepare_params(params)
-		params.select{|param| Crs.attribute_names.include? param}
+		params.select{|param| Crsrecord.attribute_names.include? param}
 	end
 
 	#---------------------------------------------------------------------------------------
@@ -53,8 +53,11 @@ class Crs < ActiveRecord::Base
 	end
 
 	def get_next(ceremony)
-		if (ceremony==:fidelidad) then ((oblacion && !fidelidad) ? oblacion.next_year(5) : nil)
-		else get_next_date(ceremony)
+		case ceremony
+		when :fidelidad 	then ((oblacion && !fidelidad) ? oblacion.next_year(5) : nil)
+		when :admissio 		then (!admissio ? get_next_date(:admissio) : nil)
+		when :lectorado 	then ((admissio && !lectorado) ? get_next_date(:lectorado) : nil)
+		when :acolitado 	then ((lectorado && !admissio) ? get_next_date(:acolitado) : nil)
 		end
 	end
 
@@ -70,5 +73,3 @@ class Crs < ActiveRecord::Base
 
 
 end #class end
-
-

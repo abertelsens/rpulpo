@@ -110,6 +110,7 @@ end
 # renders a single document view
 get '/mail/:id' do
 	@object = (params[:id]=="new" ? Mail.create_from_params() : Mail.find(params[:id]))
+	puts "created object #{@object.inspect}"
 	unread = UnreadMail.find_by(mail: @object, user: get_current_user)
 	unread.destroy unless (unread.nil? || params[:id]=="new")
 	@related_files = @object.find_related_files
