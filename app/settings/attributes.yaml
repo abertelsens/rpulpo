@@ -486,10 +486,7 @@ tables:
   - documents_default:
     name: documents_default
     main_table: documents
-    related_tables:
-      - pulpomodules
     attributes:
       - documents.name
-      - pulpomodules.name
       - documents.description
       - documents.path
