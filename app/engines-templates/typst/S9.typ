@@ -1,5 +1,6 @@
 #let date = "$$date$$"
 #let impreso = "S9a"
+#let registro = "Reg. crsc  Lib........... Pag...........  N..........."
 
 #let show_date(date) = block(
   above:20pt, 
@@ -15,7 +16,7 @@
 #set page("a4", 
 margin: (top:5cm, bottom:3cm, x:3cm),
 header: [#pad(x:-1.5cm, y: 1.3cm, text(size: 15pt, weight: 500, [COLLEGIUM ROMANUM SANCTAE CRUCIS]))],
-footer: [#pad(x:-2.3cm, y: .9cm, text(size: 9pt, [#impreso]))]
+footer: [#pad(x:-2.3cm, y: .3cm, text(size: 9pt, [#registro \ \ #impreso]))]
 )
 
 
