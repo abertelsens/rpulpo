@@ -44,8 +44,8 @@ turbo-frame id="main_frame"
 				.columns.six
 					label for="module" module
 					select#module.u-full-width name="module"
-						- Pulpomodule.all.each do |mod|
-							option selected=(@object&.pulpomodule_id==mod.id) value=mod.id = mod.name
+						- PulpoModule.all.each do |mod|
+							option selected=(@object&.pulpo_module_id==mod.id) value=mod.id = mod.name
 			
 			.row		
 				.columns.nine

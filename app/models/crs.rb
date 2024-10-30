@@ -19,9 +19,9 @@ class Crsrecord < ActiveRecord::Base
 	belongs_to 	:person
 
 	# default dates of ceremonies
-	ADMISSIO_DATE = {day: 15, month: 10}
-	LECTORADO_DATE = {day: 20, month: 10}
-	ACOLITADO_DATE = {day: 20, month: 1}
+	ADMISSIO_DATE = 	{day: 15, month: 10}
+	LECTORADO_DATE = 	{day: 20, month: 10}
+	ACOLITADO_DATE = 	{day: 20, month: 1 }
 
 	# an enum with the different options for the seminary phases.
   enum phase:     {discipular: 0, configuracional:1, síntesis:2, propedeutica: 4}

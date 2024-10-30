@@ -142,7 +142,7 @@ class TableSettings
 	end
 
 	def get_main_model_name
-		@main_table.classify.downcase
+		@main_table.singularize
 	end
 
 	def get_order

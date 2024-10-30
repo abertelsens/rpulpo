@@ -84,7 +84,7 @@ turbo-frame id="main_frame" data-people-target="people_screen"
                       div DOCUMENTS
                   - (Document.get_docs_of_user @current_user).each do |doc|
                     .table-row-body
-                      a.table-cell-body.menu-link  href="/people/set/document/#{doc.id}" target=(doc.engine=="excel" ? "_self" : "_blank") = "#{doc.pulpomodule.name} - #{doc.name}"
+                      a.table-cell-body.menu-link  href="/people/set/document/#{doc.id}" target=(doc.engine=="excel" ? "_self" : "_blank") = "#{doc.pulpo_module.name} - #{doc.name}"
                 
               .table-container
                 .table-table style="display: block"

@@ -17,10 +17,10 @@ require_rel '../engines'
 
 class Document < ActiveRecord::Base
 
-	belongs_to 	    :pulpomodule
+	belongs_to 	    :pulpo_module
 
 	# the default scoped defines the default sort order of the query results
-	default_scope { order(pulpomodule_id: :asc, name: :asc) }
+	default_scope { order(pulpo_module_id: :asc, name: :asc) }
 
 	EXCEL_TEMPLATES_DIR = "app/engines-templates/excel"
 	TYPST_TEMPLATES_DIR = "app/engines-templates/typst"
@@ -76,7 +76,7 @@ class Document < ActiveRecord::Base
 			template_variables = Document.has_template_variables?(File.read params[:template][:tempfile])
 		end
 		{
-			pulpomodule_id:        params[:module],
+			pulpo_module_id:        params[:module],
 			name:                   params[:name],
 			description:            params[:description],
 			engine:                 "typst",
@@ -87,23 +87,23 @@ class Document < ActiveRecord::Base
 	end
 
 	def self.get_docs_of_user(user)
-		Document.includes(:pulpomodule).where(pulpomodule: user.get_allowed_modules)
+		Document.includes(:pulpo_module).where(pulpo_module: user.get_allowed_modules)
 	end
 
 
 	def get_attribute(table_attribute)
 		case table_attribute.table
-			when "documents" 			then self[table_attribute.to_sym]
-			when "pulpomodules" 	then pulpomodule[table_attribute.field.to_sym]
+			when "documents" 			then self[table_attribute.field.to_sym]
+			when "pulpo_modules" 	then pulpo_module[table_attribute.get_field_name.to_sym]
 		end
 	end
 
 	def self.get_pdf_docs_of_user(user)
-		Document.includes(:pulpomodule).all.order(:pulpomodule_id, :name).select{|doc| ((user.get_allowed_modules.include? doc.pulpomodule) && doc.engine!="excel")}
+		Document.includes(:pulpoo_module).all.order(:pulpo_module_id, :name).select{|doc| ((user.get_allowed_modules.include? doc.pulpo_module) && doc.engine!="excel")}
 	end
 
 	def self.get_pdf_docs_of_modules(modules)
-		Document.includes(:pulpomodule).where('pulpomodules.id' => modules)
+		Document.includes(:pulpo_module).where('pulpo_modules.id' => modules)
 	end
 
 	def get_writer(people, template_variables=nil)

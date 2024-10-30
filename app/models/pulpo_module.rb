@@ -1,5 +1,5 @@
 
-# pulpomodule.rb
+# pulpo_module.rb
 #---------------------------------------------------------------------------------------
 # FILE INFO
 
@@ -11,14 +11,14 @@
 # DESCRIPTION
 
 # A class defining a Module. As module is a reserved word in ruby we chose to name it
-# pulpomodule
+# pulpo_module
 # -----------------------------------------------------------------------------------------
 
 
 #A class containing the Users data
-class Pulpomodule < ActiveRecord::Base
+class PulpoModule < ActiveRecord::Base
 
-	self.table_name = "pulpomodules"
+
 
 	has_many 	:module_users, dependent: :destroy
 
@@ -33,7 +33,7 @@ class Pulpomodule < ActiveRecord::Base
 # will be forbidden to access the moudule.
 after_save do
 	puts "creating permissions for new module"
-	ModuleUser.create(User.all.map{|user| {user: user, pulpomodule: self , modulepermission: "forbidden"} })
+	ModuleUser.create(User.all.map{|user| {user: user, pulpo_module: self , modulepermission: "forbidden"} })
 end
 
 # -----------------------------------------------------------------------------------------
@@ -41,15 +41,15 @@ end
 # -----------------------------------------------------------------------------------------
 
 	def self.create(params)
-		super(Pulpomodule.prepare_params params)
+		super(PulpoModule.prepare_params params)
 	end
 
 	def update(params)
-		super(Pulpomodule.prepare_params params)
+		super(PulpoModule.prepare_params params)
 	end
 
 	def self.destroy(params)
-		Pulpomodule.find(params[:id]).destroy
+		PulpoModule.find(params[:id]).destroy
 	end
 
 	def self.prepare_params(params)

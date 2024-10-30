@@ -21,7 +21,7 @@ class User < ActiveRecord::Base
 	has_many	:assigned_mails, 	dependent: :destroy
 	has_many 	:module_users, 		dependent: :destroy
 	has_many 	:module_users, 		dependent: :destroy
-	has_many 	:pulpomodules, 		:through => :module_users
+	has_many 	:pulpo_modules, 		:through => :module_users
 
 	# enables the creation/update of the association model_users via attributes.
 	# See the the prepare_params method.
@@ -70,11 +70,11 @@ class User < ActiveRecord::Base
 	# @returs: a hash that can be used to create/update the module_users association
 	def self.prepare_modules_attributes(module_params, user=nil)
 		if user!=nil
-			current_modules = user.module_users.all.map {|mu| { mu.pulpomodule_id => mu.id } }
+			current_modules = user.module_users.all.map {|mu| { mu.pulpo_module_id => mu.id } }
 			current_modules = current_modules.inject(:merge)
-			module_params.keys.map {|mod_id| {id: current_modules[mod_id.to_i], pulpomodule_id: mod_id, modulepermission: module_params[mod_id]} }
+			module_params.keys.map {|mod_id| {id: current_modules[mod_id.to_i], pulpo_module_id: mod_id, modulepermission: module_params[mod_id]} }
 		else
-			module_params.keys.map {|mod_id| { pulpomodule_id: mod_id, modulepermission: module_params[mod_id]} }
+			module_params.keys.map {|mod_id| { pulpo_module_id: mod_id, modulepermission: module_params[mod_id]} }
 		end
 	end
 
@@ -124,20 +124,19 @@ class User < ActiveRecord::Base
 	end
 
 	def get_allowed_modules
-		return Pulpomodule.all if admin? 		# an admin has all permitions.
-		#pulpomodules.joins(:module_user).where(modulepermission: "allowed")
-		(module_users.select {|mu| mu.modulepermission=="allowed"}).map {|mu| mu.pulpomodule}
+		return PulpoModule.all if admin? 		# an admin has all permitions.
+		(module_users.select {|mu| mu.modulepermission=="allowed"}).map {|mu| mu.pulpo_module}
 	end
 
 	def allowed?(module_identifier)
 		return true if admin?
-		result = (module_users.joins(:pulpomodule).where(pulpomodule: {name: module_identifier})).first
+		result = (module_users.joins(:pulpo_module).where(pulpo_module: {name: module_identifier})).first
 		return result.nil? ? false : result
 	end
 
 	def is_table_allowed?(table)
 		return true if self.admin? 		# an admin has all permissions.
-		settings = module_users.find_by(pulpomodule: Pulpomodule.find_by(name: table))
+		settings = module_users.find_by(pulpo_module: Pulpomodule.find_by(name: table))
 		settings.nil? ? false : settings.modulepermission=="allowed"
 	end
 
@@ -151,14 +150,14 @@ class User < ActiveRecord::Base
 
 	# get the permission for a module
 	def get_permission(mod)
-		mu = module_users.find_by(pulpomodule: mod)
+		mu = module_users.find_by(pulpo_module: mod)
 		mu.nil? ? nil : mu.modulepermission
 	end
 
 	# get the permissions for all modules as a hash of the form {module_id => permission}
 	# The inject method transforms an array of the permissions into a single hash.
 	def get_permissions()
-		(module_users.includes(:pulpomodule).map{|mu| {mu.pulpomodule.id => mu.modulepermission}}).inject(:merge)
+		(module_users.includes(:pulpo_module).map{|mu| {mu.pulpo_module.id => mu.modulepermission}}).inject(:merge)
 	end
 
 end #class end
