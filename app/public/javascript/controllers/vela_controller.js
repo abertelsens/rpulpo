@@ -36,6 +36,7 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
 
       update_turnos(event) {    
           this.formTarget.action = `${this.default_action}/turnos/update` 
+          this.formTarget.method="POST"
           this.element.dataset.turboFrame = "turnos_frame"
           this.element.requestSubmit()
       }

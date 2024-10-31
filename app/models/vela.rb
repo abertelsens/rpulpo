@@ -78,7 +78,7 @@ class Vela < ActiveRecord::Base
 		turnos.destroy_all unless turnos.nil?
 		houses = order.split(" ").select{|index| index!="-1"}
 		current_time = start_time2 + 15*60 # 15 minutes after start_time2, i.e. the Exposition
-
+		puts "current time #{current_time} end time #{end_time}"
 		while current_time < end_time do
 			turnos << Turno.create(vela: self, start_time: current_time, end_time: current_time + HALF_HOUR )
 			current_time = current_time + HALF_HOUR

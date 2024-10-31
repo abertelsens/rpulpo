@@ -19,15 +19,8 @@ get '/velas/table' do
 end
 
 
-# renders a single document form
-get '/vela/:id/turnos' do
-  @vela = Vela.find(params[:id])
-  @turnos = @vela.turnos.includes(:rooms => [:person])
-  partial :"frame/turnos"
-end
-
-# renders a single document form
-get '/vela/:id/turnos/update' do
+post '/vela/:id/turnos/update' do
+  puts "UPDATING TURNOS"
   @vela = Vela.find(params[:id])
   @vela.update_from_params params
   @vela.turnos.destroy
@@ -35,6 +28,14 @@ get '/vela/:id/turnos/update' do
   @turnos = @vela.turnos.includes(:rooms => [:person])
   partial :"frame/turnos"
 end
+
+# renders a single document form
+get '/vela/:id/turnos' do
+  @vela = Vela.find(params[:id])
+  @turnos = @vela.turnos.includes(:rooms => [:person])
+  partial :"frame/turnos"
+end
+
 
 # renders a single document form
 get '/vela/:id/pdf' do

@@ -132,13 +132,11 @@ turbo-frame id="main_frame"
 										option selected = (@object.nil? ? false : order_array[i]==house[1]) value=house[1] = house[0].humanize
 				
 			.row data-controller="drag"
-				turbo-frame[
-					src="/vela/#{@object.id}/turnos" 
+				turbo-frame[src="/vela/#{@object.id}/turnos" 
 					data-vela-target="turnos_frame" 
 					id="turnos_frame" 
 					data-drag-target="turnosframe" 
-					data-action="click->contoller2#turnRed"
-					]
+					data-action="click->contoller2#turnRed"]
 			
 			/----------------------------------------------------------------------------------------------------------------
 			/ BUTTONS
