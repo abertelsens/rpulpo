@@ -71,9 +71,9 @@ end
 		identifier = params[:identifier].strip
 		found =
 			if (params[:id])=="new"
-				!Pulpomodule.find_by(identifier: identifier).nil?
+				!PulpoModule.find_by(identifier: identifier).nil?
 			else
-				pmodule = Pulpomodule.find_by(identifier: identifier)
+				pmodule = PulpoModule.find_by(identifier: identifier)
 				pmodule.nil? ? false : (pmodule.id!=params[:id].to_i)
 			end
 		found ? {result: false, message: warning_message} : {result: true}

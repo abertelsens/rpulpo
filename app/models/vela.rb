@@ -33,13 +33,14 @@ class Vela < ActiveRecord::Base
 
 	# creates a vela objet with default parameters
 	def self.create_new()
-		date = DateTime.now
+		today = DateTime.now
+		tomorrow = today + 1
 		params =
 		{
-			date: 					date,
-			start_time:			parse_datetime(date,21,00),
-			start_time2:		parse_datetime(date,21,15),
-			end_time:				DateTime.new(date.year, date.month, date.day + 1, 6, 30, 0,1),
+			date: 					today,
+			start_time:			parse_datetime(today,21,00),
+			start_time2:		parse_datetime(today,21,15),
+			end_time:				DateTime.new(tomorrow.year, tomorrow.month, tomorrow.day, 6, 30, 0,1),
 			start1_message: "Examen",
 			start2_message: "Exposición en Nuestra Señora de los Ángeles",
 			end_message:		"Bendición y Santa Misa en Nuestra Señora de los Ángeles",
@@ -86,7 +87,6 @@ class Vela < ActiveRecord::Base
 	end
 
 	def assign_turnos(rooms)
-		no_vela = rooms.select{|room| room.person.vela=="no"}
 		assign(turnos.to_a,rooms)
 	end
 

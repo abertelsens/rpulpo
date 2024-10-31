@@ -32,6 +32,6 @@ footer: [#pad(x:-2.3cm, y: .9cm, text(size: 9pt, [#impreso]))]
 
 Infrascriptus Dr. Ferdinando Crovetto, Collegii Romani Sanctae Crucis Rector,
 
-TESTATUR AC FIDEM FACIT se, iuxta facultatem sibi ab Rev.mo Ferdinando Ocáriz, Praelato Sanctae Crucis et Operis Dei concessam, inter candidatos ad Diaconatum et Presbyteratum, ad normam can. 1034 § 1 C.I.C., $crsrecords.admissio.latin$, D.num $person.first_name$ $person.family_name$, huius Praelaturae fidelem admisisse.
+TESTATUR AC FIDEM FACIT se, iuxta facultatem sibi ab Rev.mo Ferdinando Ocáriz, Praelato Sanctae Crucis et Operis Dei concessam, inter candidatos ad Diaconatum et Presbyteratum, ad normam can. 1034 § 1 C.I.C., $crs_records.admissio.latin$, D.num $person.first_name$ $person.family_name$, huius Praelaturae fidelem admisisse.
 
 #show_date[#date]

@@ -32,6 +32,6 @@ footer: [#pad(x:-2.3cm, y: .9cm, text(size: 9pt, [#impreso]))]
 
 Infrascriptus Dr. Ferdinando Crovetto, Collegii Romani Sanctae Crucis Rector,
 
-TESTATUR AC FIDEM FACIT, iuxta facultates ab Rev.mo Domino Ferdinando Ocáriz, Praelato Sanctae Crucis et Operis Dei concessas, D.no $person.first_name$ $person.family_name$ huius Praelaturae fideli, collatum esse Ministerium Acolythi, $crsrecords.acolitado.latin$.
+TESTATUR AC FIDEM FACIT, iuxta facultates ab Rev.mo Domino Ferdinando Ocáriz, Praelato Sanctae Crucis et Operis Dei concessas, D.no $person.first_name$ $person.family_name$ huius Praelaturae fideli, collatum esse Ministerium Acolythi, $crs_records.acolitado.latin$.
 
 #show_date[#date]
