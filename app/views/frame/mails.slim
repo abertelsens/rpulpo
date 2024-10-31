@@ -29,12 +29,6 @@ turbo-frame id="main_frame"
               
               .columns.three.flex-left syle="gap: .5rem"
                
-                - if @current_user.admin?
-                  a.button.button-secondary data-mail-target="deleteYearBtn" data-turbo-frame="mails_table" href="/mail/delete_year"
-                    i.fa-solid.fa-ckeck style="font-size:small"
-                    |&nbspdelete all year
-
-
                 a.button.button-secondary data-turbo-frame="mails_table" href="/mail/mark_as_read"
                   i.fa-solid.fa-ckeck style="font-size:small"
                   |&nbspmark as read
@@ -48,6 +42,12 @@ turbo-frame id="main_frame"
                 h3.no-margin CORREO CAVABIANCA
                 
               .columns.two.offset-by-two.flex-right
+
+                - if @current_user.admin?
+                  a.button.button-secondary.margin-right.button-danger data-mail-target="deleteYearBtn" data-turbo-frame="mails_table" href="/mail/delete_year"
+                    i.fa-solid.fa-ckeck style="font-size:small"
+                    |&nbspdelete whole year
+
                 a.button.button-success.u-full-width.no-margin.button-medium[
                   href="/mail/new" 
                   data-turbo-frame="main_frame"
