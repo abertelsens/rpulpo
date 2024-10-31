@@ -12,9 +12,9 @@
 # This file defines the data used for the information related to the crs+
 #---------------------------------------------------------------------------------------
 
-class Crsrecord < ActiveRecord::Base
+class CrsRecord < ActiveRecord::Base
 
-	self.table_name = "crsrecords"
+	self.table_name = "crs_records"
 
 	belongs_to 	:person
 
@@ -31,17 +31,17 @@ class Crsrecord < ActiveRecord::Base
 #---------------------------------------------------------------------------------------
 
 	def self.create(params)
-		super(Crsrecord.prepare_params params)
+		super(CrsRecord.prepare_params params)
 	end
 
 	def update(params)
-		super(Crsrecord.prepare_params params)
+		super(CrsRecord.prepare_params params)
 	end
 
 	# make sure just parameters belonging to the model are passed to the constructor
   # @params [hash]: the parameters received from the form
 	def self.prepare_params(params)
-		params.select{|param| Crsrecord.attribute_names.include? param}
+		params.select{|param| CrsRecord.attribute_names.include? param}
 	end
 
 	#---------------------------------------------------------------------------------------

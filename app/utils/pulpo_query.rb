@@ -149,24 +149,16 @@ class AttributeQuery
 		#puts Rainbow("tables: #{@tables}").yellow
 		#puts Rainbow("main condition: #{condition}").yellow
 		puts Rainbow("table:  #{table}").yellow
-		puts Person.associations
-
+		
 		# the code is a bit complex but it allows us to include in the query the tables that are needed to show the records
 		# and avoid n+1 queries
-		#model_sym = Person.associations[table].to_sym unless table.nil? || table=="people"
 		case @main_table
 			when "people"
 				case table
 					when "people" then (@tables.empty? ? Person.where(condition) : Person.includes(@tables).where(condition))
 					else
-						model_sym = Person.associations[table].to_sym
+						model_sym = table.singularize.to_sym
 						(@tables.empty? ? Person.joins(model_sym).where(condition) : Person.includes(@tables).joins(model_sym).where(condition))
-
-					#when "personals" then (@tables.empty? ? Person.joins(:personal).where(condition) : Person.includes(@tables).joins(:personal).where(condition))
-					#when "studies" then (@tables.empty? ? Person.joins(:study).where(condition) : Person.includes(@tables).joins(:study).where(condition))
-					##when "crsrecords" then (@tables.empty? ? Person.joins(:crsrecord).where(condition) : Person.includes(@tables).joins(:crs).where(condition))
-					#when "rooms" then (@tables.empty? ? Person.joins(:room).where(condition) : Person.includes(@tables).joins(:room).where(condition))
-					#when "matrices" then (@tables.empty? ? Person.joins(:matrix).where(condition) : Person.includes(@tables).joins(:matrix).where(condition))
 				end
 			when "rooms"
 				case table

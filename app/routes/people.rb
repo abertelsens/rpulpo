@@ -63,9 +63,9 @@ get '/person/:id/:module' do
 	@current_user = get_current_user()
 	@person = (params[:id]=="new" ? nil : Person.find(params[:id]))
 	case params[:module]
-		when "personal" 	then @personal 		= Personal.find_by(person_id: @person.id)
-		when "study" 			then @study 			= Study.find_by(person_id: @person.id)
-		when "crsrecord" 	then @crs 				= Crsrecord.find_by(person_id: @person.id)
+		when "personal" 	then @personal 	= Personal.find_by(person_id: @person.id)
+		when "study" 			then @study 		= Study.find_by(person_id: @person.id)
+		when "crs_recor" 	then @crs 			= CrsRecord.find_by(person_id: @person.id)
 		when "permit"
 			@permit = Permit.find_by(person_id: @person.id)
 			@permit = Permit.create(person: @person) unless @permit
@@ -79,13 +79,12 @@ get '/person/:id/:module' do
 	partial :"form/person/#{params[:module]}"
 end
 
-get '/crs/table' do
+get '/crs_record/table' do
 	@has_date = params[:ceremony].present?
-
+	
 	if params[:ceremony].present?
-		@objects = Person.includes(:crsrecord).laicos.in_rome.select{|person| (person.crsrecord&.get_next(params[:ceremony].to_sym)!=nil)}
-		@objects = @objects.map {|p| [p.id, p.short_name, p.crsrecord.get_next(params[:ceremony].to_sym).strftime("%d-%m-%y")]}
-
+		@objects = Person.includes(:crs_record).laicos.in_rome.select{|person| (person.cr_records&.get_next(params[:ceremony].to_sym)!=nil)}
+		@objects = @objects.map {|p| [p.id, p.short_name, p.crs_record.get_next(params[:ceremony].to_sym).strftime("%d-%m-%y")]}
 		@title = case params[:ceremony]
 			when "fidelidad" 	then 	"Próximas Fidelidades"
 			when "admissio" 	then	"Próximas Admissio"
@@ -93,10 +92,10 @@ get '/crs/table' do
 			when "acolitado"	then 	"Próximos Acolitados"
 		end
 	end
-
+	
 	if params[:phase].present?
 		@objects = Person.phase(params[:phase]).pluck(:id, :short_name)
-		@title = "Etapa #{Crsrecord.phases.key(params[:phase].to_i)}".capitalize
+		@title = "Etapa #{Crs.phases.key(params[:phase].to_i)}".capitalize
 	end
 
 	@total = @objects.size unless @objects.nil?
@@ -104,8 +103,8 @@ get '/crs/table' do
 end
 
 # renders a single person view
-get '/crs' do
-	partial :"frame/crs"
+get '/crs_records' do
+	partial :"frame/crs_records"
 end
 
 # shows the form to edit a field of all the people in the set
@@ -124,22 +123,23 @@ post '/person/:id/general' do
 		when "save" then @person.nil? ? (@person =  Person.create params) : (@person.update params) if save?
 		# if a person was deleted we go back to the screen fo the people table
 		when "delete"
-				@person.destroy
-				redirect :"/people"
+			@person.destroy
+			redirect :"/people"
 	end
 	partial :"view/person"
 end
 
-# this route handles the moduled: personal, study, crs and matrix
+# this route handles the moduled: personal, study, crs and matrix.
+# there is no need to handle the delete action as none of these can be deleted directly
+# but only if the person is destroyed
 post '/person/:person_id/:module/:id' do
 	@person = Person.find(params[:person_id])
 	@current_user = get_current_user
-	klass = Object.const_get(params[:module].capitalize)
+	klass = Object.const_get(params[:module].classify)
 	object = params[:id]=="new" ? nil : klass.find(params[:id])
 	object.nil? ? (klass.create params) : (object.update params) if save?
 	partial :"view/person"
 end
-
 
 # uploads an image
 post '/people/:id/image' do
@@ -215,8 +215,8 @@ post '/people/edit_field' do
 	get_last_query :people
 	@people = @people_query.nil? ? Person.all.order(family_name: :asc) : (Person.search @people_query, @people_table_settings).order(family_name: :asc)
 	if params[:att_name]=="phase"
-		crs_record = @people.map {|person| person.crs_record}
-		crs_record.each {|crs| crs&.update(params[:att_name].to_sym => params[params[:att_name]])}
+		crs = @people.map {|person| person.crs_record}
+		crs.each {|crs| crs&.update(params[:att_name].to_sym => params[params[:att_name]])}
 	else
 		@people.each {|person| person.update(params[:att_name].to_sym => params[params[:att_name]])}
 	end

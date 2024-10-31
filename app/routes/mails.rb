@@ -108,6 +108,12 @@ get '/mail/mark_as_read' do
 end
 
 # renders a single document view
+get '/mail/delete_year' do
+	Mail.delete_year(params[year])
+	partial :"table/mail"
+end
+
+# renders a single document view
 get '/mail/:id' do
 	@object = (params[:id]=="new" ? Mail.create_from_params() : Mail.find(params[:id]))
 	puts "created object #{@object.inspect}"

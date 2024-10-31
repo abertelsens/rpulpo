@@ -7,7 +7,7 @@ turbo-frame id="main_frame"
 	.container.medium-form.screen-box data-controller="form" 
 		
 		form#personForm[
-			action="/person/#{@person.id}/crsrecord/#{(@crs.nil? ? "new" : @crs.id)}" 
+			action="/person/#{@person.id}/crs_record/#{(@crs.nil? ? "new" : @crs.id)}" 
 			method="POST" 
 			data-form-target="form"
 			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
@@ -87,7 +87,7 @@ turbo-frame id="main_frame"
 					label etapa
 					select.u-full-width name="phase"
 						option selected=(@crs&.phase.nil?) value="" = "-"
-						- Crsrecord.phases.each do |st| 
+						- CrsRecord.phases.each do |st| 
 							option selected=(@crs&.phase==st[0]) value=st[0] = st[0]
 		
 			.row 

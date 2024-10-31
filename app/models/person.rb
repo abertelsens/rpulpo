@@ -28,7 +28,7 @@ class Person < ActiveRecord::Base
 
 	# the related tables have a destroy dependency, i.e. if a person is deleted then also
 	# the matching table entries are destroyed as well.
-	has_one :crsrecord, 				dependent: :destroy, class_name: "Crsrecord"
+	has_one :crs_record, 				dependent: :destroy, class_name: "CrsRecord"
 	has_one :personal, 					dependent: :destroy
 	has_one :study, 						dependent: :destroy
 	has_one :matrix, 						dependent: :destroy
@@ -49,7 +49,7 @@ class Person < ActiveRecord::Base
 	scope :in_rome, -> { where.not(ctr:"se_ha_ido") }
 
 	# A scope that looks at all the people in a specific phase. Example: Person.phase("configuracional")
-	scope :phase, -> (phase) { joins(:crsrecord).where(crsrecord: {phase: phase}) }
+	scope :phase, -> (phase) { joins(:crs_record).where(crs_record: {phase: phase}) }
 
 	# enums info is stored as an integer in the db but can be queried by the associated
 	# enum symbol.
@@ -63,8 +63,8 @@ class Person < ActiveRecord::Base
 
 	before_save do
 		# if the status of a person changed we also update the phase field
-		crs_record.update(phase:"síntesis") if (status=="diacono" && crs)
-		crs_record.update(phase:nil) if (status=="sacerdote" && crs)
+		crs_record.update(phase:"síntesis") if (status=="diacono" && crs_record)
+		crs_record.update(phase:nil) if (status=="sacerdote" && crs_record)
 		self.full_name = "#{first_name} #{family_name}"
 	end
 
@@ -94,14 +94,9 @@ class Person < ActiveRecord::Base
 		params.select{|param| Person.attribute_names.include? param}
 	end
 
-	#just to make sure I did not mess up the names.
-	#def crs
-		#self.crsrecord
+	#def self.associations
+	#	@@associations
 	#end
-
-	def self.associations
-		@@associations
-	end
 
 	# the search method
 	# @search_string: the string containing the query
@@ -131,7 +126,9 @@ class Person < ActiveRecord::Base
 		# the send(attribute.to_sym) method calls object.method_name
 		res = case table
 			when "person", "people" then self[attribute.to_sym]
-			else send(@@associations[table].to_sym)&.send(attribute.to_sym)
+			else 
+				puts "asking for value #{table.singularize.to_sym}.#{attribute.to_sym}"
+				send(table.singularize.to_sym)&.send(attribute.to_sym)
 		end
 		res = "" if res.nil?
 		puts Rainbow("\nPULPO: Warning! found nil while looking for #{attribute_string}").orange if res.nil?
@@ -219,6 +216,6 @@ class Person < ActiveRecord::Base
 		tas = TaskAssignment.where(day_schedule: day_schedule).select{|ta| ta.clashes_with_task? task_schedule}.map{|ta| ta.person_id}
 	end
 
-	@@associations = Person.reflect_on_all_associations(:has_one).map{|ass|{ass.plural_name => ass.class_name.downcase}}.reduce({}, :merge)
-	puts "associations: ·#{@@associations}"
+	#@@associations = Person.reflect_on_all_associations(:has_one).map{|ass|{ass.plural_name => ass.class_name.downcase}}.reduce({}, :merge)
+	#puts "associations: ·#{@@associations}"
 end

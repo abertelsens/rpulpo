@@ -13,7 +13,7 @@ turbo-frame id="main_frame"
 					select.u-full-width name="att_name" data-setfield-target="att_name" data-action="change->setfield#update"
 						- Person.get_editable_attributes.each do |att|
 							option value=att[:name] = att[:name]
-						- Crsrecord.get_editable_attributes.each do |att|
+						- CrsRecord.get_editable_attributes.each do |att|
 							option value=att[:name] = att[:name]
 
 				//.columns.eight.offset-by-two
@@ -38,7 +38,7 @@ turbo-frame id="main_frame"
 							option selected=(@person&.n_agd==st[0]) value=st[0] = st[0]
 					
 					select.u-full-width name="phase" style="display:none" 
-						- Crsrecord.phases.each do |st| 
+						- CrsRecord.phases.each do |st| 
 							option selected=(@crs&.phase==st[0]) value=st[0] = st[0]
 				/----------------------------------------------------------------------------------------------------------------
 				//BUTTONS

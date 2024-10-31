@@ -2,12 +2,27 @@ import { Controller } from "https://cdn.jsdelivr.net/npm/stimulus@3.2.2/dist/sti
 
     Stimulus.register("mail", class extends Controller {
       
-      static targets = ["protocolmodal", "entity", "direction", "year", "mail_status", "protocol", "alert"]; //the button to add a new object
+      static targets = ["protocolmodal", "entity", "deleteYearButton", "direction", "year", "mail_status", "protocol", "alert"]; //the button to add a new object
       
       connect() {
         console.log("Stimulus Connected: mail controller");
       }
 
+      deleteYear(event){
+        console.log("delete year clicked")
+        event.preventDefault();
+        var year = this.yearTarget.value
+        if(year==="") {return}
+        var url = `/mail/delete_year?year=${year}`;
+          console.log(url)
+          fetch(url)
+          .then(res => res.json())
+          .then(out => { this.handle_response(out) })
+          .catch(err => { throw err });
+        }
+
+
+      }
       search_focus(event)
       {
         event.preventDefault();

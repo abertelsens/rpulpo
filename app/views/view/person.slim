@@ -24,7 +24,7 @@ turbo-frame id="main_frame"
       
       - allowed_modules = @current_user.get_allowed_modules
       - puts allowed_modules.inspect
-      - PulpoModule.where(identifier: ["study","personal","crsrecord","matrix","permit"]).each do |mod|
+      - PulpoModule.where(identifier: ["study","personal","crs_record","matrix","permit"]).each do |mod|
         - puts mod.identifier
         - if ( allowed_modules.include?(mod) || user_is_person )
           a.button.link-button.u-full-width.no-padding data-person-view-target="module" title="ctrl+#{mod.identifier[0]}" href="/person/#{@person.id}/#{mod.identifier}" = "#{mod.name}"
