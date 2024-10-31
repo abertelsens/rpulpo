@@ -9,7 +9,7 @@ require 'pandoc-ruby'
 
 class MailFile < ActiveRecord::Base
 
-	# the objet belongs to a mail object. Each mailfile can have only one mail file of a given name
+	# the objet belongs to a mail object. Each mail_file can have only one mail file of a given name
 	belongs_to  :mail
 	validates 	:name, uniqueness: { scope: :mail_id }
 
@@ -63,7 +63,7 @@ class MailFile < ActiveRecord::Base
 		html_string.gsub(/<script.*?>(.+?)<\/script>/, '\1').gsub(/<noscript.*?>(.+?)<\/noscript>/, '\1')
 	end
 
-	# gets the pdf path of a mailfile. Used to preview an annexes.
+	# gets the pdf path of a mail_file. Used to preview an annexes.
 	def	get_pdf_path
 		# Delete all the files in the tmp folder that are older than one day
 		Dir.glob("#{TMP_DIR}/*.pdf").each { |filename| File.delete(filename) if file_age(filename) > 0 }

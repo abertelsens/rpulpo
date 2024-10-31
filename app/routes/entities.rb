@@ -2,7 +2,7 @@
 #---------------------------------------------------------------------------------------
 # FILE INFO
 
-# autor: alejandrobertelsen@gmail.com
+# author: alejandrobertelsen@gmail.com
 # last major update: 2024-10-05
 #---------------------------------------------------------------------------------------
 
@@ -18,7 +18,7 @@
 
 # renders the entities frame
 get '/entities' do
-	partial :"frame/simple_template",  locals: {title: "ENTITIES", model_name: "entity", table_name: "entities" }
+	partial :"frame/simple_template",  locals: {title: "ENTITIES", model_name: "entity"}
 end
 
 # renders the table of entities

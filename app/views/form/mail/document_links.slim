@@ -15,8 +15,8 @@ turbo-frame id="document-links-frame"
 								a[
 									data-value="referencelink" 
 									data-action="click->documentlinks#activatebox" 
-									data-turbo-frame="mailfile-frame" 
-									href="/mailfile/#{rf&.id}?type=referencia"] = rf&.name 
+									data-turbo-frame="mail_file-frame" 
+									href="/mail_file/#{rf&.id}?type=referencia"] = rf&.name 
 								
 								label.tooltip style="margin: 0"
 									|&nbsp&nbsp
@@ -35,8 +35,8 @@ turbo-frame id="document-links-frame"
 								data-turbo-preload="true" 
 								data-value="noteslink" 
 								data-action="click->documentlinks#activatebox" 
-								data-turbo-frame="mailfile-frame" 
-								href="/mailfile/#{rf&.id}?type=nota"] = rf&.name  
+								data-turbo-frame="mail_file-frame" 
+								href="/mail_file/#{rf&.id}?type=nota"] = rf&.name  
 							
 							label.tooltip style="margin: 0"
 									|&nbsp&nbsp
@@ -54,8 +54,8 @@ turbo-frame id="document-links-frame"
 								a[
 									data-value="answerslink" 
 									data-action="click->documentlinks#activatebox" 
-									data-turbo-frame="mailfile-frame" 
-									href="/mailfile/#{rf&.id}?type=respuesta%20en"] = rf&.name  
+									data-turbo-frame="mail_file-frame" 
+									href="/mail_file/#{rf&.id}?type=respuesta%20en"] = rf&.name  
 								
 								label.tooltip style="margin: 0"
 									|&nbsp&nbsp
@@ -64,11 +64,11 @@ turbo-frame id="document-links-frame"
 		
 		- if !first_file.nil?
 			.row
-				turbo-frame id="mailfile-frame" data-mailform-target="mailfile_frame" src="/mailfile/#{first_file.id}?type=nota"
+				turbo-frame id="mail_file-frame" data-mailform-target="mail_file_frame" src="/mail_file/#{first_file.id}?type=nota"
 		
 		- else
 			.row.u-text-center
-				turbo-frame id="mailfile-frame" data-mailform-target="mailfile_frame"
+				turbo-frame id="mail_file-frame" data-mailform-target="mail_file_frame"
 					h3
 						i.fa-solid.fa-triangle-exclamation
 						p = "No se encontró ningun documento relacionado con este correo."

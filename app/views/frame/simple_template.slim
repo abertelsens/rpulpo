@@ -6,7 +6,7 @@ turbo-frame id="main_frame"
       h3 = title
       
     .row
-      turbo-frame id="#{table_name}_table" src="/#{table_name}/table"
+      turbo-frame id="#{model_name.tableize}_table" src="/#{model_name.tableize}/table"
 
     .row.u-text-center.margin-top
       a.button.button-primary[

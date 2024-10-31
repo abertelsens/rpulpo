@@ -11,14 +11,17 @@
 
 # A class defining a mail object
 # -----------------------------------------------------------------------------------------
+require 'os'
+
 TAB = "\u0009".encode('utf-8')
+
 
 class Mail < ActiveRecord::Base
 
 	BASE_DIR= "app/public"
-	BALDAS_BAS_DIR = "/mnt/sect/CORREO-CG/BALDAS"
-	#BALDAS_BAS_DIR = "L:/Usuarios/sect/CORREO-CG/BALDAS"
-	BASE_PATH = "/mnt/sect"
+	BALDAS_BAS_DIR = OS.windows? ? "L:/Usuarios/sect/CORREO-CG/BALDAS" : "/mnt/sect/CORREO-CG/BALDAS"
+	#BALDAS_BAS_DIR =
+	BASE_PATH = OS.windows? ? "L:/Usuarios/sect" :  "/mnt/sect"
 	#BASE_PATH = "L:/Usuarios/sect"
 	CRSC = "crs+"
 	DEFAULT_PROTOCOL = "crs+ XX/XX"
@@ -204,7 +207,7 @@ class Mail < ActiveRecord::Base
 	end
 
 	# finds all the related files of the mail. If no files are found the method returns an empty array/
-	# @returs [[mailfile]]: an array of mailfiles objects mailfile.
+	# @returs [[mail_file]]: an array of mail_files objects mail_file.
 	#
 	def find_related_files()
 		protocol_num = protocol[0..-4].delete("^0-9").to_i

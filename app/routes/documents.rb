@@ -2,7 +2,7 @@
 #---------------------------------------------------------------------------------------
 # FILE INFO
 
-# autor: alejandrobertelsen@gmail.com
+# author: alejandrobertelsen@gmail.com
 # last major update: 2024-10-05
 #---------------------------------------------------------------------------------------
 
@@ -18,7 +18,7 @@
 
 # renders the documents frame
 get '/documents' do
-  partial :"frame/simple_template",  locals: {title: "DOCUMENTS", model_name: "document", table_name: "documents" }
+  partial :"frame/simple_template",  locals: {title: "DOCUMENTS", model_name: "document"}
 end
 
 # renders the table of documents
@@ -27,7 +27,6 @@ get '/documents/table' do
   @table_settings = TableSettings.get(:documents_default)
   @objects = Document.get_docs_of_user get_current_user
   partial :"table/simple_template"
-  #partial :"table/documents"
 end
 
 # renders a single document form
@@ -40,7 +39,10 @@ end
 get '/document/:id/viewtemplate' do
   @document = (params[:id]=="new" ? nil : Document.find(params[:id]))
   src = File.read @document.get_full_path
-	header = "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css\"><script src=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js\"></script><script>hljs.highlightAll();</script>"
+	header = "<link rel=\"stylesheet\"
+    href=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css\">
+    <script src=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js\">
+    </script><script>hljs.highlightAll();</script>"
 	header << "<h1>Source for template: #{@document.name}</h1>
 	<pre><code>#{src}</code></pre>"
 end

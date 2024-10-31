@@ -7,7 +7,7 @@
 # -----------------------------------------------------------------------------------------
 
 get '/pulpo_modules' do
-	partial :"frame/simple_template",  locals: {title: "MODULES", model_name: "pulpo_module", table_name: "pulpo_modules" }
+	partial :"frame/simple_template",  locals: {title: "MODULES", model_name: "pulpo_module"}
 end
 
 get '/pulpo_modules/table' do
