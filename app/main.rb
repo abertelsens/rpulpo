@@ -162,5 +162,3 @@ User.ensure_admin_user	#make sure there is at least one admin user.
 
 puts Rainbow("PULPO: admin #{User.admin[0].to_s}").yellow
 puts "PulpoModule".tableize
-
-ModuleUser.where(modulepermission: "forbidden").destroy_all

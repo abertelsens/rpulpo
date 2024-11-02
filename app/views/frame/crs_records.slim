@@ -11,11 +11,11 @@ turbo-frame id="main_frame"
         
         / build all the links for the different ceremonies
         - %w(fidelidad admissio lectorado acolitado).each do |ceremony|
-          a.button.link-button data-turbo-frame="people-frame" href="/crs/table?ceremony=#{ceremony}" = ceremony
+          a.button.link-button data-turbo-frame="people-frame" href="/crs_record/table?ceremony=#{ceremony}" = ceremony
         
         / build all the links for the different crs phases
         - CrsRecord.phases.keys.each do |key|
-          a.button.link-button data-turbo-frame="people-frame" href="/crs/table?phase=#{CrsRecord.phases[key]}" = key
+          a.button.link-button data-turbo-frame="people-frame" href="/crs_record/table?phase=#{CrsRecord.phases[key]}" = key
         
-      turbo-frame id="people-frame" src="/crs/table?ceremony=fidelidad" data-crs-target="cfiframe"
+      turbo-frame id="people-frame" src="/crs_record/table?ceremony=fidelidad" data-crs-target="cfiframe"
       

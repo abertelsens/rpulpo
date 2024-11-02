@@ -83,7 +83,7 @@ get '/crs_record/table' do
 	@has_date = params[:ceremony].present?
 
 	if params[:ceremony].present?
-		@objects = Person.includes(:crs_record).laicos.in_rome.select{|person| (person.cr_records&.get_next(params[:ceremony].to_sym)!=nil)}
+		@objects = Person.includes(:crs_record).laicos.in_rome.select{|person| (person.crs_record&.get_next(params[:ceremony].to_sym)!=nil)}
 		@objects = @objects.map {|p| [p.id, p.short_name, p.crs_record.get_next(params[:ceremony].to_sym).strftime("%d-%m-%y")]}
 		@title = case params[:ceremony]
 			when "fidelidad" 	then 	"Próximas Fidelidades"
@@ -95,7 +95,7 @@ get '/crs_record/table' do
 
 	if params[:phase].present?
 		@objects = Person.phase(params[:phase]).pluck(:id, :short_name)
-		@title = "Etapa #{Crs.phases.key(params[:phase].to_i)}".capitalize
+		@title = "Etapa #{CrsRecord.phases.key(params[:phase].to_i)}".capitalize
 	end
 
 	@total = @objects.size unless @objects.nil?
