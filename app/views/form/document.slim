@@ -67,22 +67,22 @@ turbo-frame id="main_frame"
 				.columns.three
 					label data-template-file-target="path" &nbsp 
 					label.button.button-success.u-full-width[
-						data-template-file-target="template_btn" 
-						data-action="click->template-file#select_file"] = (@object&.path.blank? ? "load" : "change")
+						data-template-file-target="templateButton" 
+						data-action="click->template-file#selectFile"] = (@object&.path.blank? ? "load" : "change")
 
 					input[
 						accept=".typ" 
 						style="display:none" 
-						data-template-file-target="template_file" 
+						data-template-file-target="templateFile" 
 						type="file" name="template" 
-						data-action="change->template-file#load_file"
+						data-action="change->template-file#loadFile"
 						]
 				
 				.columns.three
 					label &nbsp 
 					- if @object
 						a.button.button-secondary.u-full-width[
-							data-template-file-target="view_btn" 
+							data-template-file-target="viewButton" 
 							target="_blank" 
 							href=(@object&.path&.blank? ? "#" : "/#{model_name}/#{@object.id}/viewtemplate")] = "view"
 					

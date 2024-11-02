@@ -1,74 +1,36 @@
 turbo-frame id="document-links-frame" 
-	- first_file = nil
 	
-	div.container.files-box data-controller="documentlinks"
-		.row
-			
-			.columns.four.ref-box data-documentlinks-target="references"
-				h4 Referencias  
-				- @references.each do |rf|
-					- related_files = rf.find_related_files()
-					a.mail-link data-turbo-frame="main_frame" href="mail/#{rf.id}" = "prot: #{rf.protocol}"
-					- related_files&.each do |rf|
-						.row
-							.columns.twelve
-								a[
-									data-value="referencelink" 
-									data-action="click->documentlinks#activatebox" 
-									data-turbo-frame="mail_file-frame" 
-									href="/mail_file/#{rf&.id}?type=referencia"] = rf&.name 
-								
-								label.tooltip style="margin: 0"
-									|&nbsp&nbsp
-									<i class="fa-regular fa-folder"></i>
-									<span class="tooltiptext">#{rf&.get_path}</span>
-								  
-			
-			.columns.four.ref-box.active-ref-box data-documentlinks-target="notes"
-				h4 Nota y Anexos
-				- @related_files&.each_with_index do |rf,index|
-					- if index==0 
-						- first_file = rf
-					.row
-						.columns.twelve
-							a[
-								data-turbo-preload="true" 
-								data-value="noteslink" 
-								data-action="click->documentlinks#activatebox" 
-								data-turbo-frame="mail_file-frame" 
-								href="/mail_file/#{rf&.id}?type=nota"] = rf&.name  
-							
-							label.tooltip style="margin: 0"
-									|&nbsp&nbsp
-									<i class="fa-regular fa-folder"></i>
-									<span class="tooltiptext">#{rf&.get_path}</span>
-
-			.columns.four.ref-box data-documentlinks-target="answers"
-				h4 Respuesta en  
-				- @answers.each do |rf|
-					a.mail-link data-turbo-frame="main_frame" href="mail/#{rf.id}" = "prot: #{rf.protocol}"
-					- related_files = rf.find_related_files()
-					- related_files&.each do |rf|
-						.row
-							.columns.twelve
-								a[
-									data-value="answerslink" 
-									data-action="click->documentlinks#activatebox" 
-									data-turbo-frame="mail_file-frame" 
-									href="/mail_file/#{rf&.id}?type=respuesta%20en"] = rf&.name  
-								
-								label.tooltip style="margin: 0"
-									|&nbsp&nbsp
-									<i class="fa-regular fa-folder"></i>
-									<span class="tooltiptext">#{rf&.get_path}</span>
+	div.container.files-box data-controller="document-links"
 		
-		- if !first_file.nil?
+		.row.links-box
+			
+			//----------------------------------------------------------------------------------
+			// REFERNCES
+			//----------------------------------------------------------------------------------
+
+			== partial :"form/mail/refs_ans_links", locals: {target:"answers", title:"Referencias", mails:@references, target:"references"}
+
+			//----------------------------------------------------------------------------------
+			// NOTES
+			//----------------------------------------------------------------------------------
+			
+			== partial :"form/mail/related_files_links", locals: {target:"notes", title:"Nota y Anexos", files:@related_files, target:"notes"}
+			//----------------------------------------------------------------------------------
+			// ANSWERS
+			//----------------------------------------------------------------------------------
+			
+			== partial :"form/mail/refs_ans_links", locals: {target:"answers", title:"Respuestas", mails:@answers, target:"answers"}
+
+			
+		
+		- first_file = @related_files.first
+		- if first_file!=nil
 			.row
-				turbo-frame id="mail_file-frame" data-mailform-target="mail_file_frame" src="/mail_file/#{first_file.id}?type=nota"
+				turbo-frame id="mail-file-frame" data-mailform-target="mail-file-frame" src="/mail_file/#{first_file.id}?type=nota"
 		
 		- else
 			.row.u-text-center
-				turbo-frame id="mail_file-frame" data-mailform-target="mail_file_frame"
+				turbo-frame id="mail-file-frame" data-mailform-target="mail-file-frame"
 					h3
 						i.fa-solid.fa-triangle-exclamation
 						p = "No se encontró ningun documento relacionado con este correo."

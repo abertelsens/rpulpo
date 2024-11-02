@@ -1,22 +1,32 @@
+// setfield_controller.js
+
+// ---------------------------------------------------------------------------------------  
+// An STIMULUS A Controller for the template files.
+// See views/form/table_settings.slim
+// See https://stimulus.hotwired.dev/handbook
+// 
+// 
+// last update: 2024-10-24 
+// --------------------------------------------------------------------------------------- 
 import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
 
   Stimulus.register("template-file", class extends Controller {
     
-    static targets = ["template_file", "template_btn","view_btn", "path"]
+    static targets = ["templateFile", "templateButton","viewButton", "path"]
   
     connect() {
       console.log("Stimulus Connected: template-file controller");
     }
     
-    select_file() {
+    selectFile() {
       this.template_fileTarget.click();
     }
 
-    load_file(){
-      this.pathTarget.value = this.template_fileTarget.value.replace(/^.*[\\/]/, '')
-      this.template_btnTarget.innerHTML = "Change"
-      if (this.hasView_btnTargetTarget) {
-        this.view_btnTarget.disabled = (this.pathTarget.value==="")
+    loadFile(){
+      this.pathTarget.value = this.templateFileTarget.value.replace(/^.*[\\/]/, '')
+      this.templateButtontnTarget.innerHTML = "Change"
+      if (this.hasViewButtonTargetTarget) {
+        this.viewButtonTarget.disabled = (this.pathTarget.value==="")
       }
     }
   })

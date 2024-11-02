@@ -149,9 +149,18 @@ post '/login' do
 	end
 end
 
+post '/login/check_credentials' do
+	@user = User.authenticate params[:uname], params[:password]
+	result = @user!=false
+	cookies[:current_user_id] = @user.id if result    #sets the current_user_id in the cookies
+	return {result: result}.to_json
+end
+
 # make sure there is at least one admin user.
 User.ensure_admin_user	#make sure there is at least one admin user.
 # Credentials of the first admin user.
 
 puts Rainbow("PULPO: admin #{User.admin[0].to_s}").yellow
 puts "PulpoModule".tableize
+
+ModuleUser.where(modulepermission: "forbidden").destroy_all

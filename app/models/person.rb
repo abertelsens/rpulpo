@@ -82,6 +82,7 @@ class Person < ActiveRecord::Base
 	# -----------------------------------------------------------------------------------------
 
 	def self.create(params)
+		puts "got params before create #{Person.prepare_params params}"
 		super(Person.prepare_params params)
 	end
 
@@ -91,7 +92,9 @@ class Person < ActiveRecord::Base
 
 	# delete from the hash all the parameters that do not belong to the model.
 	def self.prepare_params(params)
-		params.select{|param| Person.attribute_names.include? param}
+		puts "got params before prepre #{params}"
+		params = params.select{|param| Person.attribute_names.include? param}
+		params.except!("id") if params["id"]=="new"
 	end
 
 	#def self.associations
@@ -126,7 +129,7 @@ class Person < ActiveRecord::Base
 		# the send(attribute.to_sym) method calls object.method_name
 		res = case table
 			when "person", "people" then self[attribute.to_sym]
-			else 
+			else
 				puts "asking for value #{table.singularize.to_sym}.#{attribute.to_sym}"
 				send(table.singularize.to_sym)&.send(attribute.to_sym)
 		end

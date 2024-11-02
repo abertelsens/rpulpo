@@ -1,7 +1,7 @@
 turbo-frame id="main_frame" 
   
   .container.container-frame[
-    data-controller="clipboard search frame" 
+    data-controller="clipboard search form" 
     data-clipboard-tablename="rooms"
   ]
     
@@ -11,8 +11,8 @@ turbo-frame id="main_frame"
       data-controller="search" 
       data-turbo-frame="rooms_table" 
       data-action="input->searchfield#submit \
-        keydown.ctrl+p@window->frame#table_settings \
-        keydown.ctrl+a@window->frame#add \
+        keydown.ctrl+p@window->form#table_settings \
+        keydown.ctrl+a@window->form#add \
         keydown.ctrl+c@window->clipboard#copy"
       ]
       
@@ -36,7 +36,7 @@ turbo-frame id="main_frame"
 
         .columns.two.flex-left  
           a.button.button-primary.button-small[
-            data-frame-target="newButton"
+            data-form-target="newButton"
             title="ctr+a or ctr+enter"
             href="/room/new" 
             data-turbo-frame="editor_frame"
@@ -55,7 +55,7 @@ turbo-frame id="main_frame"
           
           a.button.button-small.button-square[
             href="/rooms/table/settings" 
-            data-frame-target="tableSettingsButton" 
+            data-form-target="tableSettingsButton" 
             data-turbo-frame="editor_frame"
           ]
             i.fa-solid.fa-table style="color:white; font-size:small"

@@ -32,24 +32,17 @@ turbo-frame id="main_frame"
 							accept = ".jpg"
 							type = "file"	
 							style="display:none"
-							name = "photo_file"
-							data-attachment-target = "photo_file"
+							name = "photoFile"
+							data-attachment-target="photoFile"
 							data-attachment-id-param = (@person ? @person.id : "")
-							data-action = "change->attachment#load_image" ]
-								
-							- if (@person && File.exist?("app/public/photos/#{@person.id}.jpg"))
-								img.person-photo.small [
-									src = "photos/#{@person.id}.jpg" 
-									data-attachment-target = "photo_image" 
-									data-attachment-id-param = @person.id 
-									data-action = "click->attachment#select_image" ]
-							
-							- else
-								img.person-photo.small [
-									src = "photos/avatar.jpg" 
-									data-attachment-target = "photo_image" 
-									data-attachment-id-param = (@person ? @person.id : "") 
-									data-action="click->attachment#select_image" ]
+							data-action = (@person  ? "change->attachment#load_image" : "") ]
+
+							- has_photo = (@person && File.exist?("app/public/photos/#{@person.id}.jpg"))	
+							img.person-photo.small [
+								src = ((@person && has_photo) ? "photos/#{@person.id}.jpg?v=#{rand(1..1000)}" : "photos/avatar.jpg" )
+								data-attachment-target = "photoImage" 
+								data-attachment-id-param = (@person  ? @person.id : "")
+								data-action = ((@person && has_photo) ? "click->attachment#select_image" : "click->attachment#select_image")  ]
 
 						h3 = (@person ? @person.short_name : "Nueva Ficha")
 									
@@ -70,6 +63,7 @@ turbo-frame id="main_frame"
 							data-form-target="firstField"
 							name="first_name"
 							required="true"
+							autofocus
 							value=@person&.first_name
 							data-validate-target="field"
 							data-action="input->validate#validate"

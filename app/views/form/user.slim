@@ -17,9 +17,9 @@ turbo-frame id="main_frame"
 			action="/#{model_name}/#{(@object.nil? ? "new" : @object.id)}" 
 			method="POST"
 			data-controller="form-validator"
+			autocomplete="one-time-code"
 			data-form-target="form"
-			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape" 
-		]
+			data-action="keydown.ctrl+enter@window->form#enter"]
 			
 			/ ----------------------------------------------------------------------------------
 			/ FORM HEADER
@@ -40,7 +40,11 @@ turbo-frame id="main_frame"
 					label for="uname" user name
 					&text#uname.u-full-width[
 						name="uname" 
-						required="true" 
+						required="true"
+						tabindex=1
+						readonly 
+						onfocus="this.removeAttribute('readonly');"
+						autocomplete="one-time-code"
 						data-form-target="firstField" 
 						value=@object&.uname 
 						data-action="input->form-validator#validate"
@@ -67,18 +71,12 @@ turbo-frame id="main_frame"
 					h4.u-text-center = "PERMISSIONS"
 					
 					/ The iteration will produce a select element for each module
-					- Pulpomodule.all.each do |mod|
+					- PulpoModule.all.each do |mod|
 						.columns.six
 							label for="module_permission[#{mod.id}]" = mod.name
-							
-							/ PERMISSIONS SELECT, uses the values of an enum object.
 							select.u-full-width id="module_permission[#{mod.id}]" name="module[#{mod.id}]"
-								- ModuleUser.modulepermissions.each do |permission|
-									option[
-										selected=(!@permissions.nil? && @permissions[mod.id]==permission[0])
-										value=permission[0]
-									] = permission[0].humanize(capitalize: false) 
-								
+								option selected=(!@object.nil? && (@permissions.include? mod.id)) value="allowed" = "allowed" 
+								option selected=(@object.nil? || !(@permissions.include? mod.id)) value="forbidden" = "forbidden"
 			/ ----------------------------------------------------------------------------------
 			/ ALERT FRAME
 			/ ----------------------------------------------------------------------------------

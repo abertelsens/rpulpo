@@ -6,11 +6,13 @@ turbo-frame id="main_frame"
     style="gap:1rem"
     data-controller="person-view" 
     data-action="keydown.esc->person-view#escape \
+      keydown.ctrl+enter->person-view#escape \
       keydown.ctrl+g->person-view#navigate \
-      keydown.ctrl+s->person-view#navigate \
-      keydown.ctrl+p->person-view#navigate \
       keydown.ctrl+c->person-view#navigate \
-      keydown.ctrl+m->person-view#navigate"
+      keydown.ctrl+e->person-view#navigate \
+      keydown.ctrl+m->person-view#navigate \
+      keydown.ctrl+p->person-view#navigate \
+      keydown.ctrl+q->person-view#navigate"
   ]
   
     
@@ -19,26 +21,24 @@ turbo-frame id="main_frame"
         a.button.link-button.u-full-width.no-padding[
           data-person-view-target="module" 
           href="/person/#{@person.id}/general"
-          title="ctrl+g"
-        ] = "general"
+          title="ctrl+g"] = "general"
       
       - allowed_modules = @current_user.get_allowed_modules
-      - puts allowed_modules.inspect
-      - PulpoModule.where(identifier: ["study","personal","crs_record","matrix","permit"]).each do |mod|
-        - puts mod.identifier
-        - if ( allowed_modules.include?(mod) || user_is_person )
-          a.button.link-button.u-full-width.no-padding data-person-view-target="module" title="ctrl+#{mod.identifier[0]}" href="/person/#{@person.id}/#{mod.identifier}" = "#{mod.name}"
-        - else 
-          p not allowed
+      - PulpoModule.where(identifier: ["study","personal","crs_record","matrix","permit"]).each do |m|
+        - if ( allowed_modules.include?(m) || user_is_person )
+          a.button.link-button.u-full-width.no-padding[
+            data-person-view-target="module" 
+            title="ctrl+#{m.name[0]}" 
+            href="/person/#{@person.id}/#{m.identifier}"] = "#{m.name}"
     /----------------------------------------------------------------------------------------------------------------
     / PICTURE FRAME
     /----------------------------------------------------------------------------------------------------------------
 
     div style="max-width: 15rem"
-      - if @person && File.exist?("app/public/photos/#{@person.id}.jpg")
-				img.person-photo.medium id="photo_image" src= "photos/#{@person.id}.jpg"
-      - else
-				img.person-photo.medium id="photo_image" src= "photos/avatar.jpg"
+      - has_photo =  (@person && File.exist?("app/public/photos/#{@person.id}.jpg"))
+      img.person-photo.medium[
+        id="photo_image" 
+        src= "photos/#{(has_photo ? "#{@person.id}.jpg?v=#{rand(1..1000)}" : "avatar.jpg")}"]
     
     /----------------------------------------------------------------------------------------------------------------
     /GENERAL FRAME
@@ -88,6 +88,9 @@ turbo-frame id="main_frame"
         h5.margin-bottom = "DOCUMENTS"
       - (Document.get_pdf_docs_of_modules allowed_modules).each do |doc|
         .row
-          a.table-cell-body.menu-link  style="padding-left:0" href="/people/#{@person.id}/document/#{doc.id}" target=(doc.engine=="excel" ? "_self" : "_blank") = doc.name
+          a.table-cell-body.menu-link[
+            style="padding-left:0" 
+            href="/people/#{@person.id}/document/#{doc.id}" 
+            target=(doc.engine=="excel" ? "_self" : "_blank")] = doc.name
       
     

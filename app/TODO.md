@@ -1,3 +1,6 @@
+
+Hay que deshacer la migraciàon 20241019101530
+
 ## LOG
 
 ### 210216

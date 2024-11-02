@@ -122,7 +122,7 @@ class Vela < ActiveRecord::Base
 
 		File.write typ_file_path, full_doc
 		res =  system("typst compile #{typ_file_path} #{pdf_file_path}")
-		res ? pdf_file_path : set_error(FATAL, "Typst Writer: failed to convert document: #{error.message}")
+		res ? pdf_file_path : "Typst Writer: failed to convert document"
 
 	end
 

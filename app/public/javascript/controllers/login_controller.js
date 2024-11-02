@@ -1,10 +1,6 @@
-// form_validation.js
-
 // -------------------------------------------------------------------------------------  
 // An STIMULUS STIMULUS used to validate forms. 
 // See https://stimulus.hotwired.dev/handbook
-//
-// last update: 2024-10-24 
 //
 // The controller must be defined in the form element, i.e.
 // <form id="my_form" action="/my_app/my_url" data-controller="form-validator"> 
@@ -33,19 +29,20 @@
 
 import { Controller } from "https://cdn.jsdelivr.net/npm/stimulus@3.2.2/dist/stimulus.js"
 
-Stimulus.register("form-validator", class extends Controller {
+Stimulus.register("login", class extends Controller {
   
-  static targets = ["errorFrame", "submitButton"]
+  static targets = ["errorFrame", "form", "submitButton"]
   warning_html = "<i class='fa-solid fa-triangle-exclamation'></i>"
   
   connect() {
-    console.log("Stimulus Controller Connected: form-validator");
+    console.log("Stimulus Controller Connected: login");
   }
 
-  validate() {    
-    //console.log("validating form...")
-    var form = this.element
-    fetch(`${form.action}/validate`, {
+  login(event) {
+    event.preventDefault(); //prevent the form from being submitted    
+    console.log("validating form...")
+    var form = this.formTarget
+    fetch(`${form.action}/check_credentials`, {
       method: 'post',
       body:  new FormData(form),
       })
@@ -54,25 +51,27 @@ Stimulus.register("form-validator", class extends Controller {
       .catch(err => { throw err });
     }
   
-  handle_response(validation_data) {
+  handle_response(validation_data)
+  {
     console.log(`result ${validation_data.result}`)
     if(validation_data!=false) {
+      
       //there was a validation problem
       if(!validation_data.result) {           
         if (this.hasErrorFrameTarget){ 
           this.show_frame(this.errorFrameTarget)
-          this.errorFrameTarget.innerHTML = `${this.warning_html} ${validation_data.message}`
         }
         if (this.hasSubmitButtonTarget) { 
-          this.submitButtonTarget.disabled=true
+          //this.submitButtonTarget.disabled=true
         }
         else {
-          console.log("form/validator warning: no submit button defined as target")
+          console.log("form/validator: no submit button defined as target")
         }
       }
       else {
         if (this.hasSubmitButtonTarget) { 
-          this.submitButtonTarget.disabled=false
+          //this.submitButtonTarget.disabled=false
+          this.formTarget.requestSubmit()
         }
         if (this.hasErrorFrameTarget){ 
           this.hide_frame(this.errorFrameTarget)
@@ -86,7 +85,9 @@ Stimulus.register("form-validator", class extends Controller {
   }
   
   show_frame(frame) {
+    console.log("activationg frame")
     frame.classList.remove('hidden-alert')
   } 
+
 })
    

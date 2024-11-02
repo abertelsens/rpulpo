@@ -1,0 +1,21 @@
+.columns.four.ref-box data-document-links-target=target
+	h4 = title
+	- mails.each do |mail|
+		a.mail-link[
+			data-turbo-frame="main_frame" 
+			href="mail/#{mail.id}"] = "prot: #{mail.protocol}"
+		
+		- related_files = mail.find_related_files()
+		- related_files&.each do |rf|
+			.row
+				.columns.twelve
+					a[
+						data-value=target
+						data-action="click->document-links#activatebox" 
+						data-turbo-frame="mail-file-frame" 
+						href="/mail_file/#{rf&.id}"] = rf&.name  
+					
+					label.tooltip style="margin: 0"
+						|&nbsp&nbsp
+						<i class="fa-regular fa-folder"></i>
+						<span class="tooltiptext">#{rf&.get_path}</span>

@@ -42,9 +42,12 @@ get '/document/:id/viewtemplate' do
 	header = "<link rel=\"stylesheet\"
     href=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css\">
     <script src=\"https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js\">
-    </script><script>hljs.highlightAll();</script>"
+    </script><script>hljs.highlightAll();</script>
+    <style>.hljs { white-space: pre; overflow-x: auto;}</style>"
 	header << "<h1>Source for template: #{@document.name}</h1>
-	<pre><code>#{src}</code></pre>"
+  <div style=\"width: 90%\">
+  <pre><code>#{src}</code></pre>
+  </div>"
 end
 
 # -----------------------------------------------------------------------------------------

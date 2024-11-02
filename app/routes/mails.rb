@@ -45,6 +45,8 @@ get '/mail/:id/document_links' do
 	@related_files = @object.find_related_files
 	@references = @object.refs
 	@answers = @object.ans
+
+
 	partial :"form/mail/document_links"
 end
 
@@ -109,8 +111,9 @@ end
 
 # renders a single document view
 get '/mail/delete_year' do
-	Mail.delete_year(params[year])
-	partial :"table/mail"
+	puts "POSTING DELETE YEAR"
+	Mail.with_year(params[:year].to_i).delete_all
+	{result: true}.to_json
 end
 
 # renders a single document view
@@ -140,4 +143,37 @@ post '/mail/:id' do
 			@mail.destroy
 	end
 	redirect '/mails'
+end
+
+
+# -----------------------------------------------------------------------------------------
+# ROUTES CONTROLLERS FOR THE MAILFILES TABLES
+# -----------------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------------------
+# GET ROUTES
+# -----------------------------------------------------------------------------------------
+
+get '/mail_file/:id' do
+	@object = MailFile.find(params[:id])
+	if (@object.is_word_file? || @object.is_pdf_file?)
+		partial :"form/mail/mail_file"
+
+	# if it is not a pdf or a word file we try to open it via the file system.
+	else
+		begin
+			system %{cmd /c "start #{@object.get_path}"}
+		rescue
+			"<turbo-frame id=\"mail-file-frame\">
+			<row class=\"u-text-center\">
+			<h3 style=\"margin-top: 3rem\"><i class=\"fa-solid fa-triangle-exclamation\"></i></h1>
+			<h5 style=\"margin-top: 0rem\">Sorry but could not open file. <br>Maybe I don't have access.</h5>
+			</row>
+			</turbo-frame>"
+		end
+	end
+end
+
+# serves embedded images in word documents which are stored by pandoc in the public/tmp/media directory
+get '/public/tmp/media/:path' do
+	send_file File.join(settings.public_folder, "tmp/media/#{params[:path]}")
 end

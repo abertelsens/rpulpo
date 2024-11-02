@@ -1,0 +1,17 @@
+
+.columns.four.ref-box.active-ref-box data-document-links-target=target
+	h4 = title
+	- files&.each do |rf|
+		.row
+			.columns.twelve
+				a[
+					data-turbo-preload="true" 
+					data-value="notes" 
+					data-action="click->document-links#activatebox" 
+					data-turbo-frame="mail-file-frame" 
+					href="/mail_file/#{rf&.id}"] = rf&.name  
+				
+				label.tooltip style="margin: 0"
+						|&nbsp&nbsp
+						<i class="fa-regular fa-folder"></i>
+						<span class="tooltiptext">#{rf&.get_path}</span>

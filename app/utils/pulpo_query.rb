@@ -149,7 +149,7 @@ class AttributeQuery
 		#puts Rainbow("tables: #{@tables}").yellow
 		#puts Rainbow("main condition: #{condition}").yellow
 		puts Rainbow("table:  #{table}").yellow
-		
+
 		# the code is a bit complex but it allows us to include in the query the tables that are needed to show the records
 		# and avoid n+1 queries
 		case @main_table
@@ -157,7 +157,7 @@ class AttributeQuery
 				case table
 					when "people" then (@tables.empty? ? Person.where(condition) : Person.includes(@tables).where(condition))
 					else
-						model_sym = table.singularize.to_sym
+						model_sym = Person.associations[table].to_sym
 						(@tables.empty? ? Person.joins(model_sym).where(condition) : Person.includes(@tables).joins(model_sym).where(condition))
 				end
 			when "rooms"

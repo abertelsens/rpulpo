@@ -4,7 +4,7 @@
 
 
 turbo-frame id="main_frame" 
-  
+
 	- model_name = "mail"
 	- table_name = "mails"
 
@@ -22,7 +22,9 @@ turbo-frame id="main_frame"
 			autocomplete="off"
 			data-mailform-target="form" 
 			data-validate-objectname="mail" 
-			data-action="keydown.ctrl+d@window->form#delete keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"]
+			data-action="keydown.ctrl+d@window->form#delete \
+				keydown.ctrl+enter@window->form#enter \
+				keydown.esc@window->form#escape"]
 			
 			
 			input@id.u-full-width[
@@ -40,7 +42,7 @@ turbo-frame id="main_frame"
 					//----------------------------------------------------------------------------------------------------------------
 					.row.u-text-center
 						h3[
-							data-mailform-target="formtitle" 
+							data-mailform-target="formTitle" 
 							style="margin-bottom:0px"] = (@object.nil? ? "NUEVO CORREO" : "CORREO: #{@object.protocol}")
 						
 					.row
@@ -57,7 +59,7 @@ turbo-frame id="main_frame"
 										required
 										autofocus
 										data-mailform-target="protocol"
-										data-action="change->mailform#update_protocol" 
+										data-action="change->mailform#updateProtocol" 
 										value=@object&.protocol]
 							
 							.row
@@ -70,7 +72,7 @@ turbo-frame id="main_frame"
 									label referencias
 									&text@references.u-full-width[
 										data-mailform-target="references" 
-										data-action="change->mailform#update_references" 
+										data-action="change->mailform#updateReferences" 
 										value=(@object.nil? ? "" : @object&.refs_string)]
 
 							.row
@@ -78,14 +80,13 @@ turbo-frame id="main_frame"
 									label respuesta en:
 									&text@answers.u-full-width[
 										data-mailform-target="answers" 
-										data-action="change->mailform#update_answers" 
+										data-action="change->mailform#updateAnswers" 
 										value=(@object.nil? ? "" : @object&.ans_string)]
 							
 							.row
 								.columns.twelve
-									.alert.alert-warning.hidden-frame data-mailform-target="references_alert"
-									.alert.alert-warning.hidden-frame data-mailform-target="protocol_alert"
-									.alert.alert-warning.hidden-frame data-mailform-target="answers_alert"
+									.alert.alert-warning.hidden-frame data-mailform-target="protocolAlert"
+									.alert.alert-warning.hidden-frame data-mailform-target="alert"
 							
 						.columns.six
 							.row
@@ -96,11 +97,11 @@ turbo-frame id="main_frame"
 									.columns.ten
 										&text.u-full-width name="topic" required="true" readonly=true value=@object&.topic data-mailform-target="topic"
 									.columns.two
-										a.u-full-width.button data-mailform-target="topicbtn" data-action="click->mailform#toggletopic" edit
+										a.u-full-width.button data-mailform-target="topicButton" data-action="click->mailform#enableEditTopic" edit
 							.row
 								.columns.twelve
 									turbo-frame#document-links-frame[
-										data-mailform-target="documentlinksframe" 
+										data-mailform-target="documentLinksFrame" 
 										data-turbo-frame="related_files_frame" 
 										loading="lazy" 
 										src="/mail/#{@object.id}/document_links"]
@@ -147,7 +148,7 @@ turbo-frame id="main_frame"
 						name="commit" 
 						value="save"
 						data-form-target="submitButton"
-						data-mailform-target="submit_btn"
+						data-mailform-target="submitButton"
 						data-form-validator-target="submitButton"
 						title="ctrl+enter"
 					] save

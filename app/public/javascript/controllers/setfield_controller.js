@@ -1,3 +1,14 @@
+// setfield_controller.js
+
+// ---------------------------------------------------------------------------------------  
+// An STIMULUS Controller to handle the behaviour of the set field form. 
+// See views/form/setfield.slim
+// See https://stimulus.hotwired.dev/handbook
+// 
+// 
+// last update: 2024-10-24 
+// --------------------------------------------------------------------------------------- 
+
 import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
     
   Stimulus.register("setfield", class extends Controller {
@@ -21,7 +32,5 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
       old_field.style.display="none"
       this.active_field_name = field.name
     }
-    
-    
   })
   

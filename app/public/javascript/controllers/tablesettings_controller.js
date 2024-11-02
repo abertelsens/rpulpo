@@ -1,23 +1,33 @@
+// setfield_controller.js
+
+// ---------------------------------------------------------------------------------------  
+// An STIMULUS A Controller for to control some keyboard events on a table and provide 
+// some basic navigational functionality.
+// See views/form/table_settings.slim
+// See https://stimulus.hotwired.dev/handbook
+// 
+// 
+// last update: 2024-10-24 
+// --------------------------------------------------------------------------------------- 
+
 import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
 
   window.Stimulus = Application.start()   
 
-  Stimulus.register("tablesettings", class extends Controller {
+  Stimulus.register("table-settings", class extends Controller {
     
-    static targets = ["att_button", "att_name", "att_field"] //the button to add a new object
+    static targets = ["attributeButton"]
     
     connect() {
-      console.log("Stimulus Controller Connected: tablesettings");
+      console.log("Stimulus Controller Connected: table-settings");
     }
     
 
-    update(e)
-    {
-      this.toggle(document.getElementsByName(e.params["id"])[0], e.currentTarget)
+    update(event) {
+      this.toggle(document.getElementsByName(event.params["id"])[0], event.currentTarget)
     }
 
-    toggle(field, button)
-    {
+    toggle(field, button) {
       if(field.value=="true")
       {
         field.value="false";
@@ -29,7 +39,6 @@ import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/di
         button.classList.add("active")
       }
     }
-
   })
     
     

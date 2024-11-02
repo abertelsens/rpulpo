@@ -14,7 +14,10 @@ turbo-frame id="main_frame"
 			data-vela-target="form"
 			data-form-target="form" 
 			data-controller="vela" 
-			data-action="turnosreload@window->vela#reloadturnos keydown.ctrl+c@window->vela#copy keydown.ctrl+d@window->form#delete keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
+			data-action="turnosreload@window->vela#reloadturnos \
+				keydown.ctrl+d@window->form#delete \
+				keydown.ctrl+enter@window->form#enter \
+				keydown.esc@window->form#escape"
 		]
 			
 			fieldset data-form-target="fieldset"
@@ -25,7 +28,7 @@ turbo-frame id="main_frame"
 					.columns.four.offset-by-four
 						h3.no-margin = (@object.nil? ? "NEW VELA" : "VELA: #{@object.date.strftime('%d %b %y')}")
 					.columns.three.flex-left
-						a.button.button-primary.button-small data-turbo-frame="turnos_frame" data-action="click->vela#update_turnos"
+						a.button.button-primary.button-small data-turbo-frame="turnosFrame" data-action="click->vela#updateTurnos"
 							i.class.fa-regular.fa-clock
 							|&nbspreset turnos
 						a.button.button-succes.button-small target="_blank" href="/vela/#{@object.id}/pdf" 
@@ -133,7 +136,7 @@ turbo-frame id="main_frame"
 				
 			.row data-controller="drag"
 				turbo-frame[src="/vela/#{@object.id}/turnos" 
-					data-vela-target="turnos_frame" 
+					data-vela-target="turnosFrame" 
 					id="turnos_frame" 
 					data-drag-target="turnosframe" 
 					data-action="click->contoller2#turnRed"]

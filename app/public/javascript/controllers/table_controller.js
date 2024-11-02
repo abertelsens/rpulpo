@@ -1,7 +1,14 @@
-// ------------------------------------------------------------------------------------------------
-// A Controller for to control some keyboard events on a table and provide some basic
-// navigational functionality.
-// ------------------------------------------------------------------------------------------------
+// setfield_controller.js
+
+// ---------------------------------------------------------------------------------------  
+// An STIMULUS A Controller for to control some keyboard events on a table and provide 
+// some basic navigational functionality.
+// See views/table/*.slim
+// See https://stimulus.hotwired.dev/handbook
+// 
+// 
+// last update: 2024-10-24 
+// --------------------------------------------------------------------------------------- 
 
 import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
 
@@ -92,7 +99,6 @@ Stimulus.register("table", class extends Controller {
     }
   }
   
-  
   enter(event){
     event.preventDefault()
     if(this.selected_row!=-1) {
@@ -108,7 +114,6 @@ Stimulus.register("table", class extends Controller {
     }
   }
 
-
   isElementVisibleInContainer(ele, container)
   {
     const rect = ele.getBoundingClientRect();
@@ -120,7 +125,6 @@ Stimulus.register("table", class extends Controller {
         rect.right <= containerRect.right
     );
   }
-
 })
     
     

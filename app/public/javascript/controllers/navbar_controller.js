@@ -1,7 +1,13 @@
-/************************************************************************************************  
-A Controller for a the navigation bar.
-It just shows or hides the secondary navigation bar.
-************************************************************************************************/ 
+// navbar_controller.js
+
+// ---------------------------------------------------------------------------------------  
+// An STIMULUS Controller to handle the behaviour of the mail frame. 
+// See views/form/mail.slim
+// See https://stimulus.hotwired.dev/handbook
+// 
+// 
+// last update: 2024-10-24 
+// --------------------------------------------------------------------------------------- 
 
 import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
  
@@ -15,6 +21,7 @@ Stimulus.register("navbar", class extends Controller {
     console.log("Stimulus Connected: navbar controller");
   }
 
+  //toggles the visibility of the secondary navbar
   toggle() {
     console.log("toggling")
     if (this.navbarTarget.classList.contains(hide_class)) {

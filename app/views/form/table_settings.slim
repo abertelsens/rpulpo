@@ -4,7 +4,7 @@
 
 turbo-frame id="main_frame"
 	
-	form action="/#{@table_settings.main_table}/table/settings" method="POST" data-controller="tablesettings"
+	form action="/#{@table_settings.main_table}/table/settings" method="POST" data-controller="table-settings"
 	
 		.container
 			
@@ -29,6 +29,7 @@ turbo-frame id="main_frame"
 							td style="vertical-align: top"
 								.row style="text-align: center" 
 									h5 = @table_settings.main_table.upcase
+								
 								- table_all.get_attributes(@table_settings.main_table).each do |att|
 									.row.u-full-width
 										.columns.eight 
@@ -36,9 +37,9 @@ turbo-frame id="main_frame"
 											a.button.button-seconday.u-full-width[
 												style="margin-bottom:.3rem" 
 												class=((@table_settings.include? att.field) ? "active" : "") 
-												data-tablesettings-target="att_button" 
-												data-tablesettings-id-param=att.field 
-												data-action="click->tablesettings#update" 
+												data-table-settings-target="attributeButton"
+												data-table-settings-id-param=att.field  
+												data-action="click->table-settings#update" 
 											] = att.name.humanize
 										
 										.columns.four
@@ -48,7 +49,6 @@ turbo-frame id="main_frame"
 												option value="DESC" selected=(att.order=="DESC") = "DESC"
 										
 										&hidden.u-full-width[
-											data-tablesettings-target="att_field" 
 											name=att.field 
 											value=(@table_settings.include? att.field).to_s
 										]
@@ -64,11 +64,11 @@ turbo-frame id="main_frame"
 														a.button.button-seconday.u-full-width[
 															style="margin-bottom:.3rem" 
 															class=((@table_settings.include? att.field) ? "active" : "") 
-															data-tablesettings-target="att_button" 
-															data-tablesettings-id-param=att.field 
-															data-action="click->tablesettings#update"
+															data-table-settings-target="attributeButton" 
+															data-table-settings-id-param=att.field 
+															data-action="click->table-settings#update"
 														] = att.name.humanize
-														&hidden.u-full-width data-tablesettings-target="att_field" name=att.field value=(@table_settings.include? att.field).to_s
+														&hidden.u-full-width name=att.field value=(@table_settings.include? att.field).to_s
 
 
 			/----------------------------------------------------------------------------------------------------------------

@@ -3,21 +3,20 @@
 
 turbo-frame id="main_frame"  
 
-  .container.container-frame data-controller="search mail protocolmodal frame"
+  .container.container-frame data-controller="search mail form"
 
-    form.form-inline[
+    .container.container-frame
+      
+      form.form-inline[
       method="GET"
-      data-controller="search mail"
+      data-controller="search"
       action="/mail/search"
       data-turbo-frame="mails_table"
       aria-label="Search" 
       name="q" 
       data-action="input->search#submit \
-      keydown.ctrl+f@window->people#search_focus \
-      keydown.ctrl+a@window->frame#add"
-    ]
-      
-      .container.container-frame
+      keydown.ctrl+a@window->frame#add"]
+
         .row
           
           .columns.ten.offset-by-one 
@@ -31,9 +30,9 @@ turbo-frame id="main_frame"
                
                 a.button.button-secondary data-turbo-frame="mails_table" href="/mail/mark_as_read"
                   i.fa-solid.fa-ckeck style="font-size:small"
-                  |&nbspmark as read
+                  |&nbspmarcar como leído
 
-                a.button.button-secondary.margin-left data-action="click->protocolmodal#open_protocol_modal"
+                a.button.button-secondary.margin-left data-action="click->mail#openProtocolModal"
                   i.fa-solid.fa-lock style="font-size:small"
                   |&nbspreservar prot.
               
@@ -44,14 +43,14 @@ turbo-frame id="main_frame"
               .columns.two.offset-by-two.flex-right
 
                 - if @current_user.admin?
-                  a.button.button-secondary.margin-right.button-danger data-mail-target="deleteYearBtn" data-turbo-frame="mails_table" href="/mail/delete_year"
+                  button.button-secondary.margin-right.button-danger data-mail-target="deleteYearButton" data-action="click->mail#confirmYearDelete" 
                     i.fa-solid.fa-ckeck style="font-size:small"
-                    |&nbspdelete whole year
+                    |&nbspborrar todo el año
 
-                a.button.button-success.u-full-width.no-margin.button-medium[
+                a.button.button-success.u-full-width.no-margin.button-big[
                   href="/mail/new" 
                   data-turbo-frame="main_frame"
-                  data-frame-target="newButton"
+                  data-form-target="newButton"
                 ]
                     i.fa-solid.fa-plus style="font-size:small"
                     |&nbspañadir
@@ -110,32 +109,69 @@ turbo-frame id="main_frame"
                     - mail_users.each do |user|  
                       option selected=(@mails_query[:assigned].to_i==user.id) value=user.id = user.uname
 
-            .row
-              turbo-frame id="mails_table" src="/mails/table"
+            .row 
+              turbo-frame data-mail-target="mailsTable" id="mails_table"  src="/mails/table"
 
-    // -----------------------------------------------------------------------------------
-    // MODAL FORM TO ASSIGN A PROTOCOL
-    // ----------------------------------------------------------------------------------- 
-    form.form-inline method="GET" action="/mail/assign_protocol"  
-      .modal.hidden-frame data-protocolmodal-target="protocolmodal" data-action="keydown.esc@window->protocolmodal#close_protocol_modal" tabindex="0"
-        .row
-          .modal-content style="min-width: 800px"
-            
-            .row.modal-row
-              h4.u-text-center Reservar Protocolo
-            
-            .row.margin-top
-              .columns.three
-                label ctr
-                select.medium-field data-mail-target="entity" name="entity"
-                  - entities.each do |entity|
-                    option selected=selected=(entity.sigla=="cg") value=entity.id = entity.sigla 
+      // -----------------------------------------------------------------------------------
+      // MODAL FORM TO ASSIGN A PROTOCOL
+      // ----------------------------------------------------------------------------------- 
+    
+      
+      form.form-inline method="GET" action="/mail/assign_protocol" 
+        .modal.hidden-frame data-mail-target="protocolModal" data-action="keydown.esc@window->mail#closeProtocolModal"
+          .row
+            .modal-content style="min-width: 800px"
               
-            
-              .columns.nine
-                label asunto
-                input.u-full-width.u-text-center type="text" name="topic" placeholder="asunto"
+              .row.modal-rowfmail
+                h4.u-text-center Reservar Protocolo
               
-            .row.center-align
-              button.button-primary formnovalidate="true" type="submit" name="commit" OK 
-              button.button-secondary data-action="click->protocolmodal#close_protocol_modal" cancel
+              .row.margin-top
+                .columns.three
+                  label ctr
+                  select.medium-field data-mail-target="entity" name="entity"
+                    - entities.each do |entity|
+                      option selected=selected=(entity.sigla=="cg") value=entity.id = entity.sigla 
+                
+              
+                .columns.nine
+                  label asunto
+                  input.u-full-width.u-text-center type="text" name="topic" placeholder="asunto"
+                
+              .row.center-align
+                button.button-primary formnovalidate="true" type="submit" name="commit" OK 
+                button.button-secondary data-action="click->mail#closeProtocolModal" cancel
+
+      /----------------------------------------------------------------------------------------------------------------
+      / DELETE CONFIRMATION MODAL FORM
+      /---------------------------------------------------------------------------------------------------------------
+      
+      .modal.hidden-frame data-mail-target="deleteYearModal" tabindex="1"
+        .modal-content
+          .row           
+            // header
+            h4
+              i.fa-solid.fa-triangle-exclamation
+              |&nbspConfirm Delete
+          
+          //message
+          .row.u-text-center.margin-top
+            p  = "Are you sure you want to delete all mails of this year. All related data will be erased."
+            p = "This action cannot be undone!"
+          .row.center-align.margin-top
+            
+            //delete button
+            a.button.button-danger[
+              data-action="click->mail#deleteYearCommit"
+              href="/mail/delete_year?year"
+            ] delete 
+            
+            // cancel button
+            a.button.button-secondary[
+              autofocus="true" 
+              data-action="click->mail#deleteYearModalClose" 
+            ] cancel	
+
+      
+
+
+    

@@ -1,21 +1,23 @@
-/************************************************************************************************  
-    A Controller for a modal frame.
-    It just shows or hides the modal
-************************************************************************************************/ 
+// form.js
+
+// ---------------------------------------------------------------------------------------  
+// An STIMULUS Controller to handle the behaviour of the some kwy bindings
+// See also https://stimulus.hotwired.dev/handbook
+// 
+// last update: 2024-10-24 
+// ---------------------------------------------------------------------------------------  
 
 import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
 
 Stimulus.register("form", class extends Controller {
   
-  static targets = ["form", "fieldset", "modal", "submitButton", "deleteButton", "cancelButton", "modalCancelButton", "firstField"]
+  static targets = ["form", "fieldset", "modal", "newButton", "tableSettingsButton", "submitButton", "newButton", "deleteButton", "cancelButton", "firstField"]
   
   connect() {
     console.log("Stimulus Controller Connected: form");
   }
 
   enter(event) {
-    console.log(event)
-    console.log(event.target)
     event.preventDefault()
     event.stopPropagation();   
     console.log("subimitting form");
@@ -52,8 +54,29 @@ Stimulus.register("form", class extends Controller {
    this.modalTarget.classList.add('hidden-frame') 
    this.fieldsetTarget.disabled=false
    this.firstFieldTarget.focus();
-   
   }  
+  
+  add(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    Turbo.visit(this.newButtonTarget.href)
+    //this.newButtonTarget.click();
+  }
+
+  table_settings(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.tableSettingsButtonTarget.click();
+  }
+
+  // The method is triggered when the user hits the ctrl-f keys. We prevent the default action of 
+  // the browser (i.e.) to search in the page, set the focus on the search field
+  search_focus(event) {
+    event.preventDefault();
+    this.firstFieldTarget.focus();
+    this.firstFieldTarget.select();
+  }
+
 
 })
     

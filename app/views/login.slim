@@ -13,6 +13,22 @@ script src="https://kit.fontawesome.com/4f55c9eacf.js" crossorigin="anonymous"
 script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"
 link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet"
 
+/!--------------------------------------------------------------------------------
+/! JSCRIPTS
+/!--------------------------------------------------------------------------------
+
+script type="module"
+  | import hotwiredTurbo from 'https://cdn.skypack.dev/@hotwired/turbo@7.1.0';
+
+script type="module" src="javascript/application.js"
+script type="module" src="javascript/Sortable.js"
+script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+
+/! Load all Stimulus Controllers
+- Dir.glob("app/public/javascript/controllers/login_controller.js").each do |controller|  
+  - controller.slice!("app/public/")
+  script type="module" src=controller
+
 html
   head
     meta charset="utf-8"
@@ -32,21 +48,24 @@ html
 
   body
 
-    .container.login-screen  
-      form action="/login" method="POST"
+    .container.login-screen data-controller="login" 
+      form action="/login" data-login-target="form" method="POST" 
     
         .login-box
           img src="img/cb_icon.jpg"
           h3 PULPO CAVABIANCA
           .row
             label for="uname" user name or email
-            input#uname.u-full-width type="text" required="true" name="uname"
+            input@uname.u-full-width[
+              autofocus 
+              type="text" 
+              required]
+          
           .row.margin-top 
             label for="password" password
-            input#password.u-full-width type="password" name="password"
+            input@password.u-full-width type="password"
           .row.margin-top
-            button.button-success.u-full-width type="submit" name="commit" value="login" login
+            button.button-success.u-full-width data-login-target="submitButton" data-action="click->login#login" type="submit" name="commit" value="login" login
           <p style="font-size: .8rem">If you live in Cavabianca you can log in as <em>guest</em> just using your email and leaving the password field empty.
-          .row.margin-top
-            - if @auth_error  
-              .alert.alert-error id="errorBox" LOGIN FAILED!
+          .row.margin-top 
+            .alert.alert-error class=(@auth_error ? "" : "hidden-alert") data-login-target="errorFrame" LOGIN FAILED!

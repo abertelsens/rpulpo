@@ -1,7 +1,12 @@
-/************************************************************************************************  
-    A Controller for a modal frame.
-    It just shows or hides the modal
-************************************************************************************************/ 
+// modal_controller.js
+
+// ---------------------------------------------------------------------------------------  
+// An STIMULUS Controller to handle the behaviour of modal frames. 
+// See https://stimulus.hotwired.dev/handbook
+// 
+// 
+// last update: 2024-10-24 
+// --------------------------------------------------------------------------------------- 
 
 import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
 

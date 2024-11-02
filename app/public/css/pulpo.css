@@ -191,8 +191,11 @@ div.search-filters
   border: 1px solid;
   border-color: var(--light-gray);
   border-radius:10px;
-  text-align: center
+  text-align: center;
+  box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
+
 }
+
 
 img.login-box
 {
@@ -234,7 +237,11 @@ a.h4 {
   font-size: 1.2rem; 
  }
 
- 
+
+ div.links-box { 
+  padding: 0rem 0 0rem 0
+ }
+
  div.ref-box { 
   text-align: center;
   border-radius: 5px;
@@ -247,7 +254,8 @@ a.h4 {
 
  div.active-ref-box { 
   background-color: white;
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+  /*box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;*/
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
   padding-bottom: 1rem;
  }
  div.ref-box a.mail-link{
@@ -304,7 +312,11 @@ a.button.no-border
 * BUTTONS
 **********************************************************************/
 
-.button-medium {
+.button-big {
+  min-width: 140px;
+  max-width: 180px;
+ }
+ .button-medium {
  min-width: 120px;
  max-width: 140px;
 }
@@ -751,10 +763,11 @@ div.help td{
 }
 
 div.nota {
-  font-size: 1rem;
+  font-family:'Literata';
+  font-size: 1.1rem;
   text-align : justify ;
-  margin-left: 4rem;
-  margin-right: 4rem;
+  margin-left: 2rem;
+  margin-right: 2rem;
   /*display: inline;*/
 }
 
@@ -949,6 +962,16 @@ ALERTS
   transition: 1s;
 }
 
+.alert.alert-warning {
+
+  background: var(--medium-orange);
+  border-color: var(--light-gray);
+  visibility: visible;
+  height: fit-content;
+  transition: padding 0s, margin .5s linear, visibility .5s ease-in, height 10s ease-in, opacity 1s linear;
+}
+
+
 .alert.alert-warning.hidden-alert {
   visibility: hidden;
   opacity: 0;
@@ -960,27 +983,29 @@ ALERTS
   transition: padding .5s linear, margin .7s linear, visibility 2s linear, opacity 1s linear, max-height 25s ease-out;
 }
 
-.alert.alert-warning {
-
-  background: var(--medium-orange);
-  border-color: var(--light-gray);
-  visibility: visible;
-  height: fit-content;
-  transition: padding 0s, margin .5s linear, visibility .5s ease-in, height 10s ease-in, opacity 1s linear;
-}
-
-
-
-
-.alert.alert-notice {
-  background:#e9f7fe;
-}
 
 .alert-error {
   background:#e66666;
   color: white;
   border-color: #3333;
 }
+
+.alert.hidden-alert {
+  visibility: hidden;
+  opacity: 0;
+  height: 0;
+  margin: 0;
+  border: 0;
+  padding: 0px 10px 0px 10px;
+  overflow: hidden;
+  transition: padding .5s linear, margin .5s linear, visibility .5s linear, opacity 1s linear, max-height 5s ease-out;
+}
+
+
+.alert.alert-notice {
+  background:#e9f7fe;
+}
+
 
 a.button.active {
   background: var(--light-blue);

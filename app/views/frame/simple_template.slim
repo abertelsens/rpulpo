@@ -1,6 +1,6 @@
 turbo-frame id="main_frame" 
   
-  .container.container-frame data-controller="frame"
+  .container.container-frame data-controller="form" data-action="keydown.ctrl+enter@window->form#add keydown.ctrl+a@window->form#add"
       
     .row.header-frame.u-text-center
       h3 = title
@@ -11,10 +11,9 @@ turbo-frame id="main_frame"
     .row.u-text-center.margin-top
       a.button.button-primary[
         tabindex=-1
-        data-frame-target="newButton"
-        data-action = "keydown.ctrl+enter@window->frame#add keydown.ctrl+a@window->frame#add"
-        href="/#{model_name}/new" 
-        title="ctr+a or ctr+enter"
-      ]
+        data-form-target="newButton"
+        href="/#{model_name}/new"
+        title="ctr+a or ctr+enter"]
+  
         i.fa-solid.fa-plus style="font-size:small"
         |&nbspadd

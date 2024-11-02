@@ -120,7 +120,7 @@ post '/person/:id/general' do
 	@current_user = get_current_user
 	@person = (params[:id]=="new" ? nil : Person.find(params[:id]))
 	case params[:commit]
-		when "save" then @person.nil? ? (@person =  Person.create params) : (@person.update params) if save?
+		when "save" then (@person.nil? ? (@person= Person.create params) : (@person.update params)) if save?
 		# if a person was deleted we go back to the screen fo the people table
 		when "delete"
 			@person.destroy

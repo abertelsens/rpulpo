@@ -17,15 +17,14 @@ class User < ActiveRecord::Base
 
 	# the related tables have a destroy dependency, i.e. if a user is deleted then also
 	# the matching mails tables as deleted as well.
-	has_many	:unread_mails, 		dependent: :destroy
-	has_many	:assigned_mails, 	dependent: :destroy
-	has_many 	:module_users, 		dependent: :destroy
-	has_many 	:module_users, 		dependent: :destroy
+	has_many	:unread_mails, 			dependent: :destroy
+	has_many	:assigned_mails, 		dependent: :destroy
+	has_many 	:module_users, 			dependent: :destroy
 	has_many 	:pulpo_modules, 		:through => :module_users
 
 	# enables the creation/update of the association model_users via attributes.
 	# See the the prepare_params method.
-	accepts_nested_attributes_for :module_users #, allow_destroy: true
+	#accepts_nested_attributes_for :module_users #, allow_destroy: true
 
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(uname: :asc) }
@@ -41,11 +40,15 @@ class User < ActiveRecord::Base
 # -----------------------------------------------------------------------------------------
 
 	def self.create(params)
-		super(User.prepare_params params)
+		user = super(User.prepare_params params)
+		user.pulpo_module_ids = params["module"].keys.select{|key| params["module"][key]=="allowed"}
 	end
 
 	def update(params)
+		#puts "parameters to update #{User.prepare_params(params, self)}"
 		super(User.prepare_params(params, self))
+		self.pulpo_module_ids = params["module"].keys.select{|key| params["module"][key]=="allowed"}
+		save
 	end
 
 	def self.destroy(params)
@@ -58,7 +61,7 @@ class User < ActiveRecord::Base
   	password: 								params[:password],
 		usertype:									params[:usertype],
 		mail:											!params[:mail].nil?,
-		module_users_attributes:	User.prepare_modules_attributes(params["module"],user)
+		#module_users_attributes:	User.prepare_modules_attributes(params["module"],user)
 	}
 	end
 
@@ -69,9 +72,8 @@ class User < ActiveRecord::Base
 	# @user: the current user, nil if we are creating it.
 	# @returs: a hash that can be used to create/update the module_users association
 	def self.prepare_modules_attributes(module_params, user=nil)
-		if user!=nil
-			current_modules = user.module_users.all.map {|mu| { mu.pulpo_module_id => mu.id } }
-			current_modules = current_modules.inject(:merge)
+		if user
+			current_modules = (user.module_users.map {|mu| { mu.pulpo_module_id => mu.id } }).inject(:merge)
 			module_params.keys.map {|mod_id| {id: current_modules[mod_id.to_i], pulpo_module_id: mod_id, modulepermission: module_params[mod_id]} }
 		else
 			module_params.keys.map {|mod_id| { pulpo_module_id: mod_id, modulepermission: module_params[mod_id]} }
@@ -125,13 +127,15 @@ class User < ActiveRecord::Base
 
 	def get_allowed_modules
 		return PulpoModule.all if admin? 		# an admin has all permitions.
-		(module_users.select {|mu| mu.modulepermission=="allowed"}).map {|mu| mu.pulpo_module}
+		pulpo_modules
+		#(module_users.select {|mu| mu.modulepermission=="allowed"}).map {|mu| mu.pulpo_module}
 	end
 
 	def allowed?(module_identifier)
 		return true if admin?
-		result = (module_users.joins(:pulpo_module).where(pulpo_module: {name: module_identifier})).first
-		return result.nil? ? false : result
+		pulpo_modules.find_by(name: module_identifier)!=nil
+		#result = (module_users.joins(:pulpo_module).where(pulpo_module: {name: module_identifier})).first
+		#return result.nil? ? false : result
 	end
 
 	def is_table_allowed?(table)
@@ -150,14 +154,16 @@ class User < ActiveRecord::Base
 
 	# get the permission for a module
 	def get_permission(mod)
-		mu = module_users.find_by(pulpo_module: mod)
-		mu.nil? ? nil : mu.modulepermission
+		pulpo_modules.find(mod.id)!=nil
+		#mu = module_users.find_by(pulpo_module: mod)
+		#mu.nil? ? nil : mu.modulepermission
 	end
 
 	# get the permissions for all modules as a hash of the form {module_id => permission}
 	# The inject method transforms an array of the permissions into a single hash.
 	def get_permissions()
-		(module_users.includes(:pulpo_module).map{|mu| {mu.pulpo_module.id => mu.modulepermission}}).inject(:merge)
+		pulpo_modules
+		#(module_users.includes(:pulpo_module).map{|mu| {mu.pulpo_module.id => mu.modulepermission}}).inject(:merge)
 	end
 
 end #class end

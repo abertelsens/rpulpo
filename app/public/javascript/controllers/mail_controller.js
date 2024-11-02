@@ -1,93 +1,80 @@
+// mail_controller.js
+
+// ---------------------------------------------------------------------------------------  
+// An STIMULUS Controller to handle the behaviour of the mail frame. 
+// See views/frame/mails.slim
+// See https://stimulus.hotwired.dev/handbook
+// 
+// 
+// last update: 2024-10-24 
+// ---------------------------------------------------------------------------------------  
+
 import { Controller } from "https://cdn.jsdelivr.net/npm/stimulus@3.2.2/dist/stimulus.js"
 
-    Stimulus.register("mail", class extends Controller {
-      
-      static targets = ["protocolmodal", "entity", "deleteYearButton", "direction", "year", "mail_status", "protocol", "alert"]; //the button to add a new object
-      
-      connect() {
-        console.log("Stimulus Connected: mail controller");
-      }
+Stimulus.register("mail", class extends Controller {
+  
+  static targets = ["protocolModal", "deleteYearModal", "mailsTable", "year"];
+  
+  connect() {
+    console.log("Stimulus Connected: mail controller");
+  }
+  
+  // -------------------------------------------------------------------------------------
+  // DELETE YEAR METHODS
+  // -------------------------------------------------------------------------------------
+  
+  // shows the modal form to confirm the delete action on the mails table.
+  // The method is called when the delete button is pressed
+  confirmYearDelete(event){
+    event.preventDefault();
+    this.deleteYearModalTarget.classList.remove('hidden-frame');
+  }
+  
+  // cancels the delete action
+  deleteYearModalClose(event){
+    event.preventDefault();
+    this.deleteYearModalTarget.classList.add('hidden-frame');
+  }
 
-      deleteYear(event){
-        console.log("delete year clicked")
-        event.preventDefault();
-        var year = this.yearTarget.value
-        if(year==="") {return}
-        var url = `/mail/delete_year?year=${year}`;
-          console.log(url)
-          fetch(url)
-          .then(res => res.json())
-          .then(out => { this.handle_response(out) })
-          .catch(err => { throw err });
-        }
-
-
-      }
-      search_focus(event)
-      {
-        event.preventDefault();
-        this.search_fieldTarget.focus();
-        this.search_fieldTarget.select();
-      }
-
-      show_protocol_form() {
-        console.log("showing protocol modal.")
-      }  
-      
-      open_protocol_modal(event) {    
-        event.preventDefault();
-        this.protocolmodalTarget.style.display="block";
-      } 
-
-      close_protocol_modal(event) {    
-        //event.preventDefault();
-        this.protocolmodalTarget.style.display="none";
-      }  
-
-      submit()
-      {
-        console.log("submitting form")
-        this.element.requestSubmit()
-      }
-      
-      parse_protocol() {    
-        {
-          console.log("parsiong protocol")
-          var url = `/mail/parse?protocol=${encodeURIComponent(this.protocolTarget.value)}`;
-          console.log(url)
-          fetch(url)
-          .then(res => res.json())
-          .then(out => { this.handle_response(out) })
-          .catch(err => { throw err });
-        }
-      }
-
-      handle_response(parse_data) {
-        console.log(`got response ${parse_data.result} entity:${parse_data.entity}`)
-        if(parse_data!=false) {
-          console.log(`got validation response: ${parse_data.result}`)
-          if(!parse_data.result) {                          //there was a validation problem
-            this.show_frame(this.alertTarget) 
-            this.alertTarget.innerHTML = `<i class='fa-solid fa-triangle-exclamation'></i>&nbsp${parse_data.message}`
-          }
-          else {
-            this.hide_frame(this.alertTarget) 
-            console.log(`setting entity to  ${parse_data.entity}`)
-            this.entityTarget.value = parse_data.entity
-            this.directionTarget.value = parse_data.direction
-            this.alertTarget.innerHTML = `status:${parse_data.result} entity:${parse_data.entity} direction:${parse_data.direction}`
-          }  
-        }
-      }
-      
-      hide_frame(frame) {
-        frame.classList.add('hidden-frame')
-      }
-
-      show_frame(frame) {
-        frame.classList.remove('hidden-frame')
-      }
-
-    })
+  deleteYearCommit(event) {
+    event.preventDefault()
+    var year = this.yearTarget.value
+    // if the year variable is not defined. We cancel the operation
+    if(year==="") {
+      this.deleteYearModalTarget.classList.add('hidden-frame');
+      return;
+    }
+    var url = `/mail/delete_year?year=${year}`;
+      //console.log(`fetching url ${url}`)
+      fetch(url)
+      .then(res => res.json())
+      .then(out => { this.handleDeleteYearResponse(out) })
+      .catch(err => { throw err });
+    }
     
-    
+
+  handleDeleteYearResponse(parse_data){
+    //console.log(`got response ${parse_data.result}`)
+    if(parse_data && parse_data.result) {
+      this.deleteYearModalTarget.classList.add('hidden-frame')
+      this.mailsTableTarget.reload()  
+    }
+  }
+
+  // -------------------------------------------------------------------------------------
+  // PROTOCOL MODAL METHODS
+  // -------------------------------------------------------------------------------------
+  
+  openProtocolModal(event) {    
+    event.preventDefault();
+    this.protocolModalTarget.classList.remove('hidden-frame');
+  } 
+
+  closeProtocolModal(event) {    
+    event.stopPropagation();
+    event.preventDefault();
+    this.protocolModalTarget.classList.remove('hidden-frame');
+  }  
+})
+
+  

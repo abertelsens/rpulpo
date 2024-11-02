@@ -109,6 +109,7 @@ class Mail < ActiveRecord::Base
 
 		# Find all the mails that correspond to the protocols string that was
 		# received.
+		protocols_array  = protocols_string.split(",").map{|s| s.strip }
 		elements = (protocols_string.blank? ? [] : Mail.find_mails(protocols_string))
 		elements_hash = elements.map.with_index do |mail,index|
 			{
@@ -117,8 +118,8 @@ class Mail < ActiveRecord::Base
 			}
 		end
 
-		error = elements.include? nil	# if there is a nil element then there was an error.
-		return {result: error, data: elements_hash} if error
+		# if there is a nil element then there was an error.
+		return {result: false, data: elements_hash} if (elements.include? nil)
 
 		update_association_elements(elements.pluck(:id), association)
 		case association
