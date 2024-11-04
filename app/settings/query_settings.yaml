@@ -1,11 +1,4 @@
 --- 
-tables_models:
-  people: "person"
-  personals: "personal"
-  studies: "study"
-  crs: "crs"
-  rooms: "room"
-  matrices: "matrix"
 query_aliases: 
   - discipular: "phase:0"
   - disc: "phase:0"

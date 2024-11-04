@@ -16,6 +16,7 @@ end
 get '/users/table' do
   @table_settings = TableSettings.get(:users_default)
   @objects = User.all
+  @decorator = ObjectDecorator.new(table_settings: @table_settings)
   partial :"table/simple_template"
 end
 

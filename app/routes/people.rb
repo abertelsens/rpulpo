@@ -22,6 +22,7 @@ get '/people/table' do
 	# if the people filter is not set yet then we set it to cb as default
 	@people_filter = session["people_table_filter"]="cb" if @people_filter.nil?
 	@objects = Person.search @people_query, @people_table_settings, @people_filter
+	@decorator = PersonDecorator.new(table_settings: @people_table_settings)
 	partial :"table/people"
 end
 
@@ -48,6 +49,7 @@ get '/people/search' do
 	@people_query = session["people_table_query"] = params[:q]
 	@people_filter = session["people_table_filter"] = params[:filter]
 	@objects = Person.search @people_query, @people_table_settings, @people_filter
+	@decorator = PersonDecorator.new(table_settings: @people_table_settings)
 	partial :"table/people"
 end
 
@@ -106,7 +108,7 @@ end
 
 # renders a single person view
 get '/crs_records' do
-	@ceremony=params[:ceremony] if params[:ceremony].present? 
+	@ceremony=params[:ceremony] if params[:ceremony].present?
 	partial :"frame/crs_records"
 end
 
@@ -123,12 +125,15 @@ post '/person/:id/general' do
 	@current_user = get_current_user
 	@person = (params[:id]=="new" ? nil : Person.find(params[:id]))
 	case params[:commit]
-		when "save" then (@person.nil? ? (@person= Person.create params) : (@person.update params)) if save?
+		when "save"
+			(@person.nil? ? (@person= Person.create params) : (@person.update params)) if save?
+			FileUtils.cp_r("app/public/img/avatar.jpg", "app/public/photos/#{params[:id]}.jpg", remove_destination: false) if params[:id]=="new"
 		# if a person was deleted we go back to the screen fo the people table
 		when "delete"
 			@person.destroy
 			redirect :"/people"
-	end
+
+		end
 	partial :"view/person"
 end
 
@@ -142,7 +147,7 @@ post '/person/:person_id/:module/:id' do
 	object = params[:id]=="new" ? nil : klass.find(params[:id])
 	object.nil? ? (klass.create params) : (object.update params) if save?
 	puts params
-	if (params[:origin].present? && params[:origin]="crs_ceremonies") then redirect "/crs_records?ceremony=#{params[:ceremony]}" 
+	if (params[:origin].present? && params[:origin]="crs_ceremonies") then redirect "/crs_records?ceremony=#{params[:ceremony]}"
 	else partial :"view/person"
 	end
 end

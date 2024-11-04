@@ -12,8 +12,6 @@
 
 class TypstWriter < DocumentWriter
 
-	MONTHS_LATIN = [nil, "Ianuarius", "Februarius", "Martius", "Aprilis", "Maius", "Iunius", "Iulius", "Augustus", "September", "October", "November", "December"]
-
 	# The directory where the typst templates are located.
 	TYPST_TEMPLATES_DIR ="app/engines-templates/typst"
 
@@ -23,6 +21,8 @@ class TypstWriter < DocumentWriter
 		@document = document
 		@people = people
 		@template_source = File.read "#{TYPST_TEMPLATES_DIR}/#{@document.path}"
+		@decorator = PersonDecorator.new()
+
 
 		if @template_source.nil?
 			set_error(FATAL,"Template #{@document.path} not foud in #{TYPST_TEMPLATES_DIR}. You should check the settings of #{@document.name} file before trying again.")
@@ -36,10 +36,10 @@ class TypstWriter < DocumentWriter
 
 		# process each person.
 		# replace the variables in the md file with the values retrieved from the DB
-		if @document.singlepage
-			@typst_src = replace_variables_of_set(@template_source,people)
+		@typst_src = if @document.singlepage
+			replace_variables_of_set(@template_source,people)
 		else
-			@typst_src =(@people.map { |person| replace_variables(@template_source,person) }).join("\n")
+			(@people.map { |person| replace_variables(@template_source,person) }).join("\n")
 		end
 
 	end
@@ -68,7 +68,8 @@ class TypstWriter < DocumentWriter
 
 		if db_variable
 			# replace " with ' to avoid typst engine errors
-			res = person.get_attribute(variable_identifier, variable_array[2])
+			res = @decorator.typst_value(person, variable_identifier, variable_array[2])
+			#res = person.get_attribute(variable_identifier, variable_array[2])
 			(res.is_a? String) ? res.gsub("\"","'") : res
 		else
 			set_error WARNING, "Typst Writer: don't know how to replace '#{variable_identifier}'"

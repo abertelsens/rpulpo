@@ -12,33 +12,31 @@
 
 import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
 
-  window.Stimulus = Application.start()   
+Stimulus.register("table-settings", class extends Controller {
+  
+  static targets = ["attributeButton"]
+  
+  connect() {
+    console.log("Stimulus Controller Connected: table-settings");
+  }
+  
 
-  Stimulus.register("table-settings", class extends Controller {
-    
-    static targets = ["attributeButton"]
-    
-    connect() {
-      console.log("Stimulus Controller Connected: table-settings");
-    }
-    
+  update(event) {
+    this.toggle(document.getElementsByName(event.params["id"])[0], event.currentTarget)
+  }
 
-    update(event) {
-      this.toggle(document.getElementsByName(event.params["id"])[0], event.currentTarget)
+  toggle(field, button) {
+    if(field.value=="true")
+    {
+      field.value="false";
+      button.classList.remove("active")
     }
-
-    toggle(field, button) {
-      if(field.value=="true")
-      {
-        field.value="false";
-        button.classList.remove("active")
-      }
-      else
-      {
-        field.value="true";
-        button.classList.add("active")
-      }
+    else
+    {
+      field.value="true";
+      button.classList.add("active")
     }
-  })
-    
+  }
+})
+  
     

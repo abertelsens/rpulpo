@@ -16,6 +16,8 @@
 # GET ROUTES
 # --------------------------------------------------------------------------------------
 
+require_rel '../decorators'
+
 # renders the entities frame
 get '/entities' do
 	partial :"frame/simple_template",  locals: {title: "ENTITIES", model_name: "entity"}
@@ -26,6 +28,7 @@ end
 get '/entities/table' do
 	@table_settings = TableSettings.get(:entities_default)
 	@objects = Entity.all
+	@decorator = ObjectDecorator.new(table_settings: @table_settings)
 	partial :"table/simple_template"
 end
 

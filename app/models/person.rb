@@ -108,7 +108,7 @@ class Person < ActiveRecord::Base
 	# unnecessary information. For example if we query a person by name but the settings do
 	# not include the rooms table, then we will not retrieve that result. See pulpo_query.rb
 	def self.search(search_string, table_settings=nil, filter=nil)
-		puts "got search_string #{search_string} filter #{filter}"
+		·puts "got search_string #{search_string} filter #{filter}"
 		if (filter!=nil && !filter.strip.blank?)
 			search_string = (search_string.nil? || search_string.strip.blank?) ? filter : "#{filter} AND #{search_string}"
 		end
@@ -120,6 +120,7 @@ class Person < ActiveRecord::Base
 	# @attribute_string: a string of the form "person.att_name"
 	# @format: a string defining a special format. For example a date can be retrieved
 	# in its latin form.
+=begin
 	def get_attribute(attribute_string, format=nil)
 		# get the taable and attribute name
 		table, attribute = attribute_string.split(".")
@@ -130,7 +131,7 @@ class Person < ActiveRecord::Base
 		res = case table
 			when "person", "people" then self[attribute.to_sym]
 			else
-				puts "asking for value #{table.singularize.to_sym}.#{attribute.to_sym}"
+				#puts "asking for value #{table.singularize.to_sym}.#{attribute.to_sym}"
 				send(table.singularize.to_sym)&.send(attribute.to_sym)
 		end
 		res = "" if res.nil?
@@ -142,6 +143,7 @@ class Person < ActiveRecord::Base
 		end
 		res
 	end
+=end
 
 	def self.get_editable_attributes()
 	[
@@ -162,9 +164,6 @@ class Person < ActiveRecord::Base
 			result << (people.map {|person| (table_settings.att.map{|att| (person.get_attribute(att.field).dup)}).join("\t") }).join(("\n"))
 	end
 
-	def latin_date(date)
-		"die #{date.day} mensis #{MONTHS_LATIN[date.month]} anni #{date.year}"
-	end
 
 	# -----------------------------------------------------------------------------------------
 	# MATRIX METHODS
@@ -219,6 +218,4 @@ class Person < ActiveRecord::Base
 		tas = TaskAssignment.where(day_schedule: day_schedule).select{|ta| ta.clashes_with_task? task_schedule}.map{|ta| ta.person_id}
 	end
 
-	#@@associations = Person.reflect_on_all_associations(:has_one).map{|ass|{ass.plural_name => ass.class_name.downcase}}.reduce({}, :merge)
-	#puts "associations: ·#{@@associations}"
-end
+end #class end

@@ -450,6 +450,8 @@ tables:
       - people.clothes
       - people.year
       - people.email
+      - people.status
+
   - rooms_default:
     name: rooms_default
     main_table: rooms

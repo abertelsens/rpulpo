@@ -161,4 +161,9 @@ User.ensure_admin_user	#make sure there is at least one admin user.
 # Credentials of the first admin user.
 
 puts Rainbow("PULPO: admin #{User.admin[0].to_s}").yellow
-puts "PulpoModule".tableize
+
+# make sure all people have a picture.
+Person.all.each do |person|
+	has_photo = (File.exist?("app/public/photos/#{person.id}.jpg"))
+	FileUtils.cp_r("app/public/img/avatar.jpg", "app/public/photos/#{person.id}.jpg", remove_destination: false) if !has_photo
+end

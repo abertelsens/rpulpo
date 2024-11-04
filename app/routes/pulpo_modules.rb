@@ -23,6 +23,7 @@ end
 get '/pulpo_modules/table' do
 	@table_settings = TableSettings.get(:pulpo_modules_default)
 	@objects = PulpoModule.all
+	@decorator = ObjectDecorator.new(table_settings: @table_settings)
 	partial :"table/simple_template"
 end
 

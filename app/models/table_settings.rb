@@ -45,6 +45,10 @@ class TableAttribute
 		field.split(".")[1]
 	end
 
+	def field_name
+		field.split(".")[1]
+	end
+
 	def set_order(order)
 		@order = order
 		return self
@@ -99,6 +103,8 @@ class TableSettings
 
 	# returns an array with all the table names present in the table settings
 	def get_tables
+		puts "IN GET TABLES"
+		puts @att.uniq{|att| att.table}
 		return @att.uniq{|att| att.table}.map{|att| att.table}
 	end
 

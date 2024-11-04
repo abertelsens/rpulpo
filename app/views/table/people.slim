@@ -13,9 +13,10 @@ turbo-frame id="people_table" data-turbo-frame="person_view"
           data-table-id="index"  
           data-turbo-frame="main_frame"
         ]
-          - @people_table_settings.att.each do |sett|
-            - value = object.get_attribute sett.field
-            div class=sett.css_class = sett.type=="enum" ? value&.humanize : value
+          == @decorator.html_row(object)
+          //- @people_table_settings.att.each do |sett|
+          //  - value = object.get_attribute sett.field
+          //  div class=sett.css_class = sett.type=="enum" ? value&.humanize : value
 
   .row.flex-center.margin-top
     .alert.u-text-center.xlong-field = (@objects.size>0) ? "#{@objects.size} record(s) found" : "No records found. Try something different."

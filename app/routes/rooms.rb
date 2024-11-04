@@ -18,6 +18,7 @@ end
 get '/rooms/table' do
 	get_last_query :rooms
 	@objects = Room.search @rooms_query, @rooms_table_settings
+	@decorator = RoomDecorator.new(table_settings: @rooms_table_settings)
 	partial :"table/rooms"
 end
 
@@ -61,6 +62,7 @@ get '/rooms/search' do
 	get_last_query :rooms
 	@rooms_query = session["rooms_table_query"] = params[:q]
 	@objects = Room.search @rooms_query, @rooms_table_settings
+	@decorator = RoomDecorator.new(table_settings: @rooms_table_settings)
 	partial :"table/rooms"
 end
 

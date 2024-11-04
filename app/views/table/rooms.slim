@@ -16,9 +16,10 @@ turbo-frame id="rooms_table" data-turbo-frame="main_frame"
           href="/room/#{object.id}" 
           data-turbo-frame="main_frame"
         ]
-          - @rooms_table_settings.att.each do |sett|
-            - value = object.get_attribute sett.field
-            div class=sett.css_class = sett.type=="enum" ? value&.humanize : value
+          == @decorator.html_row(object)
+          //- @rooms_table_settings.att.each do |sett|
+          //  - value = object.get_attribute sett.field
+          //  div class=sett.css_class = sett.type=="enum" ? value&.humanize : value
   
   .row.flex-center.margin-top
     .alert.xlong-field.u-text-center = (@objects.size>0) ? "#{@objects.size} record(s) found" : "No records found. Try something different."

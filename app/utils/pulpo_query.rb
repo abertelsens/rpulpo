@@ -14,7 +14,6 @@ class PulpoQuery
 	SETTINGS_FILE_PATH = "app/settings/query_settings.yaml"
 	SETTINGS_YAML = YAML.load_file(SETTINGS_FILE_PATH)
 	QUERY_ALIASES = SETTINGS_YAML["query_aliases"].map {|al| {from: al.first[0], to: al.first[1]} }
-	TABLES_MODELS = SETTINGS_YAML["tables_models"]
 	NAME_ALIASES = SETTINGS_YAML["name_aliases"]
 	ATTRIBUTES = TableSettings.get_all_attributes
 
@@ -23,8 +22,7 @@ class PulpoQuery
 		@order = table_settings.nil? ? [] : table_settings.get_order
 		@main_table = table_settings.nil? ? [] : table_settings.main_table
 		@tables = table_settings.nil? ? [] : table_settings.get_tables
-		@tables = (@tables-[@main_table]).map {|table| TABLES_MODELS[table]}
-
+		@models = (@tables-[@main_table]).map {|table| table.singularize}
 
 		if query_string.nil? then @query_array = []
 		else
@@ -48,8 +46,8 @@ class PulpoQuery
 
 	def execute
 		if @query_array.empty?
-			return Person.all.includes(@tables).order(@order) if @main_table=="people"
-			return Room.all.includes(@tables).order(@order) if @main_table=="rooms"
+			return Person.all.includes(@models).order(@order) if @main_table=="people"
+			return Room.all.includes(@models).order(@order) 	if @main_table=="rooms"
 		end
 
 		# execute the OR clauses
@@ -73,7 +71,7 @@ class PulpoQuery
 		query_array = query_string.split(Regexp.union(OR_DELIMETERS))
 
 		# transform the clauses into Attributes Queries
-		attributes_array = query_array.map { |clause| AttributeQuery.new(clause, @main_table, @tables) }
+		attributes_array = query_array.map { |clause| AttributeQuery.new(clause, @main_table, @models) }
 
 		# use only the well formed attributes
 		attributes_array = attributes_array.select { |att| att.status }
@@ -100,7 +98,7 @@ class AttributeQuery
     def initialize(query_string, main_table, tables)
 
 			@main_table	= main_table
-			@tables	= tables
+			@models	= tables
 
 		query_array = query_string.split(":")
 
@@ -146,24 +144,26 @@ class AttributeQuery
 			end
 
 		#puts Rainbow("main table: #{@main_table}").yellow
-		#puts Rainbow("tables: #{@tables}").yellow
+		#puts Rainbow("tables: #{@models}").yellow
 		#puts Rainbow("main condition: #{condition}").yellow
 		puts Rainbow("table:  #{table}").yellow
-
+		puts Rainbow("including tables #{@models}").yellow
 		# the code is a bit complex but it allows us to include in the query the tables that are needed to show the records
 		# and avoid n+1 queries
+
 		case @main_table
+
 			when "people"
 				case table
-					when "people" then (@tables.empty? ? Person.where(condition) : Person.includes(@tables).where(condition))
+					when "people" then (@models.empty? ? Person.where(condition) : Person.includes(@models).where(condition))
 					else
 						model_sym = Person.associations[table].to_sym
-						(@tables.empty? ? Person.joins(model_sym).where(condition) : Person.includes(@tables).joins(model_sym).where(condition))
+						(@models.empty? ? Person.joins(model_sym).where(condition) : Person.includes(@models).joins(model_sym).where(condition))
 				end
 			when "rooms"
 				case table
-					when "rooms" then (@tables.empty? ? Room.where(condition) : Room.includes(@tables).where(condition))
-					when "people" then (@tables.empty? ? Room.joins(:person).where(condition) : Room.includes(@tables).joins(:person).where(condition))
+					when "rooms" then (@models.empty? ? Room.where(condition) : Room.includes(@models).where(condition))
+					when "people" then (@models.empty? ? Room.joins(:person).where(condition) : Room.includes(@models).joins(:person).where(condition))
 				end
 			end
 	end
