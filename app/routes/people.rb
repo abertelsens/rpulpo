@@ -76,7 +76,8 @@ get '/person/:id/:module' do
 			@object = Room.find_by(person_id: @person.id)
 			@object.nil? ? (redirect "/person/#{params[:id]}") : (return partial :"form/room")
 	end
-	partial :"form/person/#{params[:module]}"
+		locals = params[:origin].present? ? {origin: params[:origin], ceremony: params[:ceremony]} : nil
+	partial :"form/person/#{params[:module]}", locals: locals
 end
 
 get '/crs_record/table' do
@@ -85,6 +86,7 @@ get '/crs_record/table' do
 	if params[:ceremony].present?
 		@objects = Person.includes(:crs_record).laicos.in_rome.select{|person| (person.crs_record&.get_next(params[:ceremony].to_sym)!=nil)}
 		@objects = @objects.map {|p| [p.id, p.short_name, p.crs_record.get_next(params[:ceremony].to_sym).strftime("%d-%m-%y")]}
+		@ceremony = params[:ceremony]
 		@title = case params[:ceremony]
 			when "fidelidad" 	then 	"Próximas Fidelidades"
 			when "admissio" 	then	"Próximas Admissio"
@@ -104,6 +106,7 @@ end
 
 # renders a single person view
 get '/crs_records' do
+	@ceremony=params[:ceremony] if params[:ceremony].present? 
 	partial :"frame/crs_records"
 end
 
@@ -138,7 +141,10 @@ post '/person/:person_id/:module/:id' do
 	klass = Object.const_get(params[:module].classify)
 	object = params[:id]=="new" ? nil : klass.find(params[:id])
 	object.nil? ? (klass.create params) : (object.update params) if save?
-	partial :"view/person"
+	puts params
+	if (params[:origin].present? && params[:origin]="crs_ceremonies") then redirect "/crs_records?ceremony=#{params[:ceremony]}" 
+	else partial :"view/person"
+	end
 end
 
 # uploads an image

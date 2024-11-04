@@ -5,9 +5,10 @@
 turbo-frame id="main_frame"
   	
 	.container.medium-form.screen-box data-controller="form" 
-		
+		- action = "/person/#{@person.id}/crs_record/#{(@crs.nil? ? "new" : @crs.id)}"
+		- action << "?origin=#{locals[:origin]}&ceremony=#{locals[:ceremony]}" unless locals.nil?
 		form#personForm[
-			action="/person/#{@person.id}/crs_record/#{(@crs.nil? ? "new" : @crs.id)}" 
+			action=action
 			method="POST" 
 			data-form-target="form"
 			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
