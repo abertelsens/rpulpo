@@ -38,4 +38,5 @@ TESTATUR AC FIDEM FACIT sequentes huius Praelaturae fideles cursui recessus spir
 dx: 100pt,
 "$person.full_name$"
 )
+
 #show_date[#date]

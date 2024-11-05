@@ -46,7 +46,7 @@ class PulpoQuery
 
 			#replace the query alias if found
 			QUERY_ALIASES.each { |pair| query_string.gsub!(/#{pair[:from]}/, pair[:to]) }
-			
+
 			# split the string into AND clauses
 			@query_array = query_string.split(Regexp.union(AND_DELIMITERS))
 		end
@@ -96,7 +96,7 @@ class AttributeQuery
 
 	MAIN_TABLE ="people"
 	DEFAULT_ATTRIBUTES = {"people" => "full_name", "rooms" => "room", "permits" => "full_name" }
-	
+
 	ATTRIBUTES = PulpoQuery::ATTRIBUTES
 	NAME_ALIASES = PulpoQuery::NAME_ALIASES
 
@@ -153,7 +153,7 @@ class AttributeQuery
 			when "people", "permits"
 				case table
 				when "people" then (@models.empty? ? Person.where(condition) : Person.includes(@models).where(condition))
-				else (@models.empty? ? Person.joins(table.to_sym).where(condition) : Person.includes(@models).joins(table.to_sym).where(condition))
+				else (@models.empty? ? Person.joins(table.singularize.to_sym).where(condition) : Person.includes(@models).joins(table.singularize.to_sym).where(condition))
 				end
 			when "rooms"
 				case table
