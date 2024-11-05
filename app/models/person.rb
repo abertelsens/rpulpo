@@ -84,6 +84,7 @@ class Person < ActiveRecord::Base
 
 	def self.create(params)
 		puts "got params before create #{Person.prepare_params params}"
+		params.except!("id")
 		super(Person.prepare_params params)
 	end
 
@@ -93,9 +94,7 @@ class Person < ActiveRecord::Base
 
 	# delete from the hash all the parameters that do not belong to the model.
 	def self.prepare_params(params)
-		puts "got params before prepre #{params}"
-		params = params.select{|param| Person.attribute_names.include? param}
-		params.except!("id") if params["id"]=="new"
+		params.select{|param| Person.attribute_names.include? param}
 	end
 
 	#def self.associations

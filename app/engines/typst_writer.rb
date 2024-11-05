@@ -68,9 +68,9 @@ class TypstWriter < DocumentWriter
 
 		if db_variable
 			# replace " with ' to avoid typst engine errors
-			res = @decorator.typst_value(person, variable_identifier, variable_array[2])
+			@decorator.typst_value(person, variable_identifier, variable_array[2])
 			#res = person.get_attribute(variable_identifier, variable_array[2])
-			(res.is_a? String) ? res.gsub("\"","'") : res
+			#(res.is_a? String) ? res.gsub("\"","'") : res
 		else
 			set_error WARNING, "Typst Writer: don't know how to replace '#{variable_identifier}'"
 			return nil

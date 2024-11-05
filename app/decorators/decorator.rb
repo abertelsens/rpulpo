@@ -54,6 +54,17 @@ class RoomDecorator < ObjectDecorator
   end
 end
 
+class DocumentDecorator < ObjectDecorator
+
+  def html_cell(entity, sett)
+    value =  case sett.table
+      when "documents"  then entity[sett.get_field_name]
+      when "pulpo_modules" then entity.pulpo_module[sett.get_field_name] unless entity.pulpo_module.nil?
+      end
+    "<div class=\"#{sett.css_class}\"> #{decorate(value,sett) }</div>"
+  end
+end
+
 class PermitDecorator < ObjectDecorator
 
   def html_row(entity)
@@ -80,6 +91,7 @@ end
 class PersonDecorator < ObjectDecorator
 
   def get_value(entity, table, field)
+    puts "getting value of #{entity} #{table} #{field}"
     case table
       when "people", "person"     then    entity[field]
       when "rooms"                then    entity.room[field]        unless entity.room.nil?
@@ -98,7 +110,15 @@ class PersonDecorator < ObjectDecorator
   def typst_value(entity, attribute, setting=nil)
     table, field = attribute.split(".")
     value = get_value(entity, table, field)
+
     value = (value.is_a? String) ? value.gsub("\"","'") : value
-    (setting=="latin" && value!=nil)? latin_date(value) : value
+
+    value = value.strftime("%d-%m-%y") if value.is_a?(Date)
+
+    if (!setting.nil?)
+      value = latin_date(value) if (setting=="latin" && value!=nil)
+      value = value.upcase if (setting=="upcase" && value!=nil)
+    end
+    value
   end
 end

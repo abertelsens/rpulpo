@@ -26,7 +26,7 @@ end
 get '/documents/table' do
   @table_settings = TableSettings.get(:documents_default)
   @objects = Document.get_docs_of_user get_current_user
-  @decorator = ObjectDecorator.new(table_settings: @table_settings)
+  @decorator = DocumentDecorator.new(table_settings: @table_settings)
   partial :"table/simple_template"
 end
 
