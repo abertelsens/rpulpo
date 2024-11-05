@@ -98,7 +98,7 @@ class PersonDecorator < ObjectDecorator
   def typst_value(entity, attribute, setting=nil)
     table, field = attribute.split(".")
     value = get_value(entity, table, field)
-    value = (value.is_a? String) ? res.gsub("\"","'") : value
+    value = (value.is_a? String) ? value.gsub("\"","'") : value
     (setting=="latin" && value!=nil)? latin_date(value) : value
   end
 end
