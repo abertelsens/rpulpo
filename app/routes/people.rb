@@ -60,6 +60,10 @@ get '/person/:id' do
   partial :"view/person"
 end
 
+get '/person/:person_id/permit' do
+	redirect "/permit/#{params[:person_id]}?origin=/person/#{params[:person_id]}"
+end
+
 # renders a form of a single person view
 get '/person/:id/:module' do
 	@current_user = get_current_user()
@@ -78,7 +82,7 @@ get '/person/:id/:module' do
 			@object = Room.find_by(person_id: @person.id)
 			@object.nil? ? (redirect "/person/#{params[:id]}") : (return partial :"form/room")
 	end
-		locals = params[:origin].present? ? {origin: params[:origin], ceremony: params[:ceremony]} : nil
+	locals = params[:origin].present? ? {origin: params[:origin], ceremony: params[:ceremony]} : nil
 	partial :"form/person/#{params[:module]}", locals: locals
 end
 

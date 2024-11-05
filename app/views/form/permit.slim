@@ -6,12 +6,16 @@ turbo-frame id="main_frame"
   
 	- model_name = "permit"
 	- table_name = "permits"
+	- puts locals
+	- puts "got origin #{locals[:origin]}"
+	- back_url = (origin.nil? ? "" : "?origin=#{origin}")
+
 
 	/ Center the form in the screen and ajust its size.
 	.container.screen-box.x-large-form data-controller="form" 
 		
 		form[
-			action="/#{model_name}/#{(@permit.nil? ? "new" : @permit.id)}"
+			action="/#{model_name}/#{(@permit.nil? ? "new" : @permit.id)}#{back_url}"
 			method="POST"
 			autocomplete="one-time-code"
 			data-controller="form-validator"
@@ -25,7 +29,7 @@ turbo-frame id="main_frame"
 			/----------------------------------------------------------------------------------------------------------------
 			
 			.row.u-text-center
-				h3 = "QUESTURA: #{(@permit ? @permit.person.short_name : "NUOVO")}"
+				h3 = "QUESTURA: #{@person.short_name}"
 				
 			/----------------------------------------------------------------------------------------------------------------
 			/ FORM FIELDS
@@ -35,15 +39,10 @@ turbo-frame id="main_frame"
 			fieldset data-form-target="fieldset"
 				
 				.row
+						
+					&hidden@person_id value=@person.id
 
-					.columns.two.offset-by-one
-						label for="citizenship" Nome
-						select@person_id.u-full-width
-							option value=-1 = "-"
-							- Person.students.each do |person|
-								option value=person.id selected=(person.id==@person.id) = person.short_name
-
-					.columns.two
+					.columns.four.offset-by-one
 						label for="citizenship" citadinanza
 						&text@citizenship.u-full-width[
 							tabindex=1 
@@ -117,7 +116,35 @@ turbo-frame id="main_frame"
 			// FORM BUTTONS
 			//----------------------------------------------------------------------------------------------------------------
 			.row.flex-center.flex-columns
-				== partial :"elements/form_buttons", locals: {object: @permit, table_name: table_name}
+				- if (@permit && (!(@permit.respond_to? :can_be_deleted?) || @permit&.can_be_deleted?))
+					a.button.button-secondary[
+						data-keys-target="deleteButton" 
+						tabindex="-1" 
+						data-form-target="deleteButton"
+						data-action="click->form#open_modal"
+						title="ctrl+d"
+						] delete  
+				
+				button.button-primary[
+					type="submit"
+					tabindex="-1" 
+					name="commit" 
+					value="save"
+					data-form-target="submitButton"
+					data-form-validator-target="submitButton"
+					title="ctrl+enter"
+					] save
+					
+				
+				button.button-secondary[
+					formnovalidate="true" 
+					tabindex="-1" 
+					name="commit" 
+					value="cancel"
+					data-form-target="cancelButton" 
+					href="/#{table_name}"
+					title="esc"
+					] cancel
 
 			/----------------------------------------------------------------------------------------------------------------
 			/ DELETE CONFIRMATION MODAL FORM

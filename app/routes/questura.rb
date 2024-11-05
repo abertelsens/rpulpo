@@ -17,6 +17,7 @@ end
 # @objects the people that will be shown in the table
 get '/permits/table' do
 	get_last_query :permits
+	get_table_settings :permits
 	puts "got table settings #{@permits_table_settings.inspect}"
 	@table_settings = @permits_table_settings
 	@objects = (Person.search "students #{@permits_query}" , @permits_table_settings).order("permits.permit_expiration desc")
@@ -36,9 +37,10 @@ end
 
 # renders a single document view
 get '/permit/:person_id' do
+		puts "THERE"
 		@person = Person.find(params[:person_id])
     @permit = Permit.find_by(person: @person)
-    partial :"form/permit"
+    partial :"form/permit", locals: {origin: params[:origin]}
 end
 
 # -----------------------------------------------------------------------------------------
@@ -57,7 +59,7 @@ post '/permit/:id' do
 		# if a person was deleted we go back to the screen fo the people table
 		when "delete" then @permit.destroy
 	end
-	redirect '/permits'
+	params[:origin].nil? ? (redirect '/permits') :(redirect params[:origin])
 end
 
 # renders the table of after perfroming a search.
@@ -66,7 +68,7 @@ get '/permits/search' do
 	get_table_settings :permits
 	@permits_query = session["permits_table_query"] = params[:q]
 	@table_settings = @permits_table_settings
-	@objects = (Person.search "students #{@permits_query}", @permits_table_settings).order("permits.permit_expiration desc")
+	@objects = (Person.search "students #{@permits_query}" , @permits_table_settings).order("permits.permit_expiration desc")
 	@decorator = PermitDecorator.new(table_settings: @permits_table_settings)
 	partial :"table/permits"
 end

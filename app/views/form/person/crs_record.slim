@@ -111,11 +111,13 @@ turbo-frame id="main_frame"
 					] save
 					
 				
-				a.button.button-secondary[
+				button.button-secondary[
 					formnovalidate="true" 
 					tabindex="-1" 
+					type="submit"
+					name="commit" 
+					value="cancel"
 					data-form-target="cancelButton" 
-					href=(@person ? "/person/#{@person.id}" : "/people")
 					title="esc"
 					] cancel
 					

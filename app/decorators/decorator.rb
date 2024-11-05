@@ -91,7 +91,6 @@ end
 class PersonDecorator < ObjectDecorator
 
   def get_value(entity, table, field)
-    puts "getting value of #{entity} #{table} #{field}"
     case table
       when "people", "person"     then    entity[field]
       when "rooms"                then    entity.room[field]        unless entity.room.nil?
