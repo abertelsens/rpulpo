@@ -121,7 +121,7 @@ class Person < ActiveRecord::Base
 	# @attribute_string: a string of the form "person.att_name"
 	# @format: a string defining a special format. For example a date can be retrieved
 	# in its latin form.
-=begin
+
 	def get_attribute(attribute_string, format=nil)
 		# get the taable and attribute name
 		table, attribute = attribute_string.split(".")
@@ -144,7 +144,6 @@ class Person < ActiveRecord::Base
 		end
 		res
 	end
-=end
 
 	def self.get_editable_attributes()
 	[
