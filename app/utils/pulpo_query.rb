@@ -1,9 +1,20 @@
 
-###########################################################################################
+
+# pulpo_query.rb
+#---------------------------------------------------------------------------------------
+# FILE INFO
+
+# autor: alejandrobertelsen@gmail.com
+# last major update: 2024-08-25
+#---------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------
 # DESCRIPTION
-# A class defininign a query object. Its function is to provide some parsing capabities
+
+# A class defininig a query object. Its function is to provide some parsing capabities
 # to parse query strings and trasnform them into valid sql queries.
-###########################################################################################
+#---------------------------------------------------------------------------------------
+
 require_relative '../models/table_settings'
 
 class PulpoQuery
@@ -18,27 +29,24 @@ class PulpoQuery
 	ATTRIBUTES = TableSettings.get_all_attributes
 
 	def initialize(query_string, table_settings=nil)
-
-		@order = table_settings.nil? ? [] : table_settings.get_order
+		@order =		 	table_settings.nil? ? [] : table_settings.get_order
 		@main_table = table_settings.nil? ? [] : table_settings.main_table
-		@tables = table_settings.nil? ? [] : table_settings.get_tables
-		@models = (@tables-[@main_table]).map {|table| table.singularize}
+		@tables = 		table_settings.nil? ? [] : table_settings.get_tables
+		@models = 		(@tables-[@main_table]).map {|table| table.singularize}
 
 		if query_string.nil? then @query_array = []
 		else
 
 			# clean any ' character
 			query_string = query_string.strip.gsub(/'+/, '')
-
 			# clean any whitespaces after colons: i.e. "clothes:  96" will become clothes:96
 			query_string = query_string.strip.gsub(/:\s+/, ':')
-
 			# clean any more occurence of several white spaces
 			query_string = query_string.gsub(/\s+/, ' ')
 
 			#replace the query alias if found
 			QUERY_ALIASES.each { |pair| query_string.gsub!(/#{pair[:from]}/, pair[:to]) }
-			#puts "after replacements #{query_string}"
+			
 			# split the string into AND clauses
 			@query_array = query_string.split(Regexp.union(AND_DELIMITERS))
 		end
@@ -48,12 +56,12 @@ class PulpoQuery
 		if @query_array.empty?
 			return Person.all.includes(@models).order(@order) if @main_table=="people"
 			return Room.all.includes(@models).order(@order) 	if @main_table=="rooms"
+			return Permit.all.includes(@models).order(@order) 	if @main_table=="permits"
 		end
 
 		# execute the OR clauses
 		res_array = @query_array.map{|or_clauses| execute_or_clauses(or_clauses)}
 
-		puts "got res array #{res_array.inspect}"
 		# execute the AND clauses
 		result = res_array.inject{ |carry, res| (res.nil? || carry.nil?) ? nil : carry.merge(res) }
 
@@ -77,7 +85,7 @@ class PulpoQuery
 		attributes_array = attributes_array.select { |att| att.status }
 
 		attributes_array = attributes_array.map { |clause| clause.execute }
-		#puts "got attributes array after executing or clauses #{attributes_array}"
+		puts "got attributes array after executing or clauses #{attributes_array}"
 
 		attributes_array.inject{ |res, condition| condition.nil? ? res : res.or(condition) }
 	end
@@ -86,24 +94,21 @@ end # class end
 
 class AttributeQuery
 
-    MAIN_TABLE ="people"
-    DEFAULT_ATTRIBUTES = {"people" =>"full_name", "rooms" =>"room" }
-    RELATED_TABLE_ID = "person_id"
+	MAIN_TABLE ="people"
+	DEFAULT_ATTRIBUTES = {"people" => "full_name", "rooms" => "room", "permits" => "full_name" }
+	
+	ATTRIBUTES = PulpoQuery::ATTRIBUTES
+	NAME_ALIASES = PulpoQuery::NAME_ALIASES
 
-    ATTRIBUTES = PulpoQuery::ATTRIBUTES
-    NAME_ALIASES = PulpoQuery::NAME_ALIASES
+	attr_accessor :status
 
-		attr_accessor :status
-
-    def initialize(query_string, main_table, tables)
-
-			@main_table	= main_table
-			@models	= tables
-
+	def initialize(query_string, main_table, models)
+		@main_table	= main_table
+		@models	= models
 		query_array = query_string.split(":")
 
 		# if the query string is not of the form att:value but only a simple string "value"
-		#  we replace it with the defaull attribute i.e. default_attibuete:value
+		#  we replace it with the defaull attribute i.e. default_attribute:value
 		if query_array[1].nil?
 			@att_name = DEFAULT_ATTRIBUTES[@main_table]
 			@att_value = query_array[0]
@@ -116,7 +121,7 @@ class AttributeQuery
 		@att_name = NAME_ALIASES[@att_name] unless NAME_ALIASES[@att_name].nil?
 
 		# if the attribute name is not found in the attributes list we set the status to false
-		@status = !TableSettings.get_attribute_by_name(@att_name).nil?
+		@status = TableSettings.get_attribute_by_name(@att_name)!=nil
 
 	end
 
@@ -126,11 +131,10 @@ class AttributeQuery
 
 		att = TableSettings.get_attribute_by_name(@att_name)
 		table, field_name = att.field.split(".")
-		#puts Rainbow("searching @att_name: #{@att_name.inspect}. Got #{att} table:#{att.table} field:#{att.field} type:#{att.type} att.value #{@att_value}" ).yellow
+		puts Rainbow("searching @att_name: #{@att_name.inspect}. Got #{att} table:#{att.table} field:#{att.field} type:#{att.type} att.value #{@att_value}" ).yellow
 
 		condition = case att.type
-			when "string"
-				"#{att.field} ILIKE '%#{@att_value}%'"
+			when "string" then	"#{att.field} ILIKE '%#{@att_value}%'"
 			when "integer", "enum"
 				# if the value cannot be cast into an integer we set a value of -1 to return an empty set
 				if Integer(@att_value, exception: false).nil? then	"#{att.field}=-1"
@@ -143,27 +147,18 @@ class AttributeQuery
 			when "boolean" then "#{att.field}=#{@att_value=="true"}"
 			end
 
-		#puts Rainbow("main table: #{@main_table}").yellow
-		#puts Rainbow("tables: #{@models}").yellow
-		#puts Rainbow("main condition: #{condition}").yellow
-		puts Rainbow("table:  #{table}").yellow
-		puts Rainbow("including tables #{@models}").yellow
 		# the code is a bit complex but it allows us to include in the query the tables that are needed to show the records
 		# and avoid n+1 queries
-
 		case @main_table
-
-			when "people"
+			when "people", "permits"
 				case table
-					when "people" then (@models.empty? ? Person.where(condition) : Person.includes(@models).where(condition))
-					else
-						model_sym = Person.associations[table].to_sym
-						(@models.empty? ? Person.joins(model_sym).where(condition) : Person.includes(@models).joins(model_sym).where(condition))
+				when "people" then (@models.empty? ? Person.where(condition) : Person.includes(@models).where(condition))
+				else (@models.empty? ? Person.joins(table.to_sym).where(condition) : Person.includes(@models).joins(table.to_sym).where(condition))
 				end
 			when "rooms"
 				case table
-					when "rooms" then (@models.empty? ? Room.where(condition) : Room.includes(@models).where(condition))
-					when "people" then (@models.empty? ? Room.joins(:person).where(condition) : Room.includes(@models).joins(:person).where(condition))
+				when "rooms" then (@models.empty? ? Room.where(condition) : Room.includes(@models).where(condition))
+				when "people" then (@models.empty? ? Room.joins(:person).where(condition) : Room.includes(@models).joins(:person).where(condition))
 				end
 			end
 	end

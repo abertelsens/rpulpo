@@ -1,0 +1,75 @@
+turbo-frame id="main_frame" 
+  
+  .container.container-frame[
+    data-controller="clipboard search form" 
+    data-clipboard-tablename="permits"
+  ]
+    
+    form.form-inline[
+      method="GET" action="/permits/search" 
+      type="search" 
+      data-controller="search" 
+      data-turbo-frame="permits_table" 
+      data-action="input->searchfield#submit \
+        keydown.ctrl+p@window->form#table_settings \
+        keydown.ctrl+a@window->form#add \
+        keydown.ctrl+c@window->clipboard#copy"
+      ]
+      
+      .row.header-frame
+        .columns.twelve.u-text-center  
+          h3.u-text-center QUESTURA
+      
+      .row
+        .columns.four.offset-by-three.flex-center
+          input#search_string.u-full-width[
+          autofocus="autofocus"
+          tabindex="1" 
+          type="search" 
+          autocomplete="off" 
+          placeholder="search" 
+          aria-label="Search" 
+          name="q" 
+          data-action="input->search#submit" 
+          value=@rooms_query
+          ]
+
+        .columns.two.flex-left  
+          a.button.button-primary.button-small[
+            data-form-target="newButton"
+            title="ctr+a or ctr+enter"
+            href="/permit/new" 
+            data-turbo-frame="editor_frame"
+          ]
+            i.fa-solid.fa-plus 
+            |&nbspadd
+          
+          a.button.button-success.button-small[
+            title="copies the results to the clipbard ctrl+c" 
+            style="width:6rem" 
+            data-clipboard-target="copybtn" 
+            data-action="click->clipboard#copy"
+          ]
+            i.fa-solid.fa-copy style="font-size:small"
+            |&nbspcopy
+          
+          a.button.button-small.button-square[
+            href="/permits/table/settings" 
+            data-form-target="tableSettingsButton" 
+            data-turbo-frame="editor_frame"
+          ]
+            i.fa-solid.fa-table style="color:white; font-size:small"
+            |&nbsp
+
+      .row 
+        .columns.twelve.u-full-width
+          .row 
+            turbo-frame id="permits_table" src="/permits/table"
+          
+          .row
+            .modal.hidden-frame data-clipboard-target="modal" 
+              .modal-content.u-text-center
+                h5.u-text-center = "Data to copy"
+                textarea#copy_field.modal-copy-area isTrusted="true" rows="4" cols="20" data-clipboard-target="copyfield"
+                .columns.two.offset-by-five   
+                  button.button-primary data-action="click->clipboard#closemodal" close

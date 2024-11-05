@@ -561,7 +561,6 @@ a.table-row-body{
   cursor:pointer;
 }
 
-
 a.table-cell-body-selected {
   max-height: 1rem;
   font-size: .6rem;
@@ -662,6 +661,14 @@ a.matrix-cell-selected
   font-size: .9rem;
   cursor:pointer;
   color: var(--light-blue)
+}
+
+.danger-cell {
+  color: #c90000;
+}
+
+.warning-cell {
+  color:#fe832c;
 }
 
 /*************************************************************************************

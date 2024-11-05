@@ -14,6 +14,9 @@ turbo-frame id="nav_bar"
           
           - if @current_user.admin?
             a.button.menu-item tabindex="-1"  data-turbo-frame="main_frame" href='/crs_records' crs+
+
+          - if @current_user.allowed?("permits")
+            a.button.menu-item tabindex="-1"  data-turbo-frame="main_frame" href='/permits' questura
           
           - if @current_user.allowed?("rooms")
             a.button.menu-item tabindex="-1"  data-turbo-frame="main_frame" href='/rooms' 

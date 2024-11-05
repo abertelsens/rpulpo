@@ -35,6 +35,7 @@ helpers do
 				when :people    then @people_query = session["people_table_query"]
 				when :rooms     then @rooms_query = session["rooms_table_query"]
 				when :mails     then return @mails_query = session["mails_table_query"]
+				when :permits   then @permits_query = session["permits_table_query"]
 		end
 		get_table_settings args
 	end
@@ -52,9 +53,11 @@ helpers do
 	def get_table_settings args
 		case args
 			when :people
-					@people_table_settings = session["people_table_settings"].nil? ? TableSettings.get(:people_default) : session["people_table_settings"]
+				@people_table_settings = session["people_table_settings"].nil? ? TableSettings.get(:people_default) : session["people_table_settings"]
 			when :rooms
-					@rooms_table_settings = session["rooms_table_settings"].nil? ? TableSettings.get(:rooms_default) : session["rooms_table_settings"]
+				@rooms_table_settings = session["rooms_table_settings"].nil? ? TableSettings.get(:rooms_default) : session["rooms_table_settings"]
+			when :permits
+				@permits_table_settings = session["permits_table_settings"].nil? ? TableSettings.get(:permits_default) : session["permits_table_settings"]
 		end
 	end
 

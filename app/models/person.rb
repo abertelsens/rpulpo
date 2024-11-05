@@ -47,6 +47,7 @@ class Person < ActiveRecord::Base
 	scope :cavabianca, ->(amount) { where(ctr: "cavabianca")}
 	scope :laicos, -> { where(status:"laico") }
 	scope :in_rome, -> { where.not(ctr:"se_ha_ido") }
+	scope :students, -> { where(student: true) }
 
 	# A scope that looks at all the people in a specific phase. Example: Person.phase("configuracional")
 	scope :phase, -> (phase) { joins(:crs_record).where(crs_record: {phase: phase}) }
@@ -108,7 +109,7 @@ class Person < ActiveRecord::Base
 	# unnecessary information. For example if we query a person by name but the settings do
 	# not include the rooms table, then we will not retrieve that result. See pulpo_query.rb
 	def self.search(search_string, table_settings=nil, filter=nil)
-		·puts "got search_string #{search_string} filter #{filter}"
+		puts "got search_string #{search_string} filter #{filter}"
 		if (filter!=nil && !filter.strip.blank?)
 			search_string = (search_string.nil? || search_string.strip.blank?) ? filter : "#{filter} AND #{search_string}"
 		end

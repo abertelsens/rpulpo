@@ -1,0 +1,35 @@
+// A general template for a table. It receives as parameter a Table Settigns object and 
+// a collecion of objects. The table settings object will set the headers of the table as
+// well as the css clases used to render the table.
+- checkmark = "\u2714".encode('utf-8')
+
+turbo-frame id="permits_table" 
+  
+  .table-container data-controller="table" data-table-size-value=@objects.size
+  
+    .table-table[
+      data-action="mouseover->table#mouseover \
+      keydown.down@window->table#down \
+      keydown.up@window->table#up \
+      keydown.esc@window->table#escape"]
+    
+      
+      .table-row-head
+        - @table_settings.att.each do |sett|
+          div class=sett.css_class = sett.name.humanize(capitalize: false)  
+
+      - @objects.each.with_index do |object, index|  
+        
+        a.table-row-body[
+          tabindex=-1
+          data-action="keydown.enter@window->table#enter" 
+          data-table-target="row" 
+          data-table-id="index" 
+          href="/permit/#{object.id}" 
+          data-turbo-frame="main_frame"
+        ]
+          == @decorator.html_row(object)
+
+  .row.flex-center.margin-top
+    .alert.u-text-center.xlong-field = (@objects.size>0) ? "#{@objects.size} record(s) found" : "No records found. Try something different."
+  

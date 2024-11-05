@@ -93,6 +93,7 @@ class TableSettings
 	end
 
 	def self.get(table_symb)
+		puts "asking for table #{table_symb}"
 		ALL_TABLES.find {|ts| ts.name.to_sym == table_symb}
 	end
 
@@ -174,6 +175,7 @@ class TableSettings
 		related_tables = case table
 			when "people" then TableSettings.get(:people_default).related_tables
 			when "rooms"  then TableSettings.get(:rooms_default).related_tables
+			when "permits"  then TableSettings.get(:permits_default).related_tables
 		end
 
 		TableSettings.new(name: name, main_table: table, attributes: attributes, related_tables: related_tables)

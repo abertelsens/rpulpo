@@ -54,10 +54,32 @@ class RoomDecorator < ObjectDecorator
   end
 end
 
+class PermitDecorator < ObjectDecorator
+
+  def html_row(entity)
+    days_to_expire = entity.permit.days_to_expire
+    color_class = case 
+      when days_to_expire<0 then "danger-cell"
+      when days_to_expire<60 then "warning-cell"
+      else ""
+    end
+    @table_settings.att.map{|sett| html_cell(entity,sett,color_class)}.join("\n")
+  end
+
+  def html_cell(entity, sett,color_class)
+    value =  case sett.table
+      when "people"  then entity[sett.get_field_name]
+      when "permits" then entity.permit[sett.get_field_name] unless entity.permit.nil?
+      end
+    "<div class=\"#{sett.css_class} #{color_class}\"> #{decorate(value,sett) }</div>"
+  end
+end
+
+
 class PersonDecorator < ObjectDecorator
 
   def get_value(entity, table, field)
-    value =  case table
+    case table
       when "people", "person"     then    entity[field]
       when "rooms"                then    entity.room[field]        unless entity.room.nil?
       when "personals"            then    entity.personal[field]    unless entity.personal.nil?
@@ -65,7 +87,7 @@ class PersonDecorator < ObjectDecorator
       when "crs_records"          then    entity.crs_record[field]  unless entity.crs_record.nil?
       when "matrices"             then    entity.matrix[field]      unless entity.matrix.nil?
       when "permits"              then    entity.permit[field]      unless entity.permit.nil?
-      end
+    end
   end
 
   def html_cell(entity, sett)
