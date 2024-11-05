@@ -35,7 +35,7 @@ class Permit < ActiveRecord::Base
   end
 
   def days_to_expire()
-    (permit_expiration- Date.today).to_i
+    (permit_expiration - Date.today).to_i unless permit_expiration.nil?
   end
 
 end

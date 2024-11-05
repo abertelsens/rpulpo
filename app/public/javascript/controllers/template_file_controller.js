@@ -19,7 +19,7 @@ import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/di
     }
     
     selectFile() {
-      this.template_fileTarget.click();
+      this.templateFileTarget.click();
     }
 
     loadFile(){
