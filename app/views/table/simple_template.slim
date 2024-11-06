@@ -3,7 +3,7 @@
 // well as the css clases used to render the table.
 - checkmark = "\u2714".encode('utf-8')
 
-turbo-frame id="#{@table_settings.get_main_table}_table" 
+turbo-frame id="#{@table_settings.main_table}_table" 
   
   .table-container data-controller="table" data-table-size-value=@objects.size
   
@@ -21,7 +21,7 @@ turbo-frame id="#{@table_settings.get_main_table}_table"
           data-action="keydown.enter@window->table#enter" 
           data-table-target="row" 
           data-table-id="index" 
-          href="/#{@table_settings.get_main_model_name}/#{object.id}" 
+          href="/#{@table_settings.main_model_name}/#{object.id}" 
           data-turbo-frame="main_frame"
         ]
           == @decorator.html_row(object)

@@ -131,6 +131,11 @@ class User < ActiveRecord::Base
 		#(module_users.select {|mu| mu.modulepermission=="allowed"}).map {|mu| mu.pulpo_module}
 	end
 
+	# returs a hash with the documents of the user of the form {module_name: documentsAssociation }
+	def get_documents
+		get_allowed_modules.map{|mod| [mod , mod.documents] }.select{|item| !item[1].empty?}
+	end
+
 	def allowed?(module_identifier)
 		return true if admin?
 		pulpo_modules.find_by(name: module_identifier)!=nil

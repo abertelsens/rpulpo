@@ -5,8 +5,7 @@
 # autor: alejandrobertelsen@gmail.com
 # last major update: 2024-10-22
 #---------------------------------------------------------------------------------------
-
-
+#
 require_relative '../utils/pulpo_query'
 require 'yaml'
 require 'rainbow'
@@ -14,12 +13,14 @@ require 'rainbow'
 #---------------------------------------------------------------------------------------
 
 # DESCRIPTION
-# A class defining a the settings of fild.
+# A class defining a the settings of field.
 # -----------------------------------------------------------------------------------------
 class TableAttribute
 
 	# name: the name to be displayed as the header in the table. It does not need to martch the field name.
 	attr_accessor :name, :table, :field, :order, :css_class, :type
+
+	
 
 	def initialize(table, field, name, order, css_class, type)
 		@table = table
@@ -40,14 +41,11 @@ class TableAttribute
 		TableAttribute.new(table, field, name, order, css_class, type)
 	end
 
-
-	def get_field_name
+	def get_field_name()
 		field.split(".")[1]
 	end
 
-	def field_name
-		field.split(".")[1]
-	end
+	alias_method :field_name, :get_field_name
 
 	def set_order(order)
 		@order = order
@@ -70,7 +68,6 @@ class TableSettings
 
 	# the path of a yaml file specifying the table settings
 	SETTINGS_FILE_PATH = "app/settings/attributes.yaml"
-
 	print Rainbow("PULPO: Loading Tables Settings from config file: #{SETTINGS_FILE_PATH} ... ").yellow
 	SETTINGS_YAML = YAML.load_file(SETTINGS_FILE_PATH)
 
@@ -93,10 +90,8 @@ class TableSettings
 	end
 
 	def self.get(table_symb)
-		puts "asking for table #{table_symb}"
 		ALL_TABLES.find {|ts| ts.name.to_sym == table_symb}
 	end
-
 
 	def self.get_all_attributes
 		return ALL_ATTRIBUTES
@@ -104,8 +99,6 @@ class TableSettings
 
 	# returns an array with all the table names present in the table settings
 	def get_tables
-		puts "IN GET TABLES"
-		puts @att.uniq{|att| att.table}
 		return @att.uniq{|att| att.table}.map{|att| att.table}
 	end
 
@@ -114,42 +107,35 @@ class TableSettings
 		table.nil? ? @att : @att.select{|att| att.table==table}
 	end
 
-	# checks wether an attribute is in the table settings
-	def include? att_name
-		(@att.map{|att| att.field}).include? att_name
+	def self.get_attribute_by_name(name)
+		return ALL_ATTRIBUTES.find{|a| a.field.split(".")[1]==name}
 	end
 
-	def get_fields
-		return @att.map{|a| a.field}
+	# checks wether an attribute is in the table settings
+	def include?(att_name)
+		(@att.map{|att| att.field}).include? att_name
 	end
 
 	def get_field(field)
 		return @att.find{|a| a.field==field}
 	end
 
-
-	def get_names
-		return @att.map{|a| a.name}
-	end
-
-	def get_columns()
-		return @att
-	end
-
 	def self.get_attribute(field)
 		return ALL_ATTRIBUTES.find{|a| a.field==field}
 	end
 
-	def self.get_attribute_by_name(name)
-		return ALL_ATTRIBUTES.find{|a| a.field.split(".")[1]==name}
-	end
-
-	def get_main_table
+	def main_table
 		return @main_table
 	end
 
-	def get_main_model_name
+	def main_model_name
 		@main_table.singularize
+	end
+
+	def order
+		order_hash = Hash.new
+		@att.select{|a| a.order!="NONE"}.each { |a| order_hash[a.field.to_sym] = (a.order=="ASC" ? :asc : :desc) }
+		return order_hash
 	end
 
 	def get_order
@@ -173,12 +159,16 @@ class TableSettings
 		end
 
 		related_tables = case table
-			when "people" then TableSettings.get(:people_default).related_tables
-			when "rooms"  then TableSettings.get(:rooms_default).related_tables
+			when "people" 	then TableSettings.get(:people_default).related_tables
+			when "rooms"  	then TableSettings.get(:rooms_default).related_tables
 			when "permits"  then TableSettings.get(:permits_default).related_tables
 		end
-
-		TableSettings.new(name: name, main_table: table, attributes: attributes, related_tables: related_tables)
+		main_table = case table
+			when "people" 	then TableSettings.get(:people_default).main_table
+			when "rooms"  	then TableSettings.get(:rooms_default).main_table
+			when "permits"  then TableSettings.get(:permits_default).main_table
+		end
+		TableSettings.new(name: name, main_table: main_table, attributes: attributes, related_tables: related_tables)
 	end
 
 	ALL_ATTRIBUTES = SETTINGS_YAML["attributes"].map {|att| TableAttribute.create_from_yaml att}

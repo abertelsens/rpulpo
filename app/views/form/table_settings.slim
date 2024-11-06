@@ -3,8 +3,10 @@
 /*****************************************************************************************************
 
 turbo-frame id="main_frame"
-	
-	form action="/#{@table_settings.main_table}/table/settings" method="POST" data-controller="table-settings"
+
+	- action = (locals[:table].nil? ? "/#{@table_settings.main_table}/table/settings" : "/#{locals[:table]}/table/settings")
+
+	form action=action method="POST" data-controller="table-settings"
 	
 		.container
 			
@@ -12,12 +14,12 @@ turbo-frame id="main_frame"
 			// FORM HEADER
 			//----------------------------------------------------------------------------------------------------------------
 			.row.u-text-center
-				.columns.twelve
-					h3 = "TABLE SETTINGS"
+				h3 = "TABLE SETTINGS"
 				
 			.row.u-text-center
-				.columns.twelve
-					p = "Select the fields you would like to see in the results and the order in which the records will be shown."	
+				.columns.six.alert.offset-by-three
+					i.fa-solid.fa-circle-info
+					|&nbspSelect the fields you would like to see in the table.
 			/----------------------------------------------------------------------------------------------------------------
 			//DOCUMENT FRAME
 			//----------------------------------------------------------------------------------------------------------------
@@ -27,42 +29,31 @@ turbo-frame id="main_frame"
 					table
 						tr
 							td style="vertical-align: top"
-								.row style="text-align: center" 
-									h5 = @table_settings.main_table.upcase
+								.row style="text-align: left" 
+									h5 style="margin-bottom: 0" = @table_settings.main_table.upcase
 								
 								- table_all.get_attributes(@table_settings.main_table).each do |att|
 									.row.u-full-width
-										.columns.eight 
-											
-											a.button.button-seconday.u-full-width[
-												style="margin-bottom:.3rem" 
-												class=((@table_settings.include? att.field) ? "active" : "") 
-												data-table-settings-target="attributeButton"
-												data-table-settings-id-param=att.field  
-												data-action="click->table-settings#update" 
-											] = att.name.humanize
-										
-										.columns.four
-											select style="margin-bottom:.3rem" name="#{att.field}.order"      
-												option value="NONE" selected=(att.order=="NONE") = "NONE"
-												option value="ASC" selected=(att.order=="ASC") = "ASC"
-												option value="DESC" selected=(att.order=="DESC") = "DESC"
-										
-										&hidden.u-full-width[
-											name=att.field 
-											value=(@table_settings.include? att.field).to_s
-										]
+										a.button.ts.button-seconday.u-full-width[
+											class=((@table_settings.include? att.field) ? "active" : "") 
+											data-table-settings-target="attributeButton"
+											data-table-settings-id-param=att.field  
+											data-action="click->table-settings#update"] = att.name.humanize
+									
+									&hidden.u-full-width[
+										name=att.field 
+										value=(@table_settings.include? att.field).to_s
+									]
 		
 							- @table_settings.related_tables.each do |rel_table|
 								- if @current_user.is_table_allowed?(rel_table)
 									td style="vertical-align: top"
-										.row style="text-align: center"
-											h5 = rel_table.classify.upcase
+										.row style="text-align: left"
+											h5 style="margin-bottom: 0" = rel_table.humanize.upcase
 											- table_all.get_attributes(rel_table).each do |att|
 												.row.u-full-width
 													.columns.twelve 
-														a.button.button-seconday.u-full-width[
-															style="margin-bottom:.3rem" 
+														a.button.ts.button-secondary.u-full-width[
 															class=((@table_settings.include? att.field) ? "active" : "") 
 															data-table-settings-target="attributeButton" 
 															data-table-settings-id-param=att.field 

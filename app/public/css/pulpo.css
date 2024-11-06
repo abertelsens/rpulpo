@@ -949,6 +949,15 @@ h4.help {
   border-color: var(--light-blue);
 }
 
+.button.ts {
+  padding:.1rem;
+  border: 0;
+  margin: 0;
+  height: 1.5rem;
+  line-height: 1.5rem;
+  text-align: left;
+}
+
 /***********************************************************************************************
 ALERTS
 /***********************************************************************************************/
@@ -1015,8 +1024,7 @@ ALERTS
 
 
 a.button.active {
-  background: var(--light-blue);
-  color: white;
+  color: var(--light-blue);
 }
 
 /****************************************************************************************************
@@ -1034,6 +1042,7 @@ a.button.active {
   border:0px;
   text-decoration: none;
   color: #302e2e;
+  cursor: pointer;
 }
 
 .box {

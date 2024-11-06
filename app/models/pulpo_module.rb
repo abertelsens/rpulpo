@@ -17,6 +17,7 @@
 class PulpoModule < ActiveRecord::Base
 
 	has_many 	:module_users, dependent: :destroy
+	has_many	:documents
 
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(name: :asc) }
