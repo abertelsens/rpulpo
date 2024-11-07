@@ -13,12 +13,13 @@ turbo-frame id="main_frame"
 	.container.screen-box.small-form data-controller="form" 
 
 		form[
-			action="/#{model_name}/#{(@object.nil? ? "new" : @object.id)}" 
+			action="/#{model_name}/#{(@object ? @object.id : "new")}"
 			method="POST"
 			data-controller="form-validator"
 			data-form-target="form"
-			data-action="keydown.ctrl+d@window->form#delete keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape" 
-			] 
+			data-action="keydown.ctrl+d@window->form#delete \
+			keydown.ctrl+enter@window->form#enter \
+			keydown.esc@window->form#escape" ] 
 		
 			/ ----------------------------------------------------------------------------------
 			/ FORM HEADER
@@ -30,26 +31,30 @@ turbo-frame id="main_frame"
 			/ DOCUMENT FRAME
 			/ ----------------------------------------------------------------------------------
 			.row
-				
-				.columns.six
-					label for="identifier" module identifier
-					&text#identifier.u-full-width[
-						required="true"
-						autocomplete="false" 
-						name="identifier"
-						data-form-target="firstField"
-						data-action="input->form-validator#validate"
-						value=@object&.identifier
-					] 
+
+				fieldset data-form-target="fieldset"
+			
+					.columns.six
+						label for="identifier" module identifier
+						&text#identifier.u-full-width[
+							required
+							autocomplete="off" 
+							name="identifier"
+							data-form-target="firstField"
+							value=@object&.identifier
+						] 
+						
 					
-				
-				.columns.six
-					label for="name" module name
-					&text#name.u-full-width autocomplete="false" required="true" name="name" value=@object&.name
-				
-				.columns.twelve
-					label for="description" description
-					&text#description.u-full-width name="description" value=@object&.description
+					.columns.six
+						label for="name" module name
+						&text@name.u-full-width[
+							required
+							autocomplete="off" 
+							value=@object&.name]
+					
+					.columns.twelve
+						label for="description" description
+						&text@description.u-full-width value=@object&.description autocomplete="off" 
 					
 			/----------------------------------------------------------------------------------------------------------------
 			/ ERROR FRAME
@@ -61,7 +66,8 @@ turbo-frame id="main_frame"
 			/ BUTTONS
 			/-----------------------------------------------------------------------------------
 			
-			== partial :"elements/form_buttons", locals: {object: @object, table_name: table_name}
+			- locals =	{ object: @object, table_name: table_name, submit_value: (@object ? "save" : "new") }
+			== partial :"elements/form_buttons", locals: locals
 			
 			/----------------------------------------------------------------------------------------------------------------
 			/ DELETE CONFIRMATION MODAL FORM

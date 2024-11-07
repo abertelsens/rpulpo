@@ -29,76 +29,77 @@ turbo-frame id="main_frame"
 			/----------------------------------------------------------------------------------------------------------------
 			/ FORM FIELDS
 			/----------------------------------------------------------------------------------------------------------------
-			.row
-		
-				.columns.six
-					label for="name" name
-					&text#name.u-full-width[
-						name="name" 
-						required="true"
-						data-form-target="firstField" 
-						data-action="input->form-validator#validate" 
-						value=@object&.name
-					]
+			fieldset data-form-target="fieldset"
 				
-				.columns.six
-					label for="module" module
-					select#module.u-full-width name="module"
-						- PulpoModule.all.each do |mod|
-							option selected=(@object&.pulpo_module_id==mod.id) value=mod.id = mod.name
-			
-			.row		
-				.columns.nine
-					label for="description" description
-					&text#description.u-full-width name="description" value=@object&.description
-
-				.columns.three
-					label for="singlepage" page type
-					select#singlepage.u-full-width name="singlepage"
-						option selected=@object&.singlepage value="true" = "single page"
-						option selected=!@object&.singlepage value="false" = "multiple pages"
-
-			.row
-				.columns.six
-					label for="path" template path
-					&text#path.u-full-width name="path" disabled="true" data-template-file-target="path" value=@object&.path
-
+				.row
 				
-				.columns.three
-					label data-template-file-target="path" &nbsp 
-					label.button.button-success.u-full-width[
-						data-template-file-target="templateButton" 
-						data-action="click->template-file#selectFile"] = (@object&.path.blank? ? "load" : "change")
-
-					input[
-						accept=".typ" 
-						style="display:none" 
-						data-template-file-target="templateFile" 
-						type="file" name="template" 
-						data-action="change->template-file#loadFile"
-						]
-				
-				.columns.three
-					label &nbsp 
-					- if @object
-						a.button.button-secondary.u-full-width[
-							data-template-file-target="viewButton" 
-							target="_blank" 
-							href=(@object&.path&.blank? ? "#" : "/#{model_name}/#{@object.id}/viewtemplate")] = "view"
+					.columns.six
+						label for="name" name
+						&text@name.u-full-width[
+							required
+							data-form-target="firstField" 
+							value=@object&.name]
 					
+					.columns.six
+						label for="module" module
+						select@module.u-full-width
+							- PulpoModule.all.each do |mod|
+								option selected=(@object&.pulpo_module_id==mod.id) value=mod.id = mod.name
+				
+				.row		
+					.columns.nine
+						label for="description" description
+						&text@description.u-full-width value=@object&.description
+
+					.columns.three
+						label for="singlepage" page type
+						select@singlepage.u-full-width
+							option selected=@object&.singlepage value="true" = "single page"
+							option selected=!@object&.singlepage value="false" = "multiple pages"
+
+				.row
+					.columns.six
+						label for="path" template path
+						&text@path.u-full-width[
+							disabled 
+							data-template-file-target="path" 
+							value=@object&.path]
+
+					
+					.columns.three
+						label data-template-file-target="path" &nbsp 
+						label.button.button-success.u-full-width[
+							data-template-file-target="templateButton"
+							data-action="click->template-file#selectFile"] = (@object&.path.blank? ? "load" : "change")
+
+						input[
+							accept=".typ" 
+							style="display:none" 
+							data-template-file-target="templateFile" 
+							type="file" name="template" 
+							data-action="change->template-file#loadFile"]
+					
+					.columns.three
+						label &nbsp 
+						- if @object
+							a.button.button-secondary.u-full-width[
+								data-template-file-target="viewButton" 
+								target="_blank" 
+								href=(@object&.path&.blank? ? "#" : "/#{model_name}/#{@object.id}/viewtemplate")] = "view"
+						
 			/----------------------------------------------------------------------------------------------------------------
 			/ ERROR FRAME
 			/----------------------------------------------------------------------------------------------------------------		
 			.row
-				.alert.alert-warning.u-full-width.hidden-frame data-form-validator-target="error_frame"
+				.columns.twelve
+					.hidden-alert.alert.alert-warning.u-full-width data-form-validator-target="errorFrame"
 			
 			/----------------------------------------------------------------------------------------------------------------
 			/ BUTTONS
 			/---------------------------------------------------------------------------------------------------------------
 
-			== partial :"elements/form_buttons", locals: {object: @object, table_name: table_name}
-
-			turbo-frame id="delete_modal" src = "/elements/delete_modal?object_type=document"
+			- locals =	{ object: @object, table_name: table_name, submit_value: (@object ? "save" : "new") }
+			== partial :"elements/form_buttons", locals: locals
 
 			/----------------------------------------------------------------------------------------------------------------
 			/ DELETE CONFIRMATION MODAL FORM

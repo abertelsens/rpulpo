@@ -41,17 +41,20 @@ end
 # POST ROUTES
 # -----------------------------------------------------------------------------------------
 
-# Returns a JSON object
+# Validates if the params received are valid for updating or creating an entity object.
+# returns a JSON object of the form {result: boolean, message: string}
 post '/pulpo_module/:id/validate' do
 	content_type :json
-	(PulpoModule.validate params).to_json
+	res = (new_id? ? (PulpoModule.validate params) : (PulpoModule.find(params[:id]).validate params)).to_json
+	puts res
+	res
 end
 
 post '/pulpo_module/:id' do
-  pmodule = PulpoModule.find(params[:id]) unless params[:id]=="new"
 	case params[:commit]
-		when "save" then (pmodule==nil ? (PulpoModule.create params ): (pmodule.update params))
-		when "delete" then pmodule.destroy
+		when "new"		then	PulpoModule.create params
+		when "save" 	then 	PulpoModule.find(params[:id]).update params
+		when "delete" then 	PulpoModule.find(params[:id]).destroy
 	end
   redirect '/pulpo_modules'
 end

@@ -27,6 +27,7 @@ require 'sinatra/reloader'
 require_relative 'sinatra_helpers'  # helpers for the sinatra controllers
 require 'require_all'
 
+
 # include all the models defined in the 'app/models' directory
 require_rel 'models'
 

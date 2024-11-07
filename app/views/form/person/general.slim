@@ -14,9 +14,11 @@ turbo-frame id="main_frame"
 			action="/#{model_name}/#{@person ? @person.id : "new"}/general" 
 			enctype="multipart/form-data" 
 			method="POST" 
-			data-controller="keys modal attachment" 
+			data-controller="keys modal attachment form-validator" 
 			data-keys-target="form"
-			data-action="keydown.ctrl+d@window->form#delete keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
+			data-action="keydown.ctrl+d@window->form#delete \
+				keydown.ctrl+enter@window->form#enter \
+				keydown.esc@window->form#escape"
 			data-attachment-target="form"]
 		
 			/----------------------------------------------------------------------------------------------------------------
@@ -39,10 +41,10 @@ turbo-frame id="main_frame"
 
 							- has_photo = (@person && File.exist?("app/public/photos/#{@person.id}.jpg"))	
 							img.person-photo.small [
-								src = ((@person && has_photo) ? "photos/#{@person.id}.jpg?v=#{rand(1..1000)}" : "photos/avatar.jpg" )
+								src = (has_photo ? "photos/#{@person.id}.jpg?v=#{rand(1..1000)}" : "photos/avatar.jpg" )
 								data-attachment-target = "photoImage" 
 								data-attachment-id-param = (@person  ? @person.id : "")
-								data-action = ((@person && has_photo) ? "click->attachment#select_image" : "click->attachment#select_image")  ]
+								data-action = (has_photo ? "click->attachment#select_image" : "click->attachment#select_image")]
 
 						h3 = (@person ? @person.short_name : "Nueva Ficha")
 									
@@ -59,11 +61,11 @@ turbo-frame id="main_frame"
 					
 					.columns.three
 						label for="name" nombre
-						&text.u-full-width[
+						&text@first_name.u-full-width[
 							data-form-target="firstField"
-							name="first_name"
-							required="true"
+							required
 							autofocus
+							autocomplete="off"
 							value=@person&.first_name
 							data-validate-target="field"
 							data-action="input->validate#validate"
@@ -71,9 +73,9 @@ turbo-frame id="main_frame"
 					
 					.columns.three
 						label for="family_name" apellidos
-						&text.u-full-width[
-							name="family_name"
-							required="true"
+						&text@family_name.u-full-width[
+							required
+							autocomplete="off"
 							value=@person&.family_name
 							data-validate-target="field"
 							data-action="input->validate#validate"
@@ -81,7 +83,10 @@ turbo-frame id="main_frame"
 					
 					.columns.four
 						label for="short_name" nombre completo (forma breve)
-						&text.u-full-width name="short_name" required="true" value=@person&.short_name
+						&text@short_name.u-full-width[
+							required
+							autocomplete="off"  
+							value=@person&.short_name]
 					
 					
 				.row	
@@ -89,7 +94,7 @@ turbo-frame id="main_frame"
 						label.tooltip for="status" sacd
 							<i class="fa-sharp fa-regular fa-circle-question"></i>
 							<span class="tooltiptext">(sacerdote, laico o diácono)</span>
-						select.u-full-width name="status"
+						select@status.u-full-width"
 							- Person.statuses.each do |st| 
 								option selected=(@person&.status==st[0]) value=st[0] = st[0]
 					
@@ -97,13 +102,13 @@ turbo-frame id="main_frame"
 						label.tooltip for="n_agd" n/agd 
 							<i class="fa-sharp fa-regular fa-circle-question"></i>
 							<span class="tooltiptext">(numerario o agregado)</span>
-						select.u-full-width name="n_agd"
+						select@n_agd.u-full-width
 							- Person.n_agds.each do |st| 
 								option selected=(@person&.n_agd==st[0]) value=st[0] = st[0]
 					
 					.columns.two
 						label for="ctr" ctr
-						select.u-full-width name="ctr"
+						select@ctr.u-full-width
 							- Person.ctrs.each do |st| 
 								option selected=(@person&.ctr==st[0]) value=st[0] = st[0].humanize(capitalize: false) 
 					
@@ -112,89 +117,57 @@ turbo-frame id="main_frame"
 						label.tooltip for="group" grupo 
 							<i class="fa-sharp fa-regular fa-circle-question"></i>
 							<span class="tooltiptext">(1, 2, 3, 4, dir)</span>
-						&text.u-full-width name="group" value=@person&.group
+						&text@group.u-full-width value=@person&.group
 					
 					.columns.one
 						label.tooltip for="año" año
 							<i class="fa-sharp fa-regular fa-circle-question"></i>
 							<span class="tooltiptext">(1, 2, 3, 4, ...)</span>
-						&text.u-full-width name="year" value=@person&.year
+						&text@year.u-full-width value=@person&.year
 				
 					.columns.one
 						label.tooltip for="ropa" ropa
 							<i class="fa-sharp fa-regular fa-circle-question"></i>
 							<span class="tooltiptext">(número de ropa)</span>
-						&text.u-full-width name="clothes" value=@person&.clothes
+						&text@clothes.u-full-width value=@person&.clothes
 					
 					.columns.two
 						label.tooltip for="telephone" phone
 							<i class="fa-sharp fa-regular fa-circle-question"></i>
 							<span class="tooltiptext">Ej: +9725425901051</span>
-						&text.u-full-width name="phone" value=@person&.phone
+						&text@phone.u-full-width value=@person&.phone
 					
 					.columns.three
 						label for="email" email
-						&email.u-full-width name="email" value=@person&.email
+						&email@email.u-full-width autocomplete="off" value=@person&.email
 			
 				.row	
 					
 					.columns.two
 						label for="birth" fecha cumpleaños
-						&date.u-full-width name="birth" value=@person&.birth
+						&date@birth.u-full-width value=@person&.birth
 					
 					.columns.two
 						label for="arrival" fecha de llegada
-						&date.u-full-width name="arrival" value=@person&.arrival
+						&date@arrival.u-full-width value=@person&.arrival
 					
 					.columns.two
 						label for="departure" fecha de salida
-						&date.u-full-width name="departure" value=@person&.departure
+						&date@departure.u-full-width value=@person&.departure
 					
 					.columns.five
 						label.tooltip for="celebration_info" celebración
 							<i class="fa-sharp fa-regular fa-circle-question"></i>
 							<span class="tooltiptext">Ej: Celebra su (santo, cumpleaños) el 15.08</span>
-						&text.u-full-width name="celebration_info" value=@person&.celebration_info
+						&text@celebration_info.u-full-width value=@person&.celebration_info
 					
 					.columns.one 
 					label alumno
-					select name="student"
+					select@student
 						option selected=@person&.student value="true" sí
 						option selected=!@person&.student value="false" no
 			
-			/----------------------------------------------------------------------------------------------------------------
-			/ BUTTONS
-			/---------------------------------------------------------------------------------------------------------------
 
-			.row.flex-center.flex-columns
-				
-				- if (@person && (!(@person.respond_to? :can_be_deleted?) || @persson&.can_be_deleted?))
-					a.button.button-secondary[
-						data-keys-target="deleteButton" 
-						tabindex="-1" 
-						data-form-target="deleteButton"
-						data-action="click->form#open_modal"
-						title="ctrl+d"
-						] delete  
-				
-				button.button-primary[
-					type="submit"
-					tabindex="-1"  
-					name="commit" 
-					value="save"
-					data-form-target="submitButton"
-					data-form-validator-target="submitButton"
-					title="ctrl+enter"
-					] save
-					
-				
-				a.button.button-secondary[
-					formnovalidate="true" 
-					tabindex="-1" 
-					data-form-target="cancelButton" 
-					href=(@person ? "/person/#{@person.id}" : "/people")
-					title="esc"
-					] cancel
 				
 			/----------------------------------------------------------------------------------------------------------------
 			/ DELETE CONFIRMATION MODAL FORM
@@ -203,3 +176,16 @@ turbo-frame id="main_frame"
 			== partial :"elements/delete_modal", locals: {model_name: model_name}
 			
 			
+			/----------------------------------------------------------------------------------------------------------------
+			/ ERROR FRAME
+			/----------------------------------------------------------------------------------------------------------------		
+			
+			.row
+				.columns.six.offset-by-three
+					.hidden-alert.alert.alert-warning.u-full-width data-form-validator-target="errorFrame"
+
+			/----------------------------------------------------------------------------------------------------------------
+			/ BUTTONS
+			/---------------------------------------------------------------------------------------------------------------
+			- locals =	{ object: @person, table_name: table_name, submit_value: (@person ? "save" : "new") }
+			== partial :"elements/form_buttons", locals: locals

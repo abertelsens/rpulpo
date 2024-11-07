@@ -21,6 +21,8 @@ class Room < ActiveRecord::Base
 	enum bed:       {normal: 0, larga: 1, reclinable: 2}
 	enum bathroom:  {individual: 0, común: 1}
 
+	validates :uname, uniqueness: { message: "there is another user with that name." }
+
 	def self.create_from_params(params)
 		Room.create Room.prepare_params params
 	end

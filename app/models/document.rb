@@ -19,6 +19,9 @@ class Document < ActiveRecord::Base
 
 	belongs_to 	    :pulpo_module
 
+	validates 			:name, uniqueness: { message: "there is already another document with that name." }
+	validates 			:path, presence: { message: "you need to provide a file template." }, on: :create
+
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(pulpo_module_id: :asc, name: :asc) }
 
@@ -51,15 +54,27 @@ class Document < ActiveRecord::Base
 	end
 
 	def update(params)
-		# the name of the template change but no new file was provided. We just update the name of the current file
-		# the file itself remains unchanged
-		if(params[:name]!=name && params[:template].nil?)
-			target = "#{TYPST_TEMPLATES_DIR}/#{params[:name]}.typ"
-			FileUtils.mv get_full_path, target
+
+		previous_path = get_full_path
+		previous_name = name
+		update_result = super(Document.prepare_params params)
+
+		if(update_result)
+
+			# the name of the template changed but no new file was provided. We just update the name of the current file
+			if(params[:name]!=previous_name && params[:template].nil?)
+				target = "#{TYPST_TEMPLATES_DIR}/#{name}.typ"
+				FileUtils.mv previous_path, target if File.file?(previous_path)
+			end
+
+			# the name of the template did not change, but a new file was provided
+			if(params[:template]!=nil)
+				FileUtils.cp(params[:template][:tempfile], get_full_path)
+			end
+
 		end
-		res = super(Document.prepare_params params)
-		update_template_file(params[:template][:tempfile]) unless params[:template].nil?
-		return res
+
+		update_result
 	end
 
 	def update_template_file(file)
@@ -71,16 +86,18 @@ class Document < ActiveRecord::Base
 	end
 
 	def self.prepare_params(params)
+		puts "gpt params"
+		puts params
 		file_suffix = "typ"
 		if params[:template]!=nil
 			template_variables = Document.has_template_variables?(File.read params[:template][:tempfile])
 		end
-		{
+		hash = {
 			pulpo_module_id:        params[:module],
 			name:                   params[:name],
 			description:            params[:description],
 			engine:                 "typst",
-			path:                   "#{params[:name]}.#{file_suffix}",
+			path: 									"#{params[:name]}.#{file_suffix}",
 			singlepage:             (params[:singlepage].blank? ? true : params[:singlepage]=="true"),
 			template_variables:     template_variables
 		}
@@ -128,17 +145,17 @@ class Document < ActiveRecord::Base
 		true
 	end
 
+	# validates the params received from the form.
 	def self.validate(params)
-		warning_message = "Warning: there is already a document with that name."
-		name = params[:name].strip
-		found =
-			if (params[:id])=="new"
-				!Document.find_by(name: name).nil?
-			else
-				document = Document.find_by(name: name)
-				document.nil? ? false : (document.id!=params[:id].to_i)
-			end
-		found ? {result: false, message: warning_message} : {result: true}
+		document = Document.new(Document.prepare_params params)
+		{ result: document.valid?, message: ValidationErrorsDecorator.new(document.errors.to_hash).to_html }
 	end
+
+	# validates the params received from the form.
+	def validate(params)
+		self.update(params)
+		{ result: valid?, message: ValidationErrorsDecorator.new(errors.to_hash).to_html }
+	end
+
 
 end # class end

@@ -18,21 +18,17 @@ class PulpoModule < ActiveRecord::Base
 
 	has_many 	:module_users, dependent: :destroy
 	has_many	:documents
-	validates :identifier, uniqueness: { message: "there is another module with that identifier." }
+
+	validates :identifier, uniqueness: { message: "there is already another module with that identifier." }
 
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(name: :asc) }
-	scope :allowed, ->(user) { joins(:module_users).where(module_users: {modulepermission: "allowed"}) }
+	scope :allowed, ->(user) { joins(:module_users).where(module_users: {user_id: user.id}) }
 
 # -----------------------------------------------------------------------------------------
 # CALLBACKS
 # -----------------------------------------------------------------------------------------
 
-# after a module is created we also create permissions to all users. Bu default all users
-# will be forbidden to access the moudule.
-after_save do
-	ModuleUser.create(User.all.map{|user| {user: user, pulpo_module: self , modulepermission: "forbidden"} })
-end
 
 # -----------------------------------------------------------------------------------------
 # CRUD METHODS
@@ -51,7 +47,8 @@ end
 	end
 
 	def self.prepare_params(params)
-		params.except("commit", "id")
+		params.except!("id") if params["id"]=="new"
+		params.select{|param| PulpoModule.attribute_names.include? param}
 	end
 
 	def can_be_deleted?
@@ -62,10 +59,16 @@ end
 # VALIDATIONS
 # -----------------------------------------------------------------------------------------
 
-		# validates the params received from the form.
+	# validates the params received from the form.
 	def self.validate(params)
-		mod = PulpoModule.new(params)
-		{ result: mod.valid?, message: ValidationErrorsDecorator.new(mod.errors.to_hash).to_html }
+		pm = PulpoModule.new(PulpoModule.prepare_params params)
+		{ result: pm.valid?, message: ValidationErrorsDecorator.new(pm.errors.to_hash).to_html }
 	end
 
-end #class end
+	# validates the params received from the form.
+	def validate(params)
+		self.update(params)
+		{ result: valid?, message: ValidationErrorsDecorator.new(errors.to_hash).to_html }
+	end
+
+end

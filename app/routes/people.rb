@@ -127,19 +127,29 @@ end
 #
 post '/person/:id/general' do
 	@current_user = get_current_user
-	@person = (params[:id]=="new" ? nil : Person.find(params[:id]))
 	case params[:commit]
-		when "save"
-			(@person.nil? ? (@person= Person.create params) : (@person.update params)) if save?
-			FileUtils.cp_r("app/public/img/avatar.jpg", "app/public/photos/#{params[:id]}.jpg", remove_destination: false) if params[:id]=="new"
-		# if a person was deleted we go back to the screen fo the people table
-		when "delete"
-			@person.destroy
-			redirect :"/people"
 
-		end
+		when "new"
+			@person = Person.create params
+			FileUtils.cp_r("app/public/img/avatar.jpg", "app/public/photos/#{params[:id]}.jpg", remove_destination: false)
+
+		when "save"
+			(@person = Person.find(params[:id])).update params
+
+		when "delete"
+			Person.find(params[:id]).destroy
+			redirect :"/people"
+	end
 	partial :"view/person"
 end
+
+# Validates if the params received are valid for updating or creating an entity object.
+# returns a JSON object of the form {result: boolean, message: string}
+post '/person/:id/general/validate' do
+	content_type :json
+	(new_id? ? (Person.validate params) : (Person.find(params[:id]).validate params)).to_json
+end
+
 
 # this route handles the moduled: personal, study, crs and matrix.
 # there is no need to handle the delete action as none of these can be deleted directly

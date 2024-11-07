@@ -15,6 +15,7 @@
 class Entity < ActiveRecord::Base
 
 	has_many :mails,  dependent: :destroy
+
 	validates :sigla, uniqueness: { message: "ya hay otra entidad con esa sigla." }
 
 
@@ -31,15 +32,13 @@ class Entity < ActiveRecord::Base
 	def self.create(params)
 		super(Entity.prepare_params params)
 	end
-	
+
 	def update(params)
 		super(Entity.prepare_params params)
 	end
-	
+
 	def self.prepare_params(params)
 		params.except!("id") if params["id"]=="new"
-		puts params.select{|param| Entity.attribute_names.include? param}
-		puts "---"
 		params.select{|param| Entity.attribute_names.include? param}
 	end
 

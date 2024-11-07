@@ -56,17 +56,17 @@ end
 # -----------------------------------------------------------------------------------------
 
 post '/document/:id' do
-  document = Document.find(params[:id]) unless params[:id]=="new"
-  case params[:commit]
-    when "save" then (document==nil ? (Document.create params) : (document.update params))
-    when "delete" then document.destroy
-  end
-  redirect '/documents'
+	case params[:commit]
+		when "new"		then	Document.create params
+		when "save" 	then 	Document.find(params[:id]).update params
+		when "delete" then 	Document.find(params[:id]).destroy
+	end
+	redirect '/documents'
 end
 
-# Validates if the params received are valid for updating or creating a document object.
+# Validates if the params received are valid for updating or creating an entity object.
 # returns a JSON object of the form {result: boolean, message: string}
 post '/document/:id/validate' do
 	content_type :json
-	(Document.validate params).to_json
+	(new_id? ? (Document.validate params) : (Document.find(params[:id]).validate params)).to_json
 end

@@ -23,9 +23,11 @@ class User < ActiveRecord::Base
 	has_many 	:pulpo_modules, 		:through => :module_users
 
 	validates :uname, uniqueness: { message: "there is another user with that name." }
+	validates :uname, presence: 	{ message: "user name cannot be empty." }
 
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(uname: :asc) }
+
 	scope :mail_users, -> {where(mail:true)}
 
 	# an enum defining the type of user.
@@ -92,17 +94,6 @@ class User < ActiveRecord::Base
 		end
 		return false if user.nil?
 		user.password==password ? user : false
-	end
-
-
-	# Validates the parameters from the user form.
-	# Checks whether there is already a user with the provided user name
-	def self.validate(params)
-
-		# tries to find an existing user with the name provided.
-		user  = User.find_by(uname: params[:uname])
-		validation_result = user.nil? ? true : user.id==params[:id].to_i
-		validation_result ? {result: true} : {result: false, message: "user name already in use"}
 	end
 
 # -----------------------------------------------------------------------------------------
@@ -172,14 +163,12 @@ class User < ActiveRecord::Base
 
 	# validates the params received from the form.
 	def self.validate(params)
-		puts params.except("module")
-		User.new(params.except("module"))
+		user = User.new(User.prepare_params params)
 		{ result: user.valid?, message: ValidationErrorsDecorator.new(user.errors.to_hash).to_html }
 	end
 
 	# validates the params received from the form.
 	def validate(params)
-		puts params.except("module")
 		self.update(params)
 		{ result: self.valid?, message: ValidationErrorsDecorator.new(self.errors.to_hash).to_html }
 	end

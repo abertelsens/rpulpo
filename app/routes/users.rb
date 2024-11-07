@@ -33,17 +33,18 @@ end
 # POST ROUTES
 # -----------------------------------------------------------------------------------------
 
-# Returns a JSON object
-post '/user/:id/validate' do
-  content_type :json
-  (params[:id]=="new" ? (User.validate params) : User.find(params[:id]).validate(params)).to_json
+post '/user/:id' do
+	case params[:commit]
+		when "new"		then	User.create params
+		when "save" 	then 	User.find(params[:id]).update params
+		when "delete" then 	User.find(params[:id]).destroy
+	end
+	redirect '/users'
 end
 
-post '/user/:id' do
-  user = User.find(params[:id]) unless params[:id]=="new"
-  case params[:commit]
-    when "save" then (user==nil ? (User.create params ): (user.update params))
-    when "delete" then user.destroy
-  end
-  redirect '/users'
+# Validates if the params received are valid for updating or creating an entity object.
+# returns a JSON object of the form {result: boolean, message: string}
+post '/user/:id/validate' do
+	content_type :json
+	(new_id? ? (User.validate params) : (User.find(params[:id]).validate params)).to_json
 end

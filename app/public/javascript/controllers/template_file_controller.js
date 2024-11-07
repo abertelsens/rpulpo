@@ -24,7 +24,7 @@ import { Application, Controller } from "https://unpkg.com/@hotwired/stimulus/di
 
     loadFile(){
       this.pathTarget.value = this.templateFileTarget.value.replace(/^.*[\\/]/, '')
-      this.templateButtontnTarget.innerHTML = "Change"
+      this.templateButtonTarget.innerHTML = "Change"
       if (this.hasViewButtonTargetTarget) {
         this.viewButtonTarget.disabled = (this.pathTarget.value==="")
       }
