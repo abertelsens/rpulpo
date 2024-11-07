@@ -35,29 +35,19 @@ import { Controller } from "https://cdn.jsdelivr.net/npm/stimulus@3.2.2/dist/sti
 
 Stimulus.register("form-validator", class extends Controller {
   
-  static targets = ["errorFrame", "submitButton"]
+  static targets = ["form", "errorFrame", "submitButton"]
   warning_html = "" //"<i class='fa-solid fa-triangle-exclamation'></i>"
   
   connect() {
-    console.log("Stimulus Controller Connected: form-validator");
+    console.log("stimulus controller form-validator connected");
   }
 
-  validate_submit(event){
-    console.log("validating before submission")
-    if (!this.validate()) {
-      console.log("canceling event")
-      event.preventDefault()
-      return
-    }
-    console.log("event not canceled")
-  }
-  
-  validate() {    
-    //console.log("validating form...")
-    var form = this.element
-    fetch(`${form.action}/validate`, {
+  validate(event) {    
+    // prevent form submission
+    event.preventDefault();
+    fetch(`${this.element.action}/validate`, {
       method: 'post',
-      body:  new FormData(form),
+      body:   new FormData(this.element),
       })
       .then(res =>  res.json())
       .then(out =>  { this.handle_response(out) })
@@ -66,39 +56,38 @@ Stimulus.register("form-validator", class extends Controller {
   
   handle_response(validation_data) {
     console.log(`result ${validation_data.result}`)
-    if(validation_data!=false) {
-      //there was a validation problem
-      if(!validation_data.result) {           
-        if (this.hasErrorFrameTarget){ 
-          this.show_frame(this.errorFrameTarget)
-          this.errorFrameTarget.innerHTML = `${this.warning_html} ${validation_data.message}`
-        }
-        if (this.hasSubmitButtonTarget) { 
-          this.submitButtonTarget.disabled=true
-        }
-        else {
-          console.log("form/validator warning: no submit button defined as target")
-        }
+    if(!validation_data) {
+      this.showAlert("form-validator controller warning: there was a problem with the server's response.");
+      return false;
+    }
+
+    //there was a validation problem
+    if(!validation_data.result) {       
+      this.showAlert(`${this.warning_html} ${validation_data.message}`)
+      return false;
+    }
+    // validation succeeded
+    else {
+      var previousAction = this.element.action
+      if (this.hasSubmitButtonTarget) { 
+        var form = this.element
+        form.action += "?" + this.submitButtonTarget.name + "=" + this.submitButtonTarget.value; 
       }
       else {
-        if (this.hasSubmitButtonTarget) { 
-          this.submitButtonTarget.disabled=false
-          return true
-        }
-        if (this.hasErrorFrameTarget){ 
-          this.hide_frame(this.errorFrameTarget)
-          return false
-        }
-      }  
+        console.log("form-validator controller warning: no submitButton target defined. submitting form anyway...")
+      }
+      this.element.requestSubmit();
+      // restore the action of the form
+      this.element.action = previousAction;
+      return true;
+    }   
+  }
+  
+  showAlert(alert){
+    if(this.hasErrorFrameTarget) {
+      this.errorFrameTarget.classList.remove('hidden-alert');
+      this.errorFrameTarget.innerHTML = alert;
     }
   }
-  
-  hide_frame(frame) {
-    frame.classList.add('hidden-alert')
-  }
-  
-  show_frame(frame) {
-    frame.classList.remove('hidden-alert')
-  } 
 })
    

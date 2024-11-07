@@ -70,6 +70,10 @@ helpers do
 		params[:commit]=="save"
 	end
 
+	def new_id?
+		params[:id]=="new"
+	end
+
 	# Prints a log of the http request. The info varies according to the SINATRA_LOG_LEVEL variable.
 	def print_controller_log()
 		case SINATRA_LOG_LEVEL

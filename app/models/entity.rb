@@ -15,7 +15,6 @@
 class Entity < ActiveRecord::Base
 
 	has_many :mails,  dependent: :destroy
-
 	validates :sigla, uniqueness: { message: "ya hay otra entidad con esa sigla." }
 
 
@@ -28,6 +27,21 @@ class Entity < ActiveRecord::Base
 # -----------------------------------------------------------------------------------------
 # CRUD METHODS
 # -----------------------------------------------------------------------------------------
+
+	def self.create(params)
+		super(Entity.prepare_params params)
+	end
+	
+	def update(params)
+		super(Entity.prepare_params params)
+	end
+	
+	def self.prepare_params(params)
+		params.except!("id") if params["id"]=="new"
+		puts params.select{|param| Entity.attribute_names.include? param}
+		puts "---"
+		params.select{|param| Entity.attribute_names.include? param}
+	end
 
 	def self.get_all
 		Entity.where.not(sigla: CRSC)
@@ -43,9 +57,14 @@ class Entity < ActiveRecord::Base
 
 	# validates the params received from the form.
 	def self.validate(params)
-		ent = Entity.new(params)
+		ent = Entity.new(Entity.prepare_params params)
 		{ result: ent.valid?, message: ValidationErrorsDecorator.new(ent.errors.to_hash).to_html }
 	end
 
+	# validates the params received from the form.
+	def validate(params)
+		self.update(params)
+		{ result: valid?, message: ValidationErrorsDecorator.new(errors.to_hash).to_html }
+	end
 
 end #class end

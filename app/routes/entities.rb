@@ -20,13 +20,13 @@ require_rel '../decorators'
 
 # renders the entities frame
 get '/entities' do
-	partial :"frame/simple_template",  locals: {title: "ENTITIES", model_name: "entity"}
+	partial :"frame/simple_template",  locals: { title: "ENTITIES", model_name: "entity" }
 end
 
 # renders the table of entities
 # @objects - the entities that will be shown in the table
 get '/entities/table' do
-	@table_settings = TableSettings.get(:entities_default)
+	@table_settings = TableSettings.get :entities_default
 	@objects = Entity.all
 	@decorator = ObjectDecorator.new(table_settings: @table_settings)
 	partial :"table/simple_template"
@@ -43,11 +43,10 @@ end
 # --------------------------------------------------------------------------------------
 
 post '/entity/:id' do
-	#puts Rainbow("posting entity").orange
-	entity = Entity.find(params[:id]) unless params[:id]=="new"
 	case params[:commit]
-		when "save" 	then (entity==nil ? (Entity.create params ): (entity.update params))
-		when "delete" then entity.destroy
+		when "new"		then	Entity.create params
+		when "save" 	then 	Entity.find(params[:id]).update params
+		when "delete" then 	Entity.find(params[:id]).destroy
 	end
 	redirect '/entities'
 end
@@ -56,5 +55,5 @@ end
 # returns a JSON object of the form {result: boolean, message: string}
 post '/entity/:id/validate' do
 	content_type :json
-	(Entity.validate params).to_json
+	(new_id? ? (Entity.validate params) : (Entity.find(params[:id]).validate params)).to_json
 end

@@ -11,7 +11,7 @@ turbo-frame id="main_frame"
 	.container.screen-box.tiny-form data-controller="form" 
 		
 		form[
-			action="/#{model_name}/#{(@object.nil? ? "new" : @object.id)}"
+			action="/#{model_name}/#{(@object ? @object.id : "new")}"
 			method="POST"
 			data-controller="form-validator"
 			data-form-target="form"
@@ -40,21 +40,19 @@ turbo-frame id="main_frame"
 						data-form-target="firstField" 
 						autofocus
 						required 
-						onfocus="this.removeAttribute('readonly');"
-						autocomplete="one-time-code"
-						data-action="input->form-validator#validate" 
+						autocomplete="off"
 						value=@object&.name]
-				
+
 					label for="sigla" sigla
 					&text@sigla.u-full-width[
 						required
-						data-action="input->form-validator#validate" 
-						onfocus="this.removeAttribute('readonly');"
-						autocomplete="one-time-code"
+						autocomplete="off"
 						value=@object&.sigla]
 
 					label for="path" path
-					&text@path.u-full-width value=@object&.path
+					&text@path.u-full-width[
+						value=@object&.path
+						autocomplete="off"]
 
 			/----------------------------------------------------------------------------------------------------------------
 			/ ERROR FRAME
@@ -66,8 +64,8 @@ turbo-frame id="main_frame"
 			/----------------------------------------------------------------------------------------------------------------
 			/ BUTTONS
 			/---------------------------------------------------------------------------------------------------------------
-
-			== partial :"elements/form_buttons", locals: {object: @object, table_name: table_name}
+			- locals =	{ object: @object, table_name: table_name, submit_value: (@object ? "save" : "new") }
+			== partial :"elements/form_buttons", locals: locals
 				
 			/----------------------------------------------------------------------------------------------------------------
 			/ DELETE CONFIRMATION MODAL FORM

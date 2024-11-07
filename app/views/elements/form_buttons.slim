@@ -13,9 +13,9 @@
     type="submit"
     tabindex="-1" 
     name="commit" 
-    value="save"
+    value=(submit_value ? submit_value : "save")
     data-form-target="submitButton"
-    data-action="form-validator#validate_submit"
+    data-action="form-validator#validate"
     data-form-validator-target="submitButton"
     title="ctrl+enter"
     ] save
