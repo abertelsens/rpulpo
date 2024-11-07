@@ -1,0 +1,15 @@
+// Renders a table with the documents that the current_user is allowed to produce
+div.table-container
+  div.table-table
+    div.table-cell-header
+      h4.margin-bottom = "DOCUMENTS"
+    - docs = current_user.get_documents
+    - docs.each do |mod_docs|
+        div.table-row-head
+          div.table-cell-head
+            b = mod_docs[0].name.upcase
+        - mod_docs[1].each do |document|
+          .table-row-body
+            a.table-cell-body.menu-link[
+              href="/people/#{person_id}/document/#{document&.id}" 
+              target=(document&.engine=="excel" ? "_self" : "_blank")] = document&.name

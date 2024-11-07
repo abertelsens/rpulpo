@@ -15,6 +15,7 @@ turbo-frame id="main_frame"
 			method="POST"
 			data-controller="form-validator"
 			data-form-target="form"
+			autocomplete="one-time-code"
 			data-action="keydown.ctrl+d@window->form#delete \
 				keydown.ctrl+enter@window->form#enter \
 				keydown.esc@window->form#escape"]
@@ -36,16 +37,20 @@ turbo-frame id="main_frame"
 					
 					label for="name" name
 					&text@name.u-full-width[
-						autocomplete="false" 
 						data-form-target="firstField" 
-						required 
 						autofocus
+						required 
+						onfocus="this.removeAttribute('readonly');"
+						autocomplete="one-time-code"
+						data-action="input->form-validator#validate" 
 						value=@object&.name]
 				
 					label for="sigla" sigla
 					&text@sigla.u-full-width[
 						required
 						data-action="input->form-validator#validate" 
+						onfocus="this.removeAttribute('readonly');"
+						autocomplete="one-time-code"
 						value=@object&.sigla]
 
 					label for="path" path

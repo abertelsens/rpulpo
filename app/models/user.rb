@@ -22,9 +22,7 @@ class User < ActiveRecord::Base
 	has_many 	:module_users, 			dependent: :destroy
 	has_many 	:pulpo_modules, 		:through => :module_users
 
-	# enables the creation/update of the association model_users via attributes.
-	# See the the prepare_params method.
-	#accepts_nested_attributes_for :module_users #, allow_destroy: true
+	validates :uname, uniqueness: { message: "there is another user with that name." }
 
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(uname: :asc) }
@@ -169,6 +167,21 @@ class User < ActiveRecord::Base
 	def get_permissions()
 		pulpo_modules
 		#(module_users.includes(:pulpo_module).map{|mu| {mu.pulpo_module.id => mu.modulepermission}}).inject(:merge)
+	end
+
+
+	# validates the params received from the form.
+	def self.validate(params)
+		puts params.except("module")
+		User.new(params.except("module"))
+		{ result: user.valid?, message: ValidationErrorsDecorator.new(user.errors.to_hash).to_html }
+	end
+
+	# validates the params received from the form.
+	def validate(params)
+		puts params.except("module")
+		self.update(params)
+		{ result: self.valid?, message: ValidationErrorsDecorator.new(self.errors.to_hash).to_html }
 	end
 
 end #class end

@@ -75,22 +75,14 @@ turbo-frame id="main_frame" data-people-target="people_screen"
         .modal.hidden-frame data-modal-target="modal" 
           .modal-content
             .container.menu
-              .table-container
-                .table-table style="display: block"
-                  .table-row-head
-                    - if @current_user.usertype!="guest"  
-                      div DOCUMENTS
-                  - (Document.get_docs_of_user @current_user).each do |doc|
-                    .table-row-body
-                      a.table-cell-body.menu-link[
-                        href="/people/set/document/#{doc.id}" 
-                        target=(doc.engine=="excel" ? "_self" : "_blank")] = "#{doc.pulpo_module.name} - #{doc.name}"
+              
+              == partial "/elements/user_documents_table", locals: {current_user: @current_user, person_id: "set"}
                 
-              .table-container
-                .table-table style="display: block"
-                  .table-row-head
-                    div ACTIONS
-                  .table-row-body   
+              div.table-container
+                div.table-table style="display: block"
+                  div.table-cell-header
+                    h4.margin-bottom = "ACTIONS"
+                  .table-row-body  
                     a.table-cell-body.menu-link data-form-target="tableSettingsButton" href="/people/table/settings" data-turbo-frame="editor_frame" Edit Table Columns
                   - if @current_user.usertype!="guest"  
                     .table-row-body 

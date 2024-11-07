@@ -14,6 +14,7 @@ class TypstWriter < DocumentWriter
 
 	# The directory where the typst templates are located.
 	TYPST_TEMPLATES_DIR ="app/engines-templates/typst"
+	TYPST_TMP_DIR ="app/tmp/typ"
 
 	def initialize(document, people, template_variables=nil)
 		@status = true
@@ -93,14 +94,15 @@ class TypstWriter < DocumentWriter
 
 	def render(output_type="pdf")
 		begin
+			clean_tmp_files
 			# if running in windows we will produce a file
 			#if OS.windows?
 				# delete all the previous pdf files. Not ideal
 				# write a tmp typst file and compile it to pdf
 				FileUtils.rm Dir.glob("#{TYPST_TEMPLATES_DIR}/*.pdf")
-				tmp_file_name ="#{rand(10000)}"
-				typ_file_path = "#{TYPST_TEMPLATES_DIR}/#{tmp_file_name}.typ"
-				pdf_file_path = "#{TYPST_TEMPLATES_DIR}/#{tmp_file_name}.pdf"
+				tmp_file_name = "#{rand(10000)}"
+				typ_file_path = "#{TYPST_TEMPLATES_DIR}/#{tmp_file_name}.tmp.typ"
+				pdf_file_path = "#{TYPST_TEMPLATES_DIR}/#{tmp_file_name}.tmp.pdf"
 
 				File.write typ_file_path, @typst_src
 				res =  system("typst compile --root ../.. #{typ_file_path} #{pdf_file_path}")
@@ -114,6 +116,11 @@ class TypstWriter < DocumentWriter
 		rescue => error
 				set_error(FATAL, "Typst Writer: failed to convert document: #{error.message}")
 		end
+	end
+
+	def clean_tmp_files()
+		Dir.glob("#{TYPST_TEMPLATES_DIR}/*.tmp.typ").each {|file| File.delete file}
+		Dir.glob("#{TYPST_TEMPLATES_DIR}/*.tmp.pdf").each {|file| File.delete file}
 	end
 
 end #class end

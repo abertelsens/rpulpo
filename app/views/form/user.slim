@@ -46,9 +46,7 @@ turbo-frame id="main_frame"
 						onfocus="this.removeAttribute('readonly');"
 						autocomplete="one-time-code"
 						data-form-target="firstField" 
-						value=@object&.uname 
-						data-action="input->form-validator#validate"
-					]
+						value=@object&.uname]
 
 					label for="password" password
 					&password#password.u-full-width name="password" required="true" value=@object&.password
@@ -77,11 +75,13 @@ turbo-frame id="main_frame"
 							select.u-full-width id="module_permission[#{mod.id}]" name="module[#{mod.id}]"
 								option selected=(!@object.nil? && (@permissions.include? mod.id)) value="allowed" = "allowed" 
 								option selected=(@object.nil? || !(@permissions.include? mod.id)) value="forbidden" = "forbidden"
-			/ ----------------------------------------------------------------------------------
-			/ ALERT FRAME
-			/ ----------------------------------------------------------------------------------
-			row
-				.hidden-alert.alert.alert-warning.u-full-width data-form-validator-target="error_frame"
+			
+			/----------------------------------------------------------------------------------------------------------------
+			/ ERROR FRAME
+			/----------------------------------------------------------------------------------------------------------------		
+			.row
+				.column.six.offset-by-three
+					.hidden-alert.alert.alert-warning.u-full-width data-form-validator-target="errorFrame"
 			
 			/-----------------------------------------------------------------------------------
 			/ BUTTONS

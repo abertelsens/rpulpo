@@ -83,25 +83,10 @@ turbo-frame id="main_frame"
           data-person-view-target="submitButton"
           href="/people"] OK
 
-    div style="min-width: 15rem"
-      .row
-        h5.margin-bottom = "DOCUMENTS"
-        - docs = @current_user.get_documents
-        - docs.each do |mod_docs|
-          .row
-            .table-cell-body.menu-link
-              b = mod_docs[0].name.upcase
-          - mod_docs[1].each do |document|
-            .row
-              .table-cell-body.menu-link[
-                href="/people/#{@person.id}/document/#{document.id}" 
-                target=(document.engine=="excel" ? "_self" : "_blank")] = document.name
-
-      //- (Document.get_pdf_docs_of_modules allowed_modules).each do |doc|
-      //  .row
-      //    a.table-cell-body.menu-link[
-      //      style="padding-left:0" 
-      //      href="/people/#{@person.id}/document/#{doc.id}" 
-      //      target=(doc.engine=="excel" ? "_self" : "_blank")] = doc.name
+    // Table with the allowed documents of the current user
+    div style="min-width: 15rem"  
+      == partial "/elements/user_documents_table", locals: {current_user: @current_user, person_id: @person.id }
+    
+   
       
     

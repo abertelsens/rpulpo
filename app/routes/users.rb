@@ -36,7 +36,7 @@ end
 # Returns a JSON object
 post '/user/:id/validate' do
   content_type :json
-  (User.validate params).to_json
+  (params[:id]=="new" ? (User.validate params) : User.find(params[:id]).validate(params)).to_json
 end
 
 post '/user/:id' do

@@ -36,12 +36,22 @@ import { Controller } from "https://cdn.jsdelivr.net/npm/stimulus@3.2.2/dist/sti
 Stimulus.register("form-validator", class extends Controller {
   
   static targets = ["errorFrame", "submitButton"]
-  warning_html = "<i class='fa-solid fa-triangle-exclamation'></i>"
+  warning_html = "" //"<i class='fa-solid fa-triangle-exclamation'></i>"
   
   connect() {
     console.log("Stimulus Controller Connected: form-validator");
   }
 
+  validate_submit(event){
+    console.log("validating before submission")
+    if (!this.validate()) {
+      console.log("canceling event")
+      event.preventDefault()
+      return
+    }
+    console.log("event not canceled")
+  }
+  
   validate() {    
     //console.log("validating form...")
     var form = this.element
@@ -73,9 +83,11 @@ Stimulus.register("form-validator", class extends Controller {
       else {
         if (this.hasSubmitButtonTarget) { 
           this.submitButtonTarget.disabled=false
+          return true
         }
         if (this.hasErrorFrameTarget){ 
           this.hide_frame(this.errorFrameTarget)
+          return false
         }
       }  
     }

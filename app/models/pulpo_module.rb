@@ -18,6 +18,7 @@ class PulpoModule < ActiveRecord::Base
 
 	has_many 	:module_users, dependent: :destroy
 	has_many	:documents
+	validates :identifier, uniqueness: { message: "there is another module with that identifier." }
 
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(name: :asc) }
@@ -61,18 +62,10 @@ end
 # VALIDATIONS
 # -----------------------------------------------------------------------------------------
 
-	# Validates the parameters from the modules form.
-	# Checks whether there is already a user with the provided user name
+		# validates the params received from the form.
 	def self.validate(params)
-		warning_message = "Warning: there is already a module with that name."
-		identifier = params[:identifier].strip
-		found =
-			if (params[:id])=="new" then !PulpoModule.find_by(identifier: identifier).nil?
-			else
-				pmodule = PulpoModule.find_by(identifier: identifier)
-				pmodule.nil? ? false : (pmodule.id!=params[:id].to_i)
-			end
-		found ? {result: false, message: warning_message} : {result: true}
+		mod = PulpoModule.new(params)
+		{ result: mod.valid?, message: ValidationErrorsDecorator.new(mod.errors.to_hash).to_html }
 	end
 
 end #class end

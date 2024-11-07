@@ -172,56 +172,54 @@ end
 
 # renders a pdf or an excel file with the params received.
 get '/people/:id/document/:doc_id' do
-	if params[:id]=="set"
-		get_last_query :people
-		@people = @people_query.nil? ? Person.all.order(family_name: :asc) : (Person.search @people_query, @people_table_settings).order(family_name: :asc)
-	else
-		@people = [Person.find(params[:id])]
-	end
 
 	@document = Document.find(params[:doc_id])
-	@writer = @document.get_writer @people
-	case @writer.status
-		when DocumentWriter::WARNING then puts Rainbow(@writer.message).orange
-		when DocumentWriter::FATAL
-			puts Rainbow(@writer.message).red
-			return partial :"errors/writer_error"
-	end
-
+	# uf the document has template variables we render a form to ask the user for input
 	if @document.has_template_variables?
-			@template_variables = @document.get_template_variables
-			@set = params[:id]
-			return partial :'form/report'
+		@template_variables = @document.get_template_variables
+		@set = params[:id]
+		return partial :'form/report'
 	end
 
-	case @writer.status
-		when DocumentWriter::WARNING then puts Rainbow(@writer.message).orange
-		when DocumentWriter::FATAL
-			puts Rainbow(@writer.message).red
-			return partial :"errors/writer_error"
+	# find the people records
+	get_last_query :people
+	get_last_filter :people
+	people =
+		if params[:id]=="set" then Person.search @people_query, @people_table_settings, @people_filter
+		else [Person.find(params[:id])]
+		end
+
+
+	writer = @document.get_writer people
+	# check the status of the writer
+	if writer.status==DocumentWriter::WARNING
+		puts Rainbow(writer.message).orange
+	elsif	writer.status==DocumentWriter::FATAL
+		puts Rainbow(writer.message).red
+		return partial :"errors/writer_error"
 	end
-	send_file @writer.render
+	send_file writer.render
 end
 
 post '/people/:id/document/:doc_id' do
-	headers 'content-type' => "application/pdf"
-	if params[:id]=="set"
-		get_last_query :people
-		@people = @people_query.nil? ? Person.all : (Person.search @people_query, @people_table_settings)
-	else
-		@people = [Person.find(params[:id])]
-	end
+	get_last_query :people
+	get_last_filter :people
+	people =
+		if params[:id]=="set"
+			Person.search @people_query, @people_table_settings, @people_filter
+		else
+			[Person.find(params[:id])]
+		end
+	document = Document.find(params[:doc_id])
+	writer = document.get_writer(people, params)
 
-	@document = Document.find(params[:doc_id])
-	@writer = @document.get_writer(@people, params)
-
-	case @writer.status
-		when DocumentWriter::WARNING then puts Rainbow(@writer.message).orange
+	case writer.status
+		when DocumentWriter::WARNING then puts Rainbow(writer.message).orange
 		when DocumentWriter::FATAL
-			puts Rainbow(@writer.message).red
+			puts Rainbow(writer.message).red
 			return partial :"errors/writer_error"
 	end
-	send_file @writer.render, :type => :pdf
+	send_file writer.render, :type => :pdf
 end
 
 post '/people/edit_field' do

@@ -115,10 +115,11 @@ class Vela < ActiveRecord::Base
 
 		# delete all the previous pdf files. Not ideal
 		# write a tmp typst file and compile it to pdf
-		FileUtils.rm Dir.glob("#{TYPST_TEMPLATES_DIR}/*.pdf")
+		Dir.glob("#{TYPST_TEMPLATES_DIR}/*.tmp.typ").each {|file| File.delete file}
+		Dir.glob("#{TYPST_TEMPLATES_DIR}/*.tmp.pdf").each {|file| File.delete file}
 		tmp_file_name ="#{rand(10000)}"
-		typ_file_path = "#{TYPST_TEMPLATES_DIR}/#{tmp_file_name}.typ"
-		pdf_file_path = "#{TYPST_TEMPLATES_DIR}/#{tmp_file_name}.pdf"
+		typ_file_path = "#{TYPST_TEMPLATES_DIR}/#{tmp_file_name}.tmp.typ"
+		pdf_file_path = "#{TYPST_TEMPLATES_DIR}/#{tmp_file_name}.tmp.pdf"
 
 		File.write typ_file_path, full_doc
 		res =  system("typst compile #{typ_file_path} #{pdf_file_path}")

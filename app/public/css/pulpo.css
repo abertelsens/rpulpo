@@ -8,6 +8,7 @@
   --light-orange: rgb(255, 235, 213);
   --light-gray: rgb(224, 224, 224);
   --light-blue: #62cbf4;
+  --medium-blue: #008dc5;
   --pale-blue: #e3f6ff;
   --dark-gray: rgb(64, 64, 64);
   --medium-gray: rgb(85, 85, 85);
@@ -526,6 +527,13 @@ definition as table-cell-head*/
   font-weight: 600;
 }
 
+.table-cell-header {
+  text-overflow: ellipsis;
+  display: table-cell;
+  padding: .1rem .5rem 1px .5rem;
+  font-weight: 600;
+}
+
 .table-cell-head {
   text-overflow: ellipsis;
   display: table-cell;
@@ -958,6 +966,10 @@ h4.help {
   text-align: left;
 }
 
+.button.ts:hover {
+  text-decoration: underline;
+}
+
 /***********************************************************************************************
 ALERTS
 /***********************************************************************************************/
@@ -1024,7 +1036,7 @@ ALERTS
 
 
 a.button.active {
-  color: var(--light-blue);
+  color: var(--medium-blue);
 }
 
 /****************************************************************************************************
@@ -1038,11 +1050,24 @@ a.button.active {
   border: none;
 }
 
-.menu-link {
+
+.menu-link-header {
+  font-size: 1rem;
+  border:0px;
+  text-decoration: none;
+  color: var(--dark-grey);
+  cursor: pointer;
+}
+
+a.menu-link {
+  font-size: .9rem;
   border:0px;
   text-decoration: none;
   color: #302e2e;
   cursor: pointer;
+}
+
+a.menu-link:hover {
 }
 
 .box {

@@ -49,10 +49,10 @@ turbo-frame id="main_frame"
 								- if @current_user.is_table_allowed?(rel_table)
 									td style="vertical-align: top"
 										.row style="text-align: left"
-											h5 style="margin-bottom: 0" = rel_table.humanize.upcase
+											h5.margin-left  style="margin-bottom: 0" = rel_table.humanize.upcase
 											- table_all.get_attributes(rel_table).each do |att|
 												.row.u-full-width
-													.columns.twelve 
+													.columns.twelve.margin-left 
 														a.button.ts.button-secondary.u-full-width[
 															class=((@table_settings.include? att.field) ? "active" : "") 
 															data-table-settings-target="attributeButton" 
