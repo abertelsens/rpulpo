@@ -12,6 +12,11 @@ class DocumentWriter
 	WARNING = 2
 	FATAL 	= 3
 
+	def initialize()
+		@status = OK
+		@message = ""
+	end
+
 	def set_error(error, msg)
 		@status = error
 		@message = msg

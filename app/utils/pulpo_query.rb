@@ -29,7 +29,7 @@ class PulpoQuery
 	ATTRIBUTES = TableSettings.get_all_attributes
 
 	def initialize(query_string, table_settings=nil)
-		puts "query_string:#{query_string} table_settings: #{table_settings.inspect}"
+		#puts "query_string:#{query_string} table_settings: #{table_settings.inspect}"
 		@order =		 	table_settings.nil? ? [] : table_settings.get_order
 		@main_table = table_settings.nil? ? [] : table_settings.main_table
 		@tables = 		table_settings.nil? ? [] : table_settings.get_tables
@@ -86,7 +86,7 @@ class PulpoQuery
 		attributes_array = attributes_array.select { |att| att.status }
 
 		attributes_array = attributes_array.map { |clause| clause.execute }
-		puts "got attributes array after executing or clauses #{attributes_array}"
+		#puts "got attributes array after executing or clauses #{attributes_array}"
 
 		attributes_array.inject{ |res, condition| condition.nil? ? res : res.or(condition) }
 	end
@@ -132,7 +132,7 @@ class AttributeQuery
 
 		att = TableSettings.get_attribute_by_name(@att_name)
 		table, field_name = att.field.split(".")
-		puts Rainbow("searching @att_name: #{@att_name.inspect}. Got @main table: #{@main_table} @models: #{@models} #{att} table:#{att.table} field:#{att.field} type:#{att.type} att.value #{@att_value}" ).yellow
+		#puts Rainbow("searching @att_name: #{@att_name.inspect}. Got @main table: #{@main_table} @models: #{@models} #{att} table:#{att.table} field:#{att.field} type:#{att.type} att.value #{@att_value}" ).yellow
 
 		condition = case att.type
 			when "string" then	"#{att.field} ILIKE '%#{@att_value}%'"
@@ -148,7 +148,7 @@ class AttributeQuery
 			when "boolean" then "#{att.field}=#{@att_value=="true"}"
 			end
 
-		puts Rainbow("built conditon: #{condition}")
+		#puts Rainbow("built conditon: #{condition}")
 		# the code is a bit complex but it allows us to include in the query the tables that are needed to show the records
 		# and avoid n+1 queries
 		case @main_table
