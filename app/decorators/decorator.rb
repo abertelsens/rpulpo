@@ -136,3 +136,38 @@ class PersonDecorator < ObjectDecorator
 
   end
 end
+
+class TurnoDecorator
+  def initialize(turno)
+    @turno = turno
+  end
+
+  def toTypstTable()
+		rooms_list = @turno.rooms.order(room: :asc) unless rooms.nil?
+		return emptyTurno() if @turno.rooms_list.empty?
+		#first_room = "[#{@turno.start_time.strftime('%H:%M')} - #{@turno.end_time.strftime('%H:%M')}], [#{@turno.rooms_list[0].person.short_name}], [#{@turno.rooms_list[0].room}]  \n"
+		rooms_list.inject(formatRoom(rooms_list[0],true)){|res, room| res << formatRoom(room) << ",\n" }
+    #if @turno.rooms_list.size==1
+		#	first_room
+		#else
+		#	first_room << ",\n" << ((@turno.rooms_list[1..(@turno.rooms.size - 1)]).map{|room| "[],[#{room.person.short_name}], [#{room.room}]"}).join(",\n") unless rooms_list.size<=1
+		#end
+  end
+
+  def emptyTurno()
+    "[#{formatTime(@turno.start_time)} - #{formatTime(@turno.end_time)}],[-], [-]\n"
+  end
+  
+  def formatRoom(room, first_room=false)
+    if first_room
+      "[#{formatTime(@turno.start_time)} - #{formatTime(@turno.end_time)}],[#{room.person.short_name}], [#{room.room}]\n"
+    else
+      "[],[#{room.person.short_name}], [#{room.room}]\n"
+    end
+  end
+
+  def formatTime(time)
+    time.strftime('%H:%M')
+  end
+end
+

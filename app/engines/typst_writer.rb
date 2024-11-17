@@ -25,13 +25,15 @@ class TypstWriter < DocumentWriter
 	def initialize(document, people, template_variables=nil)
 		super()
 		@decorator = PersonDecorator.new
-		@template_source = File.read "#{TYPST_TEMPLATES_DIR}/#{document.path}"
-
-		if @template_source.nil?
-			set_error(FATAL,"Template #{@ocument.path} not foud in #{TYPST_TEMPLATES_DIR}.
-				You should check the settings of #{document.name} file before trying again.")
+		
+		begin
+			@template_source = File.read "#{TYPST_TEMPLATES_DIR}/#{document.path}"
+		rescue
+			set_error(FATAL,"Template #{document.path} not foud in #{TYPST_TEMPLATES_DIR}.
+			You should check the settings of #{document.name} file before trying again.")
 			return
 		end
+		
 
 		# replace the template variables in the template by their value.
 		template_variables.each {|var| @template_source.gsub!("$$#{var[0]}$$",var[1])} if template_variables
@@ -83,7 +85,7 @@ class TypstWriter < DocumentWriter
 	end
 
 
-	# gets the value of a variable for a set of people person. the result is a string joined by \n for
+	# gets the value of a variable for a set of people . The result is a string joined by \n for
 	# each value. In other words, if you replace the variable $people.first_name$ you will get something like:
 	# Alejandro\nPepe\nJuanito
 	#
@@ -104,7 +106,8 @@ class TypstWriter < DocumentWriter
 	# delete all files int the TYPST_TEMPLATES_DIR with suffixes .tmp.typ and .tmp.pdf
 	def clean_tmp_files
 		["typ","pdf"].each do |suffix|
-			Dir.glob("#{TYPST_TEMPLATES_DIR}/*.tmp.#{suffix}").each {|file| File.delete file}
+			files = Dir.glob("#{TYPST_TEMPLATES_DIR}/*.tmp.#{suffix}")
+			files.each {|file| File.delete file}
 		end
 	end
 
