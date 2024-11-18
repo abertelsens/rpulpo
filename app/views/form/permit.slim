@@ -6,13 +6,11 @@ turbo-frame id="main_frame"
   
 	- model_name = "permit"
 	- table_name = "permits"
-	- puts locals
-	- puts "got origin #{locals[:origin]}"
 	- back_url = (origin.nil? ? "" : "?origin=#{origin}")
 
 
 	/ Center the form in the screen and ajust its size.
-	.container.screen-box.x-large-form data-controller="form" 
+	.container.screen-box.xx-large-form data-controller="form" 
 		
 		form[
 			action="/#{model_name}/#{(@permit.nil? ? "new" : @permit.id)}#{back_url}"
@@ -83,20 +81,20 @@ turbo-frame id="main_frame"
 				
 
 					.columns.two
-						label for="pusc_certificate_request" certificato PUSC (richiesto)
+						label for="pusc_certificate_request" cert. PUSC (richiesto)
 						&date@pusc_certificate_request.u-full-width value=@permit&.pusc_certificate_requested
 
 					.columns.two
-						label for="pusc_certificate_received" certificato PUSC (ritirato)
+						label for="pusc_certificate_received" cert. PUSC (ritirato)
 						&date@pusc_certificate_received.u-full-width value=@permit&.pusc_certificate_received
 
 				.row
 					.columns.two.offset-by-one
-						label for="permit_appointment" appuntamento ispettorato
+						label for="permit_appointment" appunt. ispettorato
 						&date@permit_appointment.u-full-width value=@permit&.permit_appointment
 
 					.columns.two
-						label for="residence_notes" appuntamento impronte
+						label for="residence_notes" appunt. impronte
 						&date@permit_fingerprints.u-full-width value=@permit&.permit_fingerprints
 					
 					.columns.six

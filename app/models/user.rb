@@ -127,14 +127,15 @@ class User < ActiveRecord::Base
 
 	def allowed?(module_identifier)
 		return true if admin?
-		pulpo_modules.find_by(name: module_identifier)!=nil
+		#puts "ckecking if #{uname} is allowed on #{module_identifier} #{pulpo_modules.find_by(identifier: module_identifier)!=nil}"
+		pulpo_modules.find_by(identifier: module_identifier)!=nil
 		#result = (module_users.joins(:pulpo_module).where(pulpo_module: {name: module_identifier})).first
 		#return result.nil? ? false : result
 	end
 
 	def is_table_allowed?(table)
 		return true if self.admin? 		# an admin has all permissions.
-		settings = module_users.find_by(pulpo_module: Pulpomodule.find_by(name: table))
+		settings = module_users.find_by(pulpo_module: PulpoModule.find_by(name: table))
 		settings.nil? ? false : settings.modulepermission=="allowed"
 	end
 

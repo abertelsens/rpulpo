@@ -33,6 +33,7 @@ require_rel 'models'
 
 # include all the routes defined in the 'app/routes' directory
 require_rel 'routes'
+require_rel 'decorators'
 
 # modules
 include ActiveRecord

@@ -15,15 +15,15 @@ turbo-frame id="nav_bar"
           - if @current_user.admin?
             a.button.menu-item tabindex="-1"  data-turbo-frame="main_frame" href='/crs_records' crs+
 
-          - if @current_user.allowed?("permits")
+          - if @current_user.allowed?("permit")
             a.button.menu-item tabindex="-1"  data-turbo-frame="main_frame" href='/permits' questura
           
-          - if @current_user.allowed?("rooms")
+          - if @current_user.allowed?("room")
             a.button.menu-item tabindex="-1"  data-turbo-frame="main_frame" href='/rooms' 
               i.fa-solid.fa-bed
               | &nbspRooms
           
-          - if @current_user.allowed?("velas")
+          - if @current_user.allowed?("vela")
             a.button.menu-item tabindex="-1" data-turbo-frame="main_frame" href='/velas' 
               i.fa-solid.fa-bed
               | &nbspVelas

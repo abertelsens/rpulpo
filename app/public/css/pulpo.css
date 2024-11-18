@@ -377,6 +377,12 @@ a.button.no-border
   max-width: 1200px
 }
 
+
+.xx-large-form {
+  max-width: 1600px
+}
+
+
 .screen-box {
   margin-top: 50px;
   min-width: 400px;

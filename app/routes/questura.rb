@@ -17,7 +17,7 @@ get '/permits/table' do
 	get_last_query :permits
 	get_table_settings :permits
 	# get only the people thta are students.
-	@objects = (Person.search "students #{@permits_query}", @permits_table_settings).order("permits.permit_expiration desc")
+	@objects = (Person.search "students AND #{@permits_query}", @permits_table_settings).order("permits.permit_expiration desc")
 	@decorator = PermitDecorator.new(table_settings: @permits_table_settings)
 	partial :"table/permits"
 end
@@ -62,7 +62,7 @@ get '/permits/search' do
 	get_last_query :permits
 	get_table_settings :permits
 	@permits_query = session["permits_table_query"] = params[:q]
-	@objects = (Person.search "students #{@permits_query}" , @permits_table_settings).order("permits.permit_expiration desc")
+	@objects = (Person.search "students AND #{@permits_query}" , @permits_table_settings).order("permits.permit_expiration desc")
 	@decorator = PermitDecorator.new(table_settings: @permits_table_settings)
 	partial :"table/permits"
 end
