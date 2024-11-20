@@ -5,6 +5,7 @@ attributes:
     type: "string"
     order: "ASC"
     css_class: "long-field"
+    bulk_edit: false
   - id: "people.first_name"
     name: "First Name"
     type: "string"
@@ -25,6 +26,7 @@ attributes:
     type: "string"
     order: "NONE"
     css_class: "short-field u-text-center"
+    bulk_edit: true
   - id: "people.status"
     name: "Status"
     type: "enum"

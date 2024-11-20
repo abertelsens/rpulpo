@@ -96,4 +96,14 @@ helpers do
 		end
 	end
 
+	def render_document(writer)
+		# check the status of the writer
+		if writer.status==DocumentWriter::WARNING
+			puts Rainbow(writer.message).orange
+		elsif	writer.status==DocumentWriter::FATAL
+			puts Rainbow(writer.message).red
+			return partial :"errors/writer_error"
+		end
+		send_file writer.render, :type => :pdf
+	end
 end #helpers end

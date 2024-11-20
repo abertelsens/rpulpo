@@ -177,37 +177,28 @@ end
 # -----------------------------------------------------------------------------------------
 # ACTIONS
 # -----------------------------------------------------------------------------------------
+get '/people/:id/document/:doc_id/template_variables' do
+	@document = Document.find params[:doc_id]
+	@template_variables = @document.get_template_variables
+	@set = params[:id]
+	partial :'form/report'
+end
 
-# renders a pdf or an excel file with the params received.
+# renders a pdf with the params received.
 get '/people/:id/document/:doc_id' do
 
-	@document = Document.find(params[:doc_id])
-	# uf the document has template variables we render a form to ask the user for input
-	if @document.has_template_variables?
-		@template_variables = @document.get_template_variables
-		@set = params[:id]
-		return partial :'form/report'
-	end
+	@document = Document.find params[:doc_id]
+	# ff the document has template variables we redirect to ask for the variable values
+	redirect "/people/#{params[:id]}/document/#{params[:doc_id]}/template_variables" if @document.has_template_variables?
 
 	# find the people records
 	get_last_query_variables params["query"].to_sym
-
 
 	people =
 		if params[:id]=="set" then Person.search @people_query, @people_table_settings, @people_filter
 		else [Person.find(params[:id])]
 		end
-
-
-	writer = @document.get_writer people
-	# check the status of the writer
-	if writer.status==DocumentWriter::WARNING
-		puts Rainbow(writer.message).orange
-	elsif	writer.status==DocumentWriter::FATAL
-		puts Rainbow(writer.message).red
-		return partial :"errors/writer_error"
-	end
-	send_file writer.render
+	@document.get_writer(people).render_document
 end
 
 post '/people/:id/document/:doc_id' do
@@ -222,22 +213,13 @@ post '/people/:id/document/:doc_id' do
 			[Person.find(params[:id])]
 		end
 	document = Document.find(params[:doc_id])
-	writer = document.get_writer(people, params)
-
-	case writer.status
-		when DocumentWriter::WARNING then puts Rainbow(writer.message).orange
-		when DocumentWriter::FATAL
-			puts Rainbow(writer.message).red
-			return partial :"errors/writer_error"
-	end
-	send_file writer.render, :type => :pdf
+	document.get_writer(people, params).render_document
 end
 
 post '/people/edit_field' do
-	puts Rainbow("got params #{params}").yellow
-	@current_user = get_current_user()
+	@current_user = get_current_user
 	get_last_query_variables :people
-	@people = @people_query.nil? ? Person.all.order(family_name: :asc) : (Person.search @people_query, @people_table_settings).order(family_name: :asc)
+	@people = @people_query.nil? ? Person.all : (Person.search @people_query, @people_table_settings)
 	if params[:att_name]=="phase"
 		crs = @people.map {|person| person.crs_record}
 		crs.each {|crs| crs&.update(params[:att_name].to_sym => params[params[:att_name]])}

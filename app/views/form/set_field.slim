@@ -4,8 +4,20 @@ turbo-frame id="main_frame"
 		.container.screen-box style="max-width: 600px"
 			.row.u-text-center
 				.columns.twelve
-					h4 = "#{@report} Edit"
-					//p style="margin-bottom:20px" = ""
+					h4 = "Edit Field for People Set"
+			.row.alert.margin-top style="text-align: center;"
+					i.class.fa-solid.fa-circle-info  
+					|&nbspInstrucciones
+					p style="font-size: .9em"
+					|Se actualizará el valor del campo en <b>todas</b> las personas seleccionadas.
+			- puts "Editable Attributes"
+			- editable_attributes = TableSettings.get_editable_attributes
+			
+			.row
+				label field
+				select.u-full-width name="att_name" data-setfield-target="att_name" data-action="change->setfield#update"
+					- editable_attributes.each do |att|
+						option value=att.name = att.name
 
 			.row
 				.columns.eight.offset-by-two

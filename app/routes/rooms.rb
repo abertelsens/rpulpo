@@ -75,8 +75,7 @@ post '/room/:id' do
 	when "save"
 			res = room.update_from_params params
 			check_update_result res
-			end
-		when "delete" then room.destroy
+	when "delete" then room.destroy
 	end
 	redirect '/rooms'
 end

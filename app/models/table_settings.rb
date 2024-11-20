@@ -18,17 +18,18 @@ require 'rainbow'
 class TableAttribute
 
 	# name: the name to be displayed as the header in the table. It does not need to martch the field name.
-	attr_accessor :name, :table, :field, :order, :css_class, :type
+	attr_accessor :name, :table, :field, :order, :css_class, :type, :bulk_edit
 
 
 
-	def initialize(table, field, name, order, css_class, type)
+	def initialize(table, field, name, order, css_class, type, bulk_edit)
 		@table = table
 		@field = field
 		@name = name
 		@order = order
 		@css_class = css_class
 		@type = type
+		@bulk_edit = bulk_edit
 	end
 
 	def self.create_from_yaml(att_yaml)
@@ -38,7 +39,8 @@ class TableAttribute
 		order = att_yaml["order"]
 		css_class = att_yaml["css_class"]
 		type = att_yaml["type"]
-		TableAttribute.new(table, field, name, order, css_class, type)
+		bulk_edit = att_yaml["bulk_edit"].nil? ? false : att_yaml["bulk_edit"]
+		TableAttribute.new(table, field, name, order, css_class, type, bulk_edit)
 	end
 
 	def get_field_name()
@@ -107,6 +109,11 @@ class TableSettings
 	# returns an array with all the attibute settings present in the TableSettings object
 	def get_attributes(table=nil)
 		table.nil? ? @att : @att.select{|att| att.table==table}
+	end
+
+	# returns an array with all the attibute settings present in the TableSettings object
+	def self.get_editable_attributes(table=nil)
+		ALL_ATTRIBUTES.select{|att| att.bulk_edit}
 	end
 
 	def self.get_attribute_by_name(name)
