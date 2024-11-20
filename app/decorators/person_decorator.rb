@@ -31,6 +31,7 @@ class PersonDecorator < ObjectDecorator
     end
     value = value.upcase if (setting=="upcase" && value!=nil)
     value.nil? ? "" : value.to_s
-
   end
+
+
 end

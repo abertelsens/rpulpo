@@ -31,33 +31,38 @@ helpers do
 	# -after updating a record, for example- he will not have to enter it again.
 	# @args a symbol specifing the table
 	def get_last_query(args)
-		case args
-				when :people    then @people_query = session["people_table_query"]
-				when :rooms     then @rooms_query = session["rooms_table_query"]
-				when :mails     then return @mails_query = session["mails_table_query"]
-				when :permits   then @permits_query = session["permits_table_query"]
-		end
-		get_table_settings args
+		session["#{args.to_s}_table_query"]
 	end
 
 	def get_last_filter(args)
-		case args
-				when :people    then @people_filter = session["people_table_filter"]
-		end
+		session["#{args.to_s}_table_filter"]
 	end
 
 	# Retrieves the table settings. The table settings specify which colums should be displayed.
 	# The settings are stored in a cookie.
 	# If no settings are stored then new default table settings are created and stored.
 	# @args a symbol specifing the table.
-	def get_table_settings args
+	def get_last_table_settings args
+		session["#{args.to_s}_table_settings"].nil? ? TableSettings.get("#{args.to_s}_default".to_sym) : session["#{args.to_s}_table_settings"]
+	end
+
+	def get_last_query_variables(args)
+
 		case args
 			when :people
-				@people_table_settings = session["people_table_settings"].nil? ? TableSettings.get(:people_default) : session["people_table_settings"]
-			when :rooms
-				@rooms_table_settings = session["rooms_table_settings"].nil? ? TableSettings.get(:rooms_default) : session["rooms_table_settings"]
+				@people_query 					= get_last_query :people
+				@people_filter 					= get_last_filter :people
+				@people_table_settings 	= get_last_table_settings :people
+
 			when :permits
-				@permits_table_settings = session["permits_table_settings"].nil? ? TableSettings.get(:permits_default) : session["permits_table_settings"]
+				@permits_query 					= get_last_query :permits
+				@permits_filter 				= get_last_filter :permits
+				@permits_table_settings = get_last_table_settings :permits
+
+			when :rooms
+				@rooms_query 						= get_last_query :rooms
+				@rooms_filter 					= get_last_filter :rooms
+				@rooms_table_settings		= get_last_table_settings :rooms
 		end
 	end
 

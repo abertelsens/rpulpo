@@ -4,7 +4,7 @@
 
 turbo-frame id="main_frame"
 
-	- action = (locals[:table].nil? ? "/#{@table_settings.main_table}/table/settings" : "/#{locals[:table]}/table/settings")
+	- action = (locals[:table].nil? ? "/#{@origin}/table/settings" : "/#{locals[:table]}/table/settings")
 
 	form action=action method="POST" data-controller="table-settings"
 	
@@ -67,5 +67,5 @@ turbo-frame id="main_frame"
 			//----------------------------------------------------------------------------------------------------------------
 			.row.center-align
 					button.button-primary type="submit" name="commit" value="save" save  
-					a.button.button-secondary formnovalidate="true" href="/#{@table_settings.main_table}" cancel
+					a.button.button-secondary formnovalidate="true" href="/#{@origin}" cancel
 					

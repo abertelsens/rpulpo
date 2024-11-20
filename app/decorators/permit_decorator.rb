@@ -2,6 +2,21 @@
 
 class PermitDecorator < ObjectDecorator
 
+  def get_value(entity, table, field)
+    puts "looking for #{table}.#{field} in #{entity}"
+    begin
+      case table
+        when "people", "person"     then    entity[field]             unless entity.nil?
+        when "permits"              then    entity.permit[field]      unless entity.permit.nil?
+        else nil
+      end
+    rescue => error
+      puts Rainbow("Warning: value of #{field} in table {table} could not be found").orange
+      return nil
+    end
+  end
+
+
   def html_row(entity)
     return @table_settings.att.map{|sett| html_cell(entity,sett)}.join("\n") if (entity.permit.nil? || entity.permit.days_to_expire.nil?)
     days_to_expire = entity.permit.days_to_expire

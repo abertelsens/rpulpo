@@ -9,43 +9,41 @@
 # renders the people frame
 get '/people' do
 	@current_user = get_current_user
-	get_last_query :people
-	get_last_filter :people
-  partial :"frame/people"
+	get_last_query_variables :people
+	partial :"frame/people"
 end
 
 # renders the table of people
 # @objects: the people that will be shown in the table
 get '/people/table' do
-  get_last_query :people
-	get_last_filter :people
-	# if the people filter is not set yet then we set it to cb as default
-	@people_filter = session["people_table_filter"]="cb" if @people_filter.nil?
-	@objects = Person.search @people_query, @people_table_settings, @people_filter
-	@decorator = PersonDecorator.new(table_settings: @people_table_settings)
+  get_last_query_variables :people
+	@people_filter	= session["people_table_filter"]="cb" if @people_filter.nil?
+	@objects 				= Person.search @people_query, @people_table_settings, @people_filter
+	@decorator 			= PersonDecorator.new(table_settings: @people_table_settings)
 	partial :"table/people"
 end
 
 # copies tge current query results to the clipboard
 # TODO should catch some possible errors from the Cipboard.copy call
 get '/people/clipboard/copy' do
-  get_last_query :people
-	@objects = Person.search @people_query, @people_table_settings
-	export_string = Person.collection_to_csv @objects,  @people_table_settings
+  get_last_query_variables :people
+	@objects 			= Person.search @people_query, @people_table_settings, @people_filter
+	@decorator 		= PersonDecorator.new(table_settings: @people_table_settings)
+	export_string = @decorator.entities_to_csv @objects
 	{result: true, data: export_string}.to_json
 end
 
 # loads the table settings form
 get '/people/table/settings' do
-	@current_user = get_current_user
-	get_table_settings :people
-	@table_settings = @people_table_settings
+	@current_user 	= get_current_user
+	@table_settings = get_last_table_settings :people
+	@origin 				= "people"
 	partial :"form/table_settings"
 end
 
 # renders the table of after perfroming a search.
 get '/people/search' do
-	get_table_settings :people
+	get_last_query_variables :people
 	@people_query = session["people_table_query"] = params[:q]
 	@people_filter = session["people_table_filter"] = params[:filter]
 	@objects = Person.search @people_query, @people_table_settings, @people_filter
@@ -192,8 +190,9 @@ get '/people/:id/document/:doc_id' do
 	end
 
 	# find the people records
-	get_last_query :people
-	get_last_filter :people
+	get_last_query_variables params["query"].to_sym
+
+
 	people =
 		if params[:id]=="set" then Person.search @people_query, @people_table_settings, @people_filter
 		else [Person.find(params[:id])]
@@ -212,8 +211,10 @@ get '/people/:id/document/:doc_id' do
 end
 
 post '/people/:id/document/:doc_id' do
-	get_last_query :people
-	get_last_filter :people
+	# find the people records
+	get_last_query_variables params["query"].to_sym
+
+
 	people =
 		if params[:id]=="set"
 			Person.search @people_query, @people_table_settings, @people_filter
@@ -235,7 +236,7 @@ end
 post '/people/edit_field' do
 	puts Rainbow("got params #{params}").yellow
 	@current_user = get_current_user()
-	get_last_query :people
+	get_last_query_variables :people
 	@people = @people_query.nil? ? Person.all.order(family_name: :asc) : (Person.search @people_query, @people_table_settings).order(family_name: :asc)
 	if params[:att_name]=="phase"
 		crs = @people.map {|person| person.crs_record}

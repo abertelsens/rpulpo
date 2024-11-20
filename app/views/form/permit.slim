@@ -27,79 +27,98 @@ turbo-frame id="main_frame"
 			/----------------------------------------------------------------------------------------------------------------
 			
 			.row.u-text-center
+				- has_photo =  (@person && File.exist?("app/public/photos/#{@person.id}.jpg"))
+				img.person-photo.small[
+					id="photo_image" 
+					src= "photos/#{(has_photo ? "#{@person.id}.jpg?v=#{rand(1..1000)}" : "avatar.jpg")}"]
+
+			.row.u-text-center
 				h3 = "QUESTURA: #{@person.short_name}"
 				
 			/----------------------------------------------------------------------------------------------------------------
 			/ FORM FIELDS
 			/----------------------------------------------------------------------------------------------------------------
-			//Data frontiera	Scadenza	RITIRATO	Codice Fiscale	Scadenza TEAM	data iscrizione SSN	scadenza iscrizione SSN	residente a	data lettera capo convivenza	data iscrizione convivenza	Data_attestato_reg_sogg	Data_attestato_sogg_permanente	Data_cancellazione_anagrafe	Num_carta_identita	Data_scad_carta_identita	data partenza prevista	osservazioni/ritorno	avvisato ritiro	data ispettorato	appuntamento impronte	consegna a interessato	osservazioni anagrafe	osservazioni passaporto	osservazioni PdS	osservazioni SSN	data primo permesso	UE
 
 			fieldset data-form-target="fieldset"
 				
 				.row
+					.columns.two.offset-by-one
+						div.table-container
+						div.table-table style="display: block"
+							div.table-cell-header
+								h4.u-text-left = "Documents"
+							- docs = @current_user.get_documents_of_module("permit")
+							- docs.each do |doc|
+								.table-row-body  
+									a.table-cell-body.menu-link[
+									href="/people/#{@person.id}/document/#{doc.id}"
+									target=(doc&.engine=="excel" ? "_self" : "_blank")] = doc&.name
+
+					.columns.eight
+						.row
+
+							&hidden@person_id value=@person.id
+
+							.columns.four.offset-by-one
+								label for="citizenship" citadinanza
+								&text@citizenship.u-full-width[
+									tabindex=1 
+									readonly 
+									onfocus="this.removeAttribute('readonly');" 
+									autocomplete="one-time-code"
+									value=@permit&.citizenship]
+
+							.columns.two
+								label for="passport" passaporto
+								&text@passport.u-full-width[
+									readonly 
+									onfocus="this.removeAttribute('readonly');" 
+									autocomplete="one-time-code"
+									value=@permit&.passport]
 						
-					&hidden@person_id value=@person.id
+							.columns.two.two
+								label for="passport_expiration" scadenza passaporto
+								&date@passport_expiration.u-full-width value=@permit&.passport_expiration
 
-					.columns.four.offset-by-one
-						label for="citizenship" citadinanza
-						&text@citizenship.u-full-width[
-							tabindex=1 
-							readonly 
-							onfocus="this.removeAttribute('readonly');" 
-							autocomplete="one-time-code"
-							value=@permit&.citizenship]
+							.columns.two
+								label for="permit_expiration" scandenza permesso
+								&date@permit_expiration.u-full-width value=@permit&.permit_expiration
 
-					.columns.two
-						label for="passport" passaporto
-						&text@passport.u-full-width[
-							readonly 
-							onfocus="this.removeAttribute('readonly');" 
-							autocomplete="one-time-code"
-							value=@permit&.passport]
-				
-					.columns.two.two
-						label for="passport_expiration" scadenza passaporto
-						&date@passport_expiration.u-full-width value=@permit&.passport_expiration
+						.row
 
-					.columns.two
-						label for="permit_expiration" scandenza permesso
-						&date@permit_expiration.u-full-width value=@permit&.permit_expiration
+							.columns.two.offset-by-one
+								label for="pac" PaC (fatta)
+								&date@pac.u-full-width value=@permit&.pac
+						
+							.columns.two
+								label for="pac_signature" PaC (firmata)
+								&date@pac_signature.u-full-width value=@permit&.pac_signature
 
-				.row
+							.columns.two
+								label for="pac_validation" PaC (vidimata)
+								&date@pac_validation.u-full-width value=@permit&.pac_validation
+						
 
-					.columns.two.offset-by-one
-						label for="pac" PaC (fatta)
-						&date@pac.u-full-width value=@permit&.pac
-				
-					.columns.two
-						label for="pac_signature" PaC (firmata)
-						&date@pac_signature.u-full-width value=@permit&.pac_signature
+							.columns.two
+								label for="pusc_certificate_request" cert. PUSC (richiesto)
+								&date@pusc_certificate_request.u-full-width value=@permit&.pusc_certificate_requested
 
-					.columns.two
-						label for="pac_validation" PaC (vidimata)
-						&date@pac_validation.u-full-width value=@permit&.pac_validation
-				
+							.columns.two
+								label for="pusc_certificate_received" cert. PUSC (ritirato)
+								&date@pusc_certificate_received.u-full-width value=@permit&.pusc_certificate_received
 
-					.columns.two
-						label for="pusc_certificate_request" cert. PUSC (richiesto)
-						&date@pusc_certificate_request.u-full-width value=@permit&.pusc_certificate_requested
+						.row
+							.columns.two.offset-by-one
+								label for="permit_appointment" appunt. ispettorato
+								&date@permit_appointment.u-full-width value=@permit&.permit_appointment
 
-					.columns.two
-						label for="pusc_certificate_received" cert. PUSC (ritirato)
-						&date@pusc_certificate_received.u-full-width value=@permit&.pusc_certificate_received
-
-				.row
-					.columns.two.offset-by-one
-						label for="permit_appointment" appunt. ispettorato
-						&date@permit_appointment.u-full-width value=@permit&.permit_appointment
-
-					.columns.two
-						label for="residence_notes" appunt. impronte
-						&date@permit_fingerprints.u-full-width value=@permit&.permit_fingerprints
-					
-					.columns.six
-						label for="notes" osservazioni
-						&text@notes.u-full-width value=@permit&.notes
+							.columns.two
+								label for="residence_notes" appunt. impronte
+								&date@permit_fingerprints.u-full-width value=@permit&.permit_fingerprints
+							
+							.columns.six
+								label for="notes" osservazioni
+								&text@notes.u-full-width value=@permit&.notes
 
 				
 
@@ -149,3 +168,7 @@ turbo-frame id="main_frame"
 			/---------------------------------------------------------------------------------------------------------------
 			
 			== partial :"elements/delete_modal", locals: {model_name: model_name}
+
+
+			.row style="margin-top:4rem"	
+				

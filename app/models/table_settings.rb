@@ -20,7 +20,7 @@ class TableAttribute
 	# name: the name to be displayed as the header in the table. It does not need to martch the field name.
 	attr_accessor :name, :table, :field, :order, :css_class, :type
 
-	
+
 
 	def initialize(table, field, name, order, css_class, type)
 		@table = table
@@ -90,6 +90,8 @@ class TableSettings
 	end
 
 	def self.get(table_symb)
+		puts "asking for table #{table_symb}\n\n\n\n"
+		puts "found #{(ALL_TABLES.find {|ts| ts.name.to_sym == table_symb}).inspect}"
 		ALL_TABLES.find {|ts| ts.name.to_sym == table_symb}
 	end
 

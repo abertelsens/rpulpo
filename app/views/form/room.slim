@@ -78,8 +78,8 @@ turbo-frame id="main_frame"
 			/-----------------------------------------------------------------------------------
 			/ BUTTONS
 			/-----------------------------------------------------------------------------------
-			
-			== partial :"elements/form_buttons", locals: {object: @object, table_name: table_name}
+			- locals =	{ object: @object, table_name: table_name, submit_value: (@object ? "save" : "new") }
+			== partial :"elements/form_buttons", locals: locals
 
 			/ ----------------------------------------------------------------------------------
 			/ ALERT FRAME

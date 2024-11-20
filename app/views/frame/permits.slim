@@ -1,7 +1,7 @@
 turbo-frame id="main_frame" 
   
   .container.container-frame[
-    data-controller="clipboard search form" 
+    data-controller="clipboard form modal" 
     data-clipboard-tablename="permits"
   ]
     
@@ -11,7 +11,8 @@ turbo-frame id="main_frame"
       data-controller="search" 
       data-turbo-frame="permits_table" 
       data-action="input->searchfield#submit \
-        keydown.ctrl+p@window->form#table_settings \
+        keydown.ctrl+p@window->modal#open_modal \
+         keydown.ctrl+s@window->form#search_focus 
         keydown.ctrl+a@window->form#add \
         keydown.ctrl+c@window->clipboard#copy"
       ]
@@ -31,7 +32,7 @@ turbo-frame id="main_frame"
           aria-label="Search" 
           name="q" 
           data-action="input->search#submit" 
-          value=@rooms_query
+          value=@permits_query
           ]
 
         .columns.two.flex-left  
@@ -47,7 +48,7 @@ turbo-frame id="main_frame"
           a.button.button-success.button-small[
             title="copies the results to the clipbard ctrl+c" 
             style="width:6rem" 
-            data-clipboard-target="copybtn" 
+            data-clipboard-target="copyButton" 
             data-action="click->clipboard#copy"
           ]
             i.fa-solid.fa-copy style="font-size:small"
@@ -57,19 +58,31 @@ turbo-frame id="main_frame"
             href="/permits/table/settings" 
             data-form-target="tableSettingsButton" 
             data-turbo-frame="editor_frame"
+            title="table settings"
           ]
             i.fa-solid.fa-table style="color:white; font-size:small"
             |&nbsp
 
+          button.button-small.button-square title="menu (ctrl+p)" data-action="click->modal#open_modal"
+            <i style="color:white" class="fa-solid fa-bars"></i>
+
       .row 
-        .columns.twelve.u-full-width
-          .row 
-            turbo-frame id="permits_table" src="/permits/table"
-          
-          .row
-            .modal.hidden-frame data-clipboard-target="modal" 
-              .modal-content.u-text-center
-                h5.u-text-center = "Data to copy"
-                textarea#copy_field.modal-copy-area isTrusted="true" rows="4" cols="20" data-clipboard-target="copyfield"
-                .columns.two.offset-by-five   
-                  button.button-primary data-action="click->clipboard#closemodal" close
+        turbo-frame id="permits_table" src="/permits/table"
+      
+      .row
+        .modal.hidden-frame data-clipboard-target="modal" data-modal-target="modal" 
+          .modal-content.u-text-center
+            h5.u-text-center = "Data to copy"
+            textarea#copy_field.modal-copy-area isTrusted="true" rows="4" cols="20" data-clipboard-target="copyField"
+            .columns.two.offset-by-five   
+              button.button-primary data-action="click->clipboard#closeModal" close
+
+
+      .row 
+        .modal.hidden-frame data-modal-target="modal" 
+          .modal-content
+            .container.menu
+              == partial "/elements/user_documents_table", locals: {current_user: @current_user, person_id: "set", current_view: "permits"}
+                
+            .row.u-text-center style="margin-top: 2rem"
+              button.button-primary.no-margin data-action="click->modal#close_modal" cancel 

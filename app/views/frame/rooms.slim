@@ -47,7 +47,7 @@ turbo-frame id="main_frame"
           a.button.button-success.button-small[
             title="copies the results to the clipbard ctrl+c" 
             style="width:6rem" 
-            data-clipboard-target="copybtn" 
+            data-clipboard-target="copyButton" 
             data-action="click->clipboard#copy"
           ]
             i.fa-solid.fa-copy style="font-size:small"
@@ -75,17 +75,17 @@ turbo-frame id="main_frame"
                   div.table-cell-body.no-border = house["room"].humanize
                   div.table-cell-body.no-border.u-text-center = house["empty"]
                   div.table-cell-body.no-border.u-text-center = house["total"]
-                
-
+       
         .columns.eight.u-full-width
           .row 
             turbo-frame id="rooms_table" src="/rooms/table"
           
+      .row
+        .modal.hidden-frame data-clipboard-target="modal" data-modal-target="modal" 
+          .modal-content.u-text-center
+            h5.u-text-center = "Data to copy"
+            textarea#copy_field.modal-copy-area isTrusted="true" rows="4" cols="20" data-clipboard-target="copyField"
+            .columns.two.offset-by-five   
+              button.button-primary data-action="click->clipboard#closeModal" close          
           
-          .row
-            .modal.hidden-frame data-clipboard-target="modal" 
-              .modal-content.u-text-center
-                h5.u-text-center = "Data to copy"
-                textarea#copy_field.modal-copy-area isTrusted="true" rows="4" cols="20" data-clipboard-target="copyfield"
-                .columns.two.offset-by-five   
-                  button.button-primary data-action="click->clipboard#closemodal" close
+      

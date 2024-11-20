@@ -85,7 +85,7 @@ turbo-frame id="main_frame"
 
     // Table with the allowed documents of the current user
     div style="min-width: 15rem"  
-      == partial "/elements/user_documents_table", locals: {current_user: @current_user, person_id: @person.id }
+      == partial "/elements/user_documents_table", locals: {current_user: @current_user, person_id: @person.id, current_view: "people" }
     
    
       
