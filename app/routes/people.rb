@@ -6,7 +6,9 @@
 # GET
 # -----------------------------------------------------------------------------------------
 get '/people/field/:attribute_name' do
-
+	@attribute = TableSettings.get_attribute(params[:attribute_name])
+	puts "found attribute"
+	puts @attribute.inspect
 	partial :"elements/person_field"
 end
 

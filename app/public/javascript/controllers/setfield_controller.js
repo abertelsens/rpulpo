@@ -13,24 +13,22 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
     
   Stimulus.register("setfield", class extends Controller {
     
-    static targets = ["att_name", "att_field"] //the button to add a new object
+    static targets = ["att_name", "att_field","attributeName", "attributeField" ] //the button to add a new object
 
     connect() {
       console.log("Stimulus Connected: setfield controller");
     }
 
     initialize() {
-      var field = document.getElementsByName(this.active_field_name)[0]
-      field.style.display="block"
+      console.log("Stimulus Controller Connected: setfield");
     }
 
     update(e)
     {
-      var field = document.getElementsByName(this.att_nameTarget.value)[0]
-      field.style.display="block"
-      var old_field = document.getElementsByName(this.active_field_name)[0]
-      old_field.style.display="none"
-      this.active_field_name = field.name
+      var attributeName = this.attributeNameTarget.value
+      this.attributeFieldTarget.src = `/people/field/${attributeName}`
+      this.attributeFieldTarget.refresh
+      console.log(`/people/field/${attributeName}`)
     }
   })
   

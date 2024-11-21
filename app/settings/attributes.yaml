@@ -32,16 +32,19 @@ attributes:
     type: "enum"
     order: "NONE"
     css_class: "medium-field"
+    bulk_edit: true
   - id: "people.n_agd"
     name: "n-agd"
     type: "enum"
     order: "NONE"
     css_class: "short-field"
+    bulk_edit: true
   - id: "people.ctr"
     name: "ctr"
     type: "enum"
     order: "NONE"
     css_class: "medium-field"
+    bulk_edit: true
   - id: "people.year"
     name: "year"
     type: "string"
@@ -91,6 +94,7 @@ attributes:
     type: "string"
     order: "NONE"
     css_class: "medium-field"
+    bulk_edit: true
   - id: "personals.region_of_origin"
     name: "Region of Origin"
     type: "string"
@@ -101,25 +105,30 @@ attributes:
     type: "string"
     order: "NONE"
     css_class: "medium-field"
+    bulk_edit: true
   - id: "studies.year_of_studies"
     name: "Year"
     type: "string"
     order: "NONE"
     css_class: "medium-field"
+    bulk_edit: true
   - id: "studies.status"
     name: "Estudios Inst."
     type: "string"
     order: "NONE"
     css_class: "long-field"
+    bulk_edit: true
   - id: "studies.licence"
     name: "licence"
     type: "string"
     order: "NONE"
     css_class: "medium-field"
+    bulk_edit: true
   - id: "studies.doctorate"
     name: "doctorate"
     type: "string"
     order: "NONE"
+    bulk_edit: true
     css_class: "medium-field"
   - id: "rooms.room"
     name: "room name"

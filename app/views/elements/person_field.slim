@@ -1,10 +1,13 @@
-.row
-  - if @type="string"
-    .input.u-full-width type="text" name=@name value=""
-  - if @type="integer"
-    .input.u-full-width type="number" name=@name value=""
-  - if @type="enum"
-    select name=@name
-      - Person[@name.pluralize].each |opt|
-      option value=opt = opt
-				
+turbo-frame id="field_frame"
+  p = "this is the frame"
+  - if @attribute.type=="string"
+    input.u-full-width type="text" name=@attribute.field value=""
+  - if @attribute.type=="integer"
+    input.u-full-width type="number" name=@attribute.field value=""
+  - if @attribute.type=="enum"
+    select name=@attribute.field
+      - enums_name = @attribute.field.split(".")[1].pluralize.to_sym
+      - puts "asking for enum #{enums_name}"
+      - Person.send(enums_name).each do |opt|
+        option value==opt[1] = opt[0]
+      
