@@ -5,6 +5,10 @@
 # -----------------------------------------------------------------------------------------
 # GET
 # -----------------------------------------------------------------------------------------
+get '/people/field/:attribute_name' do
+
+	partial :"elements/person_field"
+end
 
 # renders the people frame
 get '/people' do

@@ -20,8 +20,6 @@ class TableAttribute
 	# name: the name to be displayed as the header in the table. It does not need to martch the field name.
 	attr_accessor :name, :table, :field, :order, :css_class, :type, :bulk_edit
 
-
-
 	def initialize(table, field, name, order, css_class, type, bulk_edit)
 		@table = table
 		@field = field

@@ -1,0 +1,10 @@
+.row
+  - if @type="string"
+    .input.u-full-width type="text" name=@name value=""
+  - if @type="integer"
+    .input.u-full-width type="number" name=@name value=""
+  - if @type="enum"
+    select name=@name
+      - Person[@name.pluralize].each |opt|
+      option value=opt = opt
+				
