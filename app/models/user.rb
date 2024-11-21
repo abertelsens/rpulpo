@@ -61,23 +61,7 @@ class User < ActiveRecord::Base
   	password: 								params[:password],
 		usertype:									params[:usertype],
 		mail:											!params[:mail].nil?,
-		#module_users_attributes:	User.prepare_modules_attributes(params["module"],user)
 	}
-	end
-
-	# Prepares the form arguments for the creation or update of a user module permissions.
-	# If called with no user then we assume we are creating and object, therefore the module_users parameters
-	# will have no id.
-	# @module_params: the form's parameters for the creation/update of permissions
-	# @user: the current user, nil if we are creating it.
-	# @returs: a hash that can be used to create/update the module_users association
-	def self.prepare_modules_attributes(module_params, user=nil)
-		if user
-			current_modules = (user.module_users.map {|mu| { mu.pulpo_module_id => mu.id } }).inject(:merge)
-			module_params.keys.map {|mod_id| {id: current_modules[mod_id.to_i], pulpo_module_id: mod_id, modulepermission: module_params[mod_id]} }
-		else
-			module_params.keys.map {|mod_id| { pulpo_module_id: mod_id, modulepermission: module_params[mod_id]} }
-		end
 	end
 
 
