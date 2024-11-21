@@ -126,7 +126,7 @@ class User < ActiveRecord::Base
 	def is_table_allowed?(table)
 		return true if self.admin? 		# an admin has all permissions.
 		settings = module_users.find_by(pulpo_module: PulpoModule.find_by(name: table))
-		settings.nil? ? false : settings.modulepermission=="allowed"
+		settings.nil?
 	end
 
 	def to_s
