@@ -1,13 +1,11 @@
 turbo-frame id="field_frame"
-  p = "this is the frame"
+  label for=@attribute.field = @attribute.name
   - if @attribute.type=="string"
     input.u-full-width type="text" name=@attribute.field value=""
   - if @attribute.type=="integer"
     input.u-full-width type="number" name=@attribute.field value=""
   - if @attribute.type=="enum"
-    select name=@attribute.field
+    select.u-full-width name=@attribute.field
       - enums_name = @attribute.field.split(".")[1].pluralize.to_sym
-      - puts "asking for enum #{enums_name}"
       - Person.send(enums_name).each do |opt|
         option value==opt[1] = opt[0]
-      

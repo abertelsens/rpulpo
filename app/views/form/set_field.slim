@@ -1,5 +1,5 @@
 turbo-frame id="main_frame" 
-  form action="/people/edit_field" method="POST" data-report-target="form" data-controller="setfield"
+  form action="/people/edit_field" method="POST" data-report-target="form" data-controller="set-field"
 		
 		.container.screen-box style="max-width: 600px"
 			.row.u-text-center
@@ -10,28 +10,35 @@ turbo-frame id="main_frame"
 					|&nbspInstrucciones
 					p style="font-size: .9em"
 					|Se actualizará el valor del campo en <b>todas</b> las personas seleccionadas.
-			- puts "Editable Attributes"
-			- editable_attributes = TableSettings.get_editable_attributes
-				select data-setfield-target="attributeName" data-action="change->setfield#update"
-				
 			
+			- editable_attributes = TableSettings.get_editable_attributes
+
 			.row
-				label field
-				select.u-full-width data-setfield-target="attributeName" data-action="change->setfield#update"
-					- editable_attributes.each do |att|
-						option value=att.field = att.name
-			.row			 
-				turbo-frame id="field_frame" data-setfield-target="attributeField"
+				.columns.six.offset-by-three
+					label field
+					select.u-full-width data-set-field-target="attributeName" data-action="change->set-field#update"
+						- editable_attributes.each do |att|
+							option value=att.field = att.name
+					 
+					turbo-frame id="field_frame" data-set-field-target="attributeField" src="/people/field/#{editable_attributes[0].field}"
 
 			
 				/----------------------------------------------------------------------------------------------------------------
 				//BUTTONS
 				//----------------------------------------------------------------------------------------------------------------
 				
-			.row
-				.columns.eight.offset-by-two
-					button#save_btn.button-success.u-full-width type="submit" name="commit" value="save" save
+			.row.flex-center.flex-columns
+				button.button-primary[
+					type="submit"
+					tabindex="-1" 
+					name="commit" 
+					value="save"
+					] save
 			
-			.row	
-				.columns.eight.offset-by-two
-					a.button.button-secondary.u-full-width formnovalidate="true" data-report-target="cancel_btn" href="/people" cancel 
+				a.button.button-secondary[
+					formnovalidate="true" 
+					tabindex="-1" 
+					href="/people" 
+					title="esc"
+					] cancel
+			

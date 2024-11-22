@@ -7,10 +7,27 @@
 # -----------------------------------------------------------------------------------------
 get '/people/field/:attribute_name' do
 	@attribute = TableSettings.get_attribute(params[:attribute_name])
-	puts "found attribute"
-	puts @attribute.inspect
 	partial :"elements/person_field"
 end
+
+post '/people/field/:attribute_name' do
+	@attribute = TableSettings.get_attribute(params[:attribute_name])
+	partial :"elements/person_field"
+end
+
+post '/people/edit_field' do
+	@current_user = get_current_user
+	get_last_query_variables :people
+	@people = @people_query.nil? ? Person.all : (Person.search @people_query, @people_table_settings)
+	if params[:att_name]=="phase"
+		crs = @people.map {|person| person.crs_record}
+		crs.each {|crs| crs&.update(params[:att_name].to_sym => params[params[:att_name]])}
+	else
+		@people.each {|person| person.update(params[:att_name].to_sym => params[params[:att_name]])}
+	end
+		partial :"frame/people"
+end
+
 
 # renders the people frame
 get '/people' do
@@ -222,18 +239,7 @@ post '/people/:id/document/:doc_id' do
 	document.get_writer(people, params).render_document
 end
 
-post '/people/edit_field' do
-	@current_user = get_current_user
-	get_last_query_variables :people
-	@people = @people_query.nil? ? Person.all : (Person.search @people_query, @people_table_settings)
-	if params[:att_name]=="phase"
-		crs = @people.map {|person| person.crs_record}
-		crs.each {|crs| crs&.update(params[:att_name].to_sym => params[params[:att_name]])}
-	else
-		@people.each {|person| person.update(params[:att_name].to_sym => params[params[:att_name]])}
-	end
-		partial :"frame/people"
-end
+
 
 get '/people/cb/json' do
 	Person.where(ctr:"cavabianca").to_json
