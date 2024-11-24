@@ -5,28 +5,7 @@
 # -----------------------------------------------------------------------------------------
 # GET
 # -----------------------------------------------------------------------------------------
-get '/people/field/:attribute_name' do
-	@attribute = TableSettings.get_attribute(params[:attribute_name])
-	partial :"elements/person_field"
-end
 
-post '/people/field/:attribute_name' do
-	@attribute = TableSettings.get_attribute(params[:attribute_name])
-	partial :"elements/person_field"
-end
-
-post '/people/edit_field' do
-	@current_user = get_current_user
-	get_last_query_variables :people
-	@people = @people_query.nil? ? Person.all : (Person.search @people_query, @people_table_settings)
-	if params[:att_name]=="phase"
-		crs = @people.map {|person| person.crs_record}
-		crs.each {|crs| crs&.update(params[:att_name].to_sym => params[params[:att_name]])}
-	else
-		@people.each {|person| person.update(params[:att_name].to_sym => params[params[:att_name]])}
-	end
-		partial :"frame/people"
-end
 
 
 # renders the people frame
@@ -137,10 +116,6 @@ get '/crs_records' do
 	partial :"frame/crs_records"
 end
 
-# shows the form to edit a field of all the people in the set
-get '/people/edit_field' do
-	partial :"form/set_field"
-end
 
 # -----------------------------------------------------------------------------------------
 # POST
@@ -216,7 +191,6 @@ get '/people/:id/document/:doc_id' do
 
 	# find the people records
 	get_last_query_variables params["query"].to_sym
-
 	people =
 		if params[:id]=="set" then Person.search @people_query, @people_table_settings, @people_filter
 		else [Person.find(params[:id])]
@@ -239,8 +213,59 @@ post '/people/:id/document/:doc_id' do
 	document.get_writer(people, params).render_document
 end
 
-
-
 get '/people/cb/json' do
 	Person.where(ctr:"cavabianca").to_json
+end
+
+# ----------------------------------------------------------------------------------------------------------------------
+# BULK EDIT VALUES
+# ----------------------------------------------------------------------------------------------------------------------
+
+# shows the form to edit a field of all the people in the set
+get '/people/edit_field' do
+	get_last_query_variables :people
+	@people = @people_query.nil? ? Person.all : (Person.search @people_query, @people_table_settings)
+	partial :"form/set_field"
+end
+
+# render the partial containing the input field to bulk edit
+get '/people/field/:attribute_name' do
+	@attribute = TableSettings.get_attribute(params[:attribute_name])
+	partial :"elements/person_field"
+end
+
+# commits the changes to the people set
+# the method table.classify.constantize get the class given the table name.
+post '/people/edit_field' do
+	@current_user = get_current_user
+	get_last_query_variables :people
+	@people = @people_query.nil? ? Person.all : (Person.search @people_query, @people_table_settings)
+	table, field = params[:attribute_id].split(".")
+
+	# simply return if no value was received as a parameter
+	return partial :"frame/people" if params[field].strip.blank?
+
+	if table=="people"
+		@people.update_all(field => params[field])
+	else
+			table.classify.constantize.where(person_id: @people.pluck(:id)).update_all(field => params[field])
+	end
+	partial :"frame/people"
+end
+
+get '/people/set/add_year' do
+	get_last_query_variables :people
+	@people = @people_query.nil? ? Person.all : (Person.search @people_query, @people_table_settings)
+	@people.each do |person|
+		if person.year!=nil
+			begin
+				puts "trying to update"
+				res = person.year = (person.year.to_i+1).to_s unless person.year.nil?
+				person.save
+				puts person.year
+			rescue
+				puts Rainbow("PULPO: could not add year of #{person.short_name}. #{person.year} is not an integer.}").orange
+			end
+		end
+	end
 end

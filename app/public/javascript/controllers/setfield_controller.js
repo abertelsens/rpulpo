@@ -13,7 +13,7 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
     
   Stimulus.register("set-field", class extends Controller {
     
-    static targets = ["attributeName", "attributeField" ] //the button to add a new object
+    static targets = ["attributeName", "attributeField"] //the button to add a new object
 
     connect() {
       console.log("Stimulus Connected: set-field controller");

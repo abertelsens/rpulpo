@@ -1,11 +1,18 @@
 turbo-frame id="field_frame"
-  label for=@attribute.field = @attribute.name
+  - table, field = @attribute.field.split(".")
+  label for=field = @attribute.name
   - if @attribute.type=="string"
-    input.u-full-width type="text" name=@attribute.field value=""
+    input.u-full-width type="text" name=field value=""
   - if @attribute.type=="integer"
-    input.u-full-width type="number" name=@attribute.field value=""
+    input.u-full-width type="number" name=field value=""
+  - if @attribute.type=="boolean"
+    select.u-full-width name=field
+      option value=="true" = true
+      option value=="true" = false
+  - if @attribute.type=="date"
+     input.u-full-width type="date" name=field value=""
   - if @attribute.type=="enum"
-    select.u-full-width name=@attribute.field
-      - enums_name = @attribute.field.split(".")[1].pluralize.to_sym
+    select.u-full-width name=field
+      - enums_name = field.pluralize.to_sym
       - Person.send(enums_name).each do |opt|
-        option value==opt[1] = opt[0]
+        option value==opt[0] = opt[0].humanize

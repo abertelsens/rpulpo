@@ -1,10 +1,14 @@
 turbo-frame id="main_frame" 
-  form action="/people/edit_field" method="POST" data-report-target="form" data-controller="set-field"
+  
+	form action="/people/edit_field" method="POST" data-report-target="form" data-controller="set-field"
 		
 		.container.screen-box style="max-width: 600px"
 			.row.u-text-center
 				.columns.twelve
 					h4 = "Edit Field for People Set"
+			
+			.row
+				
 			.row.alert.margin-top style="text-align: center;"
 					i.class.fa-solid.fa-circle-info  
 					|&nbspInstrucciones
@@ -14,11 +18,15 @@ turbo-frame id="main_frame"
 			- editable_attributes = TableSettings.get_editable_attributes
 
 			.row
-				.columns.six.offset-by-three
+				.columns.five 
+					h5.no-margin = "PERSONAS"
+					- @people.each do |person|
+						p style="line-height: .9rem; font-size: .8rem" = person.short_name
+				.columns.six.offset-by-one
 					label field
-					select.u-full-width data-set-field-target="attributeName" data-action="change->set-field#update"
+					select.u-full-width data-set-field-target="attributeName" name="attribute_id" data-action="change->set-field#update"
 						- editable_attributes.each do |att|
-							option value=att.field = att.name
+							option value=att.field ="#{att.table.singularize.humanize} - #{att.name}" 
 					 
 					turbo-frame id="field_frame" data-set-field-target="attributeField" src="/people/field/#{editable_attributes[0].field}"
 

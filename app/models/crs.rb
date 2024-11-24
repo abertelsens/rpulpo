@@ -48,10 +48,6 @@ class CrsRecord < ActiveRecord::Base
 	# ACCESSORS
 	#---------------------------------------------------------------------------------------
 
-	def self.get_editable_attributes()
-		[ {name: "phase", value: "options", description: "etapa (dicasterio)"} ]
-	end
-
 	def get_next(ceremony)
 		case ceremony
 		when :fidelidad 	then ((oblacion && !fidelidad) ? oblacion.next_year(5) : nil)

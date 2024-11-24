@@ -129,17 +129,6 @@ class Person < ActiveRecord::Base
 		(PulpoQuery.new(search_string, table_settings)).execute
 	end
 
-
-	def self.get_editable_attributes()
-	[
-		{name: "group",          value: "string",    description: "group in cavabianca"},
-		{name: "ctr",            value: "options",   description: "ctr donde vive"},
-		{name: "status",         value: "options",   description:  "laico/diácono/sacerdote"},
-		{name: "n/agd",          value: "options",   description:  "n/agd"},
-		{name: "year",           value: "string",    description:  "año en cavabianca"},
-	]
-	end
-
 	# -----------------------------------------------------------------------------------------
 	# MATRIX METHODS
 	# -----------------------------------------------------------------------------------------

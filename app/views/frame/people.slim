@@ -90,6 +90,9 @@ turbo-frame id="main_frame" data-people-target="people_screen"
                   - if @current_user.usertype!="guest"  
                     .table-row-body 
                       a.table-cell-body.menu-link href="/people/edit_field" Edit Field Value
+                  - if @current_user.admin?  
+                    .table-row-body 
+                      a.table-cell-body.menu-link href="/people/set/add_year" Add Year to All Selected People
             
             .row.u-text-center style="margin-top: 2rem"
               button.button-primary.no-margin data-action="click->modal#close_modal" cancel
