@@ -120,6 +120,7 @@ end
 
 get '/elements/navbar' do
 	@current_user = get_current_user
+	@allowed_modules = @current_user.get_allowed_modules.pluck(:identifier)
 	partial :"elements/navbar"
 end
 

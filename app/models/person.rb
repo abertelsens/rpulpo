@@ -20,10 +20,10 @@
 # requiere some utilities related to the queries
 require_relative '../utils/pulpo_query'
 
-
 class Person < ActiveRecord::Base
 
 	PHOTO_DIR = "app/public/photos"
+	DEFAULT_PERSON_IMG = "app/public/img/avatar.jpg"
 
 	# -----------------------------------------------------------------------------------------
 	# ASSOCIATIONS
@@ -58,13 +58,13 @@ class Person < ActiveRecord::Base
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(family_name: :asc) }
 
-	scope :cavabianca, ->(amount) { where(ctr: "cavabianca")}
-	scope :laicos, -> { where(status:"laico") }
-	scope :in_rome, -> { where.not(ctr:"se_ha_ido") }
-	scope :students, -> { where(student: true) }
+	scope :cavabianca, 	-> (amount) { where(ctr: "cavabianca")}
+	scope :laicos, 			-> { where(status:"laico") }
+	scope :in_rome, 		-> { where.not(ctr:"se_ha_ido") }
+	scope :students, 		-> { where(student: true) }
 
 	# A scope that looks at all the people in a specific phase. Example: Person.phase("configuracional")
-	scope :phase, -> (phase) { joins(:crs_record).where(crs_record: {phase: phase}) }
+	scope :phase, 			-> (phase) { joins(:crs_record).where(crs_record: {phase: phase}) }
 
 
 	# -----------------------------------------------------------------------------------------
@@ -75,7 +75,7 @@ class Person < ActiveRecord::Base
 	# enum symbol.
 	enum status:    { laico: 0, diacono: 1, sacerdote: 2 }
 	enum ctr:       { cavabianca: 0, ctr_dependiente:1, no_ha_llegado:2, se_ha_ido: 3 }
-	enum n_agd:     { n:0, agd:1 }
+	enum n_agd:     { n: 0, agd: 1 }
 
 	# -----------------------------------------------------------------------------------------
 	# CALLBACKS
@@ -103,6 +103,7 @@ class Person < ActiveRecord::Base
 
 	def self.create(params)
 		super(Person.prepare_params (params.except("id")))
+		FileUtils.cp_r(DEFAULT_PERSON_IMG, "#{PHOTO_DIR}/#{id}.jpg", remove_destination: false)
 	end
 
 	def update(params)
@@ -132,7 +133,6 @@ class Person < ActiveRecord::Base
 	# -----------------------------------------------------------------------------------------
 	# MATRIX METHODS
 	# -----------------------------------------------------------------------------------------
-
 
 	def self.find_people_available(day_schedule,task)
 
@@ -176,7 +176,6 @@ class Person < ActiveRecord::Base
 	def self.people_with_assignments(day_schedule, task_schedule)
 		tas = TaskAssignment.where(day_schedule: day_schedule).select{|ta| ta.clashes_with_task? task_schedule}.map{|ta| ta.person_id}
 	end
-
 
 	# -----------------------------------------------------------------------------------------
 	# VALIDATIONS

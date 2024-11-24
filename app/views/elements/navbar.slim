@@ -15,15 +15,15 @@ turbo-frame id="nav_bar"
           - if @current_user.admin?
             a.button.menu-item tabindex="-1"  data-turbo-frame="main_frame" href='/crs_records' crs+
 
-          - if @current_user.allowed?("permit")
+          - if @allowed_modules.include? "permit"
             a.button.menu-item tabindex="-1"  data-turbo-frame="main_frame" href='/permits' questura
           
-          - if @current_user.allowed?("room")
+          - if @allowed_modules.include? "room"
             a.button.menu-item tabindex="-1"  data-turbo-frame="main_frame" href='/rooms' 
               i.fa-solid.fa-bed
               | &nbspRooms
           
-          - if @current_user.allowed?("vela")
+          - if @allowed_modules.include? "vela"
             a.button.menu-item tabindex="-1" data-turbo-frame="main_frame" href='/velas' 
               i.fa-solid.fa-bed
               | &nbspVelas
@@ -33,7 +33,7 @@ turbo-frame id="nav_bar"
               i.fa-solid.fa-envelope
               | &nbspCorreo
           
-          - if (@current_user.allowed?("matrix") && ENV["DB_ENV"]=="development")
+          - if (@allowed_modules.include? "matrix" && ENV["DB_ENV"]=="development")
             a.button.menu-item tabindex="-1"  data-turbo-frame="main_frame" href='/matrix' 
               i.fa-solid.fa-house
               | &nbspMatrix

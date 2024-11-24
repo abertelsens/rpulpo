@@ -1,12 +1,11 @@
 # -----------------------------------------------------------------------------------------
-# ROUTES CONTROLLERS FOR THE PEOPE TABLES
+# ROUTES CONTROLLERS FOR THE PEOPE TABLE AND ASSOCIATED TABLES
 # -----------------------------------------------------------------------------------------
-
 # -----------------------------------------------------------------------------------------
 # GET
 # -----------------------------------------------------------------------------------------
 
-
+DEFAULT_PEOPLE_FILTER = "cb"
 
 # renders the people frame
 get '/people' do
@@ -19,20 +18,20 @@ end
 # @objects: the people that will be shown in the table
 get '/people/table' do
   get_last_query_variables :people
-	@people_filter	= session["people_table_filter"]="cb" if @people_filter.nil?
+	@people_filter	= session["people_table_filter"]=DEFAULT_PEOPLE_FILTER if @people_filter.nil?
 	@objects 				= Person.search @people_query, @people_table_settings, @people_filter
 	@decorator 			= PersonDecorator.new(table_settings: @people_table_settings)
 	partial :"table/people"
 end
 
-# copies tge current query results to the clipboard
-# TODO should catch some possible errors from the Cipboard.copy call
+# copies tge current query results to the clipboard as a csv text that can be pasted
+# in excel
 get '/people/clipboard/copy' do
   get_last_query_variables :people
-	@objects 			= Person.search @people_query, @people_table_settings, @people_filter
-	@decorator 		= PersonDecorator.new(table_settings: @people_table_settings)
-	export_string = @decorator.entities_to_csv @objects
-	{result: true, data: export_string}.to_json
+	@objects 				= Person.search @people_query, @people_table_settings, @people_filter
+	@decorator 			= PersonDecorator.new(table_settings: @people_table_settings)
+	export_results 	= @decorator.entities_to_csv @objects
+	{result: true, data: export_results}.to_json
 end
 
 # loads the table settings form
@@ -46,10 +45,10 @@ end
 # renders the table of after perfroming a search.
 get '/people/search' do
 	get_last_query_variables :people
-	@people_query = session["people_table_query"] = params[:q]
-	@people_filter = session["people_table_filter"] = params[:filter]
-	@objects = Person.search @people_query, @people_table_settings, @people_filter
-	@decorator = PersonDecorator.new(table_settings: @people_table_settings)
+	@people_query 	= session["people_table_query"] = params[:q]
+	@people_filter	= session["people_table_filter"] = params[:filter]
+	@objects 				= Person.search @people_query, @people_table_settings, @people_filter
+	@decorator 			= PersonDecorator.new(table_settings: @people_table_settings)
 	partial :"table/people"
 end
 
@@ -67,7 +66,7 @@ end
 # renders a form of a single person view
 get '/person/:id/:module' do
 	@current_user = get_current_user()
-	@person = (params[:id]=="new" ? nil : Person.find(params[:id]))
+	@person = new_id? ? nil : Person.find(params[:id])
 	case params[:module]
 		when "personal" 	then @personal 		= 	Personal.find_by(person_id: @person.id)
 		when "study" 			then @study 			= 	Study.find_by(person_id: @person.id)
@@ -102,8 +101,8 @@ get '/crs_record/table' do
 	end
 
 	if params[:phase].present?
-		@objects = Person.phase(params[:phase]).pluck(:id, :short_name)
-		@title = "Etapa #{CrsRecord.phases.key(params[:phase].to_i)}".capitalize
+		@objects 	= Person.phase(params[:phase]).pluck(:id, :short_name)
+		@title 		= "Etapa #{CrsRecord.phases.key(params[:phase].to_i)}".capitalize
 	end
 
 	@total = @objects.size unless @objects.nil?
@@ -112,10 +111,9 @@ end
 
 # renders a single person view
 get '/crs_records' do
-	@ceremony=params[:ceremony] if params[:ceremony].present?
+	@ceremony = params[:ceremony] if params[:ceremony].present?
 	partial :"frame/crs_records"
 end
-
 
 # -----------------------------------------------------------------------------------------
 # POST
@@ -124,14 +122,8 @@ end
 post '/person/:id/general' do
 	@current_user = get_current_user
 	case params[:commit]
-
-		when "new"
-			@person = Person.create params
-			FileUtils.cp_r("app/public/img/avatar.jpg", "app/public/photos/#{params[:id]}.jpg", remove_destination: false)
-
-		when "save"
-			(@person = Person.find(params[:id])).update params
-
+		when "new" 	then @person = Person.create params
+		when "save" then (@person = Person.find(params[:id])).update params
 		when "delete"
 			Person.find(params[:id]).destroy
 			redirect :"/people"
@@ -156,7 +148,6 @@ post '/person/:person_id/:module/:id' do
 	klass = Object.const_get(params[:module].classify)
 	object = params[:id]=="new" ? nil : klass.find(params[:id])
 	object.nil? ? (klass.create params) : (object.update params) if save?
-	puts params
 	if (params[:origin].present? && params[:origin]="crs_ceremonies") then redirect "/crs_records?ceremony=#{params[:ceremony]}"
 	else partial :"view/person"
 	end
@@ -202,12 +193,9 @@ post '/people/:id/document/:doc_id' do
 	# find the people records
 	get_last_query_variables params["query"].to_sym
 
-
 	people =
-		if params[:id]=="set"
-			Person.search @people_query, @people_table_settings, @people_filter
-		else
-			[Person.find(params[:id])]
+		if params[:id]=="set" then Person.search @people_query, @people_table_settings, @people_filter
+		else [Person.find(params[:id])]
 		end
 	document = Document.find(params[:doc_id])
 	document.get_writer(people, params).render_document
@@ -245,10 +233,8 @@ post '/people/edit_field' do
 	# simply return if no value was received as a parameter
 	return partial :"frame/people" if params[field].strip.blank?
 
-	if table=="people"
-		@people.update_all(field => params[field])
-	else
-			table.classify.constantize.where(person_id: @people.pluck(:id)).update_all(field => params[field])
+	if table=="people" then @people.update_all(field => params[field])
+	else table.classify.constantize.where(person_id: @people.pluck(:id)).update_all(field => params[field])
 	end
 	partial :"frame/people"
 end
@@ -259,10 +245,8 @@ get '/people/set/add_year' do
 	@people.each do |person|
 		if person.year!=nil
 			begin
-				puts "trying to update"
-				res = person.year = (person.year.to_i+1).to_s unless person.year.nil?
+				person.year = (person.year.to_i+1).to_s unless person.year.nil?
 				person.save
-				puts person.year
 			rescue
 				puts Rainbow("PULPO: could not add year of #{person.short_name}. #{person.year} is not an integer.}").orange
 			end

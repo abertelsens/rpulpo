@@ -1,20 +1,14 @@
-#require 'draper'
-
-
-
 class Decorator
 
   CHECKMARK = "\u2714".encode('utf-8')
   MONTHS_LATIN = [nil, "ianuarii", "februarii", "martii", "aprilis", "maii", "iunii", "iulii", "augusti", "septembris", "octobris", "novembris", "decembris"]
 
   def initialize(args=nil)
-    puts "initializing decorator with args #{args.inspect}"
-    if args!=nil
-      @table_settings =  args[:table_settings] if args[:table_settings].present?
-      @date_format = args[:date].present? ? args[:date] : "normal"
-    end
+    return if args.nil?
+    @table_settings   =  args[:table_settings] if args[:table_settings].present?
+    @date_format      = args[:date].present? ? args[:date] : "normal"
+    
   end
-
 
   def decorate(value, setting)
     case setting.type
