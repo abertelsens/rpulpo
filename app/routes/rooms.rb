@@ -50,7 +50,7 @@ end
 get '/rooms/house/:house_name' do
 	get_last_query_variables :rooms
 	@rooms_query 	= session["rooms_table_query"] = "#{params[:house_name]}"
-	@objects 			= Room.where(house: params[:house_name]).order(room: :asc)
+	@objects 			= Room.includes(:person).where(house: params[:house_name]).order(room: :asc)
 	@decorator 		= RoomDecorator.new(table_settings: @rooms_table_settings)
 	partial :"table/rooms"
 end

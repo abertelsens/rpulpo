@@ -90,8 +90,8 @@ class TableSettings
 	end
 
 	def self.get(table_symb)
-		puts "asking for table #{table_symb}\n\n\n\n"
-		puts "found #{(ALL_TABLES.find {|ts| ts.name.to_sym == table_symb}).inspect}"
+		#puts "asking for table #{table_symb}\n\n\n\n"
+		#puts "found #{(ALL_TABLES.find {|ts| ts.name.to_sym == table_symb}).inspect}"
 		ALL_TABLES.find {|ts| ts.name.to_sym == table_symb}
 	end
 
