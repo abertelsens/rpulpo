@@ -64,7 +64,6 @@ class User < ActiveRecord::Base
 	}
 	end
 
-
 	# -----------------------------------------------------------------------------------------
 	# VALIDATIONS
 	# -----------------------------------------------------------------------------------------
@@ -113,7 +112,6 @@ class User < ActiveRecord::Base
 	def get_documents_of_module(module_identifier)
 		PulpoModule.find_by(identifier: module_identifier).documents
 	end
-
 
 	def allowed?(module_identifier)
 		return true if admin?

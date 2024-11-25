@@ -47,6 +47,32 @@ class CrsRecord < ActiveRecord::Base
 	#---------------------------------------------------------------------------------------
 	# ACCESSORS
 	#---------------------------------------------------------------------------------------
+	def self.get_ceremony_info(ceremony)
+		
+		people = Person.includes(:crs_record).laicos.in_rome.select{|person| (person.crs_record&.get_next(ceremony.to_sym)!=nil)}
+		people = people.map {|p| [p.id, p.short_name, p.crs_record.get_next(ceremony.to_sym).strftime("%d-%m-%y")]}
+		title = case ceremony
+			when "fidelidad" 	then 	"Próximas Fidelidades"
+			when "admissio" 	then	"Próximas Admissio"
+			when "lectorado"	then	"Próximos Lectorados"
+			when "acolitado"	then 	"Próximos Acolitados"
+			end
+			{
+				"has_date"			=>	true,
+				"ceremony" 	=>	ceremony,
+				"title"			=>	title,
+				"people"		=>	people,
+			}
+	end
+
+	def self.get_phase_info(phase)	
+		puts "got phase variable #{phase}"
+		{
+			"has_date"	=>	false,
+			"people" 		=> 	Person.phase(phase).pluck(:id, :short_name),
+			"title" 		=> 	"Etapa #{CrsRecord.phases.key(phase.to_i)}".capitalize
+		}
+	end
 
 	def get_next(ceremony)
 		case ceremony

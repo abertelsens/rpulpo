@@ -66,6 +66,11 @@ helpers do
 		end
 	end
 
+	def get_current_people_set
+		get_last_query_variables :people
+		@people_query.nil? ? Person.all : (Person.search @people_query, @people_table_settings)
+	end
+	
 	# Get the current user id. If no user is logged in nil is returned.
 	def get_current_user()
 			(cookies[:current_user_id].nil? || cookies[:current_user_id]&.blank?) ? nil : User.find(cookies[:current_user_id])

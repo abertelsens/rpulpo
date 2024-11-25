@@ -81,6 +81,11 @@ class Person < ActiveRecord::Base
 	# CALLBACKS
 	# -----------------------------------------------------------------------------------------
 
+	after_create do |person|
+		puts "copying picutre"
+		FileUtils.cp_r(DEFAULT_PERSON_IMG, "#{PHOTO_DIR}/#{person.id}.jpg", remove_destination: false)	
+	end
+
 	before_save do
 		# if the status of a person changed we also update the phase field
 		crs_record.update(phase:"síntesis") if (status=="diacono" && crs_record)
@@ -103,7 +108,6 @@ class Person < ActiveRecord::Base
 
 	def self.create(params)
 		super(Person.prepare_params (params.except("id")))
-		FileUtils.cp_r(DEFAULT_PERSON_IMG, "#{PHOTO_DIR}/#{id}.jpg", remove_destination: false)
 	end
 
 	def update(params)

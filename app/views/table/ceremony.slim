@@ -4,21 +4,20 @@ turbo-frame id="people-frame"
     
     .flex-rows.margin-right.u-full-width style="min-width:10rem; margin-right:6rem"
 
-      h4.u-text-right = "#{@title}"
-      - if !@total.nil?
-        h6.u-text-right = "#{@total} persona(s)"
+      h4.u-text-right = "#{@data["title"]}"
+      h6.u-text-right = "#{@data["people"].size} persona(s)"
     
     .table-container.u-full-width style="font-size:.9rem; min-width:30rem"
-      - if !@objects.empty?
+      - if !@data["people"].empty?
         .table-table style="font-size:.9rem; min-width:25rem"
           .table-row-head
             .long-field nombre
-            - if @has_date  
+            - if @data["has_date"]
               .short-field.u-text-right fecha  
           
-          - @objects.each.with_index do |object, index|  
+          - @data["people"].each.with_index do |object, index|  
             a.table-row-body href="/person/#{object[0]}/crs_record?origin=crs&ceremony=#{@ceremony}" data-turbo-frame="main_frame" 
               div = object[1]
-              - if @has_date  
+              - if @data["has_date"]
                 .u-text-right = object[2]
    

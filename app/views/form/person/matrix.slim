@@ -4,6 +4,8 @@
 
 turbo-frame id="main_frame"
 
+ - tasks_available = @object.nil? ? [] : @object.tasks_available.pluck(:task_id)
+
 	.container.medium-form.screen-box data-controller="form"
 	  	
 		form[
@@ -32,17 +34,17 @@ turbo-frame id="main_frame"
 			//PERSONAL FRAME
 			//----------------------------------------------------------------------------------------------------------------
 			.row
-				&hidden name="matrix_id" value=(@matrix.nil? ? "new" : @matrix.id)
+				&hidden name="matrix_id" value=(@object.nil? ? "new" : @object.id)
 				&hidden name="person_id" value=@person.id
 				
 			div.flex-center style="display:flex; flex-direction: row"
 				div style="padding: 2rem 2rem 0 2rem; display:flex; flex-direction: row; flex-flow:row wrap; justify-content: space-around; column-gap: 2em; row-gap: 1em" 
 					div style="display:flex; flex-direction: row"
-						input.no-margin type="checkbox" id="driver" name="driver" checked=@matrix&.driver value=@matrix&.driver
+						input.no-margin type="checkbox" id="driver" name="driver" checked=@object&.driver value=@object&.driver
 						label style="margin: 0 0 0 10px" for="driver" conductor
 					
 					div style="display:flex; flex-direction: row"
-						input.no-margin type="checkbox" id="choir" name="choir" checked=@matrix&.choir value=@matrix&.choir
+						input.no-margin type="checkbox" id="choir" name="choir" checked=@object&.choir value=@object&.choir
 						label style="margin: 0 0 0 10px" for="choir" coro
 						
 				
@@ -52,7 +54,7 @@ turbo-frame id="main_frame"
 				div style="padding: 2rem 6rem 0 6rem; display:flex; flex-direction: row; flex-flow:row wrap; justify-content: space-around; column-gap: 2em; row-gap: 1em" 
 					- Task.all.each_with_index do |task, index|
 						div style="display:flex; flex-direction: row"
-							input.no-margin type="checkbox" id="task_#{task.id}" name="task[#{index}]" value=task.id checked=(@tasks_available.nil? ? true : @tasks_available.include?(task.id))
+							input.no-margin type="checkbox" id="task_#{task.id}" name="task[#{index}]" value=task.id checked=(tasks_available.nil? ? true : tasks_available.include?(task.id))
 							label style="margin: 0 0 0 10px" for="task_#{task.id}" = task.name
 
 					

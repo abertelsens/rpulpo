@@ -17,9 +17,8 @@ end
 # renders the table of people
 # @objects: the people that will be shown in the table
 get '/people/table' do
-  get_last_query_variables :people
 	@people_filter	= session["people_table_filter"]=DEFAULT_PEOPLE_FILTER if @people_filter.nil?
-	@objects 				= Person.search @people_query, @people_table_settings, @people_filter
+	@objects 				= get_current_people_set
 	@decorator 			= PersonDecorator.new(table_settings: @people_table_settings)
 	partial :"table/people"
 end
@@ -27,8 +26,7 @@ end
 # copies tge current query results to the clipboard as a csv text that can be pasted
 # in excel
 get '/people/clipboard/copy' do
-  get_last_query_variables :people
-	@objects 				= Person.search @people_query, @people_table_settings, @people_filter
+	@objects 				= get_current_people_set
 	@decorator 			= PersonDecorator.new(table_settings: @people_table_settings)
 	export_results 	= @decorator.entities_to_csv @objects
 	{result: true, data: export_results}.to_json
@@ -44,10 +42,9 @@ end
 
 # renders the table of after perfroming a search.
 get '/people/search' do
-	get_last_query_variables :people
-	@people_query 	= session["people_table_query"] = params[:q]
-	@people_filter	= session["people_table_filter"] = params[:filter]
-	@objects 				= Person.search @people_query, @people_table_settings, @people_filter
+	session["people_table_query"] = params[:q]
+	session["people_table_filter"] = params[:filter]
+	@objects 				= get_current_people_set
 	@decorator 			= PersonDecorator.new(table_settings: @people_table_settings)
 	partial :"table/people"
 end
@@ -55,7 +52,7 @@ end
 # renders a single person view
 get '/person/:id' do
 	@current_user = get_current_user
-  @person = Person.find(params[:id])
+  @person 			= Person.find params[:id]
   partial :"view/person"
 end
 
@@ -65,47 +62,17 @@ end
 
 # renders a form of a single person view
 get '/person/:id/:module' do
-	@current_user = get_current_user()
-	@person = new_id? ? nil : Person.find(params[:id])
-	case params[:module]
-		when "personal" 	then @personal 		= 	Personal.find_by(person_id: @person.id)
-		when "study" 			then @study 			= 	Study.find_by(person_id: @person.id)
-		when "crs_record" then @crs 				= 	CrsRecord.find_by(person_id: @person.id)
-		when "permit"
-			@permit = Permit.find_by(person_id: @person.id)
-			@permit = Permit.create(person: @person) unless @permit
-		when "matrix"
-			@matrix = Matrix.find_by(person_id: @person.id)
-			@tasks_available = @matrix.nil? ? [] : @matrix.tasks_available.pluck(:task_id)
-		when "rooms", "room"
-			@object = Room.find_by(person_id: @person.id)
-			@object.nil? ? (redirect "/person/#{params[:id]}") : (return partial :"form/room")
-	end
+	@current_user = get_current_user
+	@person 			= new_id? ? nil : Person.find(params[:id])
+	klass 				= Object.const_get(params[:module].classify)
+	@object 			= new_id? ? nil : klass.find_by(person_id: @person.id)
 	locals = params[:origin].present? ? {origin: params[:origin], ceremony: params[:ceremony]} : nil
 	partial :"form/person/#{params[:module]}", locals: locals
 end
 
 get '/crs_record/table' do
-	@has_date = params[:ceremony].present?
-
-	if params[:ceremony].present?
-		@objects = Person.includes(:crs_record).laicos.in_rome.select{|person| (person.crs_record&.get_next(params[:ceremony].to_sym)!=nil)}
-		@objects = @objects.map {|p| [p.id, p.short_name, p.crs_record.get_next(params[:ceremony].to_sym).strftime("%d-%m-%y")]}
-		@ceremony = params[:ceremony]
-		@title = case params[:ceremony]
-			when "fidelidad" 	then 	"Próximas Fidelidades"
-			when "admissio" 	then	"Próximas Admissio"
-			when "lectorado"	then	"Próximos Lectorados"
-			when "acolitado"	then 	"Próximos Acolitados"
-		end
-	end
-
-	if params[:phase].present?
-		@objects 	= Person.phase(params[:phase]).pluck(:id, :short_name)
-		@title 		= "Etapa #{CrsRecord.phases.key(params[:phase].to_i)}".capitalize
-	end
-
-	@total = @objects.size unless @objects.nil?
+	@data = CrsRecord.get_ceremony_info(params[:ceremony]) if params[:ceremony].present?
+	@data = CrsRecord.get_phase_info(params[:phase]) if params[:phase].present?
 	partial "table/ceremony"
 end
 
@@ -143,8 +110,8 @@ end
 # there is no need to handle the delete action as none of these can be deleted directly
 # but only if the person is destroyed
 post '/person/:person_id/:module/:id' do
-	@person = Person.find(params[:person_id])
 	@current_user = get_current_user
+	@person = Person.find(params[:person_id])
 	klass = Object.const_get(params[:module].classify)
 	object = params[:id]=="new" ? nil : klass.find(params[:id])
 	object.nil? ? (klass.create params) : (object.update params) if save?
@@ -211,8 +178,7 @@ end
 
 # shows the form to edit a field of all the people in the set
 get '/people/edit_field' do
-	get_last_query_variables :people
-	@people = @people_query.nil? ? Person.all : (Person.search @people_query, @people_table_settings)
+	@people = get_current_people_set
 	partial :"form/set_field"
 end
 
@@ -226,8 +192,7 @@ end
 # the method table.classify.constantize get the class given the table name.
 post '/people/edit_field' do
 	@current_user = get_current_user
-	get_last_query_variables :people
-	@people = @people_query.nil? ? Person.all : (Person.search @people_query, @people_table_settings)
+	@people = get_current_people_set
 	table, field = params[:attribute_id].split(".")
 
 	# simply return if no value was received as a parameter
@@ -239,17 +204,7 @@ post '/people/edit_field' do
 	partial :"frame/people"
 end
 
+# adds one year to each of the people that match the current query
 get '/people/set/add_year' do
-	get_last_query_variables :people
-	@people = @people_query.nil? ? Person.all : (Person.search @people_query, @people_table_settings)
-	@people.each do |person|
-		if person.year!=nil
-			begin
-				person.year = (person.year.to_i+1).to_s unless person.year.nil?
-				person.save
-			rescue
-				puts Rainbow("PULPO: could not add year of #{person.short_name}. #{person.year} is not an integer.}").orange
-			end
-		end
-	end
+	get_current_people_set.each {|person|  person.add_year }
 end

@@ -7,7 +7,7 @@ turbo-frame id="main_frame"
 	.container.x-large-form.screen-box data-controller="form" 
 	
 		form[
-			action="/person/#{@person.id}/personal/#{(@personal.nil? ? "new" : @personal.id)}" 
+			action="/person/#{@person.id}/personal/#{(@object.nil? ? "new" : @object.id)}" 
 			method="POST"
 			data-form-target="form"
 			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
@@ -31,72 +31,72 @@ turbo-frame id="main_frame"
 				
 				.columns.two
 					label for="region" región
-					&text.u-full-width name="region" value=@personal&.region
+					&text.u-full-width name="region" value=@object&.region
 				
 				.columns.two
 					label for="region_of_origin" región de origen
-					&text.u-full-width name="region_of_origin" value=@personal&.region_of_origin
+					&text.u-full-width name="region_of_origin" value=@object&.region_of_origin
 					
 				.columns.four
 					label for="city" ciudad
-					&text.u-full-width name="city" value=@personal&.city
+					&text.u-full-width name="city" value=@object&.city
 				
 				.columns.four
 					label.tooltip for="languages" idiomas
 						<i class="fa-sharp fa-regular fa-circle-question"></i>
 						<span class="tooltiptext">Ej: Inglés (entiende y habla bien), Francés (entiende)</span>
-					&text.u-full-width name="languages" value=@personal&.languages
+					&text.u-full-width name="languages" value=@object&.languages
 				
 			.row	
 				.columns.three
 					label.tooltip for="father_name" nombre del padre
 						<i class="fa-sharp fa-regular fa-circle-question"></i>
 						<span class="tooltiptext">Si ha fallecido, anotar la fecha de fallecimiento</span>
-					&text.u-full-width name="father_name" value=@personal&.father_name
+					&text.u-full-width name="father_name" value=@object&.father_name
 				.columns.three
 					label.tooltip for="mother_name" nombre de la madre
 						<i class="fa-sharp fa-regular fa-circle-question"></i>
 						<span class="tooltiptext">Si ha fallecido, anotar la fecha de fallecimiento</span>
-					&text.u-full-width name="mother_name" value=@personal&.mother_name
+					&text.u-full-width name="mother_name" value=@object&.mother_name
 				.columns.six
 					label.tooltip for="parents_address" dirección
 						<i class="fa-sharp fa-regular fa-circle-question"></i>
 						<span class="tooltiptext">Ej: Calle las Petunias 4087, Valencia 7700755, ESPAÑA.</span>
 					
-					&text.u-full-width name="parents_address" value=@personal&.parents_address
+					&text.u-full-width name="parents_address" value=@object&.parents_address
 			.row
 				.columns.six
 					label.tooltip for="parents_work" trabajo los padres
 						<i class="fa-sharp fa-regular fa-circle-question"></i>
 						<span class="tooltiptext">Ej: Su padre es ingeniero y su madre directiva en un colegio</span>
-					&text.u-full-width name="parents_work" value=@personal&.parents_work
+					&text.u-full-width name="parents_work" value=@object&.parents_work
 				.columns.six
 					label.tooltip for="parents_info" relación con la obra
 						<i class="fa-sharp fa-regular fa-circle-question"></i>
 						<span class="tooltiptext">Ej: Su madre es s. Su padre no entiende la Obra. Una hermana s.</span>
-					&text.u-full-width name="parents_info" value=@personal&.parents_info
+					&text.u-full-width name="parents_info" value=@object&.parents_info
 			.row
 				.columns.six
 					label.tooltip for="siblings_info" hermanos
 						<i class="fa-sharp fa-regular fa-circle-question"></i>
 						<span class="tooltiptext">Ej: Son 3 varones y 2 mujeres. Es el segundo.</span>
-					&text.u-full-width name="siblings_info" value=@personal&.siblings_info
+					&text.u-full-width name="siblings_info" value=@object&.siblings_info
 				.columns.six
 					label.tooltip for="economic_info" situación económica
 						<i class="fa-sharp fa-regular fa-circle-question"></i>
 						<span class="tooltiptext">Ej: Situación económica regular.</span>
-					&text.u-full-width name="economic_info" value=@personal&.economic_info
+					&text.u-full-width name="economic_info" value=@object&.economic_info
 			.row	
 				.columns.six
 					label.tooltip for="medical_info" antecedentes médicos
 						<i class="fa-sharp fa-regular fa-circle-question"></i>
 						<span class="tooltiptext">Ej: Alérgico a las setas.</span>
-					&text.u-full-width name="medical_info" value=@personal&.medical_info
+					&text.u-full-width name="medical_info" value=@object&.medical_info
 				.columns.six
 					label.tooltip for="notes" otras observaciones
 						<i class="fa-sharp fa-regular fa-circle-question"></i>
 						<span class="tooltiptext">Ej: Tiene un hermano sacerdote diocesano y una hermana religiosa.</span>
-					&text.u-full-width name="notes" value=@personal&.notes
+					&text.u-full-width name="notes" value=@object&.notes
 		
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM BUTTONS

@@ -5,7 +5,7 @@
 turbo-frame id="main_frame"
   	
 	.container.medium-form.screen-box data-controller="form" 
-		- action = "/person/#{@person.id}/crs_record/#{(@crs.nil? ? "new" : @crs.id)}"
+		- action = "/person/#{@person.id}/crs_record/#{(@object.nil? ? "new" : @object.id)}"
 		- action << "?origin=#{locals[:origin]}&ceremony=#{locals[:ceremony]}" unless locals.nil?
 		form#personForm[
 			action=action
@@ -34,34 +34,34 @@ turbo-frame id="main_frame"
 			.row	
 				.columns.three
 					label for="pa" pa
-					&date.u-full-width name="pa" value=@crs&.pa
+					&date.u-full-width name="pa" value=@object&.pa
 				
 				.columns.three
 					label for="admision" ad
-					&date.u-full-width name="admision" value=@crs&.admision
+					&date.u-full-width name="admision" value=@object&.admision
 				
 				.columns.three
 					label for="oblacion" o
-					&date.u-full-width name="oblacion" value=@crs&.oblacion
+					&date.u-full-width name="oblacion" value=@object&.oblacion
 				
 				.columns.three
 					label for="fidelidad" fl
-					&date.u-full-width name="fidelidad" value=@crs&.fidelidad
+					&date.u-full-width name="fidelidad" value=@object&.fidelidad
 				
 			.row
 				.columns.three
 					label for="letter" carta
-					&date.u-full-width name="letter" value=@crs&.letter
+					&date.u-full-width name="letter" value=@object&.letter
 
 				.columns.three
 					label for="admissio" admissio
-					&date.u-full-width name="admissio" value=@crs&.admissio
+					&date.u-full-width name="admissio" value=@object&.admissio
 				.columns.three
 					label for="lectorado" lectorado
-					&date.u-full-width name="lectorado" value=@crs&.lectorado
+					&date.u-full-width name="lectorado" value=@object&.lectorado
 				.columns.three
 					label for="acolitado" acolitado
-					&date.u-full-width name="acolitado" value=@crs&.acolitado
+					&date.u-full-width name="acolitado" value=@object&.acolitado
 				
 				
 			.row
@@ -70,31 +70,31 @@ turbo-frame id="main_frame"
 					label.tooltip for="classnumber" promoción
 						<i class="fa-sharp fa-regular fa-circle-question"></i>
 						<span class="tooltiptext">Ej: LXXVII</span>
-					&text.u-full-width name="classnumber" value=@crs&.classnumber
+					&text.u-full-width name="classnumber" value=@object&.classnumber
 			
 				.columns.three
 					label for="cipna" cipna
-					&text.u-full-width name="cipna" value=@crs&.cipna
+					&text.u-full-width name="cipna" value=@object&.cipna
 				
 				.columns.three
 					label for="diaconado" diaconado
-					&date.u-full-width name="diaconado" value=@crs&.diaconado
+					&date.u-full-width name="diaconado" value=@object&.diaconado
 				.columns.three
 					label for="presbiterado" presbiterado
-					&date.u-full-width name="presbiterado" value=@crs&.presbiterado
+					&date.u-full-width name="presbiterado" value=@object&.presbiterado
 
 			.row
 				.columns.three
 					label etapa
 					select.u-full-width name="phase"
-						option selected=(@crs&.phase.nil?) value="" = "-"
+						option selected=(@object&.phase.nil?) value="" = "-"
 						- CrsRecord.phases.each do |st| 
-							option selected=(@crs&.phase==st[0]) value=st[0] = st[0]
+							option selected=(@object&.phase==st[0]) value=st[0] = st[0]
 		
 			.row 
 				.columns.twelve
 					label for="notes" notes
-					textarea.u-full-width rows=3 name="notes" = @crs&.notes
+					textarea.u-full-width rows=3 name="notes" = @object&.notes
 				
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM BUTTONS

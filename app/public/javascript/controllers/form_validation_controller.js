@@ -67,20 +67,21 @@ Stimulus.register("form-validator", class extends Controller {
       return false;
     }
     // validation succeeded
+    
+    var previousAction = this.element.action
+    if (this.hasSubmitButtonTarget) { 
+      var form = this.element
+      form.action += "?" + this.submitButtonTarget.name + "=" + this.submitButtonTarget.value; 
+    }
     else {
-      var previousAction = this.element.action
-      if (this.hasSubmitButtonTarget) { 
-        var form = this.element
-        form.action += "?" + this.submitButtonTarget.name + "=" + this.submitButtonTarget.value; 
-      }
-      else {
-        console.log("form-validator controller warning: no submitButton target defined. submitting form anyway...")
-      }
-      this.element.requestSubmit();
-      // restore the action of the form
-      this.element.action = previousAction;
-      return true;
-    }   
+      console.log("form-validator controller warning: no submitButton target defined. submitting form anyway...")
+    }
+    // submit the form.
+    this.element.requestSubmit();
+    // restore the action of the form
+    this.element.action = previousAction;
+    return true;
+    
   }
   
   showAlert(alert){

@@ -13,7 +13,7 @@ turbo-frame id="main_frame"
 	.container.screen-box.xx-large-form data-controller="form" 
 		
 		form[
-			action="/#{model_name}/#{(@permit.nil? ? "new" : @permit.id)}#{back_url}"
+			action="/#{model_name}/#{(@object.nil? ? "new" : @object.id)}#{back_url}"
 			method="POST"
 			autocomplete="one-time-code"
 			data-controller="form-validator"
@@ -66,7 +66,7 @@ turbo-frame id="main_frame"
 									readonly 
 									onfocus="this.removeAttribute('readonly');" 
 									autocomplete="one-time-code"
-									value=@permit&.citizenship]
+									value=@object&.citizenship]
 
 							.columns.two
 								label for="passport" passaporto
@@ -74,51 +74,51 @@ turbo-frame id="main_frame"
 									readonly 
 									onfocus="this.removeAttribute('readonly');" 
 									autocomplete="one-time-code"
-									value=@permit&.passport]
+									value=@object&.passport]
 						
 							.columns.two.two
 								label for="passport_expiration" scadenza passaporto
-								&date@passport_expiration.u-full-width value=@permit&.passport_expiration
+								&date@passport_expiration.u-full-width value=@object&.passport_expiration
 
 							.columns.two
 								label for="permit_expiration" scandenza permesso
-								&date@permit_expiration.u-full-width value=@permit&.permit_expiration
+								&date@object_expiration.u-full-width value=@object&.permit_expiration
 
 						.row
 
 							.columns.two.offset-by-one
 								label for="pac" PaC (fatta)
-								&date@pac.u-full-width value=@permit&.pac
+								&date@pac.u-full-width value=@object&.pac
 						
 							.columns.two
 								label for="pac_signature" PaC (firmata)
-								&date@pac_signature.u-full-width value=@permit&.pac_signature
+								&date@pac_signature.u-full-width value=@object&.pac_signature
 
 							.columns.two
 								label for="pac_validation" PaC (vidimata)
-								&date@pac_validation.u-full-width value=@permit&.pac_validation
+								&date@pac_validation.u-full-width value=@object&.pac_validation
 						
 
 							.columns.two
 								label for="pusc_certificate_request" cert. PUSC (richiesto)
-								&date@pusc_certificate_request.u-full-width value=@permit&.pusc_certificate_requested
+								&date@pusc_certificate_request.u-full-width value=@object&.pusc_certificate_requested
 
 							.columns.two
 								label for="pusc_certificate_received" cert. PUSC (ritirato)
-								&date@pusc_certificate_received.u-full-width value=@permit&.pusc_certificate_received
+								&date@pusc_certificate_received.u-full-width value=@object&.pusc_certificate_received
 
 						.row
 							.columns.two.offset-by-one
 								label for="permit_appointment" appunt. ispettorato
-								&date@permit_appointment.u-full-width value=@permit&.permit_appointment
+								&date@object_appointment.u-full-width value=@object&.permit_appointment
 
 							.columns.two
 								label for="residence_notes" appunt. impronte
-								&date@permit_fingerprints.u-full-width value=@permit&.permit_fingerprints
+								&date@object_fingerprints.u-full-width value=@object&.permit_fingerprints
 							
 							.columns.six
 								label for="notes" osservazioni
-								&text@notes.u-full-width value=@permit&.notes
+								&text@notes.u-full-width value=@object&.notes
 
 				
 
@@ -133,7 +133,7 @@ turbo-frame id="main_frame"
 			// FORM BUTTONS
 			//----------------------------------------------------------------------------------------------------------------
 			.row.flex-center.flex-columns
-				- if (@permit && (!(@permit.respond_to? :can_be_deleted?) || @permit&.can_be_deleted?))
+				- if (@object && (!(@object.respond_to? :can_be_deleted?) || @object&.can_be_deleted?))
 					a.button.button-secondary[
 						data-keys-target="deleteButton" 
 						tabindex="-1" 
