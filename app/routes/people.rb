@@ -142,30 +142,29 @@ end
 
 # renders a pdf with the params received.
 get '/people/:id/document/:doc_id' do
-
-	@document = Document.find params[:doc_id]
+	document = Document.find params[:doc_id]
 	# ff the document has template variables we redirect to ask for the variable values
-	redirect "/people/#{params[:id]}/document/#{params[:doc_id]}/template_variables" if @document.has_template_variables?
+	redirect "/people/#{params[:id]}/document/#{params[:doc_id]}/template_variables" if document.has_template_variables?
 
 	# find the people records
-	get_last_query_variables params["query"].to_sym
+	#get_last_query_variables params["query"].to_sym
 	people =
-		if params[:id]=="set" then Person.search @people_query, @people_table_settings, @people_filter
+		if params[:id]=="set" then get_current_people_set
 		else [Person.find(params[:id])]
 		end
-	@document.get_writer(people).render_document
+		send_file document.get_writer(people).render, :type => 'pdf'
 end
 
 post '/people/:id/document/:doc_id' do
+	content_type :pdf
 	# find the people records
-	get_last_query_variables params["query"].to_sym
 
 	people =
-		if params[:id]=="set" then Person.search @people_query, @people_table_settings, @people_filter
+		if params[:id]=="set" then get_current_people_set
 		else [Person.find(params[:id])]
 		end
 	document = Document.find(params[:doc_id])
-	document.get_writer(people, params).render_document
+	send_file document.get_writer(people).render, :type => 'pdf'
 end
 
 get '/people/cb/json' do

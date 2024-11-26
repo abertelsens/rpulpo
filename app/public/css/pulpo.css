@@ -555,6 +555,8 @@ definition as table-cell-head*/
 /* Any div that is a child of a div with a table-row-body class. It is the same
 definition as table-cell-body*/
 .table-row-body div{
+  white-space: nowrap;
+  overflow: hidden;
   max-height: 1rem;
   text-overflow: ellipsis;
   display: table-cell;
@@ -565,6 +567,7 @@ definition as table-cell-body*/
 .table-cell-body {
   max-height: 1rem;
   text-overflow: ellipsis;
+  overflow: hidden;
   display: table-cell;
   padding: .2rem .5rem .1rem .5rem;
   border-bottom: 1px solid var(--light-gray);
@@ -695,24 +698,26 @@ a.matrix-cell-selected
 }
 
 .xxlong-field {
-  width: 800px;
+  max-width: 800px;
 }
 
 .xlong-field {
-  width: 600px;
+  max-width: 500px;
 }
 
 .long-field {
-  width: 280px;
+  max-width: 260px;
 }
 
 .medium-field {
-  width: 140px;
+  max-width: 140px;
+}
+.small-field {
+  max-width: 100px;
 }
 
-
 .short-field {
-  width: 60px;
+  max-width: 60px;
 }
 
 @media all and (max-width: 1500px) {

@@ -5,10 +5,10 @@ turbo-frame id="mails_table"
         .medium-field = "tipo"
         .medium-field = "fecha"
         .long-field = "protocolo"
-        .long-field = "referencia(s)"
+        .medium-field = "referencia(s)"
         .medium-field = "de/a"
-        .xxlong-field = "asunto"
-        .medium-field = "asignado"
+        .xlong-field = "asunto"
+        .small-field = "asignado"
         .medium-field = "status"
         .medium-field = "resp. en"
 
@@ -24,14 +24,14 @@ turbo-frame id="mails_table"
           style="cursor:pointer;" 
           class=(object.direction)
         ]
-          div = object.direction
-          div = object.date&.strftime('%d-%m-%y')
-          div = object.protocol
-          div = object.refs_string
-          div = object.entity&.sigla
-          div = object.topic
-          div = object.get_assigned_users
-          div = object.mail_status&.humanize&.downcase
-          div = object.ans_string
+          .medium-field = object.direction
+          .medium-field = object.date&.strftime('%d-%m-%y')
+          .long-field = object.protocol
+          .medium-field = object.refs_string
+          .medium-field = object.entity&.sigla
+          .xlong-field = object.topic
+          .small-field = object.get_assigned_users
+          .medium-field = object.mail_status&.humanize&.downcase
+          .medium-field = object.ans_string
         
         

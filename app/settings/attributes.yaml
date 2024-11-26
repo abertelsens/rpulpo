@@ -73,7 +73,7 @@ attributes:
     name: "email"
     type: "string"
     order: "NONE"
-    css_class: "short-field"
+    css_class: "long-field"
   - id: "people.phone"
     name: "phone"
     type: "string"
