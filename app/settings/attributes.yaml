@@ -220,6 +220,7 @@ attributes:
     type: "date"
     order: "NONE"
     css_class: "medium-field"
+    bulk_edit: true
   - id: "crs_records.presbiterado"
     bulk_edit: true
     name: "presbiterado"
