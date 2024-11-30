@@ -50,7 +50,12 @@ class Document < ActiveRecord::Base
 
 		# upddates the template file according to the new file received
 		# by the form (in params[:template])
-		doc.update_template_file(params[:template][:tempfile]) unless params[:template].nil?
+		if params[:template]!=nil
+			doc.update_template_file(params[:template][:tempfile]) unless params[:template].nil?
+			doc.template_variables = Document.has_template_variables?(File.read params[:template][:tempfile])
+			doc.save
+		end
+		doc
 	end
 
 	def update(params)
@@ -70,6 +75,8 @@ class Document < ActiveRecord::Base
 			# the name of the template did not change, but a new file was provided
 			if(params[:template]!=nil)
 				FileUtils.cp(params[:template][:tempfile], get_full_path)
+				self.template_variables = Document.has_template_variables?(File.read params[:template][:tempfile])
+				self.save
 			end
 
 		end
@@ -86,20 +93,16 @@ class Document < ActiveRecord::Base
 	end
 
 	def self.prepare_params(params)
-		puts "gpt params"
+		puts "got params"
 		puts params
 		file_suffix = "typ"
-		if params[:template]!=nil
-			template_variables = Document.has_template_variables?(File.read params[:template][:tempfile])
-		end
 		hash = {
 			pulpo_module_id:        params[:module],
 			name:                   params[:name],
 			description:            params[:description],
 			engine:                 "typst",
 			path: 									"#{params[:name]}.#{file_suffix}",
-			singlepage:             (params[:singlepage].blank? ? true : params[:singlepage]=="true"),
-			template_variables:     template_variables
+			singlepage:             (params[:singlepage].blank? ? true : params[:singlepage]=="true")
 		}
 	end
 
@@ -130,7 +133,10 @@ class Document < ActiveRecord::Base
 	# checks whether the source has template variables. Template variables are wrapped in double dolar signs
 	# i.e. $$myvariable$$
 	def self.has_template_variables?(source)
-		!source.scan(/\$\$\S*\$\$/).empty?
+		#!source.scan(/\$\$\S*\$\$/).empty?
+		#!source.scan(/\$\$\S*\$\$/).empty?
+		puts "checking if file has template variables. returning #{!source.scan(/pulpo.\S*/).empty?}"
+		!source.scan(/pulpo.\S*/).empty?
 	end
 
 	def has_template_variables?
@@ -138,7 +144,9 @@ class Document < ActiveRecord::Base
 	end
 
 	def get_template_variables
-		File.read(get_full_path).scan(/\$\$\S*\$\$/).map{ |var| var.gsub("$$","")}
+		tv = File.read(get_full_path).scan(/pulpo.\S*/).map{ |var| var.gsub("pulpo.","").gsub("\"","")}
+		puts "got template variables #{tv.inspect}"
+		tv
 	end
 
 	def can_be_deleted?
@@ -153,6 +161,7 @@ class Document < ActiveRecord::Base
 
 	# validates the params received from the form.
 	def validate(params)
+		puts "validating existing object"
 		self.update(params)
 		{ result: valid?, message: ValidationErrorsDecorator.new(errors.to_hash).to_html }
 	end

@@ -68,5 +68,6 @@ end
 # returns a JSON object of the form {result: boolean, message: string}
 post '/document/:id/validate' do
 	content_type :json
+  puts "validating is new? ·#{new_id?}"
 	(new_id? ? (Document.validate params) : (Document.find(params[:id]).validate params)).to_json
 end

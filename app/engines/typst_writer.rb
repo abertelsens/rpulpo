@@ -25,7 +25,7 @@ class TypstWriter < DocumentWriter
 	def initialize(document, people, template_variables=nil)
 		super()
 		@decorator = PersonDecorator.new
-		
+
 		begin
 			@template_source = File.read "#{TYPST_TEMPLATES_DIR}/#{document.path}"
 		rescue
@@ -33,10 +33,11 @@ class TypstWriter < DocumentWriter
 			You should check the settings of #{document.name} file before trying again.")
 			return
 		end
-		
 
+
+		puts "\n\nGOT TEMPLATE VARIABLES #{template_variables}\n\n"
 		# replace the template variables in the template by their value.
-		template_variables.each {|var| @template_source.gsub!("$$#{var[0]}$$",var[1])} if template_variables
+		template_variables.keys.each {|key| @template_source.gsub!("pulpo.#{key}",template_variables[key])} if template_variables
 
 		# stores an array of all the variables found in the template. As we replaced all the template
 		# variables, these only include variables related to the people in the db.

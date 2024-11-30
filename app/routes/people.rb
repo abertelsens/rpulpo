@@ -143,6 +143,7 @@ end
 # renders a pdf with the params received.
 get '/people/:id/document/:doc_id' do
 	document = Document.find params[:doc_id]
+	puts "checking if document has template variables #{document.has_template_variables?}"
 	# ff the document has template variables we redirect to ask for the variable values
 	redirect "/people/#{params[:id]}/document/#{params[:doc_id]}/template_variables" if document.has_template_variables?
 
@@ -158,13 +159,12 @@ end
 post '/people/:id/document/:doc_id' do
 	content_type :pdf
 	# find the people records
-
 	people =
 		if params[:id]=="set" then get_current_people_set
 		else [Person.find(params[:id])]
 		end
 	document = Document.find(params[:doc_id])
-	send_file document.get_writer(people).render, :type => 'pdf'
+	send_file document.get_writer(people, params.except!(:commit, :id, :doc_id) ).render, :type => 'pdf'
 end
 
 get '/people/cb/json' do

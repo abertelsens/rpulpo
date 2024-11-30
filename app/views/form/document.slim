@@ -32,7 +32,8 @@ turbo-frame id="main_frame"
 			fieldset data-form-target="fieldset"
 				
 				.row
-				
+					- if @object
+						p = "has template variables -#{@object.template_variables}-"
 					.columns.six
 						label for="name" name
 						&text@name.u-full-width[
