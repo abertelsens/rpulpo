@@ -35,9 +35,11 @@ class TypstWriter < DocumentWriter
 		end
 
 
-		puts "\n\nGOT TEMPLATE VARIABLES #{template_variables}\n\n"
 		# replace the template variables in the template by their value.
-		template_variables.keys.each {|key| @template_source.gsub!("pulpo.#{key}",template_variables[key])} if template_variables
+		if template_variables
+			template_variables.keys.each do |key|
+			@template_source.gsub!("pulpo.#{key}",template_variables[key])
+		end
 
 		# stores an array of all the variables found in the template. As we replaced all the template
 		# variables, these only include variables related to the people in the db.
