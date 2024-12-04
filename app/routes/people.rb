@@ -61,6 +61,14 @@ get '/person/:person_id/permit' do
 end
 
 # renders a form of a single person view
+get '/person/:id/general' do
+	@current_user = get_current_user
+	@person 			= new_id? ? nil : Person.find(params[:id])
+	locals = params[:origin].present? ? {origin: params[:origin], ceremony: params[:ceremony]} : nil
+	partial :"form/person/general", locals: locals
+end
+
+# renders a form of a single person view
 get '/person/:id/:module' do
 	@current_user = get_current_user
 	@person 			= new_id? ? nil : Person.find(params[:id])

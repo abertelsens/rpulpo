@@ -39,6 +39,7 @@ class TypstWriter < DocumentWriter
 		if template_variables
 			template_variables.keys.each do |key|
 			@template_source.gsub!("pulpo.#{key}",template_variables[key])
+			end
 		end
 
 		# stores an array of all the variables found in the template. As we replaced all the template

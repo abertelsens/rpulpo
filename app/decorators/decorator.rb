@@ -7,13 +7,13 @@ class Decorator
     return if args.nil?
     @table_settings   =  args[:table_settings] if args[:table_settings].present?
     @date_format      = args[:date].present? ? args[:date] : "normal"
-    
+
   end
 
   def decorate(value, setting)
     case setting.type
     when "boolean"  then  (CHECKMARK if value)
-    when "enum"     then  value.humanize(capitalize: false)
+    when "enum"     then  value.humanize(capitalize: false) if value
     when "integer"  then  value
     when "date"     then  ((@date_format=="latin") ? latin_date(value) : value.strftime("%d-%m-%y")) unless value.nil?
     else  value
