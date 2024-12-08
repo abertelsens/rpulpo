@@ -36,6 +36,7 @@ end
 get '/entity/:id' do
 	@object = (params[:id]=="new" ? nil : Entity.find(params[:id]))
 	partial :"form/entity"
+	#partial :"form/entity_tw"
 end
 
 # --------------------------------------------------------------------------------------

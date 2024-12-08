@@ -13,8 +13,8 @@ PANDOC_REFERENCE = "app/engines-templates/word/custom-reference.docx"
 
 get '/mails' do
 	@current_user = get_current_user
-	get_last_query :mails
-	@mails_query = session["mails_table_query"] = DEFAULT_MAIL_QUERY if @mails_query.nil?
+	@mails_query = session["mails_table_query"]
+	@mails_query = DEFAULT_MAIL_QUERY if @mails_query.nil?
 	partial :"frame/mails"
 end
 
@@ -22,8 +22,10 @@ end
 # @objects the people that will be shown in the table
 get '/mails/table' do
 	@current_user = get_current_user
-	@objects = Mail.search (get_last_query :mails)
-	@unread = @current_user.unread_mails
+	@mails_query = session["mails_table_query"]
+	@mails_query = DEFAULT_MAIL_QUERY if @mails_query.nil?
+	@objects = Mail.search @mails_query
+	@unread = @current_user.unread_mails.pluck(:mail_id)
 	partial :"table/mail"
 end
 

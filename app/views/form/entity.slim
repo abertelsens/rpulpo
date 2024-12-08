@@ -2,8 +2,14 @@
 / FORM for an Entity
 /----------------------------------------------------------------------------------------------------------------
 
+
 turbo-frame id="main_frame"
-  
+
+	/!--------------------------------------------------------------------------------
+	/! TAILWIND
+	/!--------------------------------------------------------------------------------
+	
+	
 	- model_name = "entity"
 	- table_name = "entities"
 
@@ -35,7 +41,7 @@ turbo-frame id="main_frame"
 			
 				.row
 					
-					label for="name" name
+					label for="name" class="text-slate-500" name
 					&text@name.u-full-width[
 						data-form-target="firstField" 
 						autofocus

@@ -2,14 +2,14 @@ turbo-frame id="mails_table"
   .table-container data-controller="table" data-table-size-value=@objects.size
     .table-table data-table-target="table" data-action="mouseover->table#mouseover keydown.down@window->table#down keydown.up@window->table#up keydown.esc@window->table#escape"
       .table-row-head
-        .medium-field = "tipo"
+        .short-field = " "
         .medium-field = "fecha"
         .long-field = "protocolo"
         .medium-field = "referencia(s)"
         .medium-field = "de/a"
         .xlong-field = "asunto"
         .small-field = "asignado"
-        .medium-field = "status"
+        .short-field = " "
         .medium-field = "resp. en"
 
       - @objects.each.with_index do |object, index|
@@ -24,14 +24,25 @@ turbo-frame id="mails_table"
           style="cursor:pointer;" 
           class=(object.direction)
         ]
-          .medium-field = object.direction
+          .short-field.u-text-center 
+            - if object.direction=="salida"
+              <i class="fa-solid fa-arrow-left"></i>
+            - if object.direction=="entrada"
+              <i class="fa-solid fa-arrow-right"></i>
           .medium-field = object.date&.strftime('%d-%m-%y')
           .long-field = object.protocol
           .medium-field = object.refs_string
           .medium-field = object.entity&.sigla
           .xlong-field = object.topic
           .small-field = object.get_assigned_users
-          .medium-field = object.mail_status&.humanize&.downcase
+          .short-field.u-text-center
+            - if object.mail_status=="pendiente"
+              <i class="fa-regular fa-clock"></i>
+            - if object.mail_status=="en_curso"
+              <i class="fa-solid fa-check"></i>  
+            - if object.mail_status=="terminado"
+              <i class="fa-solid fa-check-double"></i>
+          //= object.mail_status&.humanize&.downcase
           .medium-field = object.ans_string
         
         

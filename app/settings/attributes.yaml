@@ -7,7 +7,7 @@ attributes:
     css_class: "long-field"
     bulk_edit: false
   - id: "people.first_name"
-    name: "nirst name"
+    name: "first name"
     type: "string"
     order: "ASC"
     css_class: "long-field"
@@ -48,7 +48,7 @@ attributes:
     name: "year"
     type: "string"
     order: "NONE"
-    css_class: "short-field u-text-center"
+    css_class: "medium-field u-text-center"
     bulk_edit: true
   - id: "people.clothes"
     name: "clothes"
@@ -141,12 +141,12 @@ attributes:
     name: "house"
     type: "enum"
     order: "NONE"
-    css_class: "long-field"
+    css_class: "medium-field"
   - id: "rooms.floor"
     name: "floor"
     type: "string"
     order: "NONE"
-    css_class: "medium-field"
+    css_class: "short-field"
     bulk_edit: true
   - id: "rooms.bed"
     name: "bed"

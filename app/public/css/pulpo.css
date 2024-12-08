@@ -699,25 +699,31 @@ a.matrix-cell-selected
 
 .xxlong-field {
   max-width: 800px;
+  width: 800px;
 }
 
 .xlong-field {
   max-width: 500px;
+  width: 500px;
 }
 
 .long-field {
   max-width: 260px;
+  width: 260px;
 }
 
 .medium-field {
   max-width: 140px;
+  width: 140px;
 }
 .small-field {
   max-width: 100px;
+  width: 100px;
 }
 
 .short-field {
   max-width: 60px;
+  width: 60px;
 }
 
 @media all and (max-width: 1500px) {

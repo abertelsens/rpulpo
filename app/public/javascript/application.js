@@ -7,3 +7,15 @@ window.Stimulus = Application.start()
 
 //application.register('autocomplete', Autocomplete)
 //application.register('hotkeys', Hotkeys)
+/*
+console.log("loading tailwind")
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        clifford: '#da373d',
+      }
+    }
+  }
+}
+*/

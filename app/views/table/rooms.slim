@@ -2,7 +2,11 @@ turbo-frame id="rooms_table" data-turbo-frame="main_frame"
   
   .table-container data-controller="table" data-table-size-value=@objects.size
   
-    .table-table data-action="mouseover->table#mouseover keydown.down@window->table#down keydown.up@window->table#up keydown.esc@window->table#escape"
+    .table-table[
+      data-action="mouseover->table#mouseover \
+      keydown.down@window->table#down \
+      keydown.up@window->table#up \
+      keydown.esc@window->table#escape"]
     
       .table-row-head
         - @rooms_table_settings.att.each do |sett|
@@ -12,14 +16,12 @@ turbo-frame id="rooms_table" data-turbo-frame="main_frame"
         a.table-row-body[
           data-action="keydown.enter@window->table#enter" 
           data-table-target="row"
+          data-table-id="index"  
           tabindex=-1 
-          href="/room/#{object.id}" 
+          href="/room/#{object.id}"
           data-turbo-frame="main_frame"
         ]
           == @decorator.html_row(object)
-          //- @rooms_table_settings.att.each do |sett|
-          //  - value = object.get_attribute sett.field
-          //  div class=sett.css_class = sett.type=="enum" ? value&.humanize : value
   
   .row.flex-center.margin-top
     .alert.xlong-field.u-text-center = (@objects.size>0) ? "#{@objects.size} record(s) found" : "No records found. Try something different."

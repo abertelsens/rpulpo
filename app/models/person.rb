@@ -83,7 +83,7 @@ class Person < ActiveRecord::Base
 
 	after_create do |person|
 		puts "copying picutre"
-		FileUtils.cp_r(DEFAULT_PERSON_IMG, "#{PHOTO_DIR}/#{person.id}.jpg", remove_destination: false)	
+		FileUtils.cp_r(DEFAULT_PERSON_IMG, "#{PHOTO_DIR}/#{person.id}.jpg", remove_destination: false)
 	end
 
 	before_save do
@@ -181,6 +181,7 @@ class Person < ActiveRecord::Base
 		tas = TaskAssignment.where(day_schedule: day_schedule).select{|ta| ta.clashes_with_task? task_schedule}.map{|ta| ta.person_id}
 	end
 
+
 	# -----------------------------------------------------------------------------------------
 	# VALIDATIONS
 	# -----------------------------------------------------------------------------------------
@@ -196,5 +197,21 @@ class Person < ActiveRecord::Base
 		self.update(params)
 		{ result: self.valid?, message: ValidationErrorsDecorator.new(self.errors.to_hash).to_html }
 	end
+
+	# -----------------------------------------------------------------------------------------
+	# ACTIONS
+	# -----------------------------------------------------------------------------------------
+
+	def add_year
+		if self.year!=nil
+			begin
+				self.year = (self.year.to_i+1).to_s unless self.year.nil?
+				self.save
+			rescue
+				puts Rainbow("PULPO: could not add year of #{self.short_name}. #{self.year} is not an integer.}").orange
+			end
+		end
+	end
+
 
 end #class end

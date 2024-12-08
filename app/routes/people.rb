@@ -17,6 +17,7 @@ end
 # renders the table of people
 # @objects: the people that will be shown in the table
 get '/people/table' do
+	get_last_query_variables :people
 	@people_filter	= session["people_table_filter"]=DEFAULT_PEOPLE_FILTER if @people_filter.nil?
 	@objects 				= get_current_people_set
 	@decorator 			= PersonDecorator.new(table_settings: @people_table_settings)
@@ -213,5 +214,15 @@ end
 
 # adds one year to each of the people that match the current query
 get '/people/set/add_year' do
-	get_current_people_set.each {|person|  person.add_year }
+	@current_user = get_current_user
+	@people = get_current_people_set
+	partial :"form/add_year"
+end
+
+# adds one year to each of the people that match the current query
+post '/people/set/add_year' do
+	@current_user = get_current_user
+	@people = get_current_people_set
+	get_current_people_set.each {|person|  person.add_year } if params["commit"]=="save"
+	partial :"frame/people"
 end

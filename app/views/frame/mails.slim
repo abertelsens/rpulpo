@@ -28,11 +28,16 @@ turbo-frame id="main_frame"
               
               .columns.three.flex-left syle="gap: .5rem"
                
-                a.button.button-secondary data-turbo-frame="mails_table" href="/mail/mark_as_read"
+                a.button.button-secondary[
+                  data-turbo-frame="mails_table" 
+                  href="/mail/mark_as_read"]
+
                   i.fa-solid.fa-ckeck style="font-size:small"
                   |&nbspmarcar como leído
 
-                a.button.button-secondary.margin-left data-action="click->mail#openProtocolModal"
+                a.button.button-secondary.margin-left[
+                  data-action="click->mail#openProtocolModal"]
+
                   i.fa-solid.fa-lock style="font-size:small"
                   |&nbspreservar prot.
               
@@ -43,7 +48,10 @@ turbo-frame id="main_frame"
               .columns.two.offset-by-two.flex-right
 
                 - if @current_user.admin?
-                  button.button-secondary.margin-right.button-danger data-mail-target="deleteYearButton" data-action="click->mail#confirmYearDelete" 
+                  button.button-secondary.margin-right.button-danger[
+                    data-mail-target="deleteYearButton" 
+                    data-action="click->mail#confirmYearDelete"]
+
                     i.fa-solid.fa-ckeck style="font-size:small"
                     |&nbspborrar todo el año
 
@@ -63,7 +71,11 @@ turbo-frame id="main_frame"
                 div
                   .flex-columns.center-align.u-text-left.margin-bottom
                     label.no-margin ctr
-                    select.no-margin data-mail-target="entity" name="entity" data-action="change->search#submit"
+                    select.no-margin[
+                      data-mail-target="entity" 
+                      name="entity" 
+                      data-action="change->search#submit"]
+
                       option selected=(@mails_query[:entity].blank?) value="" all
                       - entities.each do |entity|
                         option  selected=(@mails_query[:entity].to_i==entity.id) value=entity.id = entity.sigla 
@@ -72,9 +84,10 @@ turbo-frame id="main_frame"
                   .flex-columns.u-text-left.center-align.margin-bottom
                     label.no-margin tipo
                     select.no-margin data-mail-target="direction" name="direction" data-action="change->search#submit"
-                      option selected=(@mails_query[:direction].blank?) value="" all
+                      option selected=(@mails_query[:direction].blank?) value="" = "all"
                       - Mail.directions.each do |direction|
-                        option selected=(@mails_query[:direction].to_i==direction[1]) value=direction[1] = direction[0]
+                        - puts @mails_query[:direction].to_i
+                        option selected=(!@mails_query[:direction].blank? && @mails_query[:direction].to_i==direction[1]) value=direction[1] = direction[0]
                   
                 div 
                   .flex-columns.u-text-left.center-align.margin-bottom

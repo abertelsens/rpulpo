@@ -103,9 +103,11 @@ class User < ActiveRecord::Base
 		#(module_users.select {|mu| mu.modulepermission=="allowed"}).map {|mu| mu.pulpo_module}
 	end
 
-	# returs a hash with the documents of the user of the form {module_name: documentsAssociation }
+	# returs an array of the form [module, [documents]]
 	def get_documents
-		get_allowed_modules.map{|mod| [mod , mod.documents] }.select{|item| !item[1].empty?}
+		allowed_modules = get_allowed_modules
+		allowed_docs = Document.where(pulpo_module: allowed_modules.pluck(:id))
+		allowed_modules.map{|mod| [mod, allowed_docs.select{|doc| doc.pulpo_module_id==mod.id} ] }.select{|mod| !mod[1].empty?}
 	end
 
 	# returs a hash with the documents of the user of the form {module_name: documentsAssociation }

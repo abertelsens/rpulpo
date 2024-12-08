@@ -1,0 +1,49 @@
+turbo-frame id="main_frame" 
+  
+	form action="/people//set/add_year" method="POST" data-report-target="form"
+		
+		.container.screen-box style="max-width: 600px"
+			.row.u-text-center
+				.columns.twelve
+					h4 = "Add Year to All Selected People"
+			
+			.row
+				
+			.row.alert.margin-top style="text-align: center;"
+					i.class.fa-solid.fa-circle-info  
+					|&nbspInstrucciones
+					p style="font-size: .9em"
+					|Se aumentará en un año a <b>todas</b> las personas seleccionadas.
+					p style="font-size: .9em"
+					|Esta acción no se puede deshacer.
+					
+			
+			- editable_attributes = TableSettings.get_editable_attributes
+
+			.row
+				h5.no-margin.u-text-center = "PERSONAS"
+				- @people.each do |person|
+					.columns.four style="padding: .1rem; text-align: left" = person.short_name
+					//p style="line-height: .9rem; font-size: .8rem" 
+
+
+			
+				/----------------------------------------------------------------------------------------------------------------
+				//BUTTONS
+				//----------------------------------------------------------------------------------------------------------------
+				
+			.row.flex-center.flex-columns.margin-top
+				button.button-primary[
+					type="submit"
+					tabindex="-1" 
+					name="commit" 
+					value="save"
+					] Añadir
+			
+				a.button.button-secondary[
+					formnovalidate="true" 
+					tabindex="-1" 
+					href="/people" 
+					title="esc"
+					] cancel
+			
