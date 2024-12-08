@@ -106,9 +106,7 @@ end
 # renders a single document view
 get '/mail/mark_as_read' do
 	get_current_user.unread_mails.destroy_all
-	@objects = Mail.search (get_last_query :mails)
-	@unread = []
-	partial :"table/mail"
+	redirect '/mails/table'
 end
 
 # renders a single document view
