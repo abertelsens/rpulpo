@@ -161,7 +161,9 @@ get '/mail_file/:id' do
 	# if it is not a pdf or a word file we try to open it via the file system.
 	else
 		begin
-			system %{cmd /c "start #{@object.get_path}"}
+			puts "trying to get file #{@object.get_path} from filesystem"
+			#system %{cmd /c "start \"#{@object.get_path}\""}
+			system('start', '', @object.get_path)
 		rescue
 			"<turbo-frame id=\"mail-file-frame\">
 			<row class=\"u-text-center\">

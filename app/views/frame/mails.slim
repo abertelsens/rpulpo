@@ -86,7 +86,6 @@ turbo-frame id="main_frame"
                     select.no-margin data-mail-target="direction" name="direction" data-action="change->search#submit"
                       option selected=(@mails_query[:direction].blank?) value="" = "all"
                       - Mail.directions.each do |direction|
-                        - puts @mails_query[:direction].to_i
                         option selected=(!@mails_query[:direction].blank? && @mails_query[:direction].to_i==direction[1]) value=direction[1] = direction[0]
                   
                 div 

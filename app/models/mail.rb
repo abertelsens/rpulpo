@@ -213,22 +213,19 @@ class Mail < ActiveRecord::Base
 	def find_related_files()
 		protocol_num = protocol[0..-4].delete("^0-9").to_i
 		files = Dir.entries(get_sources_directory).select{ |fname| Mail.matches_file(fname, protocol_num)}
-		files = files.sort{|f1, f2| Mail.file_sort(f1,f2)}
+		#files = files.sort {|f1, f2| Mail.file_sort(f1,f2)}
 
 		current_files = mail_files.pluck(:name)
 		(current_files - files).each {|file| MailFile.find_by(mail: self, name: file).destroy }
 		(files - current_files).each {|file| MailFile.create_from_file(file, self) }
 		#puts "found related files #{mail_files.inspect}"
-		mail_files.nil? ? [] : mail_files.to_a
+		mail_files.nil? ? [] : mail_files.to_a.sort{|f1, f2| Mail.file_sort(f1,f2)}
 	end
 
 	def self.file_sort(f1,f2)
-		f1_name, f1_ext = f1.split(".")
-		f2_name, f2_ext = f2.split(".")
-		if (f1_name.include? f2_name) 		then 1
-		elsif (f2_name.include? f1_name) 	then -1
-		else f1 <=> f2
-		end
+		f1_name, f1_ext = f1.name.split(".")
+		f2_name, f2_ext = f2.name.split(".")
+		return f1_name <=> f2_name
 	end
 
 	# check whether a file with name file_name contains the numerical part of the protocol

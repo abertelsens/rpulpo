@@ -69,7 +69,8 @@ helpers do
 
 	def get_current_people_set
 		get_last_query_variables :people
-		@people_query.nil? ? Person.all : (Person.search @people_query, @people_table_settings)
+		puts "searching #{@people_query} with filter #{@people_filter}"
+		Person.search @people_query, @people_table_settings, @people_filter
 	end
 
 	# Get the current user id. If no user is logged in nil is returned.
