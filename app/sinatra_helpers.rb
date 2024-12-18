@@ -69,7 +69,6 @@ helpers do
 
 	def get_current_people_set
 		get_last_query_variables :people
-		puts "searching #{@people_query} with filter #{@people_filter}"
 		Person.search @people_query, @people_table_settings, @people_filter
 	end
 

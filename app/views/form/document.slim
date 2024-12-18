@@ -14,10 +14,12 @@ turbo-frame id="main_frame"
 			action="/#{model_name}/#{(@object.nil? ? "new" : @object.id)}" 
 			enctype="multipart/form-data" 
 			method="POST"
+			autocomplete="off"
 			data-controller="form-validator template-file"
 			data-form-target="form"
-			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape" 
-			]
+			data-action="keydown.ctrl+d@window->form#delete \
+			keydown.ctrl+enter@window->form#enter \
+			keydown.esc@window->form#escape"]
 			
 			/----------------------------------------------------------------------------------------------------------------
 			/ FORM HEADER
@@ -32,12 +34,11 @@ turbo-frame id="main_frame"
 			fieldset data-form-target="fieldset"
 				
 				.row
-					- if @object
-						p = "has template variables -#{@object.template_variables}-"
 					.columns.six
 						label for="name" name
 						&text@name.u-full-width[
 							required
+							autocomplete="off"
 							data-form-target="firstField" 
 							value=@object&.name]
 					
@@ -62,7 +63,8 @@ turbo-frame id="main_frame"
 					.columns.six
 						label for="path" template path
 						&text@path.u-full-width[
-							disabled 
+							disabled
+							autocomplete="off" 
 							data-template-file-target="path" 
 							value=@object&.path]
 

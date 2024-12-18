@@ -168,5 +168,6 @@ puts Rainbow("PULPO: admin #{User.admin[0].to_s}").yellow
 # make sure all people have a picture.
 Person.all.each do |person|
 	has_photo = (File.exist?("app/public/photos/#{person.id}.jpg"))
-	FileUtils.cp_r("app/public/img/avatar.jpg", "app/public/photos/#{person.id}.jpg", remove_destination: false) if !has_photo
+	puts "#{person.short_name} did not have a photo" unless has_photo
+	FileUtils.cp_r("app/public/img/avatar.jpg", "app/public/photos/#{person.id}.jpg", remove_destination: false) unless has_photo
 end

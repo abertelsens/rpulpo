@@ -21,6 +21,8 @@ class TypstWriter < DocumentWriter
 
 	# The directory where the typst templates are located.
 	TYPST_TEMPLATES_DIR ="app/engines-templates/typst"
+	TYPST_PAGE_BREAK = "\n#pagebreak()\n"
+	TYPYT_PREAMBLE_END = "PULPO_TEXT"
 
 	def initialize(document, people, template_variables=nil)
 		super()
@@ -46,21 +48,34 @@ class TypstWriter < DocumentWriter
 		# variables, these only include variables related to the people in the db.
 		@variables = @template_source.scan(/\$\S*\$/)
 
+		document_preamble, document_text = @template_source.split(TYPYT_PREAMBLE_END)
+		if document_text.nil?
+			set_error(FATAL,"= ERROR
+			Template #{document.path} does not include PULPO_TEXT. \n
+			You should check the file before trying again. \n
+			Read the documentation on typst templates.")
+			return
+		end
+
 		# process each person.
 		# replace the variables in the md file with the values retrieved from the DB
 		@typst_source = if document.singlepage
-			replace_variables_of_set(people)
+			document_preamble << replace_variables_of_set(people, document_text)
 		else
-			(people.map { |person| replace_variables(person) }).join("\n")
+			document_preamble << (people.map { |person| replace_variables(person, document_text) }).join(TYPST_PAGE_BREAK)
+
 		end
 	end
 
 	def render(output_type="pdf")
 		begin
 			clean_tmp_files
+
 			tmp_file_name = "#{rand(10000)}"
 			typ_file_path = "#{TYPST_TEMPLATES_DIR}/#{tmp_file_name}.tmp.typ"
 			pdf_file_path = "#{TYPST_TEMPLATES_DIR}/#{tmp_file_name}.tmp.pdf"
+
+			@typst_source = @message if @status==DocumentWriter::FATAL
 
 			# write the tmp source file to the file system and call the typst comppiler
 			File.write typ_file_path, @typst_source
@@ -72,11 +87,12 @@ class TypstWriter < DocumentWriter
 		end
 	end
 
+
 	# replaces variables with the values corresponding to each person
 	# @source: 	the source file content
 	# @person:	the person whose data will be used to replace the variables in the text.
-	def replace_variables(person)
-		@variables.inject(@template_source) {|res, var| res.gsub(var, get_variable_value(var, person)) }
+	def replace_variables(person, source)
+		@variables.inject(source) {|res, var| res.gsub(var, get_variable_value(var, person)) }
 	end
 
 	# gets the value of a variable for a specific person
@@ -88,6 +104,11 @@ class TypstWriter < DocumentWriter
 		@decorator.typst_value(person, "#{table}.#{field}", format)
 	end
 
+	# replaces variables with the values corresponding to each person
+	# @people:	the persons set whose data will be used to replace the variables in the text.
+	def replace_variables_of_set(people, source)
+		@variables.inject(source){ |res, var| res.gsub!(var, get_variable_values(var,people)) }
+	end
 
 	# gets the value of a variable for a set of people . The result is a string joined by \n for
 	# each value. In other words, if you replace the variable $people.first_name$ you will get something like:
@@ -97,13 +118,6 @@ class TypstWriter < DocumentWriter
 	# @people:	the people whose data will be used to replace the variables in the text.
 	def get_variable_values(var, people)
 		people.map{ |person| get_variable_value(var, person)}.join("\n")
-	end
-
-	# replaces variables with the values corresponding to each person
-	# @source: 	the source file content
-	# @people:	the persons set whose data will be used to replace the variables in the text.
-	def replace_variables_of_set(people)
-		@variables.inject(@template_source){ |res, var| res.gsub!(var, get_variable_values(var,people)) }
 	end
 
 
