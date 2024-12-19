@@ -12,7 +12,7 @@
 
 # A class to produce docx files.
 
-require 'caracal'
+#require 'caracal'
 
 class WordWriter  < DocumentWriter
 
