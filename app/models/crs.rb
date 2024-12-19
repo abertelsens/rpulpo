@@ -24,7 +24,7 @@ class CrsRecord < ActiveRecord::Base
 	ACOLITADO_DATE = 	{day: 20, month: 1 }
 
 	# an enum with the different options for the seminary phases.
-  enum phase: {discipular: 0, configuracional: 1, síntesis: 2, propedeutica: 4}
+  enum phase: {discipular: 0, configuracional: 1, sintesis: 2, propedeutica: 4}
 
 #---------------------------------------------------------------------------------------
 # CRUD METHODS

@@ -28,4 +28,4 @@ Se ofrecen algunos aliases para búsqueda más frecuentes.
 | Alias(es) | Query | Descripción |
 | discipular, disc | `phase:0` | Búsqueda de todos los que están en la etapa discipular |
 | configuracional, config | `phase:1` | Búsqueda de todos los que están en la etapa configuracional |
-| sintesis, síntesis, sint | `pahse:2` | Búsqueda de todos los que están en la etapa de síntesis |
+| sintesis, sintesis, sint | `pahse:2` | Búsqueda de todos los que están en la etapa de síntesis |
