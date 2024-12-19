@@ -24,7 +24,7 @@ class CrsRecord < ActiveRecord::Base
 	ACOLITADO_DATE = 	{day: 20, month: 1 }
 
 	# an enum with the different options for the seminary phases.
-  enum phase:     {discipular: 0, configuracional:1, síntesis:2, propedeutica: 4}
+  enum phase: {discipular: 0, configuracional: 1, síntesis: 2, propedeutica: 4}
 
 #---------------------------------------------------------------------------------------
 # CRUD METHODS
@@ -48,7 +48,7 @@ class CrsRecord < ActiveRecord::Base
 	# ACCESSORS
 	#---------------------------------------------------------------------------------------
 	def self.get_ceremony_info(ceremony)
-		
+
 		people = Person.includes(:crs_record).laicos.in_rome.select{|person| (person.crs_record&.get_next(ceremony.to_sym)!=nil)}
 		people = people.map {|p| [p.id, p.short_name, p.crs_record.get_next(ceremony.to_sym).strftime("%d-%m-%y")]}
 		title = case ceremony
@@ -65,7 +65,7 @@ class CrsRecord < ActiveRecord::Base
 			}
 	end
 
-	def self.get_phase_info(phase)	
+	def self.get_phase_info(phase)
 		puts "got phase variable #{phase}"
 		{
 			"has_date"	=>	false,
