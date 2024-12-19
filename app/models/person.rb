@@ -73,9 +73,9 @@ class Person < ActiveRecord::Base
 
 	# enums info is stored as an integer in the db but can be queried by the associated
 	# enum symbol.
-	enum status:    { laico: 0, diacono: 1, sacerdote: 2 }
-	enum ctr:       { cavabianca: 0, ctr_dependiente:1, no_ha_llegado:2, se_ha_ido: 3 }
-	enum n_agd:     { n: 0, agd: 1 }
+	enum :status,    { laico: 0, diacono: 1, sacerdote: 2 }
+	enum :ctr,       { cavabianca: 0, ctr_dependiente:1, no_ha_llegado:2, se_ha_ido: 3 }
+	enum :n_agd,     { n: 0, agd: 1 }
 
 	# -----------------------------------------------------------------------------------------
 	# CALLBACKS

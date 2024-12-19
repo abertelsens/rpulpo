@@ -31,7 +31,7 @@ class User < ActiveRecord::Base
 	scope :mail_users, -> {where(mail:true)}
 
 	# an enum defining the type of user.
-	enum usertype: {normal: 0, admin: 1, guest: 2}
+	enum :usertype, {normal: 0, admin: 1, guest: 2}
 
 	DEFAULT_ADMIN_ATTRIBUTES = {uname: "admin", password: "admin", usertype: "admin", mail: true}
 

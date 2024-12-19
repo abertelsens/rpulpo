@@ -28,7 +28,7 @@ class Document < ActiveRecord::Base
 	EXCEL_TEMPLATES_DIR = "app/engines-templates/excel"
 	TYPST_TEMPLATES_DIR = "app/engines-templates/typst"
 
-	enum engine:    {excel: 1, typst: 2}
+	enum :engine,    {excel: 1, typst: 2}
 
 	# -----------------------------------------------------------------------------------------
 	# CALLBACKS

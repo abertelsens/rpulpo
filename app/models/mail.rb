@@ -24,8 +24,8 @@ class Mail < ActiveRecord::Base
 	CRSC 							= "crs+"
 	DEFAULT_PROTOCOL 	= "crs+ XX/XX"
 
-	enum direction:    		{ entrada: 		0, salida: 		1}
-	enum mail_status:    	{ pendiente: 	0, en_curso: 	1, terminado: 2 }
+	enum :direction,    		{ entrada: 		0, salida: 		1}
+	enum :mail_status,    	{ pendiente: 	0, en_curso: 	1, terminado: 2 }
 
 	belongs_to 	:entity
 
