@@ -43,8 +43,8 @@ end
 
 # renders the table of after perfroming a search.
 get '/people/search' do
-	session["people_table_query"] = params[:q]
-	session["people_table_filter"] = params[:filter]
+	session["people_table_query"] 	= params[:q]
+	session["people_table_filter"] 	= params[:filter]
 	@objects 				= get_current_people_set
 	@decorator 			= PersonDecorator.new(table_settings: @people_table_settings)
 	partial :"table/people"
@@ -75,13 +75,13 @@ get '/person/:id/:module' do
 	@person 			= new_id? ? nil : Person.find(params[:id])
 	klass 				= Object.const_get(params[:module].classify)
 	@object 			= new_id? ? nil : klass.find_by(person_id: @person.id)
-	locals = params[:origin].present? ? {origin: params[:origin], ceremony: params[:ceremony]} : nil
+	locals 				= params[:origin].present? ? {origin: params[:origin], ceremony: params[:ceremony]} : nil
 	partial :"form/person/#{params[:module]}", locals: locals
 end
 
 get '/crs_record/table' do
-	@data = CrsRecord.get_ceremony_info(params[:ceremony]) if params[:ceremony].present?
-	@data = CrsRecord.get_phase_info(params[:phase]) if params[:phase].present?
+	@data = CrsRecord.get_ceremony_info(params[:ceremony]) 	if params[:ceremony].present?
+	@data = CrsRecord.get_phase_info(params[:phase]) 				if params[:phase].present?
 	partial "table/ceremony"
 end
 
@@ -152,7 +152,7 @@ end
 # renders a pdf with the params received.
 get '/people/:id/document/:doc_id' do
 	document = Document.find params[:doc_id]
-	puts "checking if document has template variables #{document.has_template_variables?}"
+	# puts "checking if document has template variables #{document.has_template_variables?}"
 	# ff the document has template variables we redirect to ask for the variable values
 	redirect "/people/#{params[:id]}/document/#{params[:doc_id]}/template_variables" if document.has_template_variables?
 

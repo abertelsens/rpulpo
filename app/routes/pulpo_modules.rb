@@ -45,9 +45,7 @@ end
 # returns a JSON object of the form {result: boolean, message: string}
 post '/pulpo_module/:id/validate' do
 	content_type :json
-	res = (new_id? ? (PulpoModule.validate params) : (PulpoModule.find(params[:id]).validate params)).to_json
-	puts res
-	res
+	(new_id? ? (PulpoModule.validate params) : (PulpoModule.find(params[:id]).validate params)).to_json
 end
 
 post '/pulpo_module/:id' do

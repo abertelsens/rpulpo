@@ -93,14 +93,17 @@ get '/mail/:id/answer' do
 	Answer.create(mail: mail, answer: answer)
 	mail.update(ans_string: mail.ans.pluck(:protocol).join(", "))
 	@object = answer
-	partial :"form/mail"
+	redirect :"/mail/#{answer.id}"
 end
 
 # Regular Expression Matching
 get %r{/mail/draft-([\w]+)} do |id|
 	headers 'content-type' => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-	html_src = Mail.find(id).prepare_text(get_current_user)
-	PandocRuby.html(html_src, :standalone, "--reference-doc \"#{PANDOC_REFERENCE}\" --preserve-tabs").to_docx
+	#html_src = Mail.find(id).prepare_text(get_current_user)
+	#PandocRuby.html(html_src, :standalone, "--reference-doc \"#{PANDOC_REFERENCE}\" --preserve-tabs").to_docx
+	draft_writer = Mail.find(id).draft_writer(get_current_user)
+	draft_writer.write_document
+	send_file draft_writer.path
 end
 
 # renders a single document view
@@ -128,9 +131,9 @@ end
 
 
 
-########################################################################################
+# -----------------------------------------------------------------------------------------
 # POST ROUTES
-########################################################################################
+# -----------------------------------------------------------------------------------------
 
 post '/mail/:id' do
 	puts Rainbow("posting mail").orange
@@ -144,6 +147,7 @@ post '/mail/:id' do
 	end
 	redirect '/mails'
 end
+
 
 
 # -----------------------------------------------------------------------------------------

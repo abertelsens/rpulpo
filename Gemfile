@@ -28,8 +28,8 @@ gem 'groupdate'                           # some utilities to work with dates
 
 # UTILITIES
 gem 'rainbow'                             # helps to print to the console
-gem 'rubyXL'                              # helps to handle .xlxs documents
-gem 'docx'
+#gem 'rubyXL'                              # helps to handle .xlxs documents
+gem 'caracal'
 gem 'pandoc-ruby'                         # pandoc is used to render .docx documents to html
 gem 'kramdown'                            # markdown renderer to html. Used to generate help pages
 gem 'os'

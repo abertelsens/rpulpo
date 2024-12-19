@@ -31,8 +31,8 @@ get '/permits/clipboard/copy' do
 	@objects = Permit.search @permits_query, @permits_table_settings
 	@decorator = PermitDecorator.new(table_settings: @permits_table_settings)
 	export_string = @decorator.entities_to_csv @objects
-	puts "EXPORT STRING\n\n\n\n"
-	puts export_string
+	#puts "EXPORT STRING\n\n\n\n"
+	#puts export_string
 	{result: true, data: export_string}.to_json
 end
 

@@ -18,13 +18,11 @@ TAB = "\u0009".encode('utf-8')
 
 class Mail < ActiveRecord::Base
 
-	BASE_DIR= "app/public"
-	BALDAS_BAS_DIR = OS.windows? ? "L:/Usuarios/sect/CORREO-CG/BALDAS" : "/mnt/sect/CORREO-CG/BALDAS"
-	#BALDAS_BAS_DIR =
-	BASE_PATH = OS.windows? ? "L:/Usuarios/sect" :  "/mnt/sect"
-	#BASE_PATH = "L:/Usuarios/sect"
-	CRSC = "crs+"
-	DEFAULT_PROTOCOL = "crs+ XX/XX"
+	BASE_DIR					= "app/public"
+	BALDAS_BASE_DIR 	= OS.windows? ? "L:/Usuarios/sect/CORREO-CG/BALDAS" : "/mnt/sect/CORREO-CG/BALDAS"
+	BASE_PATH 				= OS.windows? ? "L:/Usuarios/sect" :  "/mnt/sect"
+	CRSC 							= "crs+"
+	DEFAULT_PROTOCOL 	= "crs+ XX/XX"
 
 	enum direction:    		{ entrada: 		0, salida: 		1}
 	enum mail_status:    	{ pendiente: 	0, en_curso: 	1, terminado: 2 }
@@ -213,7 +211,6 @@ class Mail < ActiveRecord::Base
 	def find_related_files()
 		protocol_num = protocol[0..-4].delete("^0-9").to_i
 		files = Dir.entries(get_sources_directory).select{ |fname| Mail.matches_file(fname, protocol_num)}
-		#files = files.sort {|f1, f2| Mail.file_sort(f1,f2)}
 
 		current_files = mail_files.pluck(:name)
 		(current_files - files).each {|file| MailFile.find_by(mail: self, name: file).destroy }
@@ -309,6 +306,12 @@ class Mail < ActiveRecord::Base
 		sets[5] = (params[:assigned].blank? ? nil : Mail.is_assigned_to(params[:assigned]))
 		sets.inject{ |res, set| (set.nil? ? res : res.merge(set)) }
 	end
+
+
+	def draft_writer(user)
+		WordWriter.new(self, user)
+	end
+
 end #class end
 
 

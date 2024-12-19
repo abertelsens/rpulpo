@@ -11,7 +11,7 @@ namespace :db do
   end
 
   task :migrate do
-      Rake::Task['db:migrate'].invoke
+    Rake::Task['db:migrate'].invoke
   end
 
 end

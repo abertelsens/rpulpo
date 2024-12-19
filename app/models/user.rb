@@ -33,7 +33,7 @@ class User < ActiveRecord::Base
 	# an enum defining the type of user.
 	enum usertype: {normal: 0, admin: 1, guest: 2}
 
-	DEFAULT_ADMIN_ATTRIBUTES = {uname: "admin", password: "admni", usertype: "admin", mail: true}
+	DEFAULT_ADMIN_ATTRIBUTES = {uname: "admin", password: "admin", usertype: "admin", mail: true}
 
 # -----------------------------------------------------------------------------------------
 # CRUD METHODS
@@ -91,7 +91,6 @@ class User < ActiveRecord::Base
 	def can_be_deleted?
 		admin? ? User.admin.size > 1 : true
 	end
-
 
 	def mail_user?
 		mail

@@ -20,7 +20,7 @@ end
 
 
 post '/vela/:id/turnos/update' do
-  puts "UPDATING TURNOS"
+  #puts "UPDATING TURNOS"
   @vela = Vela.find(params[:id])
   @vela.update_from_params params
   @vela.turnos.destroy
@@ -54,7 +54,7 @@ end
 # POST
 # -----------------------------------------------------------------------------------------
 post '/vela/:id' do
-  puts "POST IN VELA\n\n\n"
+  #puts "POST IN VELA\n\n\n"
   @vela = (params[:id]=="new" ? nil : Vela.find(params[:id]))
   case params[:commit]
     when "save"
