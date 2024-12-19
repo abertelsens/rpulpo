@@ -88,7 +88,7 @@ class Person < ActiveRecord::Base
 
 	before_save do
 		# if the status of a person changed we also update the phase field
-		crs_record.update(phase:"síntesis") if (status=="diacono" && crs_record)
+		crs_record.update(phase:"sintesis") if (status=="diacono" && crs_record)
 		crs_record.update(phase:nil) if (status=="sacerdote" && crs_record)
 		self.full_name = "#{first_name} #{family_name}"
 	end
