@@ -5,11 +5,12 @@
 ###########################################################################################
 
 module Utils
-	
-	MONTHS_LATIN = ["Ianuarius", "Februarius", "Martius", "Aprilis", "Maius", "Iunius", "Iulius", "Augustus", "September", "October", "November", "December"]
-	NIS_UNICODE = "\u20AA"
-	USD_UNICODE = "\u0024"
-	EUR_UNICODE = "\u20AC"
+
+	MONTHS_ROMAN 	= ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"]
+	MONTHS_LATIN 	= ["Ianuarius", "Februarius", "Martius", "Aprilis", "Maius", "Iunius", "Iulius", "Augustus", "September", "October", "November", "December"]
+	NIS_UNICODE 	= "\u20AA"
+	USD_UNICODE 	= "\u0024"
+	EUR_UNICODE 	= "\u20AC"
 
 	# returns a string from a float with comma separators
 	def float2string(num)
@@ -27,7 +28,7 @@ module Utils
 			else currency = NIS_UNICODE
 		end
 		decimals = params[:decimal]==nil ? 2 : params[:decimal]
-		
+
 		if params[:sum]!=0.0
 			return "#{("%.#{decimals}f" % params[:sum]).reverse.gsub(/(\d+\.)?(\d{3})(?=\d)/, '\\1\\2,').reverse} #{currency}"
 		else
@@ -38,7 +39,7 @@ module Utils
 	def array2csv a
 		return a.join(",") + "\n"
 	end
-	
+
 	def contry_name code
 		return IsoCountryCodes.find(code).name
 	end
@@ -70,6 +71,11 @@ module Utils
 	def latin_date(date)
 		date_array = date.split("-")
 		"#{date_array[2]} #{MONTHS_LATIN[date_array[1].to_i-1]} #{date_array[0]}"
+	end
+
+	def roman_month_date(date)
+		date_array = date.split("-")
+		"#{date_array[0]}-#{MONTHS_ROMAN[date_array[1].to_i-1]}-#{date_array[2]}"
 	end
 
 end

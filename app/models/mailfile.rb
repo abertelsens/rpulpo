@@ -65,8 +65,7 @@ class MailFile < ActiveRecord::Base
 	# Embedded media, like images, will be stored in the public/tmp/media/ directory
 	def	get_text_contents()
 		if is_word_file?
-			puts "gettinng contents of #{get_path}"
-			text_string = `pandoc --email-obfuscation=none \"#{get_path}\" --from docx --to plain`
+			`pandoc --email-obfuscation=none \"#{get_path}\" --from docx --to plain`
 			#puts clean_html html_string
 		else
 			"could not parse document"
@@ -79,9 +78,7 @@ class MailFile < ActiveRecord::Base
 	# Embedded media, like images, will be stored in the public/tmp/media/ directory
 	def	get_md_contents()
 		if is_word_file?
-			puts "gettinng contents of #{get_path}"
-			text_string = `pandoc --email-obfuscation=none \"#{get_path}\" --from docx --to markdown`
-			#puts clean_html html_string
+			`pandoc --email-obfuscation=none \"#{get_path}\" --from docx --to markdown`
 		else
 			"could not parse document"
 		end
