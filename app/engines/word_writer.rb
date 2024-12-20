@@ -13,6 +13,7 @@
 # A class to produce docx files.
 
 #require 'caracal'
+require 'pandoc-ruby'
 
 class WordWriter  < DocumentWriter
 
@@ -29,7 +30,8 @@ class WordWriter  < DocumentWriter
 		@user = user
 		@dir = "#{Mail::BALDAS_BASE_DIR}/#{@user.uname}"
 		@path = "app/public/tmp/mail/draft-#{mail.id}.docx"
-		@doc = Caracal::Document.new @path
+
+		#@doc = Caracal::Document.new @path
 	end
 
 		# delete all files int the TYPST_TEMPLATES_DIR with suffixes .tmp.typ and .tmp.pdf
@@ -42,13 +44,8 @@ class WordWriter  < DocumentWriter
 
 	def write_document()
 
-		clean_tmp_files
-		define_styles
-		write_header_table
-		write_topic
-		write_references
-		write_draft
-		@doc.save
+		PandocRuby.new("# Some title", :standalone).to_rtf
+		`pandoc --email-obfuscation=none \"#{get_path}\" --from docx --to plain`
 		return self
 	end
 
@@ -88,14 +85,14 @@ class WordWriter  < DocumentWriter
 		end
 	end
 
-	def write_reference(mf)
-
+	def get_reference(mf)
 		if mf.is_word_file?
-			@doc.p mf.name, style: 'reference_name'
-			write_plain_text mf.get_text_contents
+			#@doc.p mf.name, style: 'reference_name'
+			write_plain_text mf.get_md_contents
 		else
-			@doc.p do
-				link mf.name, mf.get_path, style: 'reference_name'
+			#@doc.p do
+				#link mf.name, mf.get_path, style: 'reference_name'
+				"[#{mf.get_path}](#{mf.get_path})"
 			end
 		end
 	end

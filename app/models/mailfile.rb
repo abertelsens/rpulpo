@@ -51,7 +51,7 @@ class MailFile < ActiveRecord::Base
 	# Embedded media, like images, will be stored in the public/tmp/media/ directory
 	def	get_html_contents()
 		if is_word_file?
-			html_string = `pandoc --email-obfuscation=none --extract-media tmp \"#{get_path}\" --from docx --to plain`
+			html_string = `pandoc --email-obfuscation=none --extract-media tmp \"#{get_path}\" --from docx --to html`
 			#puts clean_html html_string
 			clean_html html_string
 		else
@@ -59,7 +59,7 @@ class MailFile < ActiveRecord::Base
 		end
 	end
 
-		# pandoc needs a complete dir of the network to work, otherwise it will not be able
+	# pandoc needs a complete dir of the network to work, otherwise it will not be able
 	# to find the file. File paths which containt spaces make trouble, therefore we need
 	# to wrap them around quotation marks.
 	# Embedded media, like images, will be stored in the public/tmp/media/ directory
@@ -67,6 +67,20 @@ class MailFile < ActiveRecord::Base
 		if is_word_file?
 			puts "gettinng contents of #{get_path}"
 			text_string = `pandoc --email-obfuscation=none \"#{get_path}\" --from docx --to plain`
+			#puts clean_html html_string
+		else
+			"could not parse document"
+		end
+	end
+
+		# pandoc needs a complete dir of the network to work, otherwise it will not be able
+	# to find the file. File paths which containt spaces make trouble, therefore we need
+	# to wrap them around quotation marks.
+	# Embedded media, like images, will be stored in the public/tmp/media/ directory
+	def	get_md_contents()
+		if is_word_file?
+			puts "gettinng contents of #{get_path}"
+			text_string = `pandoc --email-obfuscation=none \"#{get_path}\" --from docx --to markdown`
 			#puts clean_html html_string
 		else
 			"could not parse document"
