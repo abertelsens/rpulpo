@@ -20,6 +20,7 @@ class WordWriter  < DocumentWriter
 	DEFAULT_SIGNATURES_NUM = 6
 	DEFAULT_SIGNATURES = ["sect", "vr", "r"]
 	DEFAULT_TMP_DIR = "app/public/tmp/mail"
+	PANDOC_REFERENCE = "app/engines-templates/word/custom.docx"
 
 	attr_accessor :path
 
@@ -41,97 +42,55 @@ class WordWriter  < DocumentWriter
 			files.each { |file| File.delete file }
 		end
 
-
 	def write_document()
-
-		PandocRuby.new("# Some title", :standalone).to_rtf
-		`pandoc --email-obfuscation=none \"#{get_path}\" --from docx --to plain`
+		md_src = get_header_table << get_topic << get_references << get_draft
+		file = PandocRuby.markdown(md_src, :standalone, "--reference-doc \"#{PANDOC_REFERENCE}\" --preserve-tabs").to_docx
+		File.binwrite(@path, file)
 		return self
 	end
 
-	def define_styles()
-		@doc.style id: 'Normal', name: 'normal', font: "Arial"
-		@doc.style id: 'ref_text', name: 'ref_text', size: 18, bold: false, bottom: 120, top:0, indent_left: 720, line: 280
-		@doc.style id: 'antecedentes', name: 'antecedentes', size: 20, bold: true, bottom: 90,  top: 180
-		@doc.style id: 'reference', name: 'reference', size: 20, bold: true, indent_left: 0
-		@doc.style id: 'reference_name', name: 'reference_name', size: 20, bold: true, indent_left: 0
-		@doc.style id: 'asunto', name: 'asunto', size: 24, bold: true, bottom: 120, top: 240
-		@doc.style id: 'propuesta', name: 'propuesta', size: 20, bold: true, indent_left: 0, bottom: 90, top:180
-	end
-
 	def get_signatures()
-		(["#{@user.uname} #{Time.now.strftime("%d-%m-%y")}"] + (DEFAULT_SIGNATURES - [@user.uname])) + ["\n","\n",""]
+		(["#{@user.uname}"] + (DEFAULT_SIGNATURES - [@user.uname])) + ["",""]
 	end
 
-	def write_plain_text(text)
+	def get_plain_text(text)
 		#puts text
-		text.gsub!("\n\n","*****").gsub!("\n"," ").gsub!("*****","\n")
-		text.split("\n").each { |p| @doc.p p, style: 'ref_text' }
+		#ext.gsub!("\n\n","*****").gsub!("\n"," ").gsub!("*****","\n")
+		text
 	end
 
-	def write_header_table()
-		@doc.table [get_signatures] do
-			cell_style rows[0], bold: true, size: 16
-			border_color   	'666666'   # sets the border color. defaults to 'auto'.
-			border_line    	:single    # sets the border style. defaults to :single. see OOXML docs for details.
-			border_size    	1          # sets the border width. defaults to 0. units in twips.
-		end
+	def get_header_table()
+		signatures = get_signatures
+		#signatures = (signatures.inject("|"){|res,elem| res << " ```#{elem}``` |" }) << "\n" << (signatures.inject("|"){|res,elem| res << "-|" }) << "\n\n"
+		signatures = "\n```\nFIRMAS:\t" << (signatures.inject(""){|res,elem| res << " #{elem} \t\t" }) << "\n````\n\n"
 	end
 
-	def write_references()
-		@doc.p "ANTECEDENTES:", style: 'antecedentes'
+	def get_references()
+		references = "\n\n## ANTECEDENTES:"
 		@mail.refs.each do |ref|
-			ref.find_related_files.each { |elem| write_reference elem }
+			references << "\n\n### #{ref.protocol}" << "\n\n"
+			ref.find_related_files.each do |mf|
+				references << get_reference(mf)
+			end
 		end
+		references
 	end
 
 	def get_reference(mf)
 		if mf.is_word_file?
 			#@doc.p mf.name, style: 'reference_name'
-			write_plain_text mf.get_md_contents
+			get_plain_text mf.get_md_contents
 		else
-			#@doc.p do
-				#link mf.name, mf.get_path, style: 'reference_name'
-				"[#{mf.get_path}](#{mf.get_path})"
-			end
+			"\n\n### [#{mf.name}](#{mf.get_path})"
 		end
 	end
 
-	def write_topic()
-		@doc.p "ASUNTO: #{@mail.topic}", style: 'asunto'
+	def get_topic()
+		"\n\n# ASUNTO: #{@mail.topic}"
 	end
 
-	def write_draft()
-		@doc.p "PROPUESTA:", style: 'propuesta'
-
-		@doc.p "*            *            *" do
-			align :center
-		end
-
-		@doc.p ""
-
-		@doc.p @mail.protocol do
-			align :right
-		end
-
-		@doc.p ""
-
-		@doc.list_style do
-			type    :ordered    # sets the type of list. accepts :ordered or :unordered.
-			level   2           # sets the nesting level. 0-based index.
-			format  'decimal'   # sets the list style. see OOXML docs for details.
-			value   '%3.'       # sets the value of the list item marker. see OOXML docs for details.
-			align   :left       # sets the alignment. accepts :left, :center: and :right. defaults to :left.
-			indent  400         # sets the indention of the marker from the margin. units in twips.
-			left    800         # sets the indention of the text from the margin. units in twips.
-			start   1           # sets the number at which item counts begin. defaults to 1.
-			restart 1           # sets the level that triggers a reset of numbers at this level. 1-based index. 0 means numbers never reset. defaults to 1.
-		end
-
-		@doc.ol do
-			li 'Nos parece...'
-		end
-
+	def get_draft()
+		"\n\n<br>\n\n## PROPUESTA:\n\n" << "#### #{@mail.protocol}\n\n" << "\n\n1. Nos parece" << "\n\n#### Roma, #{Time.now.strftime("%d-%m-%y")}"
 	end
 
 end #class end

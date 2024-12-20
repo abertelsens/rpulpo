@@ -11,6 +11,20 @@ DEFAULT_MAIL_QUERY = {q: "", year:Date.today.year(), direction:"", entity:"", ma
 PANDOC_REFERENCE = "app/engines-templates/word/custom-reference.docx"
 
 
+
+# Regular Expression Matching
+get %r{/mail/draft-([\w]+)} do |id|
+	headers 'content-type' => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+	#html_src = Mail.find(id).prepare_text(get_current_user)
+	#PandocRuby.html(html_src, :standalone, "--reference-doc \"#{PANDOC_REFERENCE}\" --preserve-tabs").to_docx
+	puts "PREPARING DRAFT"
+	draft_writer = Mail.find(id).draft_writer(get_current_user)
+	draft_writer.write_document
+	send_file draft_writer.path
+	#redirect '/'
+end
+
+
 get '/mails' do
 	@current_user = get_current_user
 	@mails_query = session["mails_table_query"]
@@ -94,16 +108,6 @@ get '/mail/:id/answer' do
 	mail.update(ans_string: mail.ans.pluck(:protocol).join(", "))
 	@object = answer
 	redirect :"/mail/#{answer.id}"
-end
-
-# Regular Expression Matching
-get %r{/mail/draft-([\w]+)} do |id|
-	headers 'content-type' => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-	#html_src = Mail.find(id).prepare_text(get_current_user)
-	#PandocRuby.html(html_src, :standalone, "--reference-doc \"#{PANDOC_REFERENCE}\" --preserve-tabs").to_docx
-	draft_writer = Mail.find(id).draft_writer(get_current_user)
-	draft_writer.write_document
-	send_file draft_writer.path
 end
 
 # renders a single document view
