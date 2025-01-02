@@ -1,3 +1,4 @@
+=begin
 require 'rubyXL'
 
 POEPLE_IMPORT_FILE = "tmp/datos_alumnos.xlsx"
@@ -7,7 +8,7 @@ module ExcelImporter
     def import()
         workbook = RubyXL::Parser.parse POEPLE_IMPORT_FILE
         worksheet = workbook[0]
-        
+
         puts "Reading: #{worksheet.sheet_name}"
         headers = worksheet[0].cells.map(&:value)
         rows = worksheet[1..-1].map do |row|
@@ -20,7 +21,7 @@ module ExcelImporter
     #puts data.inspect
 
 
-    data.each do |row| 
+    data.each do |row|
         h_people = {
             first_name: row["nombre completo"].split(",")[1],
             family_name: row["nombre completo"].split(",")[0],
@@ -34,12 +35,12 @@ module ExcelImporter
             departure: row["salida"],
             birth: row["nacimiento"],
             celebration_info: row["celebra"],
-            status: (row["presbiterado"].blank? ? (row["diaconado"].blank? ? 0 : 1): 2),	
+            status: (row["presbiterado"].blank? ? (row["diaconado"].blank? ? 0 : 1): 2),
         }
         puts "vive en CB #{row["vive en CB"]}"
         person = Person.create h_people
         padres = row["familia"].gsub!("Padres:", "").split(" y ")
-        
+
         h_personal =
         {
             person_id: person.id,
@@ -66,7 +67,7 @@ module ExcelImporter
             studies_name: row["carrera"],
             degree: row["titulo"],
             profesional_experience: row["otros"],
-            year_of_studies: row["situacion academica"], 
+            year_of_studies: row["situacion academica"],
             faculty: row["facultad"],
             status: row["estudios institucionales"],
             licence: row["licenciatura"],
@@ -84,14 +85,15 @@ module ExcelImporter
             fidelidad: row["fl"],
             letter: row["carta"],
             admissio: row["admissio"],
-            presbiterado: row["presbiterado"],	
-            diaconado: row["diaconado"],		
-            acolitado: row["acolitado"],		
-            lectorado: row["lectorado"],			
-            cipna: row["cipna"],			
+            presbiterado: row["presbiterado"],
+            diaconado: row["diaconado"],
+            acolitado: row["acolitado"],
+            lectorado: row["lectorado"],
+            cipna: row["cipna"],
         }
-    Crs.create h_crs 
+    Crs.create h_crs
     end
     end
 
 end
+=end
