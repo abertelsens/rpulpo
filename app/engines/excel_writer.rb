@@ -2,7 +2,7 @@
 # DESCRIPTION
 # A class to produce xls documents via the rubyxl gem.
 ###########################################################################################
-
+=begin
 require 'yaml'
 require 'rubyXL'
 
@@ -82,3 +82,4 @@ EXCEL_TEMPLATES_DIR ="app/engines-templates/excel"
 	end
 
 end #class end
+=end

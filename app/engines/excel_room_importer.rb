@@ -1,3 +1,4 @@
+=begin
 require 'rubyXL'
 
 IMPORT_FILE = "tmp/rooms.xlsx"
@@ -30,3 +31,4 @@ module ExcelRoomImporter
 end
 
 end
+=end
