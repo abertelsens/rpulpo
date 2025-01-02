@@ -24,50 +24,21 @@ class TypstWriter < DocumentWriter
 	TYPST_PAGE_BREAK = "\n#pagebreak()\n"
 	TYPYT_PREAMBLE_END = "PULPO_TEXT"
 
-	def initialize(document, people, template_variables=nil)
-		super()
-		@decorator = PersonDecorator.new
-
-		begin
-			@template_source = File.read "#{TYPST_TEMPLATES_DIR}/#{document.path}"
-		rescue
-			set_error(FATAL,"Template #{document.path} not foud in #{TYPST_TEMPLATES_DIR}.
-			You should check the settings of #{document.name} file before trying again.")
-			return
-		end
-
-
-		# replace the template variables in the template by their value.
-		if template_variables
-			template_variables.keys.each do |key|
-			@template_source.gsub!("pulpo.#{key}",template_variables[key])
-			end
-		end
-
-		# stores an array of all the variables found in the template. As we replaced all the template
-		# variables, these only include variables related to the people in the db.
+	def initialize(document, template_variables=nil)
+		super(document,template_variables)
 		@variables = @template_source.scan(/\$\S*\$/)
+	end
 
-		document_preamble, document_text = @template_source.split(TYPYT_PREAMBLE_END)
-		if document_text.nil?
-			set_error(FATAL,"= ERROR
-			Template #{document.path} does not include PULPO_TEXT. \n
-			You should check the file before trying again. \n
-			Read the documentation on typst templates.")
-			return
-		end
-
+	def render(people)
 		# process each person.
 		# replace the variables in the md file with the values retrieved from the DB
-		@typst_source = if document.singlepage
+		document_preamble, document_text = @template_source.split("PULPO_TEXT")
+		@template_source = if @document.singlepage
 			document_preamble << replace_variables_of_set(people, document_text)
 		else
 			document_preamble << (people.map { |person| replace_variables(person, document_text) }).join(TYPST_PAGE_BREAK)
-
 		end
-	end
 
-	def render(output_type="pdf")
 		begin
 			clean_tmp_files
 
@@ -78,7 +49,7 @@ class TypstWriter < DocumentWriter
 			@typst_source = @message if @status==DocumentWriter::FATAL
 
 			# write the tmp source file to the file system and call the typst comppiler
-			File.write typ_file_path, @typst_source
+			File.write typ_file_path, @template_source
 			res =  system("typst compile --root ../.. #{typ_file_path} #{pdf_file_path}")
 			res ? (return pdf_file_path) : set_error(FATAL, "Typst Writer: failed to convert document: #{error.message}")
 
@@ -86,7 +57,6 @@ class TypstWriter < DocumentWriter
 			set_error(FATAL, "Typst Writer: failed to convert document: #{error.message}")
 		end
 	end
-
 
 	# replaces variables with the values corresponding to each person
 	# @source: 	the source file content

@@ -4,30 +4,38 @@
 
 # renders the main matrix frame
 get '/matrix' do
-  partial :"frame/matrix"
+	partial :"frame/matrix"
 end
 
 # -----------------------------------------------------------------------------------------
 # SCHEDULES
 # -----------------------------------------------------------------------------------------
 
-get '/matrix/schedule/table' do
+get '/schedule/table' do
 	@objects = Schedule.get_all
+	@active = params[:active_table]=="true"
 	partial :"table/matrix/schedule"
 end
 
-get '/matrix/schedule/:id' do
+get '/schedule/:id' do
 	@object = (params[:id]=="new" ? nil : (Schedule.find params[:id]))
 	partial :"form/matrix/schedule"
 end
 
-post '/matrix/schedule/:id' do
-	schedule = Schedule.find(params[:id]) unless params[:id]=="new"
+post '/schedule/:id' do
 	case params[:commit]
-		when "save" 	then (schedule==nil ? (Schedule.create params ): (schedule.update params))
-		when "delete" then schedule.destroy
+	when "new"		then	Schedule.create params
+	when "save" 	then 	Schedule.find(params[:id]).update params
+	when "delete" then 	Schedule.find(params[:id]).destroy
 	end
-	redirect :"/matrix"
+	redirect '/matrix'
+end
+
+# Validates if the params received are valid for updating or creating an entity object.
+# returns a JSON object of the form {result: boolean, message: string}
+post '/schedule/:id/validate' do
+	content_type :json
+	(new_id? ? (Schedule.validate params) : (Schedule.find(params[:id]).validate params)).to_json
 end
 
 # -----------------------------------------------------------------------------------------

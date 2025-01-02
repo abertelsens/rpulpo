@@ -325,6 +325,11 @@ attributes:
     type: "string"
     order: "NONE"
     css_class: "xlong-field"
+  - id: "documents.engine"
+    name: "engine"
+    type: "enum"
+    order: "NONE"
+    css_class: "medium-field"
   - id: "documents.path"
     name: "path"
     type: "string"
@@ -443,6 +448,7 @@ tables:
       - users.password
       - users.usertype
       - users.mail
+  
   - documents_default:
     name: documents_default
     main_table: documents
@@ -451,6 +457,7 @@ tables:
     attributes:
       - documents.name
       - pulpo_modules.name
+      - documents.engine
       - documents.description
       - documents.path
   - permits_default:

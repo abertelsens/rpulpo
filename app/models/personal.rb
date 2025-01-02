@@ -18,7 +18,7 @@ class Personal < ActiveRecord::Base
 	belongs_to 	:person
 
   def self.create(params)
-		super(Personal.prepare_params params)
+		super(Personal.prepare_params params.except)
   end
 
 	def update(params)

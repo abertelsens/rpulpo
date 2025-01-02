@@ -24,12 +24,17 @@ require "sinatra/activerecord"
 require 'slim/include'
 require 'sinatra/partial'
 require 'sinatra/reloader'
+require 'sinatra/prawn'
 require_relative 'sinatra_helpers'  # helpers for the sinatra controllers
 require 'require_all'
+#require_rel 'sinatra/htmlescape'
+
 
 
 # include all the models defined in the 'app/models' directory
 require_rel 'models'
+
+#C:\Ruby32-x64\bin
 
 # include all the routes defined in the 'app/routes' directory
 require_rel 'routes'
@@ -159,6 +164,10 @@ post '/login/check_credentials' do
 	return {result: result}.to_json
 end
 
+get '/extension/test' do
+	h "testing"
+end
+
 # make sure there is at least one admin user.
 User.ensure_admin_user	#make sure there is at least one admin user.
 # Credentials of the first admin user.
@@ -171,3 +180,7 @@ Person.all.each do |person|
 	puts "#{person.short_name} did not have a photo" unless has_photo
 	FileUtils.cp_r("app/public/img/avatar.jpg", "app/public/photos/#{person.id}.jpg", remove_destination: false) unless has_photo
 end
+
+
+
+Document.all.each {|doc| doc.update(engine: "typst") if doc.engine==nil}

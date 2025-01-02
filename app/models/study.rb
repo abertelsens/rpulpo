@@ -24,7 +24,7 @@ class Study < ActiveRecord::Base
   def update(params)
     super(Study.prepare_params params)
   end
-  
+
   # make sure just parameters belonging to the model are passed to the constructor
   # @params [hash]: the parameters received from the form
   def self.prepare_params(params)

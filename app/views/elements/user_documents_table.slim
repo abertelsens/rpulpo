@@ -14,4 +14,3 @@ div.table-container
             a.table-cell-body.menu-link[
               href="/people/#{person_id}/document/#{document&.id}?query=#{current_view}" 
               target=(document&.engine=="excel" ? "_self" : "_blank")] = document&.name
-  - puts "finishing modal documents!!!!!!!!!!!"

@@ -49,9 +49,16 @@ turbo-frame id="main_frame"
 								option selected=(@object&.pulpo_module_id==mod.id) value=mod.id = mod.name
 				
 				.row		
-					.columns.nine
+					.columns.six
 						label for="description" description
 						&text@description.u-full-width value=@object&.description
+
+					.columns.three
+						label for="engine" engine
+						select@engine.u-full-width
+							- Document.engines.each do |engine|
+								option selected=(@object&.engine && engine[0]==@object.engine) value=engine[0] = engine[0]
+
 
 					.columns.three
 						label for="singlepage" page type

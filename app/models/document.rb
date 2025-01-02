@@ -27,8 +27,12 @@ class Document < ActiveRecord::Base
 
 	EXCEL_TEMPLATES_DIR = "app/engines-templates/excel"
 	TYPST_TEMPLATES_DIR = "app/engines-templates/typst"
+	PRAWN_TEMPLATES_DIR = "app/views/prawn"
 
-	enum :engine,    {excel: 1, typst: 2}
+	SUFFIXES = {"typst" => "typ", "prawn" => "prawn"}
+	TEMPLATES_DIR = {"typst" => TYPST_TEMPLATES_DIR, "prawn" => PRAWN_TEMPLATES_DIR}
+
+	enum :engine,    {prawn: 1, typst: 2}
 
 	# -----------------------------------------------------------------------------------------
 	# CALLBACKS
@@ -68,7 +72,7 @@ class Document < ActiveRecord::Base
 
 			# the name of the template changed but no new file was provided. We just update the name of the current file
 			if(params[:name]!=previous_name && params[:template].nil?)
-				target = "#{TYPST_TEMPLATES_DIR}/#{name}.typ"
+				target = "#{TEMPLATES_DIR[params[:engine]]}/#{name}.#{SUFFIXES[params[:engine]]}"
 				FileUtils.mv previous_path, target if File.file?(previous_path)
 			end
 
@@ -89,8 +93,16 @@ class Document < ActiveRecord::Base
 	end
 
 	def get_full_path
-		"#{TYPST_TEMPLATES_DIR}/#{path}"
+		case engine
+		when "typst" then "#{TYPST_TEMPLATES_DIR}/#{path}"
+		when "prawn" then "#{PRAWN_TEMPLATES_DIR}/#{path}"
+		end
 	end
+
+	def get_doc_file_name
+		path.split(".")[0]
+	end
+
 
 	def self.prepare_params(params)
 		puts "got params"
@@ -100,8 +112,8 @@ class Document < ActiveRecord::Base
 			pulpo_module_id:        params[:module],
 			name:                   params[:name],
 			description:            params[:description],
-			engine:                 "typst",
-			path: 									"#{params[:name]}.#{file_suffix}",
+			engine:                 params[:engine],
+			path: 									"#{params[:name]}.#{SUFFIXES[params[:engine]]}",
 			singlepage:             (params[:singlepage].blank? ? true : params[:singlepage]=="true")
 		}
 	end
@@ -127,7 +139,10 @@ class Document < ActiveRecord::Base
 	end
 
 	def get_writer(people, template_variables=nil)
-		TypstWriter.new(self, people, template_variables)
+		case engine
+		when "typst"	then 	TypstWriter.new(self, people, template_variables)
+		when "prawn"	then 	PrawnWriter.new(self, people, template_variables)
+		end
 	end
 
 	# checks whether the source has template variables. Template variables are wrapped in double dolar signs
@@ -135,7 +150,7 @@ class Document < ActiveRecord::Base
 	def self.has_template_variables?(source)
 		#!source.scan(/\$\$\S*\$\$/).empty?
 		#!source.scan(/\$\$\S*\$\$/).empty?
-		puts "checking if file has template variables. returning #{!source.scan(/pulpo.\S*/).empty?}"
+		puts "checking if file has template variables. returning #{!source.scan(/pulpo.\w*/).empty?}"
 		!source.scan(/pulpo.\S*/).empty?
 	end
 
@@ -144,7 +159,7 @@ class Document < ActiveRecord::Base
 	end
 
 	def get_template_variables
-		tv = File.read(get_full_path).scan(/pulpo.\S*/).map{ |var| var.gsub("pulpo.","").gsub("\"","")}
+		tv = File.read(get_full_path).scan(/pulpo.\w*/).map{ |var| var.gsub("pulpo.","")}
 		puts "got template variables #{tv.inspect}"
 		tv
 	end

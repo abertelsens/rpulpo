@@ -33,7 +33,7 @@ turbo-frame id="nav_bar"
               i.fa-solid.fa-envelope
               | &nbspCorreo
           
-          - if (@allowed_modules.include? "matrix" && ENV["DB_ENV"]=="development")
+          - if (@allowed_modules.include? "matrix")
             a.button.menu-item tabindex="-1"  data-turbo-frame="main_frame" href='/matrix' 
               i.fa-solid.fa-house
               | &nbspMatrix

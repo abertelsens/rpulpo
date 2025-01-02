@@ -1,5 +1,7 @@
 turbo-frame id="schedules_table"
-  div.table-container style="display: none" data-matrix-target="table"
+  - puts "IN TABLE @active"
+  - p @active
+  div.table-container style="display: #{@active ? "block" : "none"}" data-matrix-target="table"
     div.table-table  
       div.table-row-head
         div.table-cell-head.medium-field = "día"
@@ -7,7 +9,7 @@ turbo-frame id="schedules_table"
 
       - @objects.each.with_index do |object, index|
         //turbo-frame id="people_#{object.id}"
-        a.table-row-body href="/matrix/schedule/#{object.id}" data-turbo-frame="main_frame"
+        a.table-row-body href="/schedule/#{object.id}" data-turbo-frame="main_frame"
           div.table-cell-body  = object.name
           div.table-cell-body = object.description
          

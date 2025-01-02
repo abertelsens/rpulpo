@@ -98,7 +98,7 @@ end
 post '/person/:id/general' do
 	@current_user = get_current_user
 	case params[:commit]
-		when "new" 	then @person = Person.create params
+		when "new" 	then 	@person = Person.create params
 		when "save" then (@person = Person.find(params[:id])).update params
 		when "delete"
 			Person.find(params[:id]).destroy
@@ -123,7 +123,7 @@ post '/person/:person_id/:module/:id' do
 	@person = Person.find(params[:person_id])
 	klass = Object.const_get(params[:module].classify)
 	object = params[:id]=="new" ? nil : klass.find(params[:id])
-	object.nil? ? (klass.create params) : (object.update params) if save?
+	object.nil? ? (klass.create params.except("id")) : (object.update params) if save?
 	if (params[:origin].present? && params[:origin]="crs_ceremonies") then redirect "/crs_records?ceremony=#{params[:ceremony]}"
 	else partial :"view/person"
 	end
@@ -142,12 +142,14 @@ end
 # -----------------------------------------------------------------------------------------
 # ACTIONS
 # -----------------------------------------------------------------------------------------
+
 get '/people/:id/document/:doc_id/template_variables' do
 	@document = Document.find params[:doc_id]
 	@template_variables = @document.get_template_variables
 	@set = params[:id]
 	partial :'form/report'
 end
+
 
 # renders a pdf with the params received.
 get '/people/:id/document/:doc_id' do
@@ -156,24 +158,45 @@ get '/people/:id/document/:doc_id' do
 	# ff the document has template variables we redirect to ask for the variable values
 	redirect "/people/#{params[:id]}/document/#{params[:doc_id]}/template_variables" if document.has_template_variables?
 
-	# find the people records
-	#get_last_query_variables params["query"].to_sym
-	people =
+	content_type 'application/pdf'
+
+	# if the document needs no input from the user we just render it
+	@people =
 		if params[:id]=="set" then get_current_people_set
 		else [Person.find(params[:id])]
 		end
-		send_file document.get_writer(people).render, :type => 'pdf'
+
+		case document.engine
+		when "typst"
+			tw = TypstWriter.new(document)
+			send_file tw.render(@people) if tw.ready?
+		when "prawn"
+			settings = { page_size: 'A4', page_layout: :portrait, margin: [78, 78, 78, 78] }
+			pw = PrawnWriter.new(document)
+			prawn pw.write, settings if pw.ready?
+		end
+
 end
 
 post '/people/:id/document/:doc_id' do
 	content_type :pdf
 	# find the people records
-	people =
+	@people =
 		if params[:id]=="set" then get_current_people_set
 		else [Person.find(params[:id])]
 		end
 	document = Document.find(params[:doc_id])
-	send_file document.get_writer(people, params.except!(:commit, :id, :doc_id) ).render, :type => 'pdf'
+	puts document.get_doc_file_name
+	case document.engine
+	when "typst"
+		tw = TypstWriter.new(document,params.except!(:commit, :id, :doc_id))
+		send_file tw.render(@people) if tw.ready?
+	when "prawn"
+		content_type 'application/pdf'
+		settings = { page_size: 'A4', page_layout: :portrait, margin: [78, 78, 78, 78] }
+		pw = PrawnWriter.new(document,params.except!(:commit, :id, :doc_id))
+		prawn pw.write, settings if pw.ready?
+	end
 end
 
 get '/people/cb/json' do

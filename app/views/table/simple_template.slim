@@ -7,7 +7,11 @@ turbo-frame id="#{@table_settings.main_table}_table"
   
   .table-container data-controller="table" data-table-size-value=@objects.size
   
-    .table-table data-action="mouseover->table#mouseover keydown.down@window->table#down keydown.up@window->table#up keydown.esc@window->table#escape"
+    .table-table[
+      data-action="mouseover->table#mouseover \
+      keydown.down@window->table#down \
+      keydown.up@window->table#up \
+      keydown.esc@window->table#escape"]
     
       
       .table-row-head
@@ -22,21 +26,6 @@ turbo-frame id="#{@table_settings.main_table}_table"
           data-table-target="row" 
           data-table-id="index" 
           href="/#{@table_settings.main_model_name}/#{object.id}" 
-          data-turbo-frame="main_frame"
-        ]
+          data-turbo-frame="main_frame"]
+          
           == @decorator.html_row(object)
-          //- @table_settings.att.each do |sett|
-          //  
-          //  - if sett.table==@table_settings.main_table
-          //    - value = object[sett.get_field_name]
-          //    - if sett.type=="enum"
-          //      div class=sett.css_class = value&.humanize.downcase
-          //    - elsif sett.type=="boolean"
-          //      div class=sett.css_class = value ? checkmark : ""
-          //    - else 
-          //      //  div class=sett.css_class = value
-          //      object.decorate
-          //      object.show_value sett 
-          //  // we are in a related table
-          //  - else
-          //    div class=sett.css_class = object.get_attribute(sett)

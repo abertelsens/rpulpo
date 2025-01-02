@@ -33,3 +33,5 @@ gem 'caracal'
 gem 'pandoc-ruby'                         # pandoc is used to render .docx documents to html
 gem 'kramdown'                            # markdown renderer to html. Used to generate help pages
 gem 'os'
+
+#gem  "sbfaulkner-sinatra-prawn"
