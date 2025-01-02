@@ -42,8 +42,6 @@ require_rel 'decorators'
 
 # modules
 include ActiveRecord
-include ExcelRoomImporter
-include ExcelImporter
 
 #---------------------------------------------------------------------------------------
 # DB SETUP
