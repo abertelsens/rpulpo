@@ -34,4 +34,4 @@ gem 'pandoc-ruby'                         # pandoc is used to render .docx docum
 gem 'kramdown'                            # markdown renderer to html. Used to generate help pages
 gem 'os'
 
-#gem  "sbfaulkner-sinatra-prawn"
+gem  "sbfaulkner-sinatra-prawn"
