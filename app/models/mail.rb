@@ -154,7 +154,7 @@ class Mail < ActiveRecord::Base
 		# get all the outgoing mails from the entity this year
 		mails = Mail.where(entity: entity, direction: "salida").and(Mail.where("date_part('year', date)=#{current_year}"))
 		max_prot_number = (mails.map {|mail| mail.get_protocol_serial }).max
-		next_prot_number = (max_prot_number.nil? ? 0 : max_prot_number + 1 )
+		next_prot_number = (max_prot_number.nil? ? 1 : max_prot_number + 1 )
 		"crs+#{entity.sigla=="cg" ? "" : "-"+entity.sigla} #{next_prot_number}/#{current_year-2000}"
 	end
 
