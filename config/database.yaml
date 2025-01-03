@@ -9,7 +9,7 @@ development:
   adapter: 'postgresql'  
   encoding: 'utf8'
   pool: 5
-  username: 'cb'
+  username: 'administrador'
   server: 'puma'
 
   
@@ -18,5 +18,5 @@ production:
   adapter: 'postgresql'  
   encoding: 'utf8'
   pool: 5
-  username: 'cb'
+  username: 'administrador'
   server: 'puma'
