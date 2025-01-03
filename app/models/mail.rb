@@ -153,7 +153,8 @@ class Mail < ActiveRecord::Base
 
 		# get all the outgoing mails from the entity this year
 		mails = Mail.where(entity: entity, direction: "salida").and(Mail.where("date_part('year', date)=#{current_year}"))
-		next_prot_number = (mails.map {|mail| mail.get_protocol_serial }).max + 1
+		max_prot_number = (mails.map {|mail| mail.get_protocol_serial }).max
+		next_prot_number = (max_prot_number.nil? ? 0 : max_prot_number + 1 )
 		"crs+#{entity.sigla=="cg" ? "" : "-"+entity.sigla} #{next_prot_number}/#{current_year-2000}"
 	end
 
@@ -210,6 +211,8 @@ class Mail < ActiveRecord::Base
 	#
 	def find_related_files()
 		protocol_num = protocol[0..-4].delete("^0-9").to_i
+		puts "sources dir"
+		p get_sources_directory
 		files = Dir.entries(get_sources_directory).select{ |fname| Mail.matches_file(fname, protocol_num)}
 
 		current_files = mail_files.pluck(:name)
@@ -242,6 +245,8 @@ class Mail < ActiveRecord::Base
 		else
 			"#{base}/#{date.year}/#{entity.sigla}/#{(direction=="entrada" ? "ENTRADAS" : "SALIDAS")}"
 		end
+		puts "got dir"
+		p dir_path
 		(File.directory?(dir_path) ? dir_path : false)
 	end
 
