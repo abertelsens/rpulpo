@@ -92,11 +92,10 @@ class MailFile < ActiveRecord::Base
 	# gets the pdf path of a mail_file. Used to preview an annexes.
 	def	get_pdf_path
 		# Delete all the files in the tmp folder that are older than one day
-		#Dir.glob("#{TMP_DIR}/*.pdf").each { |filename| File.delete(filename) if file_age(filename) > 0 }
-		#original_file = "#{mail.get_sources_directory}/#{name}"
-		#FileUtils.cp(original_file, "#{TMP_DIR}/#{name}")
-		#"#{PUBLIC_TMP_DIR}/#{name}"
-		"#{mail.get_sources_directory}/#{name}"
+		Dir.glob("#{TMP_DIR}/*.pdf").each { |filename| File.delete(filename) if file_age(filename) > 0 }
+		original_file = "#{mail.get_sources_directory}/#{name}"
+		FileUtils.cp(original_file, "#{TMP_DIR}/#{name}")
+		"#{PUBLIC_TMP_DIR}/#{name}"
 	end
 
 	# returns the file age in days
@@ -114,10 +113,6 @@ class MailFile < ActiveRecord::Base
 
 	# updates the html field is the file in the file system has been modified.
 	def update_html
-		puts "checking if html contents are updated"
-		puts "html in DB"
-		puts self.html
-		puts "need to update #{(is_word_file? && (has_been_modified? || html==nil))}"
 		update(html: get_html_contents, mod_time: Time.now)	if (is_word_file? && (has_been_modified? || html==nil))
 	end
 
