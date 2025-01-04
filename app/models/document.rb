@@ -89,6 +89,7 @@ class Document < ActiveRecord::Base
 	end
 
 	def update_template_file(file)
+		puts "cp #{file} #{get_full_path}"
 			FileUtils.cp file, get_full_path
 	end
 
