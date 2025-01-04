@@ -51,6 +51,7 @@ class MailFile < ActiveRecord::Base
 	# Embedded media, like images, will be stored in the public/tmp/media/ directory
 	def	get_html_contents()
 		if is_word_file?
+			puts "getting html contents of word file"
 			html_string = `pandoc --email-obfuscation=none --extract-media tmp \"#{get_path}\" --from docx --to html`
 			#puts clean_html html_string
 			clean_html html_string
@@ -106,12 +107,16 @@ class MailFile < ActiveRecord::Base
 		[".docx", ".doc"].include? extension
 	end
 
-  def is_pdf_file?
+	def is_pdf_file?
 		[".pdf"].include? extension
 	end
 
 	# updates the html field is the file in the file system has been modified.
 	def update_html
+		puts "checking if html contents are updated"
+		puts "html in DB"
+		puts self.html
+		puts "need to update #{(is_word_file? && (has_been_modified? || html==nil))}"
 		update(html: get_html_contents, mod_time: Time.now)	if (is_word_file? && (has_been_modified? || html==nil))
 	end
 
