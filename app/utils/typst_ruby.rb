@@ -17,8 +17,13 @@
 
 require 'os'
 require 'tmpdir'
+require 'fileutils'
 
 TYPST_CMD = "typst"
+TYPST_TMP_DIR = "tmp/typst"
+
+FileUtils.mkdir_p TYPST_TMP_DIR
+
 
 class TypstRuby
 
@@ -32,28 +37,42 @@ class TypstRuby
       puts "Typst compiler not found in the system. Please install it and try again."
       return nil
     end
+
     @src_path = file_path unless file_path.nil?
   end
 
+  # Compiles the given data using Typst compiler.
+  # @param data [String] the data to compile
+  # @return [String, nil] the path to the compiled PDF file or nil if compilation failed
   def compile(data=nil)
+
+    clean_tmp_files
     puts "Typst Ruby: compiling document..."
     p data
 
-    tmp_dir = Dir.mktmpdir
-      # write the input file
-    File.open("#{tmp_dir}/input.typ", 'w') { |f| f.write data }
+    random = rand(10000).to_s
+    input_file =  "#{TYPST_TMP_DIR}/#{random}.typ"
+    output_file = "#{TYPST_TMP_DIR}/#{random}.pdf"
+
+    File.open(input_file, 'w') { |f| f.write data }
 
     begin
       puts "Typst Ruby: compiling document..."
-      p "#{TYPST_CMD} compile #{tmp_dir}/input.typ #{tmp_dir}/output.pdf"
-      res = system("#{TYPST_CMD} compile #{tmp_dir}/input.typ #{tmp_dir}/output.pdf")
-      res ? "#{tmp_dir}/output.pdf" : nil
-
+      p "#{TYPST_CMD} compile #{input_file} #{output_file}"
+      res = system "#{TYPST_CMD} compile #{input_file} #{output_file}"
+      res ? output_file : nil
     rescue => error
       puts "Typst Ruby: failed to convert document: #{error.message}"
       return nil
     end
-
   end
+
+  # Cleans up temporary files older than one day.
+  def clean_tmp_files
+    Dir.glob("#{TYPST_TMP_DIR}/*").each do |file|
+      File.delete(file) if (Time.now - File.mtime(file)) > 86400 # 86400 seconds in a day
+    end
+  end
+
 
 end #class end
