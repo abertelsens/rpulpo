@@ -16,11 +16,11 @@
 #---------------------------------------------------------------------------------------
 
 require 'os'
-require 'tmpdir'
 require 'fileutils'
 
 TYPST_CMD = "typst"
-TYPST_TMP_DIR = "tmp/typst"
+TYPST_ROOT = "app/public"
+TYPST_TMP_DIR = "app/public/tmp/typst"
 
 FileUtils.mkdir_p TYPST_TMP_DIR
 
@@ -47,8 +47,6 @@ class TypstRuby
   def compile(data=nil)
 
     clean_tmp_files
-    puts "Typst Ruby: compiling document..."
-    p data
 
     random = rand(10000).to_s
     input_file =  "#{TYPST_TMP_DIR}/#{random}.typ"
@@ -57,9 +55,7 @@ class TypstRuby
     File.open(input_file, 'w') { |f| f.write data }
 
     begin
-      puts "Typst Ruby: compiling document..."
-      p "#{TYPST_CMD} compile #{input_file} #{output_file}"
-      res = system "#{TYPST_CMD} compile #{input_file} #{output_file}"
+      res = system "#{TYPST_CMD} compile --root #{TYPST_ROOT} #{input_file} #{output_file}"
       res ? output_file : nil
     rescue => error
       puts "Typst Ruby: failed to convert document: #{error.message}"

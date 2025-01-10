@@ -163,7 +163,7 @@ get '/people/:id/document/:doc_id' do
 	@people = params[:id]=="set" ? get_current_people_set : [Person.find(params[:id])]
 	case document.engine
 	when "typst"
-		typst document.get_full_path, locals: params
+		send_file (typst document.get_full_path, locals: params)
 	when "prawn"
 		settings = { page_size: 'A4', page_layout: :portrait, margin: [78, 78, 78, 78] }
 		pw = PrawnWriter.new(document)
