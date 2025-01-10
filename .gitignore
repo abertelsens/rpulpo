@@ -8,5 +8,7 @@ app/old_code/
 schema_db
 .DS_Store
 
+config/*.json
+
 *.pdf
 *.typ

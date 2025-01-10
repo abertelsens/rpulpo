@@ -35,3 +35,5 @@ gem 'kramdown'                            # markdown renderer to html. Used to g
 gem 'os'
 
 gem  "sbfaulkner-sinatra-prawn"
+
+gem 'google-apis-sheets_v4'
