@@ -151,51 +151,42 @@ get '/people/:id/document/:doc_id/template_variables' do
 end
 
 
-# renders a pdf with the params received.
 get '/people/:id/document/:doc_id' do
 	document = Document.find params[:doc_id]
-	# puts "checking if document has template variables #{document.has_template_variables?}"
-	# ff the document has template variables we redirect to ask for the variable values
+
+	# if the document has template variables we redirect to ask for the variable values
 	redirect "/people/#{params[:id]}/document/#{params[:doc_id]}/template_variables" if document.has_template_variables?
 
 	content_type 'application/pdf'
 
 	# if the document needs no input from the user we just render it
-	@people =
-		if params[:id]=="set" then get_current_people_set
-		else [Person.find(params[:id])]
-		end
-
-		case document.engine
-		when "typst"
-			tw = TypstWriter.new(document)
-			send_file tw.render(@people) if tw.ready?
-		when "prawn"
-			settings = { page_size: 'A4', page_layout: :portrait, margin: [78, 78, 78, 78] }
-			pw = PrawnWriter.new(document)
-			prawn pw.write, settings if pw.ready?
-		end
-
+	@people = params[:id]=="set" ? get_current_people_set : [Person.find(params[:id])]
+	case document.engine
+	when "typst"
+		typst document.get_full_path, locals: params
+	when "prawn"
+		settings = { page_size: 'A4', page_layout: :portrait, margin: [78, 78, 78, 78] }
+		pw = PrawnWriter.new(document)
+		prawn (pw.write params), settings if pw.ready?
+	end
 end
+
+
 
 post '/people/:id/document/:doc_id' do
 	content_type :pdf
-	# find the people records
-	@people =
-		if params[:id]=="set" then get_current_people_set
-		else [Person.find(params[:id])]
-		end
+
 	document = Document.find(params[:doc_id])
-	puts document.get_doc_file_name
+	@people = params[:id]=="set" ? get_current_people_set : [Person.find(params[:id])]
+
 	case document.engine
 	when "typst"
-		tw = TypstWriter.new(document,params.except!(:commit, :id, :doc_id))
-		send_file tw.render(@people) if tw.ready?
+		typst document.get_full_path, locals: params
+
 	when "prawn"
-		content_type 'application/pdf'
 		settings = { page_size: 'A4', page_layout: :portrait, margin: [78, 78, 78, 78] }
-		pw = PrawnWriter.new(document,params.except!(:commit, :id, :doc_id))
-		prawn pw.write, settings if pw.ready?
+		pw = PrawnWriter.new(document)
+		prawn (pw.write params), settings if pw.ready?
 	end
 end
 

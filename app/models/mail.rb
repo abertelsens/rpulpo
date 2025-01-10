@@ -15,7 +15,6 @@ require 'os'
 
 TAB = "\u0009".encode('utf-8')
 
-
 class Mail < ActiveRecord::Base
 
 	BASE_DIR					= "app/public"
@@ -57,6 +56,7 @@ class Mail < ActiveRecord::Base
 	def mark_as_unread
 		UnreadMail.create(User.mail_users.map {|user| {user: user, mail: self} })
 	end
+
 # -----------------------------------------------------------------------------------------
 # CRUD
 # -----------------------------------------------------------------------------------------
@@ -65,12 +65,12 @@ class Mail < ActiveRecord::Base
 	def self.prepare_params(params=nil)
 		if params.nil? # no params provided. We create default params
 			{
-				entity: 		Entity.find_by(sigla: "cg"),
-				date:				Date.today,
-				topic:			"",
-				protocol:		"XX/#{Time.now.year.to_s[2..3]}",
-				direction:	"entrada",
-				mail_status:0
+				entity: 			Entity.find_by(sigla: "cg"),
+				date:					Date.today,
+				topic:				"",
+				protocol:			"XX/#{Time.now.year.to_s[2..3]}",
+				direction:		"entrada",
+				mail_status:	0
 			}
 		else
 			{
@@ -109,7 +109,7 @@ class Mail < ActiveRecord::Base
 		# received.
 		protocols_array  = protocols_string.split(",").map{|s| s.strip }
 		elements = (protocols_string.blank? ? [] : Mail.find_mails(protocols_string))
-		elements_hash = elements.map.with_index do |mail,index|
+		elements_hash = elements.map.with_index do |mail, index|
 			{
 				protocol: (mail.nil? ? protocols_array[index] : mail.protocol),
 				status: 	mail!=nil
@@ -130,7 +130,6 @@ class Mail < ActiveRecord::Base
 
 	# users array contains an array of mail ids or users ids
 	def update_association_elements(elements, association)
-
 		case association
 		when :assigned_users 	then self.assigned_users = User.find(elements)
 		when :answers 				then self.ans = Mail.find(elements)
@@ -211,8 +210,6 @@ class Mail < ActiveRecord::Base
 	#
 	def find_related_files()
 		protocol_num = protocol[0..-4].delete("^0-9").to_i
-		puts "sources dir"
-		p get_sources_directory
 		files = Dir.entries(get_sources_directory).select{ |fname| Mail.matches_file(fname, protocol_num)}
 
 		current_files = mail_files.pluck(:name)
@@ -295,7 +292,7 @@ class Mail < ActiveRecord::Base
 
 	# provides an html text of the files related to the mail object.
 	def mail2html
-			find_related_files.inject("<h3>#{protocol}</h3>\n"){|res, mf|  (res << (mf.get_html) << "\n") }
+			find_related_files.inject("<h3>#{protocol}</h3>\n"){|res, mf|  (res << mf.get_contents(:html) << "\n") }
 	end
 
 	def self.search(params)
@@ -340,11 +337,6 @@ class Reference < ActiveRecord::Base
 end
 
 class Answer < ActiveRecord::Base
-	belongs_to 	:mail, 		:class_name => "Mail"
-	belongs_to 	:answer, 	:class_name => "Mail"
-end
-
-class UnreadMail < ActiveRecord::Base
 	belongs_to 	:mail
-	belongs_to 	:user
+	belongs_to 	:answer, 		:class_name => "Mail"
 end

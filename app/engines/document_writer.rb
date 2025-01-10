@@ -12,11 +12,10 @@ class DocumentWriter
 	WARNING = 2
 	FATAL 	= 3
 
-	def initialize(document, template_variables=nil)
+	def initialize(document)
 		@status = OK
 		@message = ""
 		@document = document
-		@template_variables = template_variables
 		@decorator = PersonDecorator.new
 
 		begin
@@ -26,7 +25,6 @@ class DocumentWriter
 			You should check the settings of #{document.name} file before trying again.")
 			@status = FATAL
 		end
-		@template_source = replace_template_variables template_variables
 	end
 
 	def set_error(error, msg)
@@ -34,15 +32,9 @@ class DocumentWriter
 		@message = msg
 	end
 
-	def replace_template_variables(template_variables=nil)
-		return @template_source unless template_variables
-		template_variables.keys.each do |key|
-			@template_source.gsub!("pulpo.#{key}",template_variables[key])
-		end
-		@template_source
-	end
-
-	def write()
+	def write(variables=nil)
+		return @template_source unless variables
+		variables.keys.each {|key| @template_source.gsub!("pulpo.#{key}", variables[key]) }
 		@template_source
 	end
 

@@ -21,6 +21,7 @@ class User < ActiveRecord::Base
 	has_many	:assigned_mails, 		dependent: :destroy
 	has_many 	:module_users, 			dependent: :destroy
 	has_many 	:pulpo_modules, 		:through => :module_users
+	has_many 	:documents, 				:through => :pulpo_modules
 
 	validates :uname, uniqueness: { message: "there is another user with that name." }
 	validates :uname, presence: 	{ message: "user name cannot be empty." }
@@ -38,6 +39,10 @@ class User < ActiveRecord::Base
 # -----------------------------------------------------------------------------------------
 # CRUD METHODS
 # -----------------------------------------------------------------------------------------
+
+
+
+
 
 	def self.create(params)
 		user = super(User.prepare_params params)

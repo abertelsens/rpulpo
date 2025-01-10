@@ -33,6 +33,7 @@ require 'require_all'
 
 # include all the models defined in the 'app/models' directory
 require_rel 'models'
+require_rel 'utils'
 
 #C:\Ruby32-x64\bin
 
@@ -42,6 +43,7 @@ require_rel 'decorators'
 
 # modules
 include ActiveRecord
+include Utils
 
 #---------------------------------------------------------------------------------------
 # DB SETUP
@@ -162,9 +164,6 @@ post '/login/check_credentials' do
 	return {result: result}.to_json
 end
 
-get '/extension/test' do
-	h "testing"
-end
 
 # make sure there is at least one admin user.
 User.ensure_admin_user	#make sure there is at least one admin user.

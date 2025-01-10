@@ -69,8 +69,10 @@ module Utils
 	end
 
 	def latin_date(date)
+		return "" if date.nil?
+		date = date.strftime("%-d-%m-%Y") if date.is_a? Date
 		date_array = date.split("-")
-		"#{date_array[2]} #{MONTHS_LATIN[date_array[1].to_i-1]} #{date_array[0]}"
+		"#{date_array[0]} #{MONTHS_LATIN[date_array[1].to_i-1]} #{date_array[2]}"
 	end
 
 	def roman_month_date(date)

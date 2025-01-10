@@ -6,7 +6,7 @@ query_aliases:
   - config: "phase:1"
   - sint: "phase:2"
   - sintesis: "phase:2"
-  - síntesis: "phase:2"
+  - sintesis: "phase:2"
   - alumnos: "student:true"
   - students: "student:true"
   - estudiantes: "student:true"

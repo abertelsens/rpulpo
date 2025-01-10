@@ -68,7 +68,7 @@ class WordWriter  < DocumentWriter
 	end
 
 	def get_reference(mf)
-		mf.is_word_file? ? mf.get_md_contents : "\n\n### [#{mf.name}](#{mf.get_path})"
+		mf.is_word_file? ? mf.get_contents(:md) : "\n\n### [#{mf.name}](#{mf.get_path})"
 	end
 
 	def get_topic()

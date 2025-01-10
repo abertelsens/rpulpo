@@ -1,9 +1,9 @@
 cm = 30
 pdf.font_families.update("minion" => {
-    :normal => "app/assets/MinionPro-Regular.otf",
-    :bold => "app/assets/MinionPro-Bold.otf",
-    :italic => "app/assets/MinionPro-It.otf",
-    :bold_italic => "app/assets/MinionPro-BoldIt.otf",
+    :normal       => "app/assets/MinionPro-Regular.otf",
+    :bold         => "app/assets/MinionPro-Bold.otf",
+    :italic       => "app/assets/MinionPro-It.otf",
+    :bold_italic  => "app/assets/MinionPro-BoldIt.otf",
   })
 
   pdf.font_families.update("minionSC" => {
@@ -16,8 +16,6 @@ pdf.font "minion"
 @people.each_with_index do |person,index|
 pdf.move_down(30)
 pdf.text 'PROFESSIO FIDEI', align: :center, size: 15 #, style: :bold
-
-
 pdf.move_down(60)
 
 pdf.text("Ego #{person.first_name} #{person.family_name} firma fide credo et profíteor ómnia et síngula quae continéntur\
@@ -27,7 +25,7 @@ Credo in unum Deum Patrem omnipoténtem, factórem coeli et terrae, visibilium �
 Iesum Christum, Fílium Dei unigénitum, et ex Patre natum ante ómnia saécula, Deum de Deo, lumen de lúmine, Deum verum \
 de Deo vero, génitum non factum, consubstantiálem Patri per quem ómnia facta sunt, qui propter nos hómines et propter \
 nostram salútem descéndit de coelis, et incarnátus est de Spíritu Sancto, ex María Vírgine, et homo factus est; \
-crucifixus etiam pro nobis sub Póntio Piláto, passus et sepúltus est; et resurréxit tértia die secúndum Scriptúras, \
+crucifixus etiam pro nobis sub Póntio Piláto, pas sus et sepúltus est; et resurréxit tértia die secúndum Scriptúras, \
 et ascéndit in coelum, sedet ad déxteram Patris, et íterum venturus est cum glória iudicáre vivos et mórtuos, cuius \
 regni non erit finis; et in Spíritum Sanctum Dóminum et vivificántem, qui ex Patre Filióque procédit; qui cum Patre et \
 Fílio simul adorátur et conglorificátur qui locútus est per Prophétas; et unam sanctam cathólicam et apostólicam \
