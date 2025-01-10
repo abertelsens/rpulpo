@@ -39,7 +39,7 @@ class TypstRuby
     p data
     if !data.nil?
       src_file = (Tempfile.new [ 'typst_input', '.typ' ])
-      File.write src_file.path, data
+      File.open(src_file.path, 'w') {|f| f.write data }
       @src_path = src_file.path
     end
     begin
