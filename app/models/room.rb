@@ -17,9 +17,19 @@ class Room < ActiveRecord::Base
 
 	belongs_to 	    :person
 
+	scope :in_use, 	-> { where.not(person_id: nil).order(:house, :room) }
+	scope :in_use_sorted_by_person_clothes, -> { joins(:person).where.not(person_id: nil).order('people.clothes') }
+
+	after_save      :update_gsheets
+
 	enum :house,     {dirección: 0, profesores: 1, pabellón: 2, sala_de_conferencias: 3, altana: 4, chiocciola: 5, mulino: 6, borgo:7, ospiti:8, enfermería: 9, casa_del_consejo: 10}
 	enum :bed,       {normal: 0, larga: 1, reclinable: 2}
 	enum :bathroom,  {individual: 0, común: 1}
+
+	def update_gsheets
+		gsheet = GSheets.new "11-ymy2jf2_w_t4iwoQLvy0JBsX6EYPQ4kTlc25A1ffE", "pulpo_test"
+		gsheet.update_rooms
+	end
 
 	def self.create_from_params(params)
 		Room.create Room.prepare_params params
