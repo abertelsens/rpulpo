@@ -40,10 +40,13 @@ class TypstRuby
     if !data.nil?
       src_file = (Tempfile.new [ 'typst_input', '.typ' ])
       File.open(src_file.path, 'w') {|f| f.write data }
+      src_file.close
       @src_path = src_file.path
     end
     begin
       out_file = Tempfile.new [ 'typst_output', '.pdf' ]
+      puts "checking if file exists: #{@src_path}"
+      p File.file? @src_path
       res = system("#{TYPST_CMD} compile #{@src_path} #{out_file.path}")
       res ? (out_file) : nil
     rescue => error
