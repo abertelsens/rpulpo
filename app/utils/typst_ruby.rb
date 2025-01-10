@@ -16,6 +16,7 @@
 #---------------------------------------------------------------------------------------
 
 require 'os'
+require 'tmpdir'
 
 TYPST_CMD = "typst"
 
@@ -37,22 +38,22 @@ class TypstRuby
   def compile(data=nil)
     puts "Typst Ruby: compiling document..."
     p data
-    if !data.nil?
-      src_file = (Tempfile.new [ 'typst_input', '.typ' ])
-      File.open(src_file.path, 'w') {|f| f.write data }
-      src_file.close
-      @src_path = src_file.path
+
+    Dir.mktmpdir do |d|
+      # write the input file
+      File.open("#{d}/input.typ", 'w') { |f| f.write data }
+
+      begin
+        res = system("#{TYPST_CMD} compile #{d}/input.typ #{d}/oupput.pdf")
+        res ? ("#{d}/oupput.pdf") : nil
+
+      rescue => error
+        puts "Typst Ruby: failed to convert document: #{error.message}"
+        return nil
+      end
+
     end
-    begin
-      out_file = Tempfile.new [ 'typst_output', '.pdf' ]
-      puts "checking if file exists: #{@src_path}"
-      p File.file? @src_path
-      res = system("#{TYPST_CMD} compile #{@src_path} #{out_file.path}")
-      res ? (out_file) : nil
-    rescue => error
-      puts "Typst Ruby: failed to convert document: #{error.message}"
-      return nil
-    end
+
   end
 
 end #class end
