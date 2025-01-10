@@ -26,7 +26,7 @@ module Tilt
     def evaluate(scope, locals, &block)
       typst_writer = TypstWriter.new (Document.find(locals[:doc_id]))
       data = typst_writer.write locals
-      output = Tilt::ERBTemplate.new{data}.evaluate(scope,locals)
+      output = Tilt::ERBTemplate.new{data}.evaluate scope, locals
       TypstRuby.new.compile(output)
     end
 

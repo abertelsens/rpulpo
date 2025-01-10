@@ -39,19 +39,19 @@ class TypstRuby
     puts "Typst Ruby: compiling document..."
     p data
 
-    Dir.mktmpdir do |d|
+    tmp_dir = Dir.mktmpdir
       # write the input file
-      File.open("#{d}/input.typ", 'w') { |f| f.write data }
+    File.open("#{tmp_dir}/input.typ", 'w') { |f| f.write data }
 
-      begin
-        res = system("#{TYPST_CMD} compile #{d}/input.typ #{d}/oupput.pdf")
-        res ? ("#{d}/oupput.pdf") : nil
+    begin
+      puts "Typst Ruby: compiling document..."
+      p "#{TYPST_CMD} compile #{tmp_dir}/input.typ #{tmp_dir}/output.pdf"
+      res = system("#{TYPST_CMD} compile #{tmp_dir}/input.typ #{tmp_dir}/output.pdf")
+      res ? "#{tmp_dir}/output.pdf" : nil
 
-      rescue => error
-        puts "Typst Ruby: failed to convert document: #{error.message}"
-        return nil
-      end
-
+    rescue => error
+      puts "Typst Ruby: failed to convert document: #{error.message}"
+      return nil
     end
 
   end

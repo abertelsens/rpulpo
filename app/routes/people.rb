@@ -181,7 +181,7 @@ post '/people/:id/document/:doc_id' do
 
 	case document.engine
 	when "typst"
-		typst document.get_full_path, locals: params
+		send_file (typst document.get_full_path, locals: params)
 
 	when "prawn"
 		settings = { page_size: 'A4', page_layout: :portrait, margin: [78, 78, 78, 78] }
