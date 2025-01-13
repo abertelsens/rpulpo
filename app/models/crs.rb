@@ -79,7 +79,7 @@ class CrsRecord < ActiveRecord::Base
 		when :fidelidad 	then ((oblacion && !fidelidad) ? oblacion.next_year(5) : nil)
 		when :admissio 		then (!admissio ? get_next_date(:admissio) : nil)
 		when :lectorado 	then ((admissio && !lectorado) ? get_next_date(:lectorado) : nil)
-		when :acolitado 	then ((lectorado && !admissio) ? get_next_date(:acolitado) : nil)
+		when :acolitado 	then ((lectorado && !acolitado) ? get_next_date(:acolitado) : nil)
 		end
 	end
 
