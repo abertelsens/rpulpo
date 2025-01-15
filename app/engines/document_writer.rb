@@ -33,8 +33,15 @@ class DocumentWriter
 	end
 
 	def write(variables=nil)
+		puts "replacing variables #{variables}"
 		return @template_source unless variables
-		variables.keys.each {|key| @template_source.gsub!("pulpo.#{key}", variables[key]) }
+
+		@template_source.scan(/pulpo.\w*[.]*[\w\-\:()]*/).map do |var|
+			v = var.split(".")
+			@template_source.gsub!(var, variables[v[1]])
+		end
+
+		#variables.keys.each {|key| @template_source.gsub!("pulpo.#{key}", variables[key]) }
 		@template_source
 	end
 

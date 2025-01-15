@@ -69,13 +69,11 @@ turbo-frame id="main_frame"
                 div.table-cell-head.small-field = "casa"
                 div.table-cell-head.small-field = "libres"
                 div.table-cell-head.small-field = "total"
-
               - Room.get_rooms_count_by_house.each do |house|
                 a.table-row-body href="/rooms/house/#{house["room"]}" tabindex=-1 data-turbo-frame="rooms_table"
-                  div.table-cell-body.no-border = house["room"].humanize
-                  div.table-cell-body.no-border.u-text-center = house["empty"]
-                  div.table-cell-body.no-border.u-text-center = house["total"]
-       
+                  div.table-cell-body.no-border = house[:room].humanize
+                  div.table-cell-body.no-border.u-text-center = house[:empty]
+                  div.table-cell-body.no-border.u-text-center = house[:total]
         .columns.eight.u-full-width
           .row 
             turbo-frame id="rooms_table" src="/rooms/table"

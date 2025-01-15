@@ -40,6 +40,7 @@ class Person < ActiveRecord::Base
 
 	has_many :tasks_available, 	:through => :matrix
 	has_many :turnos
+
 	# matrix associations
 	has_many :task_assignments, dependent: :destroy
 	has_many :person_periods, 	dependent: :destroy
@@ -73,9 +74,10 @@ class Person < ActiveRecord::Base
 
 	# enums info is stored as an integer in the db but can be queried by the associated
 	# enum symbol.
-	enum :status,    { laico: 0, diacono: 1, sacerdote: 2 }
-	enum :ctr,       { cavabianca: 0, ctr_dependiente:1, no_ha_llegado:2, se_ha_ido: 3 }
-	enum :n_agd,     { n: 0, agd: 1 }
+	enum :status,    			{ laico: 0, diacono: 1, sacerdote: 2, ordenando: 3 }
+	enum :ctr,       			{ cavabianca: 0, ctr_dependiente:1, no_ha_llegado:2, se_ha_ido: 3, guest: 4 }
+	enum :n_agd,     			{ n: 0, agd: 1 }
+	enum :dinning_room,   { arriba: 0, abajo: 1 }
 
 	# -----------------------------------------------------------------------------------------
 	# CALLBACKS
@@ -91,6 +93,10 @@ class Person < ActiveRecord::Base
 		crs_record.update(phase:"sintesis") if (status=="diacono" && crs_record)
 		crs_record.update(phase:nil) if (status=="sacerdote" && crs_record)
 		self.full_name = "#{first_name} #{family_name}"
+		self.guest = self.ctr == "guest"
+
+		# update the sheets of the ao if the notes or the clothes number were changed
+		self.room.update_gsheet_async if (self.notes_ao_room_changed? || self.clothes_changed?) && !self.room.nil?
 	end
 
 	# if a person is destroyed we also delete the associated photo of the person if it exists
@@ -111,6 +117,9 @@ class Person < ActiveRecord::Base
 	end
 
 	def update(params)
+		puts "updating with params #{params}"
+		puts "updating with prepare params #{Person.prepare_params params}"
+		puts "attributes #{Person.attribute_names}"
 		super(Person.prepare_params params)
 	end
 
@@ -132,6 +141,33 @@ class Person < ActiveRecord::Base
 			search_string = (search_string.nil? || search_string.strip.blank?) ? filter : "#{filter} AND #{search_string}"
 		end
 		(PulpoQuery.new(search_string, table_settings)).execute
+	end
+
+	def update_celebration
+    return if self.celebration.nil?
+		today = Date.today
+		if self.celebration.month == 2 && self.celebration.day == 29
+			cel = Date.new(self.celebration.year,2,28)
+		else
+			cel = self.celebration
+		end
+		next_celebration_year = today.year + (today >= Date.new(today.year, cel.month, cel.day) ? 1 : 0)
+		next_celebration_date = Date.new(next_celebration_year, cel.month, cel.day)
+    self.celebration = next_celebration_date
+    save
+	end
+
+	def self.start_update_celebration_thread
+		puts Rainbow("PULPO: starting update_celebration_thread").yellow
+		Thread.new do
+			puts Rainbow("PULPO: sleeping for 10 seconds to wait for app to fully load").yellow
+			sleep 10
+			loop do
+				Person.all.each(&:update_celebration)
+				puts Rainbow("PULPO: sleeping for 12 hours...").yellow
+				sleep 12 * 60 * 60 # Sleep for 12 hours
+			end
+		end
 	end
 
 	# -----------------------------------------------------------------------------------------

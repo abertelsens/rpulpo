@@ -94,7 +94,7 @@ turbo-frame id="main_frame"
 						label.tooltip for="status" sacd
 							<i class="fa-sharp fa-regular fa-circle-question"></i>
 							<span class="tooltiptext">(sacerdote, laico o diácono)</span>
-						select@status.u-full-width"
+						select@status.u-full-width
 							- Person.statuses.each do |st| 
 								option selected=(@person&.status==st[0]) value=st[0] = st[0]
 					
@@ -125,19 +125,14 @@ turbo-frame id="main_frame"
 							<span class="tooltiptext">(1, 2, 3, 4, ...)</span>
 						&text@year.u-full-width value=@person&.year
 				
-					.columns.one
-						label.tooltip for="ropa" ropa
-							<i class="fa-sharp fa-regular fa-circle-question"></i>
-							<span class="tooltiptext">(número de ropa)</span>
-						&text@clothes.u-full-width value=@person&.clothes
-					
+									
 					.columns.two
 						label.tooltip for="telephone" phone
 							<i class="fa-sharp fa-regular fa-circle-question"></i>
 							<span class="tooltiptext">Ej: +9725425901051</span>
 						&text@phone.u-full-width value=@person&.phone
 					
-					.columns.three
+					.columns.four
 						label for="email" email
 						&email@email.u-full-width autocomplete="off" value=@person&.email
 			
@@ -155,19 +150,52 @@ turbo-frame id="main_frame"
 						label for="departure" fecha de salida
 						&date@departure.u-full-width value=@person&.departure
 					
-					.columns.five
-						label.tooltip for="celebration_info" celebración
+					.columns.three
+						label.tooltip for="celebration_info" celebra
 							<i class="fa-sharp fa-regular fa-circle-question"></i>
-							<span class="tooltiptext">Ej: Celebra su (santo, cumpleaños) el 15.08</span>
+							<span class="tooltiptext">celebración</span>
 						&text@celebration_info.u-full-width value=@person&.celebration_info
+
+					.columns.two
+						label for="celebration" fecha celebración
+						&date@celebration.u-full-width value=@person&.celebration
 					
 					.columns.one 
-					label alumno
-					select@student
-						option selected=@person&.student value="true" sí
-						option selected=!@person&.student value="false" no
+						label for="student" alumno
+						select.u-full-width@student
+							option selected=@person&.student value="true" sí
+							option selected=!@person&.student value="false" no
 			
+				.row	
+					.columns.one 	
+						label.tooltip for="ropa" ropa
+							<i class="fa-sharp fa-regular fa-circle-question"></i>
+							<span class="tooltiptext">número de ropa</span>
+						&text@clothes.u-full-width value=@person&.clothes
 
+					.columns.four 	
+						label.tooltip for="notes_ao_room" notas ao (habitación)
+							<i class="fa-sharp fa-regular fa-circle-question"></i>
+							<span class="tooltiptext">info sobre la habitación</span>
+						&text@notes_ao_room.u-full-width value=@person&.notes_ao_room
+
+					.columns.two 
+						label for="dinning_room" comedor
+						select@dinning_room.u-full-width
+							- Person.dinning_rooms.each do |st| 
+								option selected=(@person&.dinning_room==st[0]) value=st[0] = st[0].humanize(capitalize: false)
+					
+					.columns.one 	
+						label.tooltip for="meal" régimen
+							<i class="fa-sharp fa-regular fa-circle-question"></i>
+							<span class="tooltiptext">número de régimen</span>
+						&number@meal.u-full-width value=@person&.meal
+					
+					.columns.four 	
+						label.tooltip for="notes_ao_meal" notas ao (comidas)
+							<i class="fa-sharp fa-regular fa-circle-question"></i>
+							<span class="tooltiptext">info sobre comidas</span>
+						&text@notes_ao_meal.u-full-width value=@person&.notes_ao_meal
 				
 			/----------------------------------------------------------------------------------------------------------------
 			/ DELETE CONFIRMATION MODAL FORM

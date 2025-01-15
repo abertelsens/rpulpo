@@ -32,41 +32,42 @@ class User < ActiveRecord::Base
 	scope :mail_users, -> {where(mail:true)}
 
 	# an enum defining the type of user.
-	enum :usertype, {normal: 0, admin: 1, guest: 2}
+	enum :usertype, { normal: 0, admin: 1, guest: 2 }
 
 	DEFAULT_ADMIN_ATTRIBUTES = {uname: "admin", password: "admin", usertype: "admin", mail: true}
+
+
 
 # -----------------------------------------------------------------------------------------
 # CRUD METHODS
 # -----------------------------------------------------------------------------------------
 
-
-
-
-
 	def self.create(params)
 		user = super(User.prepare_params params)
-		user.pulpo_module_ids = params["module"].keys.select{|key| params["module"][key]=="allowed"}
+		user.pulpo_module_ids = user.get_modules_ids params["module"]
 	end
 
 	def update(params)
-		#puts "parameters to update #{User.prepare_params(params, self)}"
-		super(User.prepare_params(params, self))
-		self.pulpo_module_ids = params["module"].keys.select{|key| params["module"][key]=="allowed"}
-		save
+		puts "updating with params #{User.prepare_params(params)}"
+		super(User.prepare_params(params))
+		self.pulpo_module_ids = get_modules_ids params["module"]
 	end
 
 	def self.destroy(params)
 		User.find(params[:id]).destroy
 	end
 
-	def self.prepare_params(params, user=nil)
-	{
-		uname: 										params[:uname],
-  	password: 								params[:password],
-		usertype:									params[:usertype],
-		mail:											!params[:mail].nil?,
-	}
+	def self.prepare_params(params)
+		{
+			uname: 										params[:uname],
+			password: 								params[:password],
+			usertype:									params[:usertype],
+			mail:											params[:mail]!=nil,
+		}
+	end
+
+	def get_modules_ids module_params
+		module_params.keys.select{|key| module_params[key]=="allowed"}
 	end
 
 	# -----------------------------------------------------------------------------------------
@@ -102,9 +103,7 @@ class User < ActiveRecord::Base
 	end
 
 	def get_allowed_modules
-		return PulpoModule.all if admin? 		# an admin has all permitions.
-		pulpo_modules
-		#(module_users.select {|mu| mu.modulepermission=="allowed"}).map {|mu| mu.pulpo_module}
+		admin? ? PulpoModule.all : pulpo_modules
 	end
 
 	# returs an array of the form [module, [documents]]
@@ -121,10 +120,7 @@ class User < ActiveRecord::Base
 
 	def allowed?(module_identifier)
 		return true if admin?
-		#puts "ckecking if #{uname} is allowed on #{module_identifier} #{pulpo_modules.find_by(identifier: module_identifier)!=nil}"
 		pulpo_modules.find_by(identifier: module_identifier)!=nil
-		#result = (module_users.joins(:pulpo_module).where(pulpo_module: {name: module_identifier})).first
-		#return result.nil? ? false : result
 	end
 
 	def is_table_allowed?(table)
@@ -144,15 +140,10 @@ class User < ActiveRecord::Base
 	# get the permission for a module
 	def get_permission(mod)
 		pulpo_modules.find(mod.id)!=nil
-		#mu = module_users.find_by(pulpo_module: mod)
-		#mu.nil? ? nil : mu.modulepermission
 	end
 
-	# get the permissions for all modules as a hash of the form {module_id => permission}
-	# The inject method transforms an array of the permissions into a single hash.
 	def get_permissions()
 		pulpo_modules
-		#(module_users.includes(:pulpo_module).map{|mu| {mu.pulpo_module.id => mu.modulepermission}}).inject(:merge)
 	end
 
 
@@ -164,7 +155,7 @@ class User < ActiveRecord::Base
 
 	# validates the params received from the form.
 	def validate(params)
-		self.update(params)
+		self.update params
 		{ result: self.valid?, message: ValidationErrorsDecorator.new(self.errors.to_hash).to_html }
 	end
 

@@ -179,5 +179,20 @@ Person.all.each do |person|
 end
 
 
+=begin
+# Document.all.each {|doc| doc.update(engine: "typst") if doc.engine==nil}
+Person.all.each {|person| person.update({"guest"=> person.ctr=="guest"})}
+Person.all.each do |person|
+	puts person.birth
+	person.update("celebration"=> person.birth)
+end
+Person.all.each {|person| person.update("dinning_room"=> (person.group=="1" || person.group=="2" ? "abajo" : "arriba")) }
+=end
 
-Document.all.each {|doc| doc.update(engine: "typst") if doc.engine==nil}
+# Start the thread when the application starts
+Person.all.each do |person|
+	puts person.birth
+	person.update("celebration"=> person.birth)
+end
+
+Person.start_update_celebration_thread

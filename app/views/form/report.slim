@@ -45,8 +45,8 @@ html
 							.row.u-text-center style="margin-top:30px"
 								- @template_variables.each do |var|
 									.columns.six.offset-by-three.u-text-center
-										label = var.humanize
-										input.u-full-width  type="text" required=true name=var
+										label = "#{var[0].humanize} #{var[1]&.humanize}"
+										input.u-full-width  type="text" required=true name=var[0]
 								
 								/----------------------------------------------------------------------------------------------------------------
 								//BUTTONS

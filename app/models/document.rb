@@ -77,8 +77,8 @@ class Document < ActiveRecord::Base
 			# the name of the template did not change, but a new file was provided
 			if(params[:template]!=nil)
 				FileUtils.cp(params[:template][:tempfile], get_full_path)
-				self.template_variables = Document.has_template_variables?(File.read params[:template][:tempfile])
-				self.save
+				#self.template_variables = Document.has_template_variables?(File.read params[:template][:tempfile])
+				#self.save
 			end
 
 		end
@@ -119,17 +119,23 @@ class Document < ActiveRecord::Base
 	# i.e. $$myvariable$$
 	def self.has_template_variables?(source)
 		#!source.scan(/\$\$\S*\$\$/).empty?
-		#!source.scan(/\$\$\S*\$\$/).empty?
+		#!source.scan(/\$\$\S*\$\$/).empty?\
 		puts "checking if file has template variables. returning #{!source.scan(/pulpo.\w*/).empty?}"
 		!source.scan(/pulpo.\S*/).empty?
 	end
 
 	def has_template_variables?
-		template_variables
+		Document.has_template_variables?(File.read get_full_path)
 	end
 
 	def get_template_variables
-		File.read(get_full_path).scan(/pulpo.\w*/).map{ |var| var.gsub("pulpo.","")}
+		#File.read(get_full_path).scan(/pulpo.\w*/).map{ |var| var.gsub("pulpo.","")}
+		File.read(get_full_path).scan(/pulpo.\w*[.]*[\w\-\:()]*/).map do |var|
+			puts "fournd var #{var}"
+			a = var.split(".")
+			[a[1],a[2]]
+		end
+			#var.gsub("pulpo.",""
 	end
 
 	def can_be_deleted?

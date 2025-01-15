@@ -72,10 +72,10 @@ class TableSettings
 	SETTINGS_YAML = YAML.load_file(SETTINGS_FILE_PATH)
 
 	def initialize(arguments)
-		@name = arguments[:name]
-		@main_table = arguments[:main_table]
+		@name 					= arguments[:name]
+		@main_table 		= arguments[:main_table]
 		@related_tables = arguments[:related_tables]
-		@att = arguments[:attributes]
+		@att 						= arguments[:attributes]
 	end
 
 	# creates a table from a yaml definition
@@ -115,6 +115,7 @@ class TableSettings
 	end
 
 	def self.get_attribute_by_name(name)
+		puts "looking for attribute #{name} found #{ALL_ATTRIBUTES.find{|a| a.field.split(".")[1]==name}}"
 		return ALL_ATTRIBUTES.find{|a| a.field.split(".")[1]==name}
 	end
 

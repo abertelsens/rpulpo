@@ -59,6 +59,7 @@ turbo-frame id="main_frame"
 							option selected=(@object&.usertype==type[0]) value=type[0] = type[0]
 				
 					.div.flex-left
+						- puts "#{@object&.uname} mail>: #{@object&.mail}"
 						input#mail type="checkbox" name="mail" checked=@object&.mail
 						label for="mail" style="margin-bottom:1.5rem; margin-left:1rem" mail user
 						

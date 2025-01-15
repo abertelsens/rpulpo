@@ -6,13 +6,13 @@ class Decorator
   def initialize(args=nil)
     return if args.nil?
     @table_settings   =  args[:table_settings] if args[:table_settings].present?
-    @date_format      = args[:date].present? ? args[:date] : "normal"
+    @date_format      =   args[:date].present? ? args[:date] : "normal"
 
   end
 
   def decorate(value, setting)
     case setting.type
-    when "boolean"  then  (CHECKMARK if value)
+    when "boolean"  then  value ? CHECKMARK : ""
     when "enum"     then  value.humanize(capitalize: false) if value
     when "integer"  then  value
     when "date"     then  ((@date_format=="latin") ? latin_date(value) : value.strftime("%d-%m-%y")) unless value.nil?
@@ -43,6 +43,15 @@ class ObjectDecorator < Decorator
       get_value(entity, table, field)
     end
     values.join("\t")
+  end
+
+  def to_array(entity)
+    values = @table_settings.att.map do |attribute|
+      table, field = attribute.field.split(".")
+      decorate(get_value(entity, table, field), attribute)
+
+    end
+    values
   end
 
   def entities_to_csv(entities)
