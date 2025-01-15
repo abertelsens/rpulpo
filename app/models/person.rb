@@ -77,7 +77,7 @@ class Person < ActiveRecord::Base
 	enum :status,    			{ laico: 0, diacono: 1, sacerdote: 2, ordenando: 3 }
 	enum :ctr,       			{ cavabianca: 0, ctr_dependiente:1, no_ha_llegado:2, se_ha_ido: 3, guest: 4 }
 	enum :n_agd,     			{ n: 0, agd: 1 }
-	enum :dinning_room,   { arriba: 0, abajo: 1 }
+	#enum :dinning_room,   { arriba: 0, abajo: 1 }
 
 	# -----------------------------------------------------------------------------------------
 	# CALLBACKS
