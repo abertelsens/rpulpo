@@ -10,7 +10,7 @@ development:
   encoding: 'utf8'
   pool: 5
   username: 'administrador'
-  server: 'puma'
+  server: 'cb'
 
   
 production:

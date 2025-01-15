@@ -188,7 +188,7 @@ Person.all.each do |person|
 end
 Person.all.each {|person| person.update("dinning_room"=> (person.group=="1" || person.group=="2" ? "abajo" : "arriba")) }
 =end
-=begin
+
 # Start the thread when the application starts
 Person.all.each do |person|
 	puts person.birth
@@ -196,4 +196,3 @@ Person.all.each do |person|
 end
 
 Person.start_update_celebration_thread
-=end
