@@ -7,7 +7,7 @@
 module Utils
 
 	MONTHS_ROMAN 	= ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"]
-	MONTHS_LATIN 	= ["Ianuarius", "Februarius", "Martius", "Aprilis", "Maius", "Iunius", "Iulius", "Augustus", "September", "October", "November", "December"]
+	MONTHS_LATIN 	= ["ianuarii", "februarii", "martii", "aprilis", "maii", "iuni", "iuli", "augusti", "septembris", "octobris", "novembris", "decembris"]
 	NIS_UNICODE 	= "\u20AA"
 	USD_UNICODE 	= "\u0024"
 	EUR_UNICODE 	= "\u20AC"
@@ -72,7 +72,7 @@ module Utils
 		return "" if date.nil?
 		date = date.strftime("%-d-%m-%Y") if date.is_a? Date
 		date_array = date.split("-")
-		"#{date_array[0]} #{MONTHS_LATIN[date_array[1].to_i-1]} #{date_array[2]}"
+		"die #{date_array[0]} #{MONTHS_LATIN[date_array[1].to_i-1]} #{date_array[2]}"
 	end
 
 	def complete_latin_date(date)
@@ -81,7 +81,7 @@ module Utils
 		date = date.strftime("%-d-%m-%Y") if date.is_a? Date
 		date_array = date.split("-")
 		year = date_array[2].to_i < 1000 ? "20#{date_array[2]}" : date_array[2]
-		"Datum Romae, die #{date_array[0]} mensis #{MONTHS_LATIN[date_array[1].to_i-1].downcase} anni #{year}"
+		"Datum Romae, die #{date_array[0]} mensis #{MONTHS_LATIN[date_array[1].to_i-1]} anni #{year}"
 	end
 
 
