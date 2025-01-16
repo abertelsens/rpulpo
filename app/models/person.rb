@@ -96,7 +96,11 @@ class Person < ActiveRecord::Base
 
 		# update the sheets of the ao if the notes or the clothes number were changed
 		self.room.update_gsheet_async if (self.notes_ao_room_changed? || self.clothes_changed?) && !self.room.nil?
+		if (self.celebration_changed? || self.dinning_room_changed? || self.meal_changed? || self.notes_ao_meal_changed?)
+			self.update_gsheet_async
+		end
 	end
+
 
 	# if a person is destroyed we also delete the associated photo of the person if it exists
 	before_destroy do
@@ -168,6 +172,31 @@ class Person < ActiveRecord::Base
 			end
 		end
 	end
+
+
+	# --------------------------------------------------------------------------------------------------------------------
+	# GSHEETS
+	# --------------------------------------------------------------------------------------------------------------------
+	# updates the google sheets with the info of the roooms
+	def update_gsheet
+
+		settings = TableSettings.new(
+			name:						"celebrations_ao",
+			main_table: 		"people",
+			attributes:  		%w(celebration dinning_room meal notes_ao_meal).map{ |att| TableSettings.get_attribute_by_name(att) }
+		)
+
+		gsheet = GSheets.new(:celebrations)
+		gsheet.update_sheet settings, Person.cavabianca , PersonDecorator.new(table_settings: settings)
+
+	end
+
+	# creates ta new thread used to update the google sheets asynchronously. Thus pulpo needs not to wait till the
+	# request to gsheets is completed..
+	def update_gsheet_async
+    Thread.new { update_gsheet }
+	end
+
 
 	# -----------------------------------------------------------------------------------------
 	# MATRIX METHODS

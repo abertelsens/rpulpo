@@ -9,8 +9,8 @@ development:
   adapter: 'postgresql'  
   encoding: 'utf8'
   pool: 5
-  username: 'administrador'
-  server: 'cb'
+  username: 'cb'
+  server: 'puma'
 
   
 production:

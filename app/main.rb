@@ -190,9 +190,9 @@ Person.all.each {|person| person.update("dinning_room"=> (person.group=="1" || p
 =end
 
 # Start the thread when the application starts
-Person.all.each do |person|
-	puts person.birth
-	person.update("celebration"=> person.birth)
-end
+#Person.all.each do |person|
+#	puts person.birth
+#	person.update("celebration"=> person.birth)
+#end
 
 Person.start_update_celebration_thread

@@ -40,6 +40,13 @@ class GSheets
       headers: false,
       x_offset: 9,
       y_offset: 6
+    },
+    celebrations: {
+      sheet_id: '11-ymy2jf2_w_t4iwoQLvy0JBsX6EYPQ4kTlc25A1ffE',
+      sheet_name: 'pulpo_test2',
+      headers: false,
+      x_offset: 2,
+      y_offset: 5
     }
   }
 
