@@ -29,8 +29,6 @@ require_relative 'sinatra_helpers'  # helpers for the sinatra controllers
 require 'require_all'
 #require_rel 'sinatra/htmlescape'
 
-
-
 # include all the models defined in the 'app/models' directory
 require_rel 'models'
 require_rel 'utils'
@@ -179,20 +177,51 @@ Person.all.each do |person|
 end
 
 
+
+	# Document.all.each {|doc| doc.update(engine: "typst") if doc.engine==nil}
 =begin
-# Document.all.each {|doc| doc.update(engine: "typst") if doc.engine==nil}
-Person.all.each {|person| person.update({"guest"=> person.ctr=="guest"})}
-Person.all.each do |person|
-	puts person.birth
-	person.update("celebration"=> person.birth)
-end
-Person.all.each {|person| person.update("dinning_room"=> (person.group=="1" || person.group=="2" ? "abajo" : "arriba")) }
+	Person.all.each {|person| person.update({"guest"=> person.ctr=="guest"})}
+	Person.all.each do |person|
+		puts person.birth
+		person.update("celebration"=> person.birth)
+	end
+	Person.all.each {|person| person.update("dinning_room"=> (person.group=="1" || person.group=="2" ? "abajo" : "arriba")) }
+	=end
+
+	# Start the thread when the application starts
+	#Person.all.each do |person|
+	#	puts person.birth
+	#	person.update("celebration"=> person.birth)
+	#end
 =end
 
-# Start the thread when the application starts
-#Person.all.each do |person|
-#	puts person.birth
-#	person.update("celebration"=> person.birth)
-#end
+	#Person.start_update_celebration_thread
+	
+	decorator = ARDecorator.new(Person.first, :default_date, :clean_strings)
+	decorate_boolean 	= proc { |value| value ? "\u2714".encode('utf-8') : "" }
+	is_boolean 				= proc { |value| value.is_a?(TrueClass) || value.is_a?(FalseClass) } 
 
-Person.start_update_celebration_thread
+	is_date						= proc {|date| date.is_a?(Date)}
+	decorate_date = proc do |date| 
+		formatted_date = date.strftime("%d-%m-%y")
+		puts "Formatting date: #{date} -> #{formatted_date}"
+		formatted_date
+	end
+
+	#decorator.register is_date, decorate_date
+	#decorator.register is_boolean, decorate_boolean
+
+	decorate_name = proc { |person| "#{person.first_name} #{person.family_name}"}
+	#puts decorator.get_value(decorate_boolean, :student)
+	#puts decorator.get_attribute("student")
+	#puts decorator.get_attribute(:student)
+	puts decorator.get_attribute(decorate_name)
+	#puts decorator.get_attribute(:birth)
+
+	#puts decorator.get_attribute([:birth, :first_name, :family_name])
+
+	#puts "checking if date" 
+	#p is_date.call(Person.first[:birth])
+	#puts decorator.get_attribute("crs_records.oblacion")
+	#puts decorator.get_attribute("crs_recordggg.oblacion")
+	puts decorator.get_csv %w(first_name family_name birth)
