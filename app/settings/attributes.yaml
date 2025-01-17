@@ -98,7 +98,7 @@ attributes:
     type: "integer"
     order: "NONE"
     bulk_edit: false
-    css_class: "medium-field"
+    css_class: "medium-field u-text-center"
   - id: "people.dinning_room"
     name: "comedor"
     type: "enum"

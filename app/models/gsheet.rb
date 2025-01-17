@@ -45,7 +45,7 @@ class GSheets
       sheet_id: '11-ymy2jf2_w_t4iwoQLvy0JBsX6EYPQ4kTlc25A1ffE',
       sheet_name: 'pulpo_test2',
       headers: false,
-      x_offset: 2,
+      x_offset: 3,
       y_offset: 5
     }
   }

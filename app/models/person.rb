@@ -57,7 +57,12 @@ class Person < ActiveRecord::Base
 	# -----------------------------------------------------------------------------------------
 
 	# the default scoped defines the default sort order of the query results
-	default_scope { order(family_name: :asc) }
+
+	# do no use default scpoes, they are a pain in the neck
+	# default_scope { order(family_name: :asc) }
+
+	scope :by_celebration, -> { where(ctr: "cavabianca").where.not(celebration: nil).order(celebration: :asc) }
+
 
 	scope :cavabianca, 	-> (amount) { where(ctr: "cavabianca")}
 	scope :laicos, 			-> { where(status:"laico") }
@@ -120,9 +125,6 @@ class Person < ActiveRecord::Base
 	end
 
 	def update(params)
-		puts "updating with params #{params}"
-		puts "updating with prepare params #{Person.prepare_params params}"
-		puts "attributes #{Person.attribute_names}"
 		super(Person.prepare_params params)
 	end
 
@@ -146,49 +148,81 @@ class Person < ActiveRecord::Base
 		(PulpoQuery.new(search_string, table_settings)).execute
 	end
 
-	def update_celebration
-    return if self.celebration.nil?
-		today = Date.today
-		if self.celebration.month == 2 && self.celebration.day == 29
-			cel = Date.new(self.celebration.year,2,28)
-		else
-			cel = self.celebration
-		end
-		next_celebration_year = today.year + (today >= Date.new(today.year, cel.month, cel.day) ? 1 : 0)
-		next_celebration_date = Date.new(next_celebration_year, cel.month, cel.day)
-    self.celebration = next_celebration_date
-    save
-	end
+# Determines the next celebration date based on the current date and a given celebration date.
+#
+# The method accounts for leap years and adjusts February 29 to February 28
+# when necessary. It calculates the next occurrence of the celebration date
+# in the future, considering the current year.
+#
+# @return [Date, nil] Returns the next celebration date if it differs from
+#   the stored celebration date. Returns nil if:
+#   - The `celebration` attribute is nil.
+#   - The stored `celebration` date matches the next calculated date.
+def get_new_celebration
+  # Return nil if `celebration` is not set
+  return nil if self.celebration.nil?
 
-	def self.start_update_celebration_thread
-		puts Rainbow("PULPO: starting update_celebration_thread").yellow
-		Thread.new do
-			puts Rainbow("PULPO: sleeping for 10 seconds to wait for app to fully load").yellow
-			sleep 10
-			loop do
-				Person.all.each(&:update_celebration)
-				puts Rainbow("PULPO: sleeping for 12 hours...").yellow
-				sleep 12 * 60 * 60 # Sleep for 12 hours
-			end
-		end
-	end
+  today = Date.today
+
+  # Adjust leap year date (Feb 29) to Feb 28 for calculations
+  if self.celebration.month == 2 && self.celebration.day == 29
+    cel = Date.new(self.celebration.year, 2, 28)
+  else
+    cel = self.celebration
+  end
+
+  # Determine the year of the next celebration
+  next_celebration_year = today.year + (today >= Date.new(today.year, cel.month, cel.day) ? 1 : 0)
+
+  # Calculate the next celebration date
+  next_celebration = Date.new(next_celebration_year, cel.month, cel.day)
+
+  # Return nil if the calculated next celebration is the same as the stored date
+  self.celebration == next_celebration ? nil : next_celebration
+end
+
+def self.start_update_celebration_thread
+  puts Rainbow("PULPO: Starting update_celebration_thread").yellow
+
+  Thread.new do
+    sleep 10 # Allow some delay before starting
+    loop do
+      begin
+        puts Rainbow("PULPO: Checking for updates to celebrations").blue
+        # Collect and process only people with updated celebrations
+        people_to_update = Person.all.lazy
+                                 .map { |person| [person, person.get_new_celebration] }
+                                 .select { |_, new_celebration| !new_celebration.nil? }
+
+        # Apply updates
+        people_to_update.each { |person, new_celebration| person.update("celebration" => new_celebration) }
+
+        puts Rainbow("PULPO: Update cycle completed successfully").green
+      rescue => e
+        # Log errors and continue
+        puts Rainbow("PULPO: Error during update cycle: #{e.message}").red
+        puts e.backtrace if ENV['DEBUG'] # Output backtrace in debug mode
+      end
+
+      sleep 43_200 # Sleep for 12 hours
+    end
+  end
+end
 
 
 	# --------------------------------------------------------------------------------------------------------------------
 	# GSHEETS
 	# --------------------------------------------------------------------------------------------------------------------
-	# updates the google sheets with the info of the roooms
+	# updates the google sheets with the info of the people
 	def update_gsheet
 
 		settings = TableSettings.new(
-			name:						"celebrations_ao",
+			name:						"celebrations",
 			main_table: 		"people",
 			attributes:  		%w(celebration dinning_room meal notes_ao_meal).map{ |att| TableSettings.get_attribute_by_name(att) }
 		)
-
 		gsheet = GSheets.new(:celebrations)
-		gsheet.update_sheet settings, Person.cavabianca , PersonDecorator.new(table_settings: settings)
-
+		gsheet.update_sheet settings, Person.by_celebration , PersonDecorator.new(table_settings: settings)
 	end
 
 	# creates ta new thread used to update the google sheets asynchronously. Thus pulpo needs not to wait till the

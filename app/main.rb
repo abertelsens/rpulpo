@@ -196,13 +196,13 @@ end
 =end
 
 	#Person.start_update_celebration_thread
-	
-	decorator = ARDecorator.new(Person.first, :default_date, :clean_strings)
+
+	decorator = ARDecorator.new(Person.first, :default_date, :clean_strings, :enum_humanize)
 	decorate_boolean 	= proc { |value| value ? "\u2714".encode('utf-8') : "" }
-	is_boolean 				= proc { |value| value.is_a?(TrueClass) || value.is_a?(FalseClass) } 
+	is_boolean 				= proc { |value| value.is_a?(TrueClass) || value.is_a?(FalseClass) }
 
 	is_date						= proc {|date| date.is_a?(Date)}
-	decorate_date = proc do |date| 
+	decorate_date = proc do |date|
 		formatted_date = date.strftime("%d-%m-%y")
 		puts "Formatting date: #{date} -> #{formatted_date}"
 		formatted_date
@@ -220,8 +220,8 @@ end
 
 	#puts decorator.get_attribute([:birth, :first_name, :family_name])
 
-	#puts "checking if date" 
+	#puts "checking if date"
 	#p is_date.call(Person.first[:birth])
 	#puts decorator.get_attribute("crs_records.oblacion")
 	#puts decorator.get_attribute("crs_recordggg.oblacion")
-	puts decorator.get_csv %w(first_name family_name birth)
+	puts decorator.get_csv %w(first_name family_name birth status crs_records.oblation crs_record.oblacion) << decorate_name
