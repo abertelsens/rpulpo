@@ -197,9 +197,10 @@ end
 
 	#Person.start_update_celebration_thread
 
-	decorator = ARDecorator.new(Person.first, :default_date, :clean_strings, :enum_humanize)
+	decorator = ARDecorator.new(Person.includes(:crs_record).first, :default_date, :clean_strings, :enum_humanize)
 	decorate_boolean 	= proc { |value| value ? "\u2714".encode('utf-8') : "" }
 	is_boolean 				= proc { |value| value.is_a?(TrueClass) || value.is_a?(FalseClass) }
+	capitals 					= proc { |value| value.upcase! }
 
 	is_date						= proc {|date| date.is_a?(Date)}
 	decorate_date = proc do |date|
@@ -224,4 +225,11 @@ end
 	#p is_date.call(Person.first[:birth])
 	#puts decorator.get_attribute("crs_records.oblacion")
 	#puts decorator.get_attribute("crs_recordggg.oblacion")
-	puts decorator.get_csv %w(first_name family_name birth status crs_records.oblation crs_record.oblacion) << decorate_name
+	puts decorator.get_csv %w(first_name family_name birth status stat crs_record.oblacion crs_record.phase) << decorate_name
+
+	decorator.register_attribute("first_name", capitals)
+	puts "\n"
+	puts "result of symbol: #{decorator.get_attribute([:first_name])}"
+	puts "result of symbol: #{decorator.get_attribute([:"crs_record.oblacion"])}"
+	#puts "result of string: #{decorator.get_attribute(["first_name"])}"
+	#puts "result of symbol: #{decorator.get_attribute(["crs_record.oblacion"])}"
