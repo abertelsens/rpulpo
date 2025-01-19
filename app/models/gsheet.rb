@@ -19,8 +19,8 @@ require 'googleauth'
 class GSheets
 
   # initial setup. Uncomment to get a more complete log from the gsheets API
-  # Google::Apis.logger = Logger.new(STDOUT)
-  # Google::Apis.logger.level = Logger::DEBUG
+   Google::Apis.logger = Logger.new(STDOUT)
+   Google::Apis.logger.level = Logger::DEBUG
 
   # Set up authentication (use your service account JSON or API key)
   KEY_FILE  = 'config/pulpo-414809-6761bd26adf2.json' # Replace with the path to your JSON key file
@@ -72,8 +72,7 @@ class GSheets
   # @param settings [Object] the settings for the table
   # @param collection [Array] the collection of objects to be written to the sheet
   # @param decorator [Object] the decorator to format the objects
-  def update_sheet(settings, collection, decorator)
-    values = prepare_values(settings, collection, decorator)
+  def update_sheet(values)
     range = calculate_range(values)
     value_range = Google::Apis::SheetsV4::ValueRange.new(values: values)
     # Update the cells
@@ -100,17 +99,20 @@ class GSheets
 
   private
 
+=begin
   # Prepare the values to be written to the Google Sheet
   # @param settings [Object] the settings for the table
   # @param collection [Array] the collection of objects to be written to the sheet
   # @param decorator [Object] the decorator to format the objects
   # @return [Array] the prepared values
-  def prepare_values(settings, collection, decorator)
+  def prepare_values(attributes, collection)
     # get the headers names
     headers = settings.att.map { |att| att.name.humanize(capitalize: false) }
+    decorator = ARDecorator.new(collection)
     values = collection.map { |object| decorator.to_array(object) }
     @sheet[:headers] ? [headers] + values : values
   end
+=end
 
   def calculate_range(array)
     # Get the dimensions of the array

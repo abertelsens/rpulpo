@@ -1,11 +1,10 @@
 class Decorator
 
   CHECKMARK = "\u2714".encode('utf-8')
-  MONTHS_LATIN = [nil, "ianuarii", "februarii", "martii", "aprilis", "maii", "iunii", "iulii", "augusti", "septembris", "octobris", "novembris", "decembris"]
 
   def initialize(args=nil)
     return if args.nil?
-    @table_settings   =  args[:table_settings] if args[:table_settings].present?
+    @table_settings   =   args[:table_settings] if args[:table_settings].present?
     @date_format      =   args[:date].present? ? args[:date] : "normal"
 
   end
@@ -21,8 +20,8 @@ class Decorator
   end
 
   def latin_date(date)
-		"die #{date.day} mensis #{MONTHS_LATIN[date.month]} anni #{date.year}"
-	end
+		Utils::complete_latin_date date
+  end
 
 end
 

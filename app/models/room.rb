@@ -35,7 +35,7 @@ class Room < ActiveRecord::Base
 										casa_del_consejo: 10
 									}
 
-									enum :bed,       {normal: 0, larga: 1, reclinable: 2}
+	enum :bed,       {normal: 0, larga: 1, reclinable: 2}
 	enum :bathroom,  {individual: 0, común: 1}
 
 	# after updating a room we also update the information in the gsheets that the ao has.
@@ -75,19 +75,17 @@ class Room < ActiveRecord::Base
 	# --------------------------------------------------------------------------------------------------------------------
 	# updates the google sheets with the info of the roooms
 	def update_gsheet
+		is_guest 					= proc {|room| room.person&.ctr=="guest" }
 
-		settings = TableSettings.new(
-			name:						"rooms_ao",
-			main_table: 		"rooms",
-			related_tables: "people",
-			attributes:  		%w(clothes house room status guest notes_ao_room).map{ |att| TableSettings.get_attribute_by_name(att) }
-		)
+		attributes =  		%w(person.clothes house room person.status) << is_guest << "person.notes_ao_room"
+		decorator = ARDecorator.new(Room.in_use.order('people.clothes'), :boolean_checkmark)
+		values = decorator.get_attribute attributes
+		GSheets.new(:rooms_by_clothes).update_sheet values
 
-		gsheet = GSheets.new(:rooms_by_clothes)
-		gsheet.update_sheet settings, Room.in_use.order('people.clothes') , RoomDecorator.new(table_settings: settings)
-
-		gsheet = GSheets.new(:rooms_by_house)
-		gsheet.update_sheet settings, Room.in_use.order(:house, :room), RoomDecorator.new(table_settings: settings)
+		attributes =  		%w(house room person.clothes person.status) << is_guest << "person.notes_ao_room"
+		decorator = ARDecorator.new(Room.in_use.order(:house, :room), :boolean_checkmark)
+		values = decorator.get_attribute attributes
+		GSheets.new(:rooms_by_house).update_sheet values
 
 	end
 
