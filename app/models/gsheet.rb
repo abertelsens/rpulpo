@@ -115,6 +115,7 @@ class GSheets
 =end
 
   def calculate_range(array)
+    puts "calculating range x:#{@sheet[:x_offset]} y:#{@sheet[:y_offset]}"
     # Get the dimensions of the array
     start_row = @sheet[:y_offset]
     start_column = @sheet[:x_offset]
@@ -128,7 +129,7 @@ class GSheets
     # Convert columns from numeric index to letter (A, B, C, ...)
     start_col_letter = ('A'.ord + start_column - 1).chr
     end_col_letter = ('A'.ord + end_column - 1).chr
-
+    puts "got #{@sheet[:sheet_name]}!#{start_col_letter}#{start_row}:#{end_col_letter}#{end_row}"
     # Construct the range string
     "#{@sheet[:sheet_name]}!#{start_col_letter}#{start_row}:#{end_col_letter}#{end_row}"
   end
