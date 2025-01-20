@@ -196,8 +196,8 @@ end
 =end
 
 	#Person.start_update_celebration_thread
-	person1 = Person.includes(:crs_record).first
-	decorator = ARDecorator.new([person1,person1], :default_date, :clean_strings, :enum_humanize)
+	#person1 = Person.includes(:crs_record).first
+	#decorator = ARDecorator.new([person1,person1], :default_date, :clean_strings, :enum_humanize)
 	#decorate_boolean 	= proc { |value| value ? "\u2714".encode('utf-8') : "" }
 	#is_boolean 				= proc { |value| value.is_a?(TrueClass) || value.is_a?(FalseClass) }
 	#capitals 					= proc { |value| value.upcase! }
@@ -233,4 +233,4 @@ end
 	#puts "result of symbol: #{decorator.get_attribute([:"crs_record.oblacion"])}"
 	#puts "result of string: #{decorator.get_attribute(["first_name"])}"
 	#puts "result of symbol: #{decorator.get_attribute(["crs_record.oblacion"])}"
-	puts decorator.get_attribute("first_name")
+	#puts decorator.get_attribute("first_name")
