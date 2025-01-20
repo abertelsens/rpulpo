@@ -98,7 +98,6 @@ class Person < ActiveRecord::Base
 		crs_record.update(phase:"sintesis") if (status=="diacono" && crs_record)
 		crs_record.update(phase:nil) if (status=="sacerdote" && crs_record)
 		self.full_name = "#{first_name} #{family_name}"
-		self.guest = self.ctr=="guest"
 		# update the sheets of the ao if the notes or the clothes number were changed
 
 		self.room.update_gsheet_async if (self.notes_ao_room_changed? || self.clothes_changed?) && !self.room.nil?
