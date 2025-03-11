@@ -240,7 +240,7 @@ class Mail < ActiveRecord::Base
 		dir_path = if entity.sigla=="cg"
 			"#{base}/#{(direction=="entrada" ? "ENTRADAS" : "SALIDAS")}/#{date.year}"
 		else
-			"#{base}/#{entity.sigla}/#{(direction=="entrada" ? "ENTRADAS" : "SALIDAS")}#{date.year}"
+			"#{base}/#{entity.sigla}/#{(direction=="entrada" ? "ENTRADAS" : "SALIDAS")}/#{date.year}"
 		end
 		puts "got dir"
 		p dir_path
