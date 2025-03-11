@@ -15,7 +15,6 @@ PANDOC_REFERENCE = "app/engines-templates/word/custom-reference.docx"
 # Regular Expression Matching
 get %r{/mail/draft-([\w]+)} do |id|
 	headers 'content-type' => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-	#html_src = Mail.find(id).prepare_text(get_current_user)
 	#PandocRuby.html(html_src, :standalone, "--reference-doc \"#{PANDOC_REFERENCE}\" --preserve-tabs").to_docx
 	puts "PREPARING DRAFT"
 	draft_writer = Mail.find(id).draft_writer(get_current_user)

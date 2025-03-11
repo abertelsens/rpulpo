@@ -20,6 +20,14 @@ Stimulus.register("mailform", class extends Controller {
   connect() {
     console.log("Stimulus Connected: mailform controller");
   }
+
+  updateProtocolFocus() {
+    console.log("updating focus");
+    let end = this.protocolTarget.value.indexOf("/");
+    if (end !== -1) {
+      this.protocolTarget.setSelectionRange(0, end); // Select from start until the slash (excluded)
+    }
+  }
     
   // togles the readonly attribute of the topic field
   enableEditTopic(event){
@@ -27,7 +35,6 @@ Stimulus.register("mailform", class extends Controller {
     this.topicTarget.removeAttribute('readonly');
     this.topicButtonTarget.style.display="none";
   }
-
   
   updateReferences() {    
     var mailId = this.mailidTarget.value

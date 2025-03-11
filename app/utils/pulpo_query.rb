@@ -20,13 +20,13 @@ require_relative '../models/table_settings'
 class PulpoQuery
 
 	AND_DELIMITERS = [' AND ', ' and ']
-	OR_DELIMETERS = [' ', ' OR ', ' or ']
+	OR_DELIMETERS = [' ', 'OR', 'or']
 
-	SETTINGS_FILE_PATH = "app/settings/query_settings.yaml"
-	SETTINGS_YAML = YAML.load_file(SETTINGS_FILE_PATH)
-	QUERY_ALIASES = SETTINGS_YAML["query_aliases"].map {|al| {from: al.first[0], to: al.first[1]} }
-	NAME_ALIASES = SETTINGS_YAML["name_aliases"]
-	ATTRIBUTES = TableSettings.get_all_attributes
+	SETTINGS_FILE_PATH 	= "app/settings/query_settings.yaml"
+	SETTINGS_YAML 			= YAML.load_file(SETTINGS_FILE_PATH)
+	QUERY_ALIASES 			= SETTINGS_YAML["query_aliases"].map {|al| {from: al.first[0], to: al.first[1]} }
+	NAME_ALIASES 				= SETTINGS_YAML["name_aliases"]
+	ATTRIBUTES 					= TableSettings.get_all_attributes
 
 	def initialize(query_string, table_settings=nil)
 		#puts "query_string:#{query_string} table_settings: #{table_settings.inspect}"
@@ -35,22 +35,22 @@ class PulpoQuery
 		@tables = 		table_settings.nil? ? [] : table_settings.get_tables
 		@models = 		(@tables-[@main_table]).map {|table| table.singularize}
 
-		if query_string.nil? then @query_array = []
-		else
+		@query_array = if query_string.nil? then []
+			else
 
-			# clean any ' character
-			query_string = query_string.strip.gsub(/'+/, '')
-			# clean any whitespaces after colons: i.e. "clothes:  96" will become clothes:96
-			query_string = query_string.strip.gsub(/:\s+/, ':')
-			# clean any more occurence of several white spaces
-			query_string = query_string.gsub(/\s+/, ' ')
+				# clean any ' character
+				query_string = query_string.strip.gsub(/'+/, '')
+				# clean any whitespaces after colons: i.e. "clothes:  96" will become clothes:96
+				query_string = query_string.strip.gsub(/:\s+/, ':')
+				# clean any more occurence of several white spaces
+				query_string = query_string.gsub(/\s+/, ' ')
 
-			#replace the query alias if found
-			QUERY_ALIASES.each { |pair| query_string.gsub!(/#{pair[:from]}/, pair[:to]) }
+				#replace the query alias if found
+				QUERY_ALIASES.each { |pair| query_string.gsub!(/#{pair[:from]}/, pair[:to]) }
 
-			# split the string into AND clauses
-			@query_array = query_string.split(Regexp.union(AND_DELIMITERS))
-		end
+				# split the string into AND clauses
+				query_string.split(Regexp.union(AND_DELIMITERS))
+			end
 	end
 
 	def execute
@@ -77,8 +77,8 @@ class PulpoQuery
 	def execute_or_clauses(query_string)
 
 		#puts "executin execute_or_clauses of string #{query_string}"
-		query_array = query_string.split(Regexp.union(OR_DELIMETERS))
-
+		query_array = query_string.split(Regexp.union(OR_DELIMETERS)).select { |clause| !clause.empty? }
+		#puts "got query array #{query_array}"
 		# transform the clauses into Attributes Queries
 		attributes_array = query_array.map { |clause| AttributeQuery.new(clause, @main_table, @models) }
 
@@ -95,11 +95,10 @@ end # class end
 
 class AttributeQuery
 
-	MAIN_TABLE ="people"
+	MAIN_TABLE = "people"
 	DEFAULT_ATTRIBUTES = {"people" => "full_name", "rooms" => "room", "permits" => "full_name" }
-
-	ATTRIBUTES = PulpoQuery::ATTRIBUTES
-	NAME_ALIASES = PulpoQuery::NAME_ALIASES
+	ATTRIBUTES 		= PulpoQuery::ATTRIBUTES
+	NAME_ALIASES 	= PulpoQuery::NAME_ALIASES
 
 	attr_accessor :status
 
@@ -128,7 +127,7 @@ class AttributeQuery
 
 	def execute
 
-		return nil if !@status
+		return nil unless @status
 
 		att = TableSettings.get_attribute_by_name(@att_name)
 		table, field_name = att.field.split(".")

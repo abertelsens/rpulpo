@@ -19,7 +19,7 @@
 
 html, body {
   /*font-family: 'Helvetica', 'Rubik', sans-serif;*/
-  font-family: 'Rubik', sans-serif;
+  font-family: 'Roboto Flex', sans-serif;
   font-weight: 400;
   font-size: 13pt;
   background-color: white;
@@ -150,15 +150,9 @@ h4.matrix-settings-header:hover
   width: 200px;
 }
 
-div.search-filters
-{
-  background-color: var(--light-snow);
-  border-radius: 5px;
-  border-color: var(--light-gray);
-  border-style: solid;
-  border-width: 1px;
-  margin: 1rem 0rem 2rem 0rem;
-  padding-top: 1.4rem
+div.search-filters {
+  margin: 0rem 0rem 1rem 0rem;
+  padding: 1.4rem
 }
 
 @media all and (max-width: 1500px) {
@@ -461,6 +455,10 @@ a.button.no-border
   width: inherit;
   overflow-y: auto;
   width: 100%;
+}
+
+.table-container::-webkit-scrollbar {
+  display: none;
 }
 
 @media all and (max-width: 1500px) {
@@ -1160,6 +1158,8 @@ div.modal-content h4
 /*************************************************************************
  UTILITY CLASSES
 **************************************************************************/
+
+
 
 .vertical-align
 {

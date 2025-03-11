@@ -8,18 +8,18 @@ turbo-frame id="document-links-frame"
 			// REFERNCES
 			//----------------------------------------------------------------------------------
 
-			== partial :"form/mail/refs_ans_links", locals: {target:"answers", title:"Referencias", mails:@references, target:"references"}
+			== partial :"form/mail/refs_ans_links", locals: {title:"Referencias", mails:@references, target:"references"}
 
 			//----------------------------------------------------------------------------------
 			// NOTES
 			//----------------------------------------------------------------------------------
 			
-			== partial :"form/mail/related_files_links", locals: {target:"notes", title:"Nota y Anexos", files:@related_files, target:"notes"}
+			== partial :"form/mail/related_files_links", locals: {target:"notes", title:"Nota y Anexos", files:@related_files}
 			//----------------------------------------------------------------------------------
 			// ANSWERS
 			//----------------------------------------------------------------------------------
 			
-			== partial :"form/mail/refs_ans_links", locals: {target:"answers", title:"Respuestas", mails:@answers, target:"answers"}
+			== partial :"form/mail/refs_ans_links", locals: {target:"answers", title:"Respuestas", mails:@answers}
 
 			
 		

@@ -115,8 +115,8 @@ class TableSettings
 	end
 
 	def self.get_attribute_by_name(name)
-		puts "looking for attribute #{name} found #{ALL_ATTRIBUTES.find{|a| a.field.split(".")[1]==name}}"
-		return ALL_ATTRIBUTES.find{|a| a.field.split(".")[1]==name}
+		#puts "looking for attribute #{name} found #{ALL_ATTRIBUTES.find{|a| a.field.split(".")[1]==name}}"
+		ALL_ATTRIBUTES.find{|a| a.field.split(".")[1]==name}
 	end
 
 	# checks wether an attribute is in the table settings
@@ -133,7 +133,7 @@ class TableSettings
 	end
 
 	def main_table
-		return @main_table
+		@main_table
 	end
 
 	def main_model_name

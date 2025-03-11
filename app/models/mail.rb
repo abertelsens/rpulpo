@@ -18,7 +18,7 @@ TAB = "\u0009".encode('utf-8')
 class Mail < ActiveRecord::Base
 
 	BASE_DIR					= "app/public"
-	BALDAS_BASE_DIR 	= OS.windows? ? "L:/Usuarios/sect/CORREO-CG/BALDAS" : "/mnt/sect/CORREO-CG/BALDAS"
+	BALDAS_BASE_DIR 	= OS.windows? ? "L:/Usuarios/sect/CORREO/BALDAS" : "/mnt/sect/CORREO/BALDAS"
 	BASE_PATH 				= OS.windows? ? "L:/Usuarios/sect" :  "/mnt/sect"
 	CRSC 							= "crs+"
 	DEFAULT_PROTOCOL 	= "crs+ XX/XX"
@@ -240,7 +240,7 @@ class Mail < ActiveRecord::Base
 		dir_path = if entity.sigla=="cg"
 			"#{base}/#{(direction=="entrada" ? "ENTRADAS" : "SALIDAS")}/#{date.year}"
 		else
-			"#{base}/#{date.year}/#{entity.sigla}/#{(direction=="entrada" ? "ENTRADAS" : "SALIDAS")}"
+			"#{base}/#{entity.sigla}/#{(direction=="entrada" ? "ENTRADAS" : "SALIDAS")}#{date.year}"
 		end
 		puts "got dir"
 		p dir_path
@@ -259,35 +259,6 @@ class Mail < ActiveRecord::Base
 
 	def get_status
 		mail_status
-	end
-
-	def prepare_text(user)
-		users = ["sect", "vr", "r"] if user.uname=="sect"
-		users = ["vr", "sect", "r"] if user.uname=="vice"
-		users = ["r", "sect", "vr"] if user.uname=="rector"
-
-		css = "<style>
-					table {border: 1px solid black; border-collapse: collapse; width:100%}\n
-					td {width:20%}\n
-					</style>\n"
-
-		# add the signature boxes
-		html = css << "<table><tr><td>#{users[0]}<br>»</td><td>#{users[1]}<br>»</td><td>#{users[2]}<br>»</td><td><br>»</td><td><br>»</td></tr></table>\n"
-		html << "<h2>Asunto: #{topic}</h2>\n"
-
-		# add the references
-		html << "<h2>Antecedentes:</h2>\n"
-		html = refs.inject(html){ |res,ref| (res << "<blockquote>#{ref.mail2html}</blockquote>\n") } unless refs.nil?
-		html << "- - -<br>"
-
-		# the header of the draft. It includes the references and the protocol
-		references_string = refs.empty? ? "" : "Ref. #{refs_string}"
-		header = "<p>#{references_string}     #{protocol}</p>"
-		body = "<ol><li><p>Agradecemos...<p></li></ol>"
-		footer = "<p>Roma, #{Time.now.strftime("%d-%m-%y")}</p>"
-		res = html << header << body << footer
-		puts res
-		res
 	end
 
 	# provides an html text of the files related to the mail object.
@@ -324,19 +295,26 @@ end #class end
 class UnreadMail < ActiveRecord::Base
 	belongs_to :mail
 	belongs_to :user
-end
+end # class end
 
 class AssignedMail < ActiveRecord::Base
 	belongs_to 	:mail
 	belongs_to 	:user
-end
+end # class end
 
 class Reference < ActiveRecord::Base
 	belongs_to 	:mail
 	belongs_to 	:reference, :class_name => "Mail"
-end
+
+	# after a reference is added we update tht corresponding answer
+	after_create :update_answer
+
+	def update_answer
+		Answer.create(mail: reference, answer:mail)
+	end
+end # class end
 
 class Answer < ActiveRecord::Base
 	belongs_to 	:mail
 	belongs_to 	:answer, 		:class_name => "Mail"
-end
+end # class end

@@ -73,7 +73,7 @@ Stimulus.register("mail", class extends Controller {
   closeProtocolModal(event) {    
     event.stopPropagation();
     event.preventDefault();
-    this.protocolModalTarget.classList.remove('hidden-frame');
+    this.protocolModalTarget.classList.add('hidden-frame');
   }  
 })
 

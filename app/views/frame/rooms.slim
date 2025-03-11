@@ -16,13 +16,12 @@ turbo-frame id="main_frame"
         keydown.ctrl+c@window->clipboard#copy"
       ]
       
-      .row.header-frame
-        .columns.four.offset-by-five.u-text-center  
+      .row.header-frame.u-text-center  
           h3.u-text-center ROOMS
       
       .row
-        .columns.four.offset-by-five.flex-center
-          input#search_string.u-full-width[
+        .columns.four.offset-by-four 
+          input.u-full-width#search_string[
           autofocus="autofocus"
           tabindex="1" 
           type="search" 
@@ -34,7 +33,7 @@ turbo-frame id="main_frame"
           value=@rooms_query
           ]
 
-        .columns.two.flex-left  
+        .columns.four 
           a.button.button-primary.button-small[
             data-form-target="newButton"
             title="ctr+a or ctr+enter"
@@ -61,22 +60,22 @@ turbo-frame id="main_frame"
             i.fa-solid.fa-table style="color:white; font-size:small"
             |&nbsp
 
-      .row 
-        .columns.three style="min-width:100px; padding-right:10px"
-          div.table-container
-            div.table-table.table-border  
+      
+      .row.flex-columns style="gap: 2rem justify-content: space-between"
+        .flex style="margin-left: auto;"
+          div.table-container.scroll-container style="width: 30rem; height:auto"
+            div.table-table.table-border style="width: 26rem"
               div.table-row-head
-                div.table-cell-head.small-field = "casa"
+                div.table-cell-head.medium-field = "casa"
                 div.table-cell-head.small-field = "libres"
                 div.table-cell-head.small-field = "total"
               - Room.get_rooms_count_by_house.each do |house|
-                a.table-row-body href="/rooms/house/#{house["room"]}" tabindex=-1 data-turbo-frame="rooms_table"
+                a.table-row-body href="/rooms/house/#{house[:room]}" tabindex=-1 data-turbo-frame="rooms_table"
                   div.table-cell-body.no-border = house[:room].humanize
                   div.table-cell-body.no-border.u-text-center = house[:empty]
                   div.table-cell-body.no-border.u-text-center = house[:total]
-        .columns.eight.u-full-width
-          .row 
-            turbo-frame id="rooms_table" src="/rooms/table"
+          
+        turbo-frame style="margin-right: auto;" id="rooms_table" src="/rooms/table"
           
       .row
         .modal.hidden-frame data-clipboard-target="modal" data-modal-target="modal" 
