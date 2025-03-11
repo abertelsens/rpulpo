@@ -59,8 +59,8 @@ Stimulus.register("form", class extends Controller {
   add(event) {
     event.preventDefault();
     event.stopPropagation();
-    Turbo.visit(this.newButtonTarget.href)
-    //this.newButtonTarget.click();
+    this.newButtonTarget.click();
+    /*Turbo.visit(this.newButtonTarget.href)*/
   }
 
   table_settings(event) {

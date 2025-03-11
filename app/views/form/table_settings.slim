@@ -6,9 +6,15 @@ turbo-frame id="main_frame"
 
 	- action = (locals[:table].nil? ? "/#{@origin}/table/settings" : "/#{locals[:table]}/table/settings")
 
-	form action=action method="POST" data-controller="table-settings"
+	.container.container-frame data-controller="form" 
 	
-		.container
+		form[
+			action=action 
+			method="POST" 
+			data-controller="table-settings"
+			data-form-target="form"
+			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
+			]
 			
 			/----------------------------------------------------------------------------------------------------------------
 			// FORM HEADER
@@ -66,6 +72,19 @@ turbo-frame id="main_frame"
 			// FORM BUTTONS
 			//----------------------------------------------------------------------------------------------------------------
 			.row.center-align
-					button.button-primary type="submit" name="commit" value="save" save  
-					a.button.button-secondary formnovalidate="true" href="/#{@origin}" cancel
+					button.button-primary[
+						data-form-target="submitButton" 
+						type="submit" 
+						name="commit" 
+						value="save"] save
+					
+					a.button.button-secondary[
+						formnovalidate="true" 
+						tabindex="-1" 
+						data-form-target="cancelButton" 
+						href="/#{@origin}"
+						title="esc"
+						] cancel	 
+
+					//a.button.button-secondary formnovalidate="true" href="/#{@origin}" cancel
 					

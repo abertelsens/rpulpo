@@ -12,6 +12,8 @@ import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.j
 
 Stimulus.register("modal", class extends Controller {
   
+  static values = { name: String };
+
   static targets = ["form", "modal", "firstField"]
   
   connect() {
@@ -21,15 +23,28 @@ Stimulus.register("modal", class extends Controller {
   open_modal(event) {    
     event.preventDefault();
     event.stopPropagation();
-    this.modalTarget.style.display="block";
+    const modalId = event.params.modalId;
+    const modal = this.element.querySelector(`[data-modal-id="${modalId}"]`);
+    this.activeModal = modal;
+
+    modal.style.display="block";
+    modal.setAttribute("data-action", "keydown.esc@window->modal#close_modal"); 
+
+    console.log("active modal", this.activeModal);
     if(this.hasFormTarget) { this.formTarget.setAttribute("data-action", ""); }
-    this.modalTarget.setAttribute("data-action", "keydown.esc@window->modal#close_modal"); 
+    //this.modalTarget.setAttribute("data-action", "keydown.esc@window->modal#close_modal"); 
   }
   close_modal(event) {    
-    this.modalTarget.setAttribute("data-action", "");
+    //console.log("closing modal");
+    //const modalId = event.params.id;
+    //const modal = this.element.querySelector(`[data-modal-id="${modalId}"]`);
+    console.log("active modal", this.activeModal);
+    this.activeModal.style.display="none";
+
+    //this.modalTarget.setAttribute("data-action", "");
     if(this.hasFormTarget) { this.formTarget.setAttribute("data-action", "keydown.esc@window->keys#escape"); } 
-    this.modalTarget.style.display="none";
-    if(this.hasFirstFieldTarget) { this.firstFieldTarget.focus(); } 
+    //this.modalTarget.style.display="none";
+    //if(this.hasFirstFieldTarget) { this.firstFieldTarget.focus(); } 
   }  
 })
     

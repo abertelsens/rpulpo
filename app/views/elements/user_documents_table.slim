@@ -1,13 +1,12 @@
 // Renders a table with the documents that the current_user is allowed to produce
 div.table-container
-  - puts "loading modal documents!!!!!!!!!!!"
   div.table-table
     div.table-cell-header
       h4.margin-bottom = "DOCUMENTS"
     - docs = current_user.get_documents
     - docs.each do |mod_docs|
         div.table-row-head
-          div.table-cell-head
+          div.table-cell-head.margin-bottom
             b = mod_docs[0].name.upcase
         - mod_docs[1].each do |document|
           .table-row-body

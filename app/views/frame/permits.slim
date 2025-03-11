@@ -11,15 +11,16 @@ turbo-frame id="main_frame"
       data-controller="search" 
       data-turbo-frame="permits_table" 
       data-action="input->searchfield#submit \
-        keydown.ctrl+p@window->modal#open_modal \
-         keydown.ctrl+s@window->form#search_focus 
+        keydown.ctrl+s@window->form#search_focus 
         keydown.ctrl+a@window->form#add \
         keydown.ctrl+c@window->clipboard#copy"
       ]
       
-      .row.header-frame
-        .columns.twelve.u-text-center  
-          h3.u-text-center QUESTURA
+      /-------------------------------------------------------------------------
+      // HEADER
+      /-------------------------------------------------------------------------
+      .row.flex-center
+        h3 QUESTURA
       
       .row
         .columns.three.offset-by-four.flex-center
@@ -36,51 +37,52 @@ turbo-frame id="main_frame"
           ]
 
         .columns.two.flex-left  
-          a.button.button-primary.button-small[
-            data-form-target="newButton"
-            title="ctr+a or ctr+enter"
-            href="/permit/new" 
-            data-turbo-frame="editor_frame"
-          ]
-            i.fa-solid.fa-plus 
-            |&nbspadd
-          
+           
+          // COPY BUTTON
           a.button.button-success.button-small[
-            title="copies the results to the clipbard ctrl+c" 
-            style="width:6rem" 
-            data-clipboard-target="copyButton" 
-            data-action="click->clipboard#copy"
-          ]
+            title="copies the results to the clipbard (ctrl+c)" 
+            style="width:6rem"
+            data-clipboard-target="copyButton"
+            data-modal-modal-id-param="clipboard" 
+            data-action="click->clipboard#copy click->modal#open_modal"]
             i.fa-solid.fa-copy style="font-size:small"
             |&nbspcopy
           
+          // MENU BUTTON
           a.button.button-small.button-square[
             href="/permits/table/settings" 
             data-form-target="tableSettingsButton" 
             data-turbo-frame="editor_frame"
-            title="table settings"
-          ]
+            title="table settings"]
             i.fa-solid.fa-table style="color:white; font-size:small"
             |&nbsp
 
-          button.button-small.button-square title="menu (ctrl+p)" data-action="click->modal#open_modal"
+          button.button-small.button-square[
+            title="menu (ctrl+m)"
+            data-modal-modal-id-param="menu" 
+            data-action="click->modal#open_modal"]
             <i style="color:white" class="fa-solid fa-bars"></i>
 
       .row 
         turbo-frame id="permits_table" src="/permits/table"
       
-      .row
-        .modal.hidden-frame data-clipboard-target="modal" data-modal-target="modal" 
+      /-------------------------------------------------------------------------
+      / CLIPBOARD MODAL
+      /-------------------------------------------------------------------------
+      .row data-modal-modal-id-param="clipboard" data-action="keydown.ctrl+c@window->modal#open_modal"
+        .modal.hidden-frame data-modal-id="clipboard"  data-clipboard-target="modal" 
           .modal-content.u-text-center
             h5.u-text-center = "Data to copy"
             textarea#copy_field.modal-copy-area isTrusted="true" rows="4" cols="20" data-clipboard-target="copyField"
             .columns.two.offset-by-five   
-              button.button-primary data-action="click->clipboard#closeModal" close
+              button.button-primary data-action="click->modal#close_modal" close
 
-
-      .row 
-        .modal.hidden-frame data-modal-target="modal" 
-          .modal-content
+      /-------------------------------------------------------------------------
+      / MENU MODAL
+      /-------------------------------------------------------------------------
+      .row data-modal-modal-id-param="menu" data-action="keydown.ctrl+m@window->modal#open_modal" data-modal-target="modal" 
+        .modal.hidden-frame data-modal-id="menu"
+          .modal-content 
             .container.menu
               == partial "/elements/user_documents_table", locals: {current_user: @current_user, person_id: "set", current_view: "permits"}
                 

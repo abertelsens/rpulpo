@@ -6,12 +6,8 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:wght@400;600&family=Rubik:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&family=Open+Sans:wght@400;600&family=Roboto+Flex:opsz,wght@8..144,100..1000&family=Rubik:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-/! Load Fontawesome
-script src="https://kit.fontawesome.com/4f55c9eacf.js" crossorigin="anonymous"
-script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"
-link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet"
 
 /!--------------------------------------------------------------------------------
 /! JSCRIPTS
@@ -21,8 +17,6 @@ script type="module"
   | import hotwiredTurbo from 'https://cdn.skypack.dev/@hotwired/turbo@7.1.0';
 
 script type="module" src="javascript/application.js"
-script type="module" src="javascript/Sortable.js"
-script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
 
 /! Load all Stimulus Controllers
 - Dir.glob("app/public/javascript/controllers/login_controller.js").each do |controller|  
@@ -43,17 +37,19 @@ html
     link rel="stylesheet" href="/css/normalize.css"
     link rel="stylesheet" href="/css/skeleton.css"
     link rel="stylesheet" href="/css/pulpo.css"
-    link rel="stylesheet" href="/css/menu_styles.css"
     
 
   body
 
     .container.login-screen data-controller="login" 
+
       form action="/login" data-login-target="form" method="POST" 
     
         .login-box
           img src="img/cb_icon.jpg"
+    
           h3 PULPO CAVABIANCA
+    
           .row
             label for="uname" user name or email
             input@uname.u-full-width[
@@ -64,8 +60,16 @@ html
           .row.margin-top 
             label for="password" password
             input@password.u-full-width type="password"
+    
           .row.margin-top
-            button.button-success.u-full-width data-login-target="submitButton" data-action="click->login#login" type="submit" name="commit" value="login" login
-          <p style="font-size: .8rem">If you live in Cavabianca you can log in as <em>guest</em> just using your email and leaving the password field empty.
+            button.button-success.u-full-width[
+              data-login-target="submitButton" 
+              data-action="click->login#login" 
+              type="submit" 
+              name="commit" 
+              value="login"] login
+          
+          <p style="font-size: .9rem">If you live in Cavabianca you can log in as <em>guest</em> just using your email and leaving the password field empty.
+    
           .row.margin-top 
             .alert.alert-error class=(@auth_error ? "" : "hidden-alert") data-login-target="errorFrame" LOGIN FAILED!

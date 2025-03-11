@@ -7,7 +7,7 @@ turbo-frame id="main_frame"
     
     .flex-columns.flex-top
       
-      .flex-rows style="width:10rem"
+      .flex-rows style="width:14rem"
         
         / build all the links for the different ceremonies
         - %w(fidelidad admissio lectorado acolitado).each do |ceremony|
@@ -18,5 +18,6 @@ turbo-frame id="main_frame"
           a.button.link-button data-turbo-frame="people-frame" href="/crs_record/table?phase=#{CrsRecord.phases[key]}" = key
 
       - src = @ceremony.nil? ? "table?ceremony=fidelidad" : "table?ceremony=#{@ceremony}"
+      
       turbo-frame id="people-frame" src=("/crs_record/" << src) data-crs-target="cfiframe"
       

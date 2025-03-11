@@ -179,6 +179,7 @@ div.search-filters {
 }
 
 .login-box {
+  font-family: 'Roboto Flex', sans-serif;
   max-width: 400px;
   background-color:white; 
   opacity: 1; 
@@ -248,10 +249,11 @@ a.h4 {
  }
 
  div.active-ref-box { 
-  background-color: white;
+  /*background-color: white;*/
   /*box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;*/
-  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+  /*box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;*/
   padding-bottom: 1rem;
+  color: var(--medium-blue);
  }
  div.ref-box a.mail-link{
   text-align: left;
@@ -323,7 +325,7 @@ a.button.no-border
 }
 
 .button-square {
-  background-color: var(--dark-gray);
+  background-color: var(--medium-gray);
   width:3rem; 
 }
 
@@ -954,8 +956,8 @@ h4.help {
 
 .link-button
 {
-  font-size: .9rem;
-  font-weight: 500;
+  font-size: 1.2rem;
+  font-weight: 800;
   letter-spacing: 0em;
   text-align: left;
   border-width: 0;
@@ -973,6 +975,8 @@ h4.help {
 }
 
 .button.ts {
+  font-size: .8rem;
+  font-weight: 800;
   padding:.1rem;
   border: 0;
   margin: 0;
@@ -1060,7 +1064,7 @@ a.button.active {
 .menu {
   display: flex;
   justify-content: space-evenly;
-  width: 600px;
+  width: 800px;
   list-style: none;
   border: none;
 }
@@ -1129,7 +1133,7 @@ a.menu-link:hover {
 /* Modal Content/Box */
 .modal-content {
   background-color: #fefefe;
-  margin: 15% auto;     /* 15% from the top and centered */
+  margin: 10% auto;     /* 15% from the top and centered */
   padding: 80px;
   border: 1px solid #888;
   width: fit-content;   /* Could be more or less, depending on screen size */
