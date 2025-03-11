@@ -8,14 +8,14 @@ turbo-frame id="main_frame"
     
       
     form.form-inline[
-    method="GET"
-    data-controller="search"
-    action="/mail/search"
-    data-turbo-frame="mails_table"
-    aria-label="Search" 
-    name="q" 
-    data-action="input->search#submit \
-    keydown.ctrl+a@window->frame#add"]
+      method="GET"
+      data-controller="search"
+      action="/mail/search"
+      data-turbo-frame="mails_table"
+      aria-label="Search" 
+      name="q" 
+      data-action="input->search#submit \
+      keydown.ctrl+a@window->frame#add"]
 
       .row
         
@@ -24,45 +24,46 @@ turbo-frame id="main_frame"
           // -----------------------------------------------------------------------------------
           // HEADER
           // -----------------------------------------------------------------------------------   
-          .row.header-frame.margin-top style="padding: 0 10rem"
+          .row.header-frame.margin-top
             
             
-            .flex-columns.u-full-width
-              .flex-left
-                img.cb-icon src="img/cb_icon.jpg"
-                h3.no-margin CORREO CAVABIANCA
-
-              .flex-right style="flex: 1" syle="gap: .5rem"
+            .flex-columns.u-full-width.flex-center 
               
-                a.button.button-secondary[
-                  data-turbo-frame="mails_table" 
-                  href="/mail/mark_as_read"
-                  title="marks all the mail as read"]
-                  i.fa-solid.fa-envelope-circle-check style="font-size:small"
+              .flex-center style="gap: 4rem"
+                .flex-center
+                  img.cb-icon src="img/cb_icon.jpg"
+                  h3.no-margin  CORREO CAVABIANCA
 
-                a.button.button-secondary.margin-left[
-                  data-action="click->mail#openProtocolModal"
-                  title="assigns a protocol to a new mail"]
-                  i.fa-solid.fa-lock style="font-size:small"
+                .flex-right style="gap: .4rem; flex: 1"
+                
+                  a.button.button-secondary.button-small.no-margin[
+                    data-turbo-frame="mails_table" 
+                    href="/mail/mark_as_read"
+                    title="marks all the mail as read"]
+                    i.fa-solid.fa-envelope-circle-check style="font-size:small"
+
+                  a.button.button-secondary.button-small.no-margin[
+                    data-action="click->mail#openProtocolModal"
+                    title="assigns a protocol to a new mail"]
+                    i.fa-solid.fa-lock style="font-size:small"
               
             
 
-                - if @current_user.admin?
-                  button.button-secondary.margin-left.button-danger[
-                    data-mail-target="deleteYearButton" 
-                    data-action="click->mail#confirmYearDelete"
-                    title="deletes all the mail for the current year"]
+                  - if @current_user.admin?
+                    button.button-secondary.button-danger.button-small.no-margin[
+                      data-mail-target="deleteYearButton" 
+                      data-action="click->mail#confirmYearDelete"
+                      title="deletes all the mail for the current year"]
 
-                    i.fa-solid.fa-trash style="font-size:small"
-                    
+                      i.fa-solid.fa-trash style="font-size:small"
+                      
 
-                a.button.button-success.margin-left[
-                  href="/mail/new" 
-                  data-turbo-frame="main_frame"
-                  data-form-target="newButton"
-                  title="adds a new entry"
-                ]
-                  i.fa-solid.fa-plus style="font-size:small"
+                  a.button.button-success.button-small.no-margin[
+                    href="/mail/new" 
+                    data-turbo-frame="main_frame"
+                    data-form-target="newButton"
+                    title="adds a new entry"]
+                    i.fa-solid.fa-plus style="font-size:small"
 
           // -----------------------------------------------------------------------------------
           // MAIL SEARCH FILTERS
