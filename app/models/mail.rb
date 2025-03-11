@@ -237,11 +237,7 @@ class Mail < ActiveRecord::Base
 
 	def get_sources_directory
 		base = "#{BASE_PATH}/#{entity.path}"
-		dir_path = if entity.sigla=="cg"
-			"#{base}/#{entity.sigla}/#{(direction=="entrada" ? "ENTRADAS" : "SALIDAS")}/#{date.year}"
-		else
-			"#{base}/#{entity.sigla}/#{(direction=="entrada" ? "ENTRADAS" : "SALIDAS")}/#{date.year}"
-		end
+		dir_path =  "#{base}/#{entity.sigla}/#{(direction=="entrada" ? "ENTRADAS" : "SALIDAS")}/#{date.year}"
 		puts "got dir"
 		p dir_path
 		(File.directory?(dir_path) ? dir_path : false)
