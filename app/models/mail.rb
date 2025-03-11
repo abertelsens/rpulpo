@@ -210,7 +210,9 @@ class Mail < ActiveRecord::Base
 	#
 	def find_related_files()
 		protocol_num = protocol[0..-4].delete("^0-9").to_i
-		files = Dir.entries(get_sources_directory).select{ |fname| Mail.matches_file(fname, protocol_num)}
+		source_dir = get_sources_directory
+		return [] if source_dir.nil?
+		files = Dir.entries(source_dir).select{ |fname| Mail.matches_file(fname, protocol_num)}
 
 		current_files = mail_files.pluck(:name)
 		(current_files - files).each {|file| MailFile.find_by(mail: self, name: file).destroy }
