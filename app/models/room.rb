@@ -100,7 +100,7 @@ class Room < ActiveRecord::Base
 	# request to gsheets is completed.
 	# the thread is created only if there is no other thread running.
 	def update_gsheet_async
-		return unless @@update_request.nil?
+		return unless @@gsheet_update_request.nil?
 		@@gsheet_update_request = Time.now
 		Thread.new { update_gsheet }
 	end
