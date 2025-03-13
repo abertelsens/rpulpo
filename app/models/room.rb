@@ -78,7 +78,7 @@ class Room < ActiveRecord::Base
 	# --------------------------------------------------------------------------------------------------------------------
 	# updates the google sheets with the info of the roooms
 	def update_gsheet
-		if Time.now - @@update_request > 5
+		if Time.now - @@gsheet_update_request > 5
 			is_guest 					= proc {|room| room.person&.ctr=="guest" }
 			attributes =  		%w(person.clothes house room person.status) << is_guest << "person.notes_ao_room"
 			decorator = ARDecorator.new(Room.in_use.order('people.clothes'), :boolean_checkmark)
@@ -89,7 +89,7 @@ class Room < ActiveRecord::Base
 			decorator = ARDecorator.new(Room.in_use.order(:house, :room), :boolean_checkmark)
 			values = decorator.get_attribute attributes
 			GSheets.new(:rooms_by_house).update_sheet values
-			@gsheet_update_request = nil
+			@@gsheet_update_request = nil
 		else
 			sleep 5
 			update_gsheet
