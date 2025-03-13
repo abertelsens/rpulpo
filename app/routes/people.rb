@@ -113,7 +113,6 @@ get '/guest/:id' do
 end
 
 post '/guest/:id' do
-	@current_user = get_current_user
 	params[:short_name] = "#{params[:first_name]} #{params[:last_name]}"
 	case params[:commit]
 		when "new" 		then 	@person = Person.create params
@@ -121,13 +120,14 @@ post '/guest/:id' do
 		when "delete"
 			Person.find(params[:id]).destroy
 			redirect :"/guests"
-	end
+		end
 
 	old_room = Room.find_by(person_id: @person.id)
 	new_room = params[:room].present? ?  Room.find(params[:room]) : nil
+
 	if old_room!=new_room
-		old_room.update(person_id: nil)
-		new_room.update(person: @person)
+		old_room.update(person_id: nil) unless old_room.nil?
+		new_room.update(person: @person) unless new_room.nil?
 	end
 
 	redirect :"/guests"
