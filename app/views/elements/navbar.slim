@@ -12,6 +12,10 @@ turbo-frame id="nav_bar"
             i.fa-solid.fa-user
             | &nbspPeople
           
+          a.button.menu-item tabindex="-1"  data-turbo-frame="main_frame" href='/guests' 
+            i.fa-solid.fa-user
+            | &nbspGuests
+
           - if @current_user.admin?
             a.button.menu-item tabindex="-1"  data-turbo-frame="main_frame" href='/crs_records' crs+
 

@@ -475,7 +475,16 @@ tables:
       - users.password
       - users.usertype
       - users.mail
-  
+  - guests_default:
+    name: guests_default
+    main_table: guests
+    related_tables: rooms
+    attributes:
+      - people.family_name  
+      - people.first_name
+      - rooms.room
+      - people.clothes
+      - people.notes_ao_room
   - documents_default:
     name: documents_default
     main_table: documents

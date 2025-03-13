@@ -1,8 +1,12 @@
 turbo-frame id="main_frame" 
   
-  .container.container-frame data-controller="form" data-action="keydown.ctrl+enter@window->form#add keydown.ctrl+a@window->form#add"
+  .container.container-frame[
+    data-controller="form" 
+    data-action="keydown.ctrl+enter@window->form#add 
+    keydown.ctrl+a@window->form#add"]
       
-    .row.header-frame.u-text-center
+    .row.header-frame.flex-center
+      img.cb-icon src="img/cb_icon.jpg"
       h3 = title
       
     .row

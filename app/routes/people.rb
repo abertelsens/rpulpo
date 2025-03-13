@@ -91,6 +91,55 @@ get '/crs_records' do
 	partial :"frame/crs_records"
 end
 
+# renders a single person view
+get '/guests' do
+	@current_user = get_current_user
+	partial :"frame/simple_template",  locals: {title: "GUESTS", model_name: "guest", table_name: "guests" }
+end
+
+# renders a single person view
+get '/guests/table' do
+	@table_settings = TableSettings.get(:guests_default)
+  @objects = Person.where(ctr: "guest")
+	@decorator = PersonDecorator.new(table_settings: @table_settings)
+	#ObjectDecorator.new(table_settings: @table_settings)
+  partial :"table/simple_template"
+end
+
+# renders a single person view
+get '/guest/:id' do
+	@object = (params[:id]=="new" ? nil : Person.find(params[:id]))
+	partial :"form/guest"
+end
+
+post '/guest/:id' do
+	@current_user = get_current_user
+	params[:short_name] = "#{params[:first_name]} #{params[:last_name]}"
+	case params[:commit]
+		when "new" 		then 	@person = Person.create params
+		when "save" 	then (@person = Person.find(params[:id])).update params
+		when "delete"
+			Person.find(params[:id]).destroy
+			redirect :"/guests"
+	end
+
+	old_room = Room.find_by(person_id: @person.id)
+	new_room = params[:room].present? ?  Room.find(params[:room]) : nil
+	if old_room!=new_room
+		old_room.update(person_id: nil)
+		new_room.update(person: @person)
+	end
+
+	redirect :"/guests"
+end
+
+# Validates if the params received are valid for updating or creating an entity object.
+# returns a JSON object of the form {result: boolean, message: string}
+post '/guest/:id/validate' do
+	content_type :json
+	(new_id? ? (Person.validate params) : (Person.find(params[:id]).validate params)).to_json
+end
+
 # -----------------------------------------------------------------------------------------
 # POST
 # -----------------------------------------------------------------------------------------

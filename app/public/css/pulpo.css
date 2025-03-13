@@ -13,6 +13,7 @@
   --dark-gray: rgb(64, 64, 64);
   --medium-gray: rgb(85, 85, 85);
   --medium-orange: #f9d66e;
+  --yellow-siena: #F0CB89;
   --light-orange: #ffe6c6;
   --light-green: #c3f8be;
 }
@@ -206,7 +207,7 @@ img.login-box
 {
   background-color:#fbfbfb; 
   opacity: 1; 
-  padding: 30px 60px; 
+  padding: 30px 30px; 
   /*box-shadow: rgba(157, 157, 157, 0.35) 0px 5px 15px;*/
   border: 1px solid;
   border-color: var(--light-gray);
@@ -518,7 +519,7 @@ a.button.no-border
 }
 
 .table-row-active {
-  background-color: var(--pale-blue);
+  background-color: var(--yellow-siena);
   color: initial;
 }
 

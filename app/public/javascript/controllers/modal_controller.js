@@ -35,13 +35,9 @@ Stimulus.register("modal", class extends Controller {
     //this.modalTarget.setAttribute("data-action", "keydown.esc@window->modal#close_modal"); 
   }
   close_modal(event) {    
-    //console.log("closing modal");
-    //const modalId = event.params.id;
-    //const modal = this.element.querySelector(`[data-modal-id="${modalId}"]`);
     console.log("active modal", this.activeModal);
     this.activeModal.style.display="none";
 
-    //this.modalTarget.setAttribute("data-action", "");
     if(this.hasFormTarget) { this.formTarget.setAttribute("data-action", "keydown.esc@window->keys#escape"); } 
     //this.modalTarget.style.display="none";
     //if(this.hasFirstFieldTarget) { this.firstFieldTarget.focus(); } 

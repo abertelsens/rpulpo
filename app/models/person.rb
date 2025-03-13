@@ -34,7 +34,7 @@ class Person < ActiveRecord::Base
 	has_one :crs_record, 				dependent: :destroy, class_name: "CrsRecord"
 	has_one :personal, 					dependent: :destroy
 	has_one :study, 						dependent: :destroy
-	has_one :matrix, 						dependent: :destroy
+	#has_one :matrix, 						dependent: :destroy
 	has_one :permit, 						dependent: :destroy
 	has_one :room
 
@@ -89,7 +89,6 @@ class Person < ActiveRecord::Base
 	# -----------------------------------------------------------------------------------------
 
 	after_create do |person|
-		puts "copying picutre"
 		FileUtils.cp_r(DEFAULT_PERSON_IMG, "#{PHOTO_DIR}/#{person.id}.jpg", remove_destination: false)
 	end
 

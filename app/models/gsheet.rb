@@ -1,4 +1,4 @@
-# room.rb
+# gshhets.rb
 #---------------------------------------------------------------------------------------
 # FILE INFO
 #
@@ -20,7 +20,9 @@ class GSheets
 
   # initial setup. Uncomment to get a more complete log from the gsheets API
    Google::Apis.logger = Logger.new(STDOUT)
-   Google::Apis.logger.level = Logger::DEBUG
+
+   # Uמncomment to get a more complete log from the gsheets API
+   #Google::Apis.logger.level = Logger::DEBUG
 
   # Set up authentication (use your service account JSON or API key)
   KEY_FILE  = 'config/pulpo-414809-6761bd26adf2.json' # Replace with the path to your JSON key file
@@ -32,14 +34,14 @@ class GSheets
       sheet_name: 'pulpo_test',
       headers: false,
       x_offset: 2,
-      y_offset: 6
+      y_offset: 5
     },
     rooms_by_house: {
       sheet_id: '11-ymy2jf2_w_t4iwoQLvy0JBsX6EYPQ4kTlc25A1ffE',
       sheet_name: 'pulpo_test',
       headers: false,
       x_offset: 9,
-      y_offset: 6
+      y_offset: 5
     },
     celebrations: {
       sheet_id: '11-ymy2jf2_w_t4iwoQLvy0JBsX6EYPQ4kTlc25A1ffE',
@@ -83,17 +85,17 @@ class GSheets
         value_range,
         value_input_option: 'RAW' # Options: 'RAW' (exact) or 'USER_ENTERED' (processed)
       )
-      puts value_range
-      puts "Successfully updated cell #{range}: #{result.updated_cells} cell(s) updated."
+      puts Rainbow("GSHEETS: Successfully updated cell #{range}: #{result.updated_cells} cell(s) updated.").orange
 
       # Clear rows below the updated values
       start_column_letter, start_row = range.split(':').first.match(/([A-Z]+)(\d+)/).captures
       end_column_letter = range.split(':').last.match(/([A-Z]+)/).captures.first
       clear_range = "#{@sheet_name}!#{start_column_letter}#{start_row.to_i + values.length}:#{end_column_letter}"
       @@sheets_service.clear_values(@sheet[:sheet_id], clear_range)
-      puts "Cleared rows below the updated values in range: #{clear_range}"
+      puts Rainbow("GSHEETS: Cleared rows below the updated values in range: #{clear_range}").orange
+
     rescue Google::Apis::ClientError => e
-      puts "An error occurred: #{e.message}"
+      puts Rainbow("GSHEETS: An error occurred: #{e.message}").orange
     end
   end
 
@@ -115,7 +117,7 @@ class GSheets
 =end
 
   def calculate_range(array)
-    puts "calculating range x:#{@sheet[:x_offset]} y:#{@sheet[:y_offset]}"
+    #puts "calculating range x:#{@sheet[:x_offset]} y:#{@sheet[:y_offset]}"
     # Get the dimensions of the array
     start_row = @sheet[:y_offset]
     start_column = @sheet[:x_offset]
@@ -129,7 +131,7 @@ class GSheets
     # Convert columns from numeric index to letter (A, B, C, ...)
     start_col_letter = ('A'.ord + start_column - 1).chr
     end_col_letter = ('A'.ord + end_column - 1).chr
-    puts "got #{@sheet[:sheet_name]}!#{start_col_letter}#{start_row}:#{end_col_letter}#{end_row}"
+    #puts "got #{@sheet[:sheet_name]}!#{start_col_letter}#{start_row}:#{end_col_letter}#{end_row}"
     # Construct the range string
     "#{@sheet[:sheet_name]}!#{start_col_letter}#{start_row}:#{end_col_letter}#{end_row}"
   end
