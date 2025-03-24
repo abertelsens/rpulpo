@@ -123,7 +123,7 @@ post '/guest/:id' do
 			old_room.update(person_id: nil) unless old_room.nil?
 			@person.destroy
 			redirect :"/guests"
-		end
+	end
 
 	old_room = Room.find_by(person_id: @person.id)
 	new_room = params[:room].present? ?  Room.find(params[:room]) : nil
@@ -201,7 +201,6 @@ get '/people/:id/document/:doc_id/template_variables' do
 	@set = params[:id]
 	partial :'form/report'
 end
-
 
 get '/people/:id/document/:doc_id' do
 	document = Document.find params[:doc_id]

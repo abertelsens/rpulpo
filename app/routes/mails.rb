@@ -10,24 +10,19 @@ require 'pandoc-ruby'
 DEFAULT_MAIL_QUERY = {q: "", year:Date.today.year(), direction:"", entity:"", mail_status:"", assigned:""}
 PANDOC_REFERENCE = "app/engines-templates/word/custom-reference.docx"
 
-
-
 # Regular Expression Matching
 get %r{/mail/draft-([\w]+)} do |id|
 	headers 'content-type' => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
 	#PandocRuby.html(html_src, :standalone, "--reference-doc \"#{PANDOC_REFERENCE}\" --preserve-tabs").to_docx
-	puts "PREPARING DRAFT"
 	draft_writer = Mail.find(id).draft_writer(get_current_user)
 	draft_writer.write_document
 	send_file draft_writer.path
-	#redirect '/'
 end
 
 
 get '/mails' do
 	@current_user = get_current_user
-	@mails_query = session["mails_table_query"]
-	@mails_query = DEFAULT_MAIL_QUERY if @mails_query.nil?
+	@mails_query ||= session["mails_table_query"] || DEFAULT_MAIL_QUERY
 	partial :"frame/mails"
 end
 
@@ -35,8 +30,7 @@ end
 # @objects the people that will be shown in the table
 get '/mails/table' do
 	@current_user = get_current_user
-	@mails_query = session["mails_table_query"]
-	@mails_query = DEFAULT_MAIL_QUERY if @mails_query.nil?
+	@mails_query ||= session["mails_table_query"] || DEFAULT_MAIL_QUERY
 	@objects = Mail.search @mails_query
 	@unread = @current_user.unread_mails.pluck(:mail_id)
 	partial :"table/mail"
@@ -60,8 +54,6 @@ get '/mail/:id/document_links' do
 	@related_files = @object.find_related_files
 	@references = @object.refs
 	@answers = @object.ans
-
-
 	partial :"form/mail/document_links"
 end
 
@@ -76,13 +68,13 @@ get '/mail/:id/update' do
 		elsif params.key?(:sendfile) 		then mail.send_related_files_to_user get_current_user
 		elsif params.key?(:references) 	then mail.update_association params[:references], :references
 		elsif params.key?(:answers) 		then mail.update_association params[:answers], :answers
-	end
+		end
 	res.to_json
 end
 
 get '/mail/assign_protocol' do
-	entity = Entity.find(params[:entity])
-	protocol = Mail.assign_protocol(entity)
+	entity 		= Entity.find(params[:entity])
+	protocol 	= Mail.assign_protocol(entity)
 	p = {
 		date:					Date.today,
 		topic:				params[:topic],
@@ -95,7 +87,6 @@ get '/mail/assign_protocol' do
 	Mail.create(p)
 	redirect '/mails'
 end
-
 
 # prepares a text for the current mail entry
 get '/mail/:id/answer' do
@@ -117,7 +108,6 @@ end
 
 # renders a single document view
 get '/mail/delete_year' do
-	puts "POSTING DELETE YEAR"
 	Mail.with_year(params[:year].to_i).delete_all
 	{result: true}.to_json
 end
@@ -125,14 +115,11 @@ end
 # renders a single document view
 get '/mail/:id' do
 	@object = (params[:id]=="new" ? Mail.create_from_params() : Mail.find(params[:id]))
-	puts "created object #{@object.inspect}"
 	unread = UnreadMail.find_by(mail: @object, user: get_current_user)
 	unread.destroy unless (unread.nil? || params[:id]=="new")
 	@related_files = @object.find_related_files
 	partial :"form/mail"
 end
-
-
 
 # -----------------------------------------------------------------------------------------
 # POST ROUTES
@@ -150,8 +137,6 @@ post '/mail/:id' do
 	end
 	redirect '/mails'
 end
-
-
 
 # -----------------------------------------------------------------------------------------
 # ROUTES CONTROLLERS FOR THE MAILFILES TABLES

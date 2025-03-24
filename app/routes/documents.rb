@@ -8,7 +8,6 @@
 
 #---------------------------------------------------------------------------------------
 # DESCRIPTION
-
 # ROUTES CONTROLLERS FOR THE documents TABLE
 #---------------------------------------------------------------------------------------
 
@@ -25,7 +24,6 @@ end
 # @objects - the documents that will be shown in the table
 get '/documents/table' do
   @table_settings = TableSettings.get(:documents_default)
-  puts "document settings #{@table_settings.inspect}"
   @objects = get_current_user.documents
   @decorator = DocumentDecorator.new(table_settings: @table_settings)
   partial :"table/simple_template"
@@ -69,6 +67,5 @@ end
 # returns a JSON object of the form {result: boolean, message: string}
 post '/document/:id/validate' do
 	content_type :json
-  #puts "validating is new? ·#{new_id?}"
-	(new_id? ? (Document.validate params) : (Document.find(params[:id]).validate params)).to_json
+  (new_id? ? (Document.validate params) : (Document.find(params[:id]).validate params)).to_json
 end
