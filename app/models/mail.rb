@@ -308,11 +308,18 @@ class Reference < ActiveRecord::Base
 	after_create :update_answer
 
 	def update_answer
-		Answer.create(mail: reference, answer:mail)
+		answer = Answer.create(mail: reference, answer:mail)
 	end
 end # class end
 
 class Answer < ActiveRecord::Base
 	belongs_to 	:mail
 	belongs_to 	:answer, 		:class_name => "Mail"
+
+	after_create :update_answer_string
+
+	def update_answer_string
+		mail.update(ans_string: mail.ans.pluck(:protocol).join(", "))
+	end
+
 end # class end
