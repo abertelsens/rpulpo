@@ -16,7 +16,7 @@ turbo-frame id="turnos_frame"
     .columns.five.free-people data-action="dragover->drag#dragover dragleave->drag#dragleave"
       h4.u-text-center = "SIN ASIGNAR" 
       - @vela.get_free_rooms.each do |room|
-        .row.room data-drag-target="person" draggable="true" data-person-id=room.person.id  data-room-id=room.id data-action="drop->drag#drop dragover->drag#dragover dragstart->drag#dragstart dragenter->drag#dragenter"
+        .row.room data-drag-target="person" draggable="true" data-person-id=room.person&.id  data-room-id=room.id data-action="drop->drag#drop dragover->drag#dragover dragstart->drag#dragstart dragenter->drag#dragenter"
           .columns.eight draggable="false" = room.person.short_name
           .columns.four draggable="false" = room.room
 
