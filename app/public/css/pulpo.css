@@ -996,6 +996,7 @@ h4.help {
 }
 
 .button.ts {
+  border: 0;
   font-size: .8rem;
   font-weight: 600;
   letter-spacing: normal;
