@@ -36,9 +36,9 @@ class TurnoDecorator
 
   def formatRoom(room, first_room=false)
     if first_room
-      "[#{formatTime(@turno.start_time)} - #{formatTime(@turno.end_time)}],[#{room.person.short_name}], [#{room.room}]"
+      "[#{formatTime(@turno.start_time)} - #{formatTime(@turno.end_time)}],[#{room.person&.short_name}], [#{room.room}]"
     else
-      "[],[#{room.person.short_name}], [#{room.room}]"
+      "[],[#{room.person&.short_name}], [#{room.room}]"
     end
   end
 
