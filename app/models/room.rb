@@ -78,6 +78,7 @@ class Room < ActiveRecord::Base
 	# --------------------------------------------------------------------------------------------------------------------
 	# updates the google sheets with the info of the roooms
 	def update_gsheet
+		puts Rainbow("updating gsheet. Inside thread").orange
 		if Time.now - @@gsheet_update_request > 5
 			is_guest 					= proc {|room| room.person&.ctr=="guest" }
 			attributes =  		%w(person.clothes house room person.status) << is_guest << "person.notes_ao_room"
@@ -89,8 +90,10 @@ class Room < ActiveRecord::Base
 			decorator = ARDecorator.new(Room.in_use.order(:house, :room), :boolean_checkmark)
 			values = decorator.get_attribute attributes
 			GSheets.new(:rooms_by_house).update_sheet values
+			puts Rainbow("finishes updating").orange
 			@@gsheet_update_request = nil
 		else
+			puts Rainbow("sleeping").orange
 			sleep 5
 			update_gsheet
 		end
@@ -100,6 +103,7 @@ class Room < ActiveRecord::Base
 	# request to gsheets is completed.
 	# the thread is created only if there is no other thread running.
 	def update_gsheet_async
+		puts Rainbow("updating gsheet").orange
 		return unless @@gsheet_update_request.nil?
 		@@gsheet_update_request = Time.now
 		Thread.new { update_gsheet }

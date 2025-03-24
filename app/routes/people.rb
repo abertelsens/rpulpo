@@ -118,9 +118,10 @@ post '/guest/:id' do
 		when "new" 		then 	@person = Person.create params
 		when "save" 	then (@person = Person.find(params[:id])).update params
 		when "delete"
-			Person.find(params[:id]).destroy
+			@person = Person.find(params[:id])
 			old_room = Room.find_by(person_id: @person.id)
 			old_room.update(person_id: nil) unless old_room.nil?
+			@person.destroy
 			redirect :"/guests"
 		end
 

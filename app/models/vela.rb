@@ -18,7 +18,8 @@ require_rel '../engines'
 class Vela < ActiveRecord::Base
 
 	# each vela has many turnos which are destroyed when the parent vela object is destroyed
-	has_many :turnos,  dependent: :destroy
+	has_many :turnos,  	dependent: :destroy
+	has_many :rooms, 		through: :turnos
 
 	# the default scoped defines the default sort order of the query results
 	default_scope { order(date: :asc) }
@@ -77,22 +78,27 @@ class Vela < ActiveRecord::Base
 		order.split(" ").select{|index| index!="-1"}.map{|index| houses_names[index.to_i].humanize}.join( " - " )
 	end
 
-	# buils all the turnos for the vela
+	# Builds all the turnos for the vela
 	def build_turnos
 
-		turnos.destroy_all unless turnos.nil?
-		houses = order.split(" ").select{|index| index!="-1"}
-		current_time = start_time2 + 15*60 # 15 minutes after start_time2, i.e. the Exposition
-		puts "current time #{current_time} end time #{end_time}"
-		while current_time < end_time do
-			turnos << Turno.create(vela: self, start_time: current_time, end_time: current_time + HALF_HOUR )
-			current_time = current_time + HALF_HOUR
+		turnos&.destroy_all
+		houses = order.split(" ").reject { |index| index == "-1" }
+		current_time = start_time2 + 15.minutes # Using ActiveSupport for clarity
+
+		while current_time < end_time
+			turnos.create(start_time: current_time, end_time: current_time + HALF_HOUR)
+			current_time += HALF_HOUR
 		end
 		assign_turnos((Room.get_from_houses houses).order(room: :asc))
 	end
 
 	def assign_turnos(rooms)
 		assign(turnos.to_a,rooms)
+	end
+
+	def get_free_rooms
+		# get the free rooms
+		Room.in_use.where.not(id: self.rooms.pluck(:room_id)).includes(:person).order(house: :asc, room: :asc)
 	end
 
 	def assign(turnos2assign, rooms)
@@ -131,7 +137,6 @@ class Vela < ActiveRecord::Base
 		File.write typ_file_path, full_doc
 		res =  system("typst compile #{typ_file_path} #{pdf_file_path}")
 		res ? pdf_file_path : "Typst Writer: failed to convert document"
-
 	end
 
 

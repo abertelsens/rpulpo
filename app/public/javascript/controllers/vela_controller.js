@@ -1,6 +1,5 @@
-import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
+import { Controller } from "https://cdn.jsdelivr.net/npm/stimulus@3.2.2/dist/stimulus.js"
 
-  
 Stimulus.register("vela", class extends Controller {
   
   static targets = ["field", "form", "turnosFrame"]
@@ -12,33 +11,24 @@ Stimulus.register("vela", class extends Controller {
     this.element[this.identifier] = this
   }
 
-  //saves the form  
-  save()
-  {
-    this.formTarget.action = this.default_action
-    this.formTarget.method="POST"
-    this.element.dataset.turboFrame = "_self"
-    this.element.requestSubmit()
-  }
-
+ 
   reloadturnos()
   {
     this.turnosFrameTarget.src = `${this.data.get("urlprefix")}/update_drag`
   }  
-  // submits the form with a delete commit
-  delete()
-  {
-    this.formTarget.action = this.default_action
-    this.formTarget.method="POST"
-    this.element.dataset.turboFrame = "_self"
-    this.element.requestSubmit()
-  }
-
+ 
+  
   updateTurnos(event) {
     event.preventDefault()    
     this.formTarget.action = `${this.default_action}/turnos/update` 
     this.formTarget.method="POST"
     this.element.dataset.turboFrame = "turnos_frame"
+        // Small delay to ensure the form submits before resetting
+        setTimeout(() => {
+          this.element.dataset.turboFrame = "main_frame"
+          this.formTarget.action = this.default_action; // Reset to previous value
+      }, 1000); 
+
     this.element.requestSubmit()
   }
 })

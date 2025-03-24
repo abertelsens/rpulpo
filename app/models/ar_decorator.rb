@@ -99,6 +99,7 @@ class ARDecorator
   # @param attribute_identifier [String] The identifier of the attribute.
   # @return [Object] The processed value of the attribute.
   def get_attribute(attribute_identifier)
+    puts "getting attribute #{attribute_identifier} for #{@element.inspect}"
     # if the element is really an enumerable object we return a map for each element
     if @element.is_a?(Enumerable)
       decorator = self.dup

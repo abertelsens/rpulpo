@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 
-/!--------------------------------------------------------------------------------
+/!------------------------------------------------------------------------------
 /! FONTS
-/!--------------------------------------------------------------------------------
+/!------------------------------------------------------------------------------
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,12 +12,13 @@
 script src="https://kit.fontawesome.com/4f55c9eacf.js" crossorigin="anonymous"
 
 /! Load Slimselect
-script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"
-link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet"
+script src="javascript/slimselect.min.js"
+/!script src="https://unpkg.com/slim-select@latest/dist/slimselect.min.js"
+/!link href="https://unpkg.com/slim-select@latest/dist/slimselect.css" rel="stylesheet"
 
-/!--------------------------------------------------------------------------------
-/! JSCRIPTS
-/!--------------------------------------------------------------------------------
+/!------------------------------------------------------------------------------
+/ JSCRIPTS
+/!------------------------------------------------------------------------------
 
 script type="module"
   | import hotwiredTurbo from 'https://cdn.skypack.dev/@hotwired/turbo@7.1.0';
@@ -40,26 +41,27 @@ html
     meta name="description" content=""
     meta name="viewport" content="width=device-width, initial-scale=1"
 
-    /!--------------------------------------------------------------------------------
-    //STYLESHEETS
-    /!--------------------------------------------------------------------------------
+    /!--------------------------------------------------------------------------
+    / STYLESHEETS
+    /!--------------------------------------------------------------------------
 
     link rel="stylesheet" href="/css/normalize.css"
     link rel="stylesheet" href="/css/skeleton.css"
     link rel="stylesheet" href="/css/pulpo.css"
     link rel="stylesheet" href="/css/menu_styles.css"
+    link rel="stylesheet" href="/css/slimselect.css"
     
   body
     
-    /!--------------------------------------------------------------------------------
-    // NAVIGATION BAR
-    /!--------------------------------------------------------------------------------
+    /!--------------------------------------------------------------------------
+    / NAVIGATION BAR
+    /!--------------------------------------------------------------------------
     
     turbo-frame id="nav_bar" src="/elements/navbar"
       
-    /!--------------------------------------------------------------------------------
-    /! MAIN FRAME
-    /!--------------------------------------------------------------------------------
+    /!--------------------------------------------------------------------------
+    / MAIN FRAME
+    /!--------------------------------------------------------------------------
 
     - if !@current_user.nil? 
       turbo-frame id="main_frame" src=(@current_user.mail_user? ? "/mails" : "/people")

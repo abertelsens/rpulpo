@@ -20,10 +20,8 @@ end
 
 
 post '/vela/:id/turnos/update' do
-  #puts "UPDATING TURNOS"
   @vela = Vela.find(params[:id])
   @vela.update_from_params params
-  @vela.turnos.destroy
   @vela.build_turnos
   @turnos = @vela.turnos.includes(:rooms => [:person])
   partial :"frame/turnos"
@@ -43,9 +41,8 @@ get '/vela/:id/pdf' do
   send_file (Vela.find(params[:id])).to_pdf
 end
 
-# renders a single document form
 get '/vela/:id' do
-  @object = (params[:id]=="new" ? Vela.create_new() : Vela.find(params[:id]))
+  @object = (params[:id]=="new" ? Vela.create_new : Vela.find(params[:id]))
   @object.build_turnos if @object.turnos.empty?
   partial :"form/vela"
 end
@@ -55,15 +52,11 @@ end
 # -----------------------------------------------------------------------------------------
 post '/vela/:id' do
   #puts "POST IN VELA\n\n\n"
-  @vela = (params[:id]=="new" ? nil : Vela.find(params[:id]))
+  @vela = Vela.find(params[:id])
   case params[:commit]
     when "save"
-      if @vela.nil?
-        @vela = Vela.create_from_params params
-      else
-      	res = @vela.update_from_params params
-        check_update_result res
-      end
+      res = @vela.update_from_params params
+      check_update_result res
     # if a person was deleted we go back to the screen fo the people table
     when "delete" then @vela.destroy
   end
@@ -80,16 +73,26 @@ get '/vela/:id/update_drag' do
 
 end
 
+
 post '/vela/:id/turno/:turno_id/room/:room_id' do
-  @vela = Vela.find(params[:id])
+  vela = Vela.find(params[:id])
   room = Room.find(params[:room_id])
-  old_turno = @vela.turnos.find{|turno| turno.rooms.include? room}
-  TurnoRoom.find_by(turno: old_turno, room: room).update(turno_id: params[:turno_id])
+  #old_turno = @vela.turnos.find{|turno| turno.rooms.include? room}
+
+  old_turno = Turno.joins(:turno_rooms)
+             .where(vela: vela, turno_rooms: { room_id: room.id })
+             .first
+
+  if old_turno.nil?
+    TurnoRoom.create(turno_id: params[:turno_id], room: room)
+  else  # if the room was already assigned to a turno we update it
+    TurnoRoom.find_by(turno: old_turno, room: room).update(turno_id: params[:turno_id])
+  end
 end
 
 post '/vela/:id/turno/:turno_id/room/:room_id/delete' do
-  @vela = Vela.find(params[:id])
   room = Room.find(params[:room_id])
-  turno = @vela.turnos.find{|turno| turno.rooms.include? room}
+  puts "found room #{room.room}"
+  turno = Turno.find(params[:turno_id])
   TurnoRoom.find_by(turno: turno, room: room).destroy
 end

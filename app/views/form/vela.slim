@@ -6,7 +6,7 @@ turbo-frame id="main_frame"
 	.container.screen-box.full-screen-form style="max-width:1200px" data-controller="form" 
 
 		form[
-			action="/vela/#{(@object.nil? ? "new" : @object.id)}" 
+			action="/vela/#{@object.id}" 
 			data-vela-urlprefix="/vela/#{@object.id}" 
 			id="velaform" 
 			data-turbo-frame="" 
@@ -134,6 +134,7 @@ turbo-frame id="main_frame"
 									- Room.houses.each do |house|
 										option selected = (@object.nil? ? false : order_array[i]==house[1]) value=house[1] = house[0].humanize
 				
+			
 			.row data-controller="drag"
 				turbo-frame[src="/vela/#{@object.id}/turnos" 
 					data-vela-target="turnosFrame" 
@@ -146,7 +147,36 @@ turbo-frame id="main_frame"
 			/---------------------------------------------------------------------------------------------------------------
 
 			- locals =	{ object: @object, table_name: table_name, submit_value: (@object ? "save" : "new") }
-			== partial :"elements/form_buttons", locals: locals
+			.row.flex-center.flex-columns
+				- if (@object && (!(@object.respond_to? :can_be_deleted?) || @object&.can_be_deleted?))
+					a.button.button-secondary[
+						data-keys-target="deleteButton" 
+						tabindex="-1" 
+						data-form-target="deleteButton"
+						data-action="click->form#open_modal"
+						title="ctrl+d"
+						] delete  
+				
+				button.button-primary[
+					type="submit"
+					tabindex="-1" 
+					name="commit" 
+					data-form-target="submitButton"
+					data-action="form-validator#validate"
+					data-form-validator-target="submitButton"
+					title="ctrl+enter"
+					] save
+						
+					
+				a.button.button-secondary[
+					formnovalidate="true" 
+					tabindex="-1" 
+					data-form-target="cancelButton" 
+					href="/#{table_name}"
+					title="esc"
+					] cancel
+			
+			
 				
 			/----------------------------------------------------------------------------------------------------------------
 			/ DELETE CONFIRMATION MODAL FORM

@@ -293,13 +293,36 @@ div.room:hover
   cursor: move;
   border: #888;
   border-width: 1px;
-  border-style: dotted;
+  border-style: solid;
 }
 
+div.free-people {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+  border-color : white
+}
 
- div.ref-box a.mail-link:hover{
+div.free-people.drag-over
+{
+  border-color : lightblue
+}
+
+div.turno {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+  border-color : white
+}
+
+div.turno.drag-over
+{
+  border-color : lightblue
+}
+
+div.ref-box a.mail-link:hover{
   text-decoration: underline;
- }
+}
 
 a.button.no-border
 {

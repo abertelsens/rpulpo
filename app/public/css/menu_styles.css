@@ -20,6 +20,8 @@
 
 a.menu-item 
 {
+	padding-left: 1rem;
+	padding-right: 1rem;
 	color: rgb(213, 213, 213);
 	margin: 0px;
 	background-color: var(--dark-gray);
@@ -31,6 +33,8 @@ a.menu-item
 
 .menu-item-secondary
 {
+	padding-left: 1rem;
+	padding-right: 1rem;
 	color: rgb(213, 213, 213);
 	margin: 0px;
 	background-color: var(--medium-gray);

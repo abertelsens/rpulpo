@@ -9,7 +9,7 @@
 // last update: 2024-10-24 
 // --------------------------------------------------------------------------------------- 
 
-import { Controller } from "https://unpkg.com/@hotwired/stimulus/dist/stimulus.js"
+import { Controller } from "https://cdn.jsdelivr.net/npm/stimulus@3.2.2/dist/stimulus.js"
  
 const hide_class = 'hidden-frame'
 
