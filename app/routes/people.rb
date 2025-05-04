@@ -126,7 +126,7 @@ post '/guest/:id' do
 			old_room.update(person_id: nil) unless old_room.nil?
 			@person.destroy
 			redirect :"/guests"
-		end
+	end
 
 	old_room = Room.find_by(person_id: @person.id)
 	new_room = params[:room].present? ?  Room.find(params[:room]) : nil
@@ -204,7 +204,6 @@ get '/people/:id/document/:doc_id/template_variables' do
 	@set = params[:id]
 	slim :'form/report'
 end
-
 
 get '/people/:id/document/:doc_id' do
 	document = Document.find params[:doc_id]
@@ -290,5 +289,10 @@ end
 # adds one year to each of the people that match the current query
 post '/people/set/add_year' do
 	get_current_people_set.each {|person|  person.add_year } if params["commit"]=="save"
+<<<<<<< HEAD
 	redirect "/people"
 end
+=======
+	partial :"frame/people"
+end
+>>>>>>> fcf5891b4c3c3f17ac632c091514bc8b8648e4e7
