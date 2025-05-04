@@ -10,17 +10,10 @@ require 'pandoc-ruby'
 DEFAULT_MAIL_QUERY = {q: "", year:Date.today.year(), direction:"", entity:"", mail_status:"", assigned:""}
 PANDOC_REFERENCE = "app/engines-templates/word/custom-reference.docx"
 
-<<<<<<< HEAD
 
 # Regular Expression Matching
 get %r{/mail/draft-([\w]+)} do |id|
 	headers 'content-type' => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-=======
-# Regular Expression Matching
-get %r{/mail/draft-([\w]+)} do |id|
-	headers 'content-type' => "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-	#PandocRuby.html(html_src, :standalone, "--reference-doc \"#{PANDOC_REFERENCE}\" --preserve-tabs").to_docx
->>>>>>> fcf5891b4c3c3f17ac632c091514bc8b8648e4e7
 	draft_writer = Mail.find(id).draft_writer(get_current_user)
 	draft_writer.write_document
 	send_file draft_writer.path
