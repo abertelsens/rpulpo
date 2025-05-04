@@ -1,3 +1,23 @@
+# Merge Resolution Complete
+
+The merge conflicts have been resolved by:
+
+1. In `app/routes/entities.rb`: Using `slim` for rendering the entity form, consistent with other form templates
+2. In `app/routes/mails.rb`: 
+   - Keeping the Pandoc reference comment
+   - Using the nil coalescing operator pattern for the query assignment
+   - Using `partial` for frame rendering
+3. In `app/routes/people.rb`: Using `redirect "/people"` for consistency with other routes
+
+To complete the merge process, run:
+
+```
+git add app/routes/entities.rb app/routes/mails.rb app/routes/people.rb
+git commit -m "Resolve merge conflicts in route files"
+```
+
+This will finalize the merge and allow you to continue working with the repository.
+
 
 bundle exec ruby .\app\main.rb -o 0.0.0.0 -p 2948 -e production
 bundle exec puma -p 4567
