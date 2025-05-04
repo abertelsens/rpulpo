@@ -1,19 +1,18 @@
-turbo-frame id="main_frame" 
   
-  .container.container-frame
+.container.container-frame
+  
+  .row.header-row  
+    .columns.six.offset-by-three.u-text-center.flex-center
+      .columns.eight.offset-by-two.flex-center
+        img.cb-icon src="/img/cb_icon.jpg"
+        h3.no-margin.u-full-width VELAS AL SANTíSIMO
     
-    .row.header-row  
-      .columns.six.offset-by-three.u-text-center.flex-center
-        .columns.eight.offset-by-two.flex-center
-          img.cb-icon src="img/cb_icon.jpg"
-          h3.no-margin.u-full-width VELAS AL SANTíSIMO
-      
-        .columns.two.flex-right
-          a.button.button-primary.button-medium.no-margin href="/vela/new" data-turbo-frame="editor_frame"
-              i.fa-solid.fa-plus style="font-size:small"
-              |&nbspnew
+      .columns.two.flex-right
+        a.button.button-primary.button-medium.no-margin href="/vela/new" data-turbo-frame="editor_frame"
+            i.fa-solid.fa-plus style="font-size:small"
+            |&nbspnew
 
-    .row
-      
-      .columns.six.offset-by-three
-        turbo-frame id="velas_table" data-people-target="velas_table" src="/velas/table"
+  .row
+    
+    .columns.six.offset-by-three
+      turbo-frame id="velas_table" data-people-target="velas_table" src="/velas/table"

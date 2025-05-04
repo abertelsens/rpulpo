@@ -161,43 +161,6 @@ div.search-filters {
     padding-top: .8rem;
   }
 }
-/**********************************************************************
-* LOGIN SCREEN
-**********************************************************************/
-
-.login-screen {
-  height:100%; 
-  background: url(/img/cb_jardin.jpeg) no-repeat;
-  object-fit: cover;
-  opacity: 1;
-  position: relative;
-  background-repeat: no-repeat;
-  background-position: center; /* Visible 30 px from the top */
-  background-size: cover;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.login-box {
-  font-family: 'Roboto Flex', sans-serif;
-  max-width: 400px;
-  background-color:white; 
-  opacity: 1; 
-  padding: 30px 60px; 
-  border: 1px solid;
-  border-color: var(--light-gray);
-  border-radius:10px;
-  text-align: center;
-  box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
-
-}
-
-
-img.login-box
-{
-  width: 50px;
-}
 
 /**********************************************************************
 * FILES BOX

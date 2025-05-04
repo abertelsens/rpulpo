@@ -1,104 +1,101 @@
-turbo-frame id="main_frame" 
+.container.container-frame[
+  data-controller="clipboard form modal" 
+  data-clipboard-tablename="rooms"
+]
   
-  .container.container-frame[
-    data-controller="clipboard form modal" 
-    data-clipboard-tablename="rooms"
-  ]
+  form.form-inline[
+    method="GET" action="/rooms/search" 
+    type="search" 
+    data-controller="search" 
+    data-turbo-frame="rooms_table" 
+    data-action="input->searchfield#submit \
+      keydown.ctrl+p@window->form#table_settings \
+      keydown.ctrl+a@window->form#add \
+      keydown.ctrl+c@window->clipboard#copy"
+    ]
     
-    form.form-inline[
-      method="GET" action="/rooms/search" 
-      type="search" 
-      data-controller="search" 
-      data-turbo-frame="rooms_table" 
-      data-action="input->searchfield#submit \
-        keydown.ctrl+p@window->form#table_settings \
-        keydown.ctrl+a@window->form#add \
-        keydown.ctrl+c@window->clipboard#copy"
-      ]
+    .row.header-frame.flex-center
+      img.cb-icon src="/img/cb_icon.jpg"
+      h3.u-text-center ROOMS
+    
+    .row
       
-      .row.header-frame.flex-center
-        img.cb-icon src="img/cb_icon.jpg"
-        h3.u-text-center ROOMS
+      .columns.four.offset-by-three.flex-right 
+        input.u-full-width#search_string[
+        autofocus="autofocus"
+        tabindex="1" 
+        type="search" 
+        autocomplete="off" 
+        placeholder="search" 
+        aria-label="Search" 
+        name="q" 
+        data-action="input->search#submit" 
+        value=@rooms_query
+        ]
       
-      .row
+      // BUTTONS
+      .columns.four.flex-left
         
-        .columns.four.offset-by-three.flex-right 
-          input.u-full-width#search_string[
-          autofocus="autofocus"
-          tabindex="1" 
-          type="search" 
-          autocomplete="off" 
-          placeholder="search" 
-          aria-label="Search" 
-          name="q" 
-          data-action="input->search#submit" 
-          value=@rooms_query
-          ]
+        // ADD NEW ROOM BUTTON
+        a.button.button-primary.button-small[
+          data-turbo-action="advance"
+          data-form-target="newButton"
+          title="add new room (ctr+a)"
+          href="/room/new"
+        ]
+          i.fa-solid.fa-plus 
+          |&nbspadd
+          
+        // COPY BUTTON
+        a.button.button-success.button-small[
+          title="copies the results to the clipbard ctrl+c" 
+          style="width:6rem" 
+          data-modal-modal-id-param="clipboard" 
+          data-clipboard-target="copyButton" 
+          data-action="click->clipboard#copy  click->modal#open_modal"]
+          i.fa-solid.fa-copy style="font-size:small"
+          |&nbspcopy
         
-        // BUTTONS
-        .columns.four.flex-left
-          
-          // ADD NEW PERSON BUTTON
-          a.button.button-primary.button-small[
-            data-form-target="newButton"
-            title="add new room (ctr+a)"
-            href="/room/new" 
-            data-turbo-frame="editor_frame"
-          ]
-            i.fa-solid.fa-plus 
-            |&nbspadd
-           
-          // COPY BUTTON
-          a.button.button-success.button-small[
-            title="copies the results to the clipbard ctrl+c" 
-            style="width:6rem" 
-            data-modal-modal-id-param="clipboard" 
-            data-clipboard-target="copyButton" 
-            data-action="click->clipboard#copy  click->modal#open_modal"]
-            i.fa-solid.fa-copy style="font-size:small"
-            |&nbspcopy
-          
-          a.button.button-small.button-square[
-            href="/rooms/table/settings" 
-            data-form-target="tableSettingsButton" 
-            data-turbo-frame="editor_frame"
-          ]
-            i.fa-solid.fa-gear style="color:white; font-size:small"
-            |&nbsp
+        a.button.button-small.button-square[
+          href="/rooms/table/settings" 
+          data-turbo-action="advance"
+          data-form-target="tableSettingsButton"]
+          i.fa-solid.fa-gear style="color:white; font-size:small"
+          |&nbsp
 
-      
-      .row.flex-columns style="gap: 4rem; justify-content: space-between"
-        .flex style="margin-left: auto;"
-          div.table-container.scroll-container style="width: 30rem; height:auto"
+    
+    .row.flex-columns style="gap: 4rem; justify-content: space-between"
+      .flex style="margin-left: auto;"
+        div.table-container.scroll-container style="width: 30rem; height:auto"
+          
+          div.table-table style="width: 26rem"
+            .table-row-body.u-full-width
+              h4.u-full-width.margin-bottom HOUSES
+            div.table-row-head
+              div.table-cell-head.medium-field = "house"
+              div.table-cell-head.small-field.u-text-center = "free"
+              div.table-cell-head.small-field.u-text-center = "total"
             
-            div.table-table style="width: 26rem"
-              .table-row-body.u-full-width
-                h4.u-full-width.margin-bottom HOUSES
-              div.table-row-head
-                div.table-cell-head.medium-field = "house"
-                div.table-cell-head.small-field.u-text-center = "free"
-                div.table-cell-head.small-field.u-text-center = "total"
-              
-              - Room.get_rooms_count_by_house.each do |house|
-                a.table-row-body href="/rooms/house/#{house[:room]}" tabindex=-1 data-turbo-frame="rooms_table"
-                  div.table-cell-body.no-border = house[:room].humanize
-                  div.table-cell-body.no-border.u-text-center = house[:empty]
-                  div.table-cell-body.no-border.u-text-center = house[:total]
-          
-        turbo-frame style="margin-right: auto;" id="rooms_table" src="/rooms/table"
-          
-      /-------------------------------------------------------------------------
-      / CLIPBOARD MODAL
-      /-------------------------------------------------------------------------
-      .row[
-        data-modal-modal-id-param="clipboard" 
-        data-action="keydown.ctrl+c@window->modal#open_modal"]
+            - Room.get_rooms_count_by_house.each do |house|
+              a.table-row-body href="/rooms/house/#{house[:room]}" tabindex=-1 data-turbo-frame="rooms_table"
+                div.table-cell-body.no-border = house[:room].humanize
+                div.table-cell-body.no-border.u-text-center = house[:empty]
+                div.table-cell-body.no-border.u-text-center = house[:total]
+        
+      turbo-frame style="margin-right: auto;" id="rooms_table" src="/rooms/table"
+        
+    /-------------------------------------------------------------------------
+    / CLIPBOARD MODAL
+    /-------------------------------------------------------------------------
+    .row[
+      data-modal-modal-id-param="clipboard" 
+      data-action="keydown.ctrl+c@window->modal#open_modal"]
 
-        .modal.hidden-frame data-modal-id="clipboard" data-clipboard-target="modal" data-modal-target="modal" 
-          .modal-content.u-text-center
-            h5.u-text-center = "Data to copy"
-            textarea#copy_field.modal-copy-area isTrusted="true" rows="4" cols="20" data-clipboard-target="copyField"
-            .columns.two.offset-by-five   
-              button.button-primary data-action="click->modal#close_modal" close          
+      .modal.hidden-frame data-modal-id="clipboard" data-clipboard-target="modal" data-modal-target="modal" 
+        .modal-content.u-text-center
+          h5.u-text-center = "Data to copy"
+          textarea#copy_field.modal-copy-area isTrusted="true" rows="4" cols="20" data-clipboard-target="copyField"
+          .columns.two.offset-by-five   
+            button.button-primary data-action="click->modal#close_modal" close          
           
       

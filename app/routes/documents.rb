@@ -18,7 +18,7 @@
 
 # renders the documents frame
 get '/documents' do
-  partial :"frame/simple_template",  locals: {title: "DOCUMENTS", model_name: "document"}
+  slim :"frame/simple_template",  locals: {title: "DOCUMENTS", model_name: "document"}
 end
 
 # renders the table of documents
@@ -34,7 +34,7 @@ end
 # renders a single document form
 get '/document/:id' do
   @object = (params[:id]=="new" ? nil : Document.find(params[:id]))
-  partial :"form/document"
+  slim :"form/document"
 end
 
 # renders in the browser the template of a document

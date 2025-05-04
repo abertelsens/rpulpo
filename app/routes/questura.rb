@@ -1,16 +1,16 @@
 # -----------------------------------------------------------------------------------------
-# ROUTES CONTROLLERS FOR THE ROOMS TABLES
+# ROUTES CONTROLLERS FOR THE PERMITS (QUESTURA TABLES)
 # -----------------------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------------------
 # GET
 # -----------------------------------------------------------------------------------------
 
-# renders the people frame
+# renders the frame
 get '/permits' do
 	@current_user = get_current_user
 	get_last_query_variables :permits
-  partial :"frame/permits"
+  slim :"frame/permits"
 end
 
 # renders the table of people
@@ -31,8 +31,6 @@ get '/permits/clipboard/copy' do
 	@objects = Permit.search @permits_query, @permits_table_settings
 	@decorator = PermitDecorator.new(table_settings: @permits_table_settings)
 	export_string = @decorator.entities_to_csv @objects
-	#puts "EXPORT STRING\n\n\n\n"
-	#puts export_string
 	{result: true, data: export_string}.to_json
 end
 
@@ -40,8 +38,8 @@ end
 get '/permit/:person_id' do
 	@current_user = get_current_user
 	@person = Person.find(params[:person_id])
-	@permit = Permit.find_by(person: @person)
-	partial :"form/permit", locals: {origin: params[:origin]}
+	@object = Permit.find_by(person: @person)
+	slim :"form/permit", locals: {origin: params[:origin]}
 end
 
 # -----------------------------------------------------------------------------------------

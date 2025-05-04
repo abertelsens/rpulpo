@@ -12,11 +12,12 @@ turbo-frame id="people_table" data-turbo-frame="person_view"
       
       - @objects.each.with_index do |object, index|  
         a.table-row-body[
+          data-turbo-action="advance"
           href="/person/#{object.id}"
           tabindex=-1
           data-action="keydown.enter@window->table#enter" 
           data-table-target="row" 
-          data-table-id="index"  
+          data-table-id="index"
           data-turbo-frame="main_frame"]
           
           == @decorator.html_row(object)

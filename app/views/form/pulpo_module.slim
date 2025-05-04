@@ -5,72 +5,72 @@
 / last update: 2024-02-23 
 / ----------------------------------------------------------------------------------------
 
-turbo-frame id="main_frame"
 
-	- model_name = "pulpo_module"
-	- table_name = "pulpo_modules"
 
-	.container.screen-box.small-form data-controller="form" 
+- model_name = "pulpo_module"
+- table_name = "pulpo_modules"
 
-		form[
-			action="/#{model_name}/#{(@object ? @object.id : "new")}"
-			method="POST"
-			data-controller="form-validator"
-			data-form-target="form"
-			data-action="keydown.ctrl+d@window->form#delete \
-			keydown.ctrl+enter@window->form#enter \
-			keydown.esc@window->form#escape" ] 
+.container.screen-box.small-form data-controller="form" 
+
+	form[
+		action="/#{model_name}/#{(@object ? @object.id : "new")}"
+		method="POST"
+		data-controller="form-validator"
+		data-form-target="form"
+		data-action="keydown.ctrl+d@window->form#delete \
+		keydown.ctrl+enter@window->form#enter \
+		keydown.esc@window->form#escape" ] 
+	
+		/ ----------------------------------------------------------------------------------
+		/ FORM HEADER
+		/ ----------------------------------------------------------------------------------
+		.row.u-text-center
+			h3 = (@object.nil? ? "NEW MODULE" : "MODULE: #{@object.name}")
+					
+		/ ----------------------------------------------------------------------------------
+		/ DOCUMENT FRAME
+		/ ----------------------------------------------------------------------------------
+		.row
+
+			fieldset data-form-target="fieldset"
 		
-			/ ----------------------------------------------------------------------------------
-			/ FORM HEADER
-			/ ----------------------------------------------------------------------------------
-			.row.u-text-center
-				h3 = (@object.nil? ? "NEW MODULE" : "MODULE: #{@object.name}")
-						
-			/ ----------------------------------------------------------------------------------
-			/ DOCUMENT FRAME
-			/ ----------------------------------------------------------------------------------
-			.row
-
-				fieldset data-form-target="fieldset"
-			
-					.columns.six
-						label for="identifier" module identifier
-						&text#identifier.u-full-width[
-							required
-							autocomplete="off" 
-							name="identifier"
-							data-form-target="firstField"
-							value=@object&.identifier
-						] 
-						
+				.columns.six
+					label for="identifier" module identifier
+					&text#identifier.u-full-width[
+						required
+						autocomplete="off" 
+						name="identifier"
+						data-form-target="firstField"
+						value=@object&.identifier
+					] 
 					
-					.columns.six
-						label for="name" module name
-						&text@name.u-full-width[
-							required
-							autocomplete="off" 
-							value=@object&.name]
-					
-					.columns.twelve
-						label for="description" description
-						&text@description.u-full-width value=@object&.description autocomplete="off" 
-					
-			/----------------------------------------------------------------------------------------------------------------
-			/ ERROR FRAME
-			/----------------------------------------------------------------------------------------------------------------		
-			row
-				.hidden-alert.alert.alert-warning.u-full-width data-form-validator-target="errorFrame"
-			
-			/-----------------------------------------------------------------------------------
-			/ BUTTONS
-			/-----------------------------------------------------------------------------------
-			
-			- locals =	{ object: @object, table_name: table_name, submit_value: (@object ? "save" : "new") }
-			== partial :"elements/form_buttons", locals: locals
-			
-			/----------------------------------------------------------------------------------------------------------------
-			/ DELETE CONFIRMATION MODAL FORM
-			/---------------------------------------------------------------------------------------------------------------
-			
-			== partial :"elements/delete_modal", locals: {model_name: model_name}
+				
+				.columns.six
+					label for="name" module name
+					&text@name.u-full-width[
+						required
+						autocomplete="off" 
+						value=@object&.name]
+				
+				.columns.twelve
+					label for="description" description
+					&text@description.u-full-width value=@object&.description autocomplete="off" 
+				
+		/----------------------------------------------------------------------------------------------------------------
+		/ ERROR FRAME
+		/----------------------------------------------------------------------------------------------------------------		
+		row
+			.hidden-alert.alert.alert-warning.u-full-width data-form-validator-target="errorFrame"
+		
+		/-----------------------------------------------------------------------------------
+		/ BUTTONS
+		/-----------------------------------------------------------------------------------
+		
+		- locals =	{ object: @object, table_name: table_name, submit_value: (@object ? "save" : "new") }
+		== partial :"elements/form_buttons", locals: locals
+		
+		/----------------------------------------------------------------------------------------------------------------
+		/ DELETE CONFIRMATION MODAL FORM
+		/---------------------------------------------------------------------------------------------------------------
+		
+		== partial :"elements/delete_modal", locals: {model_name: model_name}

@@ -14,6 +14,7 @@ turbo-frame id="rooms_table" data-turbo-frame="main_frame"
       
       - @objects.each.with_index do |object, index|  
         a.table-row-body[
+          data-turbo-action="advance"
           data-action="keydown.enter@window->table#enter" 
           data-table-target="row"
           data-table-id="index"  

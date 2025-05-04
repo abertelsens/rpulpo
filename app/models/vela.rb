@@ -15,6 +15,7 @@
 # requires the engines path in order to have access to the typst engine.
 require_rel '../engines'
 
+
 class Vela < ActiveRecord::Base
 
 	# each vela has many turnos which are destroyed when the parent vela object is destroyed
@@ -29,12 +30,11 @@ class Vela < ActiveRecord::Base
 	# ---------------------------------------------------------------------------------------
 
 	TYPST_TEMPLATES_DIR = "app/engines-templates/typst"
-	TYPST_PREAMBLE_SEPARATOR = "//CONTENTS"
-	HALF_HOUR = 30*60 #in seconds
-	DEFAULT_ORDER = "0 1 2 3 4 5"
-	DEFAULT_MSG_1 =  "Examen"
-	DEFAULT_MSG_2 = "Exposición en Nuestra Señora de los Ángeles"
-	DEFAULT_END_MSG = "Bendición y Santa Misa en Nuestra Señora de los Ángeles"
+	HALF_HOUR 					= 30*60 #in seconds
+	DEFAULT_ORDER				= "0 1 2 3 4 5"
+	DEFAULT_MSG_1 			= "Examen"
+	DEFAULT_MSG_2 			= "Exposición en Nuestra Señora de los Ángeles"
+	DEFAULT_END_MSG 		= "Bendición y Santa Misa en Nuestra Señora de los Ángeles"
 
 
 	# creates a vela objet with default parameters
@@ -78,17 +78,16 @@ class Vela < ActiveRecord::Base
 		order.split(" ").select{|index| index!="-1"}.map{|index| houses_names[index.to_i].humanize}.join( " - " )
 	end
 
-	# Builds all the turnos for the vela
 	def build_turnos
-
 		turnos&.destroy_all
 		houses = order.split(" ").reject { |index| index == "-1" }
 		current_time = start_time2 + 15.minutes # Using ActiveSupport for clarity
 
 		while current_time < end_time
 			turnos.create(start_time: current_time, end_time: current_time + HALF_HOUR)
-			current_time += HALF_HOUR
+			current_time += HALF_HOUR # Increment by HALF_HOUR
 		end
+
 		assign_turnos((Room.get_from_houses houses).order(room: :asc))
 	end
 
@@ -112,31 +111,19 @@ class Vela < ActiveRecord::Base
 
 		@document_path = "vela.typ"
 		@template_source = File.read "#{TYPST_TEMPLATES_DIR}/#{@document_path}"
-		template_source = @template_source.split(TYPST_PREAMBLE_SEPARATOR)
 
-		header = "#figure(image(\"cb_icon.png\", width: 30pt),)\n
+		header = "#figure(image(\"../../img/cb_icon.png\", width: 30pt),)\n
 							= Vela al Santísimo - (#{self.date.strftime('%-A %-d %B %Y').downcase})\n
 							*#{start_time.strftime('%H:%M')}: #{start1_message}*\n
 							*#{start_time2.strftime('%H:%M')}: #{start2_message}*\n
 							"
 
 		footer = 	"*#{self.end_time.strftime('%H:%M')}: #{end_message}*"
-
 		turnos_table = VelaDecorator.new(self).turnos_to_typst_table
+		full_doc = [@template_source, header, turnos_table, footer].join("\n")
 
-		full_doc = "#{template_source[0]} #{header} #{turnos_table}\n #{footer}"
+		TypstRuby.new.compile(full_doc)
 
-		# delete all the previous pdf files. Not ideal
-		# write a tmp typst file and compile it to pdf
-		Dir.glob("#{TYPST_TEMPLATES_DIR}/*.tmp.typ").each {|file| File.delete file}
-		Dir.glob("#{TYPST_TEMPLATES_DIR}/*.tmp.pdf").each {|file| File.delete file}
-		tmp_file_name = rand(10000).to_s
-		typ_file_path = "#{TYPST_TEMPLATES_DIR}/#{tmp_file_name}.tmp.typ"
-		pdf_file_path = "#{TYPST_TEMPLATES_DIR}/#{tmp_file_name}.tmp.pdf"
-
-		File.write typ_file_path, full_doc
-		res =  system("typst compile #{typ_file_path} #{pdf_file_path}")
-		res ? pdf_file_path : "Typst Writer: failed to convert document"
 	end
 
 

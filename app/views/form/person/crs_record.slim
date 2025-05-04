@@ -2,124 +2,126 @@
 // FORM for Personal Information about a person
 /*****************************************************************************************************
 
-turbo-frame id="main_frame"
-  	
-	.container.medium-form.screen-box data-controller="form" 
-		- action = "/person/#{@person.id}/crs_record/#{(@object.nil? ? "new" : @object.id)}"
-		- action << "?origin=#{locals[:origin]}&ceremony=#{locals[:ceremony]}" unless locals.nil?
-		form#personForm[
-			action=action
-			method="POST" 
-			data-form-target="form"
-			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
-		]
 
-			/----------------------------------------------------------------------------------------------------------------
-			// FORM HEADER
-			//----------------------------------------------------------------------------------------------------------------
-			.row.u-text-center
-				- if @person && File.exist?("app/public/photos/#{@person.id}.jpg")
-					img.person-photo.small id="photo_image" src= "photos/#{@person.id}.jpg"
-				- else
-					img.person-photo.small id="photo_image" src= "photos/avatar.jpg"
-			
-			.row.u-text-center
-				h3 = "#{@person.short_name} - crs+"
-						
-				
-			/----------------------------------------------------------------------------------------------------------------
-			//PERSONAL FRAME
-			//----------------------------------------------------------------------------------------------------------------
-				
-			.row	
-				.columns.three
-					label for="pa" pa
-					&date.u-full-width name="pa" value=@object&.pa
-				
-				.columns.three
-					label for="admision" ad
-					&date.u-full-width name="admision" value=@object&.admision
-				
-				.columns.three
-					label for="oblacion" o
-					&date.u-full-width name="oblacion" value=@object&.oblacion
-				
-				.columns.three
-					label for="fidelidad" fl
-					&date.u-full-width name="fidelidad" value=@object&.fidelidad
-				
-			.row
-				.columns.three
-					label for="letter" carta
-					&date.u-full-width name="letter" value=@object&.letter
+.container.medium-form.screen-box data-controller="form" 
+	
+	- action = "/person/#{@person.id}/crs_record/#{(@object.nil? ? "new" : @object.id)}"
+	- action << "?origin=#{locals[:origin]}&ceremony=#{locals[:ceremony]}" unless locals.nil?
+	
+	form#personForm[
+		action=action
+		method="POST" 
+		data-form-target="form"
+		data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
+	]
 
-				.columns.three
-					label for="admissio" admissio
-					&date.u-full-width name="admissio" value=@object&.admissio
-				.columns.three
-					label for="lectorado" lectorado
-					&date.u-full-width name="lectorado" value=@object&.lectorado
-				.columns.three
-					label for="acolitado" acolitado
-					&date.u-full-width name="acolitado" value=@object&.acolitado
-				
-				
-			.row
-			
-				.columns.three
-					label.tooltip for="classnumber" promoción
-						<i class="fa-sharp fa-regular fa-circle-question"></i>
-						<span class="tooltiptext">Ej: LXXVII</span>
-					&text.u-full-width name="classnumber" value=@object&.classnumber
-			
-				.columns.three
-					label for="cipna" cipna
-					&text.u-full-width name="cipna" value=@object&.cipna
-				
-				.columns.three
-					label for="diaconado" diaconado
-					&date.u-full-width name="diaconado" value=@object&.diaconado
-				.columns.three
-					label for="presbiterado" presbiterado
-					&date.u-full-width name="presbiterado" value=@object&.presbiterado
-
-			.row
-				.columns.three
-					label etapa
-					select.u-full-width name="phase"
-						option selected=(@object&.phase.nil?) value="" = "-"
-						- CrsRecord.phases.each do |st| 
-							option selected=(@object&.phase==st[0]) value=st[0] = st[0]
+		/----------------------------------------------------------------------------------------------------------------
+		// FORM HEADER
+		//----------------------------------------------------------------------------------------------------------------
+		.row.u-text-center
+			- has_photo = (@person && File.exist?("app/public/photos/#{@person.id}.jpg"))	
+			img.person-photo.small [
+				src= (has_photo ? "/person/#{@person.id}/photo?v=#{rand(1..1000)}" : "avatar.jpg")]
 		
-			.row 
-				.columns.twelve
-					label for="notes" notes
-					textarea.u-full-width rows=3 name="notes" = @object&.notes
-				
-			/----------------------------------------------------------------------------------------------------------------
-			// FORM BUTTONS
-			//----------------------------------------------------------------------------------------------------------------
-			.row.flex-center.flex-columns
-
-				button.button-primary[
-					type="submit"
-					tabindex="-1"  
-					name="commit" 
-					value="save"
-					data-form-target="submitButton"
-					title="ctrl+enter"
-					] save
+		.row.u-text-center
+			h3 = "#{@person.short_name} - crs+"
 					
+			
+		/----------------------------------------------------------------------------------------------------------------
+		//PERSONAL FRAME
+		//----------------------------------------------------------------------------------------------------------------
+			
+		.row	
+			.columns.three
+				label for="pa" pa
+				&date.u-full-width name="pa" value=@object&.pa
+			
+			.columns.three
+				label for="admision" ad
+				&date.u-full-width name="admision" value=@object&.admision
+			
+			.columns.three
+				label for="oblacion" o
+				&date.u-full-width name="oblacion" value=@object&.oblacion
+			
+			.columns.three
+				label for="fidelidad" fl
+				&date.u-full-width name="fidelidad" value=@object&.fidelidad
+			
+		.row
+			.columns.three
+				label for="letter" carta
+				&date.u-full-width name="letter" value=@object&.letter
+
+			.columns.three
+				label for="admissio" admissio
+				&date.u-full-width name="admissio" value=@object&.admissio
+			.columns.three
+				label for="lectorado" lectorado
+				&date.u-full-width name="lectorado" value=@object&.lectorado
+			.columns.three
+				label for="acolitado" acolitado
+				&date.u-full-width name="acolitado" value=@object&.acolitado
+			
+			
+		.row
+		
+			.columns.three
+				label.tooltip for="classnumber" promoción
+					<i class="fa-sharp fa-regular fa-circle-question"></i>
+					<span class="tooltiptext">Ej: LXXVII</span>
+				&text.u-full-width name="classnumber" value=@object&.classnumber
+		
+			.columns.three
+				label for="cipna" cipna
+				&text.u-full-width name="cipna" value=@object&.cipna
+			
+			.columns.three
+				label for="diaconado" diaconado
+				&date.u-full-width name="diaconado" value=@object&.diaconado
+			.columns.three
+				label for="presbiterado" presbiterado
+				&date.u-full-width name="presbiterado" value=@object&.presbiterado
+
+		.row
+			.columns.three
+				label etapa
+				select.u-full-width name="phase"
+					option selected=(@object&.phase.nil?) value="" = "-"
+					- CrsRecord.phases.each do |st| 
+						option selected=(@object&.phase==st[0]) value=st[0] = st[0]
+	
+		.row 
+			.columns.twelve
+				label for="notes" notes
+				textarea.u-full-width rows=3 name="notes" = @object&.notes
+			
+		/----------------------------------------------------------------------------------------------------------------
+		// FORM BUTTONS
+		//----------------------------------------------------------------------------------------------------------------
+		.row.flex-center.flex-columns
+
+			button.button-primary[
+				data-turbo-action="advance"
+				type="submit"
+				tabindex="-1"  
+				name="commit" 
+				value="save"
+				data-form-target="submitButton"
+				title="ctrl+enter"
+				] save
 				
-				button.button-secondary[
-					formnovalidate="true" 
-					tabindex="-1" 
-					type="submit"
-					name="commit" 
-					value="cancel"
-					data-form-target="cancelButton" 
-					title="esc"
-					] cancel
+			
+			button.button-secondary[
+				data-turbo-action="advance"
+				formnovalidate="true" 
+				tabindex="-1" 
+				type="submit"
+				name="commit" 
+				value="cancel"
+				data-form-target="cancelButton" 
+				title="esc"
+				] cancel
 					
 
 				

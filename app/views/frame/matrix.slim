@@ -1,57 +1,53 @@
-turbo-frame id="main_frame" 
+
+.container.container-frame
+  .row.header-frame.u-text-center
+    h1 Matrix
   
-  - puts "ACTIVE TABLE"
-  - p @active_table
-  
-  .container.container-frame
-    .row.header-frame.u-text-center
-      h1 Matrix
+  .row style="display: flex; justify-content: center; column-gap: 10em;"
     
-    .row style="display: flex; justify-content: center; column-gap: 10em;"
+    div style="display: flex; flex-direction: column; row-gap: 4em; max-width: 35em"
       
-      div style="display: flex; flex-direction: column; row-gap: 4em; max-width: 35em"
-        
-        .container.no-margin data-controller="matrix"
-          .row style="display: flex; flex-direction: row; margin-bottom:1em"
-            h4.matrix-settings-header data-matrix-target="header" style="cursor: pointer;" data-action="click->matrix#toggle" Horarios
-            div data-matrix-target="button" style="margin-left: auto; display:none;"
-              a.button.no-margin style="margin-left: auto;" href="/schedule/new" 
-                i.fa-solid.fa-plus style="font-size:small"
-                |&nbspadd
-          .row  
-            turbo-frame id="schedules_table" src="/schedule/table"
-        
-        .container.no-margin data-controller="matrix"
-          .row style="display: flex; flex-direction: row; margin-bottom:1em"
-            h4.matrix-settings-header data-matrix-target="header" style="cursor: pointer;" data-action="click->matrix#toggle" Encargos
-            div data-matrix-target="button" style="margin-left: auto; display:none;" 
-              a.button.no-margin style="margin-left: auto;"  href="/matrix/task/new" 
-                i.fa-solid.fa-plus style="font-size:small"
-                |&nbspadd
-          .row        
-            turbo-frame id="tasks_table" src="/matrix/task/table"
-
-        .container.no-margin data-controller="matrix"
-          .row style="display: flex; flex-direction: row; margin-bottom:1em"
-            h4.matrix-settings-header data-matrix-target="periodr" style="cursor: pointer;" data-action="click->matrix#toggle"  Periodos
-            div data-matrix-target="button" style="margin-left: auto; display:none;"
-              a.button.no-margin style="margin-left: auto;" href="/matrix/period/new" 
-                i.fa-solid.fa-plus style="font-size:small"
-                |&nbspadd
-          .row
-            turbo-frame id="periods_table" src="/matrix/period/table"
-
-
-        .container.no-margin data-controller="matrix"
-          .row style="display: flex; flex-direction: row; margin-bottom:1em"
-            h4.matrix-settings-header data-matrix-target="header" style="cursor: pointer;" data-action="click->matrix#toggle"  Situaciones
-            div data-matrix-target="button" style="margin-left: auto; display:none;"
-              a.button.no-margin style="margin-left: auto;" href="/matrix/situation/new" 
-                i.fa-solid.fa-plus style="font-size:small"
-                |&nbspadd
-          .row
-            turbo-frame id="situations_table" src="/matrix/situation/table"
+      .container.no-margin data-controller="matrix"
+        .row style="display: flex; flex-direction: row; margin-bottom:1em"
+          h4.matrix-settings-header data-matrix-target="header" style="cursor: pointer;" data-action="click->matrix#toggle" Horarios
+          div data-matrix-target="button" style="margin-left: auto; display:none;"
+            a.button.no-margin style="margin-left: auto;" href="/schedule/new" 
+              i.fa-solid.fa-plus style="font-size:small"
+              |&nbspadd
+        .row  
+          turbo-frame id="schedules_table" src="/schedule/table"
       
-      turbo-frame id="people_periods" src="/matrix/people_periods"
+      .container.no-margin data-controller="matrix"
+        .row style="display: flex; flex-direction: row; margin-bottom:1em"
+          h4.matrix-settings-header data-matrix-target="header" style="cursor: pointer;" data-action="click->matrix#toggle" Encargos
+          div data-matrix-target="button" style="margin-left: auto; display:none;" 
+            a.button.no-margin style="margin-left: auto;"  href="/matrix/task/new" 
+              i.fa-solid.fa-plus style="font-size:small"
+              |&nbspadd
+        .row        
+          turbo-frame id="tasks_table" src="/matrix/task/table"
 
-        
+      .container.no-margin data-controller="matrix"
+        .row style="display: flex; flex-direction: row; margin-bottom:1em"
+          h4.matrix-settings-header data-matrix-target="periodr" style="cursor: pointer;" data-action="click->matrix#toggle"  Periodos
+          div data-matrix-target="button" style="margin-left: auto; display:none;"
+            a.button.no-margin style="margin-left: auto;" href="/matrix/period/new" 
+              i.fa-solid.fa-plus style="font-size:small"
+              |&nbspadd
+        .row
+          turbo-frame id="periods_table" src="/matrix/period/table"
+
+
+      .container.no-margin data-controller="matrix"
+        .row style="display: flex; flex-direction: row; margin-bottom:1em"
+          h4.matrix-settings-header data-matrix-target="header" style="cursor: pointer;" data-action="click->matrix#toggle"  Situaciones
+          div data-matrix-target="button" style="margin-left: auto; display:none;"
+            a.button.no-margin style="margin-left: auto;" href="/matrix/situation/new" 
+              i.fa-solid.fa-plus style="font-size:small"
+              |&nbspadd
+        .row
+          turbo-frame id="situations_table" src="/matrix/situation/table"
+    
+    turbo-frame id="people_periods" src="/matrix/people_periods"
+
+      

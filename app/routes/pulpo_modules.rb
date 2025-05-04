@@ -17,7 +17,7 @@
 # --------------------------------------------------------------------------------------
 
 get '/pulpo_modules' do
-	partial :"frame/simple_template",  locals: {title: "MODULES", model_name: "pulpo_module"}
+	slim :"frame/simple_template",  locals: {title: "MODULES", model_name: "pulpo_module"}
 end
 
 get '/pulpo_modules/table' do
@@ -29,12 +29,12 @@ end
 
 get '/pulpo_module/:id' do
 	@object = (params[:id]=="new" ? nil : PulpoModule.find(params[:id]))
-	partial :"form/pulpo_module"
+	slim :"form/pulpo_module"
 end
 
 get '/pulpo_module/:id' do
 	@object = (params[:id]=="new" ? nil : PulpoModule.find(params[:id]))
-	partial :"form/pulpo_module"
+	slim :"form/pulpo_module"
 end
 
 # -----------------------------------------------------------------------------------------

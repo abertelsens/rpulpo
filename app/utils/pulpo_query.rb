@@ -37,7 +37,6 @@ class PulpoQuery
 
 		@query_array = if query_string.nil? then []
 			else
-
 				# clean any ' character
 				query_string = query_string.strip.gsub(/'+/, '')
 				# clean any whitespaces after colons: i.e. "clothes:  96" will become clothes:96
@@ -52,6 +51,8 @@ class PulpoQuery
 				query_string.split(Regexp.union(AND_DELIMITERS))
 			end
 	end
+
+
 
 	def execute
 		if @query_array.empty?
@@ -73,23 +74,19 @@ class PulpoQuery
 		return @status
 	end
 
-	# A clause is a string fo the form "attibute:value" or a concatenation of the form "attibute:value (OR) attibute:value"
 	def execute_or_clauses(query_string)
+		query_array = query_string.split(Regexp.union(OR_DELIMETERS)).reject(&:empty?)
 
-		#puts "executin execute_or_clauses of string #{query_string}"
-		query_array = query_string.split(Regexp.union(OR_DELIMETERS)).select { |clause| !clause.empty? }
-		#puts "got query array #{query_array}"
-		# transform the clauses into Attributes Queries
-		attributes_array = query_array.map { |clause| AttributeQuery.new(clause, @main_table, @models) }
+		# Convert clauses into AttributeQuery objects and execute them
+		attributes_array = query_array
+												.map { |clause| AttributeQuery.new(clause, @main_table, @models) }
+												.select(&:status)  # Keep only valid attributes
+												.map(&:execute)    # Execute queries
 
-		# use only the well formed attributes
-		attributes_array = attributes_array.select { |att| att.status }
-
-		attributes_array = attributes_array.map { |clause| clause.execute }
-		#puts "got attributes array after executing or clauses #{attributes_array}"
-
-		attributes_array.inject{ |res, condition| condition.nil? ? res : res.or(condition) }
+		# Combine all executed queries using `.or`
+		attributes_array.compact.inject(:or)
 	end
+
 
 end # class end
 

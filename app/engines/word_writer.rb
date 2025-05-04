@@ -42,20 +42,29 @@ class WordWriter  < DocumentWriter
 			files.each { |file| File.delete file }
 		end
 
-	def write_document()
-		references = @mail.refs.nil? ? "" : get_references
-		md_src = get_header_table << get_topic << references << get_draft
-		file = PandocRuby.markdown(md_src, :standalone, "--reference-doc \"#{PANDOC_REFERENCE}\" --preserve-tabs").to_docx
-		File.binwrite(@path, file)
-		return self
-	end
+		def write_document
+			references = @mail.refs ? get_references : ""
+			md_src = get_header_table + get_topic + references + get_draft
+
+			begin
+				file = PandocRuby.markdown(md_src, :standalone, "--reference-doc", PANDOC_REFERENCE, "--preserve-tabs").to_docx
+				raise "Invalid file path" if @path.nil? || @path.empty?
+
+				File.binwrite(@path, file)
+			rescue StandardError => e
+				puts "Error generating document: #{e.message}"
+				return nil
+			end
+
+			self
+		end
 
 	def get_signatures()
 		(["#{@user.uname}"] + (DEFAULT_SIGNATURES - [@user.uname])) + ["",""]
 	end
 
 	def get_header_table()
-		"\n```\nFIRMAS:\t" << (get_signatures.inject(""){|res,elem| res << "#{elem}\t\t" }) << "\n````\n\n"
+		"\n```\nFIRMAS:\n\t" << (get_signatures.inject(""){|res,elem| res << "#{elem}\t\t" }) << "\n````\n\n"
 	end
 
 	def get_references()

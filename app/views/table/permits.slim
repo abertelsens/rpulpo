@@ -20,6 +20,7 @@ turbo-frame id="permits_table"
       - @objects.each.with_index do |object, index|  
         
         a.table-row-body[
+          data-turbo-action="advance"
           tabindex=-1
           data-action="keydown.enter@window->table#enter" 
           data-table-target="row" 

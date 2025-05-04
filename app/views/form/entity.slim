@@ -1,80 +1,72 @@
 /----------------------------------------------------------------------------------------------------------------
 / FORM for an Entity
 /----------------------------------------------------------------------------------------------------------------
-
-
-turbo-frame id="main_frame"
-
-	/!--------------------------------------------------------------------------------
-	/! TAILWIND
-	/!--------------------------------------------------------------------------------
 	
-	
-	- model_name = "entity"
-	- table_name = "entities"
+- model_name = "entity"
+- table_name = "entities"
 
-	/ Center the form in the screen and ajust its size.
-	.container.screen-box.tiny-form data-controller="form" 
+/ Center the form in the screen and ajust its size.
+.container.screen-box.tiny-form data-controller="form" 
+	
+	form[
+		action="/#{model_name}/#{(@object ? @object.id : "new")}"
+		method="POST"
+		data-controller="form-validator"
+		data-form-target="form"
+		autocomplete="off"
+		data-action="keydown.ctrl+d@window->form#delete \
+			keydown.ctrl+enter@window->form#enter \
+			keydown.esc@window->form#escape"]
+
+		/----------------------------------------------------------------------------------------------------------------
+		/ FORM HEADER
+		/----------------------------------------------------------------------------------------------------------------
 		
-		form[
-			action="/#{model_name}/#{(@object ? @object.id : "new")}"
-			method="POST"
-			data-controller="form-validator"
-			data-form-target="form"
-			autocomplete="off"
-			data-action="keydown.ctrl+d@window->form#delete \
-				keydown.ctrl+enter@window->form#enter \
-				keydown.esc@window->form#escape"]
-
-			/----------------------------------------------------------------------------------------------------------------
-			/ FORM HEADER
-			/----------------------------------------------------------------------------------------------------------------
+		.row.u-text-center
+			h3 = (@object.nil? ? "NEW #{model_name.upcase}" : "#{model_name.upcase}: #{@object.name}")
 			
-			.row.u-text-center
-				h3 = (@object.nil? ? "NEW #{model_name.upcase}" : "#{model_name.upcase}: #{@object.name}")
-				
-			/----------------------------------------------------------------------------------------------------------------
-			/ FORM FIELDS
-			/----------------------------------------------------------------------------------------------------------------
-			
-			fieldset data-form-target="fieldset"
-			
-				.row
-					
-					label for="name" name
-					&text@name.u-full-width[
-						data-form-target="firstField" 
-						autofocus
-						required 
-						autocomplete="off"
-						value=@object&.name]
-
-					label for="sigla" sigla
-					&text@sigla.u-full-width[
-						required
-						autocomplete="off"
-						value=@object&.sigla]
-
-					label for="path" path
-					&text@path.u-full-width[
-						value=@object&.path
-						autocomplete="off"]
-
-			/----------------------------------------------------------------------------------------------------------------
-			/ ERROR FRAME
-			/----------------------------------------------------------------------------------------------------------------		
-			
+		/----------------------------------------------------------------------------------------------------------------
+		/ FORM FIELDS
+		/----------------------------------------------------------------------------------------------------------------
+		
+		fieldset data-form-target="fieldset"
+		
 			.row
-				.hidden-alert.alert.alert-warning.u-full-width data-form-validator-target="errorFrame"
-
-			/----------------------------------------------------------------------------------------------------------------
-			/ BUTTONS
-			/---------------------------------------------------------------------------------------------------------------
-			- locals =	{ object: @object, table_name: table_name, submit_value: (@object ? "save" : "new") }
-			== partial :"elements/form_buttons", locals: locals
 				
-			/----------------------------------------------------------------------------------------------------------------
-			/ DELETE CONFIRMATION MODAL FORM
-			/---------------------------------------------------------------------------------------------------------------
+				label for="name" name
+				&text@name.u-full-width[
+					data-form-target="firstField" 
+					autofocus
+					required 
+					autocomplete="off"
+					value=@object&.name]
+
+				label for="sigla" sigla
+				&text@sigla.u-full-width[
+					required
+					autocomplete="off"
+					value=@object&.sigla]
+
+				label for="path" path
+				&text@path.u-full-width[
+					value=@object&.path
+					autocomplete="off"]
+
+		/----------------------------------------------------------------------------------------------------------------
+		/ ERROR FRAME
+		/----------------------------------------------------------------------------------------------------------------		
+		
+		.row
+			.hidden-alert.alert.alert-warning.u-full-width data-form-validator-target="errorFrame"
+
+		/----------------------------------------------------------------------------------------------------------------
+		/ BUTTONS
+		/---------------------------------------------------------------------------------------------------------------
+		- locals =	{ object: @object, table_name: table_name, submit_value: (@object ? "save" : "new") }
+		== partial :"elements/form_buttons", locals: locals
 			
-			== partial :"elements/delete_modal", locals: {model_name: model_name}
+		/----------------------------------------------------------------------------------------------------------------
+		/ DELETE CONFIRMATION MODAL FORM
+		/---------------------------------------------------------------------------------------------------------------
+		
+		== partial :"elements/delete_modal", locals: {model_name: model_name}

@@ -1,91 +1,90 @@
-turbo-frame id="main_frame" 
   
-  .container.container-frame[
-    data-controller="clipboard form modal" 
-    data-clipboard-tablename="permits"
-  ]
+.container.container-frame[
+  data-controller="clipboard form modal" 
+  data-clipboard-tablename="permits"
+]
+  
+  form.form-inline[
+    method="GET" action="/permits/search" 
+    type="search" 
+    data-controller="search" 
+    data-turbo-frame="permits_table" 
+    data-action="input->searchfield#submit \
+      keydown.ctrl+s@window->form#search_focus 
+      keydown.ctrl+a@window->form#add \
+      keydown.ctrl+c@window->clipboard#copy"
+    ]
     
-    form.form-inline[
-      method="GET" action="/permits/search" 
-      type="search" 
-      data-controller="search" 
-      data-turbo-frame="permits_table" 
-      data-action="input->searchfield#submit \
-        keydown.ctrl+s@window->form#search_focus 
-        keydown.ctrl+a@window->form#add \
-        keydown.ctrl+c@window->clipboard#copy"
-      ]
-      
-      /-------------------------------------------------------------------------
-      // HEADER
-      /-------------------------------------------------------------------------
-      .row.flex-center
-        img.cb-icon src="img/cb_icon.jpg"
-        h3 QUESTURA
-      
-      .row
-        .columns.three.offset-by-four.flex-center
-          input#search_string.u-full-width[
-          autofocus="autofocus"
-          tabindex="1" 
-          type="search" 
-          autocomplete="off" 
-          placeholder="search" 
-          aria-label="Search" 
-          name="q" 
-          data-action="input->search#submit" 
-          value=@permits_query
-          ]
+    /-------------------------------------------------------------------------
+    // HEADER
+    /-------------------------------------------------------------------------
+    .row.flex-center
+      img.cb-icon src="/img/cb_icon.jpg"
+      h3 QUESTURA
+    
+    .row
+      .columns.three.offset-by-four.flex-center
+        input#search_string.u-full-width[
+        autofocus="autofocus"
+        tabindex="1" 
+        type="search" 
+        autocomplete="off" 
+        placeholder="search" 
+        aria-label="Search" 
+        name="q" 
+        data-action="input->search#submit" 
+        value=@permits_query
+        ]
 
-        .columns.two.flex-left  
-           
-          // COPY BUTTON
-          a.button.button-success.button-small[
-            title="copies the results to the clipbard (ctrl+c)" 
-            style="width:6rem"
-            data-clipboard-target="copyButton"
-            data-modal-modal-id-param="clipboard" 
-            data-action="click->clipboard#copy click->modal#open_modal"]
-            i.fa-solid.fa-copy style="font-size:small"
-            |&nbspcopy
+      .columns.two.flex-left  
           
-          // MENU BUTTON
-          a.button.button-small.button-square[
-            href="/permits/table/settings" 
-            data-form-target="tableSettingsButton" 
-            data-turbo-frame="editor_frame"
-            title="table settings"]
-            i.fa-solid.fa-table style="color:white; font-size:small"
-            |&nbsp
+        // COPY BUTTON
+        a.button.button-success.button-small[
+          title="copies the results to the clipbard (ctrl+c)" 
+          style="width:6rem"
+          data-clipboard-target="copyButton"
+          data-modal-modal-id-param="clipboard" 
+          data-action="click->clipboard#copy click->modal#open_modal"]
+          i.fa-solid.fa-copy style="font-size:small"
+          |&nbspcopy
+        
+        // MENU BUTTON
+        a.button.button-small.button-square[
+          href="/permits/table/settings" 
+          data-form-target="tableSettingsButton" 
+          data-turbo-frame="editor_frame"
+          title="table settings"]
+          i.fa-solid.fa-table style="color:white; font-size:small"
+          |&nbsp
 
-          button.button-small.button-square[
-            title="menu (ctrl+m)"
-            data-modal-modal-id-param="menu" 
-            data-action="click->modal#open_modal"]
-            <i style="color:white" class="fa-solid fa-bars"></i>
+        button.button-small.button-square[
+          title="menu (ctrl+m)"
+          data-modal-modal-id-param="menu" 
+          data-action="click->modal#open_modal"]
+          <i style="color:white" class="fa-solid fa-bars"></i>
 
-      .row 
-        turbo-frame id="permits_table" src="/permits/table"
-      
-      /-------------------------------------------------------------------------
-      / CLIPBOARD MODAL
-      /-------------------------------------------------------------------------
-      .row data-modal-modal-id-param="clipboard" data-action="keydown.ctrl+c@window->modal#open_modal"
-        .modal.hidden-frame data-modal-id="clipboard"  data-clipboard-target="modal" 
-          .modal-content.u-text-center
-            h5.u-text-center = "Data to copy"
-            textarea#copy_field.modal-copy-area isTrusted="true" rows="4" cols="20" data-clipboard-target="copyField"
-            .columns.two.offset-by-five   
-              button.button-primary data-action="click->modal#close_modal" close
+    .row 
+      turbo-frame id="permits_table" src="/permits/table"
+    
+    /-------------------------------------------------------------------------
+    / CLIPBOARD MODAL
+    /-------------------------------------------------------------------------
+    .row data-modal-modal-id-param="clipboard" data-action="keydown.ctrl+c@window->modal#open_modal"
+      .modal.hidden-frame data-modal-id="clipboard"  data-clipboard-target="modal" 
+        .modal-content.u-text-center
+          h5.u-text-center = "Data to copy"
+          textarea#copy_field.modal-copy-area isTrusted="true" rows="4" cols="20" data-clipboard-target="copyField"
+          .columns.two.offset-by-five   
+            button.button-primary data-action="click->modal#close_modal" close
 
-      /-------------------------------------------------------------------------
-      / MENU MODAL
-      /-------------------------------------------------------------------------
-      .row data-modal-modal-id-param="menu" data-action="keydown.ctrl+m@window->modal#open_modal" data-modal-target="modal" 
-        .modal.hidden-frame data-modal-id="menu"
-          .modal-content 
-            .container.menu
-              == partial "/elements/user_documents_table", locals: {current_user: @current_user, person_id: "set", current_view: "permits"}
-                
-            .row.u-text-center style="margin-top: 2rem"
-              button.button-primary.no-margin data-action="click->modal#close_modal" cancel 
+    /-------------------------------------------------------------------------
+    / MENU MODAL
+    /-------------------------------------------------------------------------
+    .row data-modal-modal-id-param="menu" data-action="keydown.ctrl+m@window->modal#open_modal" data-modal-target="modal" 
+      .modal.hidden-frame data-modal-id="menu"
+        .modal-content 
+          .container.menu
+            == partial "/elements/user_documents_table", locals: {current_user: @current_user, person_id: "set", current_view: "permits"}
+              
+          .row.u-text-center style="margin-top: 2rem"
+            button.button-primary.no-margin data-action="click->modal#close_modal" cancel 

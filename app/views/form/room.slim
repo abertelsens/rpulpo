@@ -2,93 +2,92 @@
 // FORM for Personal Information about a person
 /*****************************************************************************************************
 
-turbo-frame id="main_frame"
   
-	- model_name = "room"
-	- table_name = "rooms"
+- model_name = "room"
+- table_name = "rooms"
 
-	.container.screen-box.medium-form data-controller="form" 
+.container.screen-box.medium-form data-controller="form" 
 
-		form[
-			action="/#{model_name}/#{(@object.nil? ? "new" : @object.id)}" 
-			data-controller="modal keys" 
-			data-form-target="form"
-			data-action="keydown.ctrl+d@window->form#delete keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
-			method="POST"]
+	form[
+		action="/#{model_name}/#{(@object.nil? ? "new" : @object.id)}" 
+		data-controller="modal keys" 
+		data-form-target="form"
+		data-action="keydown.ctrl+d@window->form#delete keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
+		method="POST"]
+	
+	
 		
+		/----------------------------------------------------------------------------------------------------------------
+		// FORM HEADER
+		//----------------------------------------------------------------------------------------------------------------
+		.row.u-text-center
+			h3 = (@object.nil? ? "NEW ROOM" : "ROOM: #{@object.room}")
+			
+		/----------------------------------------------------------------------------------------------------------------
+		//DOCUMENT FRAME
+		//----------------------------------------------------------------------------------------------------------------
 		
+		fieldset data-form-target="fieldset"
+			.row
+		
+				.columns.four
+					label for="house" house
+					select#house.u-full-width name="house"
+						- Room.houses.each do |house|
+							option selected=(@object&.house==house[0]) value=house[0] = house[0].humanize
 			
-			/----------------------------------------------------------------------------------------------------------------
-			// FORM HEADER
-			//----------------------------------------------------------------------------------------------------------------
-			.row.u-text-center
-				h3 = (@object.nil? ? "NEW ROOM" : "ROOM: #{@object.room}")
-				
-			/----------------------------------------------------------------------------------------------------------------
-			//DOCUMENT FRAME
-			//----------------------------------------------------------------------------------------------------------------
+				.columns.two
+					label for="floor" floor
+					&text#floor.u-full-width name="floor" value=@object&.floor
+
+				.columns.six
+					label for="room" room name
+					&text#room.u-full-width name="room" data-form-target="firstField" value=@object&.room
+
+				.columns.six
+					label for="person_id" person
+					select#person_id.u-full-width name="person_id"
+						option selected=(@object&.person_id.blank?) value="" = "empty room"
+						- Person.all.order(family_name: :asc).each do |person|
+							option[
+								selected=(@object&.person_id==person.id) 
+								value=person.id] = "#{person.family_name}, #{person.first_name}" 
+
+				.columns.six
+					label for="phone" phone
+					&text#phone.u-full-width name="phone" value=@object&.phone
 			
-			fieldset data-form-target="fieldset"
-				.row
-			
-					.columns.four
-						label for="house" house
-						select#house.u-full-width name="house"
-							- Room.houses.each do |house|
-								option selected=(@object&.house==house[0]) value=house[0] = house[0].humanize
-				
-					.columns.two
-						label for="floor" floor
-						&text#floor.u-full-width name="floor" value=@object&.floor
+			.row
+				.columns.four
+					label for="bed" bed
+					select#bed.u-full-width name="bed"
+						- Room.beds.each do |bed|
+							option selected=(@object&.bed==bed[0]) value=bed[0] = bed[0].humanize
 
-					.columns.six
-						label for="room" room name
-						&text#room.u-full-width name="room" data-form-target="firstField" value=@object&.room
+				.columns.four
+					label for="matress" matress
+					&text#matress.u-full-width name="matress" value=@object&.matress
 
-					.columns.six
-						label for="person_id" person
-						select#person_id.u-full-width name="person_id"
-							option selected=(@object&.person_id.blank?) value="" = "empty room"
-							- Person.all.order(family_name: :asc).each do |person|
-								option[
-									selected=(@object&.person_id==person.id) 
-									value=person.id] = "#{person.family_name}, #{person.first_name}" 
+				.columns.four
+					label for="bathroom" bathroom
+					select#bathroom.u-full-width name="bathroom"
+						- Room.bathrooms.each do |bath|
+							option selected=(@object&.bathroom==bath[0]) value=bath[0] = bath[0].humanize
 
-					.columns.six
-						label for="phone" phone
-						&text#phone.u-full-width name="phone" value=@object&.phone
-				
-				.row
-					.columns.four
-						label for="bed" bed
-						select#bed.u-full-width name="bed"
-							- Room.beds.each do |bed|
-								option selected=(@object&.bed==bed[0]) value=bed[0] = bed[0].humanize
+		/-----------------------------------------------------------------------------------
+		/ BUTTONS
+		/-----------------------------------------------------------------------------------
+		- locals =	{ object: @object, table_name: table_name, submit_value: (@object ? "save" : "new") }
+		== partial :"elements/form_buttons", locals: locals
 
-					.columns.four
-						label for="matress" matress
-						&text#matress.u-full-width name="matress" value=@object&.matress
+		/ ----------------------------------------------------------------------------------
+		/ ALERT FRAME
+		/ ----------------------------------------------------------------------------------
+		row
+			.hidden-alert.alert.alert-warning.u-full-width data-form-validator-target="errorFrame"
 
-					.columns.four
-						label for="bathroom" bathroom
-						select#bathroom.u-full-width name="bathroom"
-							- Room.bathrooms.each do |bath|
-								option selected=(@object&.bathroom==bath[0]) value=bath[0] = bath[0].humanize
-
-			/-----------------------------------------------------------------------------------
-			/ BUTTONS
-			/-----------------------------------------------------------------------------------
-			- locals =	{ object: @object, table_name: table_name, submit_value: (@object ? "save" : "new") }
-			== partial :"elements/form_buttons", locals: locals
-
-			/ ----------------------------------------------------------------------------------
-			/ ALERT FRAME
-			/ ----------------------------------------------------------------------------------
-			row
-				.hidden-alert.alert.alert-warning.u-full-width data-form-validator-target="errorFrame"
-
-			/----------------------------------------------------------------------------------------------------------------
-			// DELELE CONFIRMATION MODAL FORM
-			//---------------------------------------------------------------------------------------------------------------
-			
-			== partial :"elements/delete_modal", locals: {model_name: model_name}
+		/----------------------------------------------------------------------------------------------------------------
+		// DELELE CONFIRMATION MODAL FORM
+		//---------------------------------------------------------------------------------------------------------------
+		
+		== partial :"elements/delete_modal", locals: {model_name: model_name}

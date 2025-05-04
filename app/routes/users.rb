@@ -9,7 +9,7 @@
 # renders the users frame
 get '/users' do
     @current_user = get_current_user
-    partial :"frame/simple_template",  locals: {title: "USERS", model_name: "user", table_name: "users" }
+    slim :"frame/simple_template",  locals: {title: "USERS", model_name: "user", table_name: "users" }
 end
 
 # renders the users table
@@ -22,11 +22,10 @@ end
 
 # renders a user form
 get '/user/:id' do
-    @object = (params[:id]=="new" ? nil : User.find(params[:id]))
-    # get a has with the permissions of the user
-    @permissions = @object.pulpo_module_ids if @object
-    #@permissions = @object.get_permissions if @object
-    partial :"form/user"
+  @object = (params[:id]=="new" ? nil : User.find(params[:id]))
+  # get a has with the permissions of the user
+  @permissions = @object.pulpo_module_ids if @object
+  slim :"form/user"
 end
 
 # -----------------------------------------------------------------------------------------

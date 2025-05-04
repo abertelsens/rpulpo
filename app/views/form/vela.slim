@@ -1,185 +1,186 @@
-turbo-frame id="main_frame"
-  
-	- model_name = "vela"
-	- table_name = "velas"
-	
-	.container.screen-box.full-screen-form style="max-width:1200px" data-controller="form" 
 
-		form[
-			action="/vela/#{@object.id}" 
-			data-vela-urlprefix="/vela/#{@object.id}" 
-			id="velaform" 
-			data-turbo-frame="" 
-			method="POST" 
-			data-vela-target="form"
-			data-form-target="form" 
-			data-controller="vela" 
-			data-action="turnosreload@window->vela#reloadturnos \
-				keydown.ctrl+d@window->form#delete \
-				keydown.ctrl+enter@window->form#enter \
-				keydown.esc@window->form#escape"
-		]
+- model_name = "vela"
+- table_name = "velas"
+
+.container.screen-box.full-screen-form style="max-width:1200px" data-controller="form" 
+
+	form[
+		action="/vela/#{@object.id}" 
+		data-vela-urlprefix="/vela/#{@object.id}" 
+		id="velaform" 
+		data-turbo-frame="" 
+		method="POST" 
+		data-vela-target="form"
+		data-form-target="form" 
+		data-controller="vela" 
+		data-action="turnosreload@window->vela#reloadturnos \
+			keydown.ctrl+d@window->form#delete \
+			keydown.ctrl+enter@window->form#enter \
+			keydown.esc@window->form#escape"
+	]
+		
+		fieldset data-form-target="fieldset"
+			/----------------------------------------------------------------------------------------------------------------
+			// FORM HEADER
+			//----------------------------------------------------------------------------------------------------------------
+			.row.u-text-center.margin-top
+				.columns.four.offset-by-four
+					h3.no-margin = (@object.nil? ? "NEW VELA" : "VELA: #{@object.date.strftime('%d %b %y')}")
+				.columns.three.flex-left
+					a.button.button-primary.button-small data-turbo-frame="turnosFrame" data-action="click->vela#updateTurnos"
+						i.class.fa-regular.fa-clock
+						|&nbspreset turnos
+					a.button.button-succes.button-small target="_blank" href="/vela/#{@object.id}/pdf" 
+						i.class.fa-regular.fa-file-pdf style="font-size:.9rem"
+						|&nbsppdf
+					
+			/----------------------------------------------------------------------------------------------------------------
+			//DOCUMENT FRAME
+			//----------------------------------------------------------------------------------------------------------------
+			.row
+				.columns.two
+					label for="date" date
+					&date.u-full-width data-date-format="DD MMMM YYYY" name="date" style="margin-bottom:0"	data-vela-target="field" required=true value = (@object.nil? ? "" : @object.date)		
+					
+				.columns.six
+					label horario
+					div style="display:flex; gap: .2rem; align-items: center; vertical-align:center;"
+						&number[
+							style="max-width: 4rem" 
+							min=0 
+							max=23 
+							name="start_time_hour" 
+							required="true"  
+							data-vela-target="field" 
+							value = (@object.nil? ? 21 : @object.start_time&.hour)
+						]
+
+						p style="margin-bottom: 1.5rem" = ":"
+						
+						&number[
+							style="max-width: 4rem"
+							min=0 max=59
+							name="start_time_min"
+							step=5
+							required="true"
+							data-vela-target="field"
+							value = (@object.nil? ? 30 : @object.start_time&.min)]
+
+						&text.u-full-width name="start1_message" value=@object.start1_message
+						
+					div style="display:flex; gap: .2rem; align-items: center; vertical-align:center;"
+						&number[
+							style="max-width: 4rem"
+							min=0
+							max=23
+							name="start_time2_hour"
+							required="true"
+							data-vela-target="field"
+							value = (@object.nil? ? 21 : @object.start_time2&.hour)
+							]
+						
+						p style="margin-bottom: 1.5rem" = ":"
+						
+						&number[
+							style="max-width: 4rem"
+							min=0
+							max=59
+							name="start_time2_min"
+							step=5
+							required="true"
+							data-vela-target="field"
+							value = (@object.nil? ? 45 : @object.start_time2&.min)
+						]
+
+						&text.u-full-width name="start2_message" value=@object.start2_message
 			
-			fieldset data-form-target="fieldset"
-				/----------------------------------------------------------------------------------------------------------------
-				// FORM HEADER
-				//----------------------------------------------------------------------------------------------------------------
-				.row.u-text-center.margin-top
-					.columns.four.offset-by-four
-						h3.no-margin = (@object.nil? ? "NEW VELA" : "VELA: #{@object.date.strftime('%d %b %y')}")
-					.columns.three.flex-left
-						a.button.button-primary.button-small data-turbo-frame="turnosFrame" data-action="click->vela#updateTurnos"
-							i.class.fa-regular.fa-clock
-							|&nbspreset turnos
-						a.button.button-succes.button-small target="_blank" href="/vela/#{@object.id}/pdf" 
-							i.class.fa-regular.fa-file-pdf style="font-size:.9rem"
-							|&nbsppdf
-						
-				/----------------------------------------------------------------------------------------------------------------
-				//DOCUMENT FRAME
-				//----------------------------------------------------------------------------------------------------------------
-				.row
-					.columns.two
-						label for="date" date
-						&date.u-full-width data-date-format="DD MMMM YYYY" name="date" style="margin-bottom:0"	data-vela-target="field" required=true value = (@object.nil? ? "" : @object.date)		
-						
-					.columns.six
-						label horario
-						div style="display:flex; gap: .2rem; align-items: center; vertical-align:center;"
-							&number[
-								style="max-width: 4rem" 
+					
+					div style="display:flex; gap: .2rem; align-items: center; vertical-align:center;"
+						&number[
+							style="max-width: 4rem"
 								min=0 
 								max=23 
-								name="start_time_hour" 
+								name="end_time_hour" 
 								required="true"  
 								data-vela-target="field" 
-								value = (@object.nil? ? 21 : @object.start_time&.hour)
+								value = (@object.nil? ? 7 : @object.end_time&.hour)
+						]
+
+						p style="margin-bottom: 1.5rem" = ":"
+						&number[
+							style="max-width: 4rem"
+							min=0 
+							max=59 
+							name="end_time_min" 
+							step=5 
+							required="true" 
+							data-vela-target="field" 
+							value = (@object.nil? ? 30 : @object.end_time&.min)
 							]
-
-							p style="margin-bottom: 1.5rem" = ":"
-							
-							&number[
-								style="max-width: 4rem"
-								min=0 max=59
-								name="start_time_min"
-								step=5
-								required="true"
-								data-vela-target="field"
-								value = (@object.nil? ? 30 : @object.start_time&.min)]
-
-							&text.u-full-width name="start1_message" value=@object.start1_message
-							
-						div style="display:flex; gap: .2rem; align-items: center; vertical-align:center;"
-							&number[
- 								style="max-width: 4rem"
-								min=0
-								max=23
-								name="start_time2_hour"
-								required="true"
-								data-vela-target="field"
-								value = (@object.nil? ? 21 : @object.start_time2&.hour)
-								]
-							
-							p style="margin-bottom: 1.5rem" = ":"
-							
-							&number[
-								style="max-width: 4rem"
-								min=0
-								max=59
-								name="start_time2_min"
-								step=5
-								required="true"
-								data-vela-target="field"
-								value = (@object.nil? ? 45 : @object.start_time2&.min)
-							]
-
-							&text.u-full-width name="start2_message" value=@object.start2_message
-				
 						
-						div style="display:flex; gap: .2rem; align-items: center; vertical-align:center;"
-							&number[
-								style="max-width: 4rem"
-								 min=0 
-								 max=23 
-								 name="end_time_hour" 
-								 required="true"  
-								 data-vela-target="field" 
-								 value = (@object.nil? ? 7 : @object.end_time&.hour)
-							]
-
-							p style="margin-bottom: 1.5rem" = ":"
-							&number[
-								style="max-width: 4rem"
-								min=0 
-								max=59 
-								name="end_time_min" 
-								step=5 
-								required="true" 
-								data-vela-target="field" 
-								value = (@object.nil? ? 30 : @object.end_time&.min)
-								]
-							
-							&text.u-full-width name="end_message" value=@object.end_message
-				
-						
-
-					.columns.four
-						- order_array = @object.order.nil?  ? ""  : @object.order.split(" ").map{|item| item.to_i}
-						- puts order_array
-						label = "turnos"
-						- 6.times	do |i|
-							.columns.six style=(i.even? ? "padding-left:0;" : "padding-right:0")
-								select.u-full-width name="house[#{i}]" data-vela-target="field"
-									option selected = (@object.nil? ? true : order_array[i]==-1) value=-1  = "-"
-									- Room.houses.each do |house|
-										option selected = (@object.nil? ? false : order_array[i]==house[1]) value=house[1] = house[0].humanize
-				
+						&text.u-full-width name="end_message" value=@object.end_message
 			
-			.row data-controller="drag"
-				turbo-frame[src="/vela/#{@object.id}/turnos" 
-					data-vela-target="turnosFrame" 
-					id="turnos_frame" 
-					data-drag-target="turnosframe" 
-					data-action="click->contoller2#turnRed"]
-			
-			/----------------------------------------------------------------------------------------------------------------
-			/ BUTTONS
-			/---------------------------------------------------------------------------------------------------------------
-
-			- locals =	{ object: @object, table_name: table_name, submit_value: (@object ? "save" : "new") }
-			.row.flex-center.flex-columns
-				- if (@object && (!(@object.respond_to? :can_be_deleted?) || @object&.can_be_deleted?))
-					a.button.button-secondary[
-						data-keys-target="deleteButton" 
-						tabindex="-1" 
-						data-form-target="deleteButton"
-						data-action="click->form#open_modal"
-						title="ctrl+d"
-						] delete  
-				
-				button.button-primary[
-					type="submit"
-					tabindex="-1" 
-					name="commit" 
-					data-form-target="submitButton"
-					data-action="form-validator#validate"
-					data-form-validator-target="submitButton"
-					title="ctrl+enter"
-					] save
-						
 					
+
+				.columns.four
+					- order_array = @object.order.nil?  ? ""  : @object.order.split(" ").map{|item| item.to_i}
+					- puts order_array
+					label = "turnos"
+					- 6.times	do |i|
+						.columns.six style=(i.even? ? "padding-left:0;" : "padding-right:0")
+							select.u-full-width name="house[#{i}]" data-vela-target="field"
+								option selected = (@object.nil? ? true : order_array[i]==-1) value=-1  = "-"
+								- Room.houses.each do |house|
+									option selected = (@object.nil? ? false : order_array[i]==house[1]) value=house[1] = house[0].humanize
+			
+		
+		.row data-controller="drag"
+			turbo-frame[src="/vela/#{@object.id}/turnos" 
+				data-vela-target="turnosFrame" 
+				id="turnos_frame" 
+				data-drag-target="turnosframe" 
+				data-action="click->contoller2#turnRed"]
+		
+		/----------------------------------------------------------------------------------------------------------------
+		/ BUTTONS
+		/---------------------------------------------------------------------------------------------------------------
+
+		- locals =	{ object: @object, table_name: table_name, submit_value: (@object ? "save" : "new") }
+		.row.flex-center.flex-columns
+			- if (@object && (!(@object.respond_to? :can_be_deleted?) || @object&.can_be_deleted?))
 				a.button.button-secondary[
-					formnovalidate="true" 
+					data-keys-target="deleteButton" 
 					tabindex="-1" 
-					data-form-target="cancelButton" 
-					href="/#{table_name}"
-					title="esc"
-					] cancel
+					data-form-target="deleteButton"
+					data-action="click->form#open_modal"
+					title="ctrl+d"
+					] delete  
 			
-			
+			button.button-primary[
+				data-turbo-action="advance"
+				type="submit"
+				tabindex="-1" 
+				name="commit" 
+				data-form-target="submitButton"
+				data-action="form-validator#validate"
+				data-form-validator-target="submitButton"
+				title="ctrl+enter"
+				] save
+					
 				
-			/----------------------------------------------------------------------------------------------------------------
-			/ DELETE CONFIRMATION MODAL FORM
-			/---------------------------------------------------------------------------------------------------------------
+			a.button.button-secondary[
+				data-turbo-action="advance"
+				formnovalidate="true" 
+				tabindex="-1" 
+				data-form-target="cancelButton" 
+				href="/#{table_name}"
+				title="esc"
+				] cancel
+		
+		
 			
-			== partial :"elements/delete_modal", locals: {model_name: model_name}
+		/----------------------------------------------------------------------------------------------------------------
+		/ DELETE CONFIRMATION MODAL FORM
+		/---------------------------------------------------------------------------------------------------------------
+		
+		== partial :"elements/delete_modal", locals: {model_name: model_name}

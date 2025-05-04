@@ -1,141 +1,145 @@
-turbo-frame id="main_frame" data-people-target="people_screen"
+.container.container-frame[
+  isTrusted="true" 
+  data-controller="clipboard modal form" 
+  data-clipboard-tablename="people"]
   
-  .container.container-frame[
+  form.form-inline[
+    method="GET" 
     isTrusted="true" 
-    data-controller="clipboard modal form" 
-    data-clipboard-tablename="people"]
+    action="/people/search" 
+    data-controller="search" 
+    data-turbo-frame="people_table"
+    aria-label="Search" 
+    name="q" 
+    data-action="input->search#submit 
+      keydown.ctrl+c@window->clipboard#copy 
+      keydown.ctrl+s@window->form#search_focus 
+      keydown.ctrl+a@window->form#add"]
+
+
+    /-------------------------------------------------------------------------
+    // HEADER
+    /-------------------------------------------------------------------------
+    .row.flex-center
+      img.cb-icon src="/img/cb_icon.jpg"
+      h3 PERSONAS
     
-    form.form-inline[
-      method="GET" 
-      isTrusted="true" 
-      action="/people/search" 
-      data-controller="search" 
-      data-turbo-frame="people_table"
-      aria-label="Search" 
-      name="q" 
-      data-action="input->search#submit 
-        keydown.ctrl+c@window->clipboard#copy 
-        keydown.ctrl+s@window->form#search_focus 
-        keydown.ctrl+a@window->form#add"]
+    .row
 
+      .columns.two.offset-by-two.flex-right 
+        select.no-margin name="filter" 
+          option[
+            selected=(@people_filter=="cb") 
+            value="cb"] = "search in cavabianca"
+          option[
+            selected=(@people_filter=="") 
+            value=""] = "search all"
+        
+      // SEARCH FIELD
+      .columns.four
+        input#search_string.u-full-width[
+          data-form-target="firstField"
+          isTrusted="true" 
+          autofocus="autofocus" 
+          type="search" 
+          autocomplete="off" 
+          placeholder="search (ctrl+s)" 
+          aria-label="Search" 
+          name="q" 
+          data-action="input->search#submit" 
+          value=@people_query]
 
-      /-------------------------------------------------------------------------
-      // HEADER
-      /-------------------------------------------------------------------------
-      .row.flex-center
-        img.cb-icon src="img/cb_icon.jpg"
-        h3 PERSONAS
       
-      .row
+      // BUTTONS
+      .columns.three.flex-left
 
-        .columns.two.offset-by-two.flex-right 
-          select.no-margin name="filter" 
-            option selected=(@people_filter=="cb") value="cb" = "search in cavabianca"
-            option selected=(@people_filter=="") value="" = "search all"
+        // ADD NEW PERSON BUTTON
+        - if @current_user.usertype!="guest"
+          a.button.button-primary.button-small[
+            data-turbo-action="advance"
+            title="adds a new person to the database (ctrl+a)" 
+            href="/person/new/general" 
+            data-form-target="newButton"]
+            i.fa-solid.fa-plus style="font-size:small"
+            |&nbspadd
           
-        // SEARCH FIELD
-        .columns.four
-          input#search_string.u-full-width[
-            data-form-target="firstField"
+          // COPY BUTTON
+          a.button.button-success.button-small[
             isTrusted="true" 
-            autofocus="autofocus" 
-            type="search" 
-            autocomplete="off" 
-            placeholder="search (ctrl+s)" 
-            aria-label="Search" 
-            name="q" 
-            data-action="input->search#submit" 
-            value=@people_query]
-
+            title="(ctrl+c)" 
+            style="width:6rem" 
+            data-clipboard-target="copyButton"
+            data-modal-modal-id-param="clipboard" 
+            data-action="click->clipboard#copy click->modal#open_modal"]
+            i.fa-solid.fa-copy style="font-size:small"
+            |&nbspcopy
         
-        // BUTTONS
-        .columns.three.flex-left
-
-          // ADD NEW PERSON BUTTON
-          - if @current_user.usertype!="guest"
-            a.button.button-primary.button-small[
-              title="adds a new person to the database (ctrl+a)" 
-              href="/person/new/general" 
-              data-form-target="newButton"
-              data-turbo-frame="editor_frame"]
-              i.fa-solid.fa-plus style="font-size:small"
-              |&nbspadd
+        // MENU BUTTON
+        button.button-small.button-square[
+          title="menu (ctrl+m)" 
+          data-modal-modal-id-param="menu" 
+          data-action="click->modal#open_modal"]
+          <i style="color:white" class="fa-solid fa-bars"></i>
+    
+    /-------------------------------------------------------------------------
+    / MENU MODAL
+    /-------------------------------------------------------------------------
+    .row data-modal-modal-id-param="menu" data-action="keydown.ctrl+m@window->modal#open_modal"
+      .modal.hidden-frame data-modal-id="menu"
+        .modal-content
+          .container.menu
             
-            // COPY BUTTON
-            a.button.button-success.button-small[
-              isTrusted="true" 
-              title="(ctrl+c)" 
-              style="width:6rem" 
-              data-clipboard-target="copyButton"
-              data-modal-modal-id-param="clipboard" 
-              data-action="click->clipboard#copy click->modal#open_modal"]
-              i.fa-solid.fa-copy style="font-size:small"
-              |&nbspcopy
-          
-          // MENU BUTTON
-          button.button-small.button-square[
-            title="menu (ctrl+m)" 
-            data-modal-modal-id-param="menu" 
-            data-action="click->modal#open_modal"]
-            <i style="color:white" class="fa-solid fa-bars"></i>
-      
-      /-------------------------------------------------------------------------
-      / MENU MODAL
-      /-------------------------------------------------------------------------
-      .row data-modal-modal-id-param="menu" data-action="keydown.ctrl+m@window->modal#open_modal"
-        .modal.hidden-frame data-modal-id="menu"
-          .modal-content
-            .container.menu
+            == partial "/elements/user_documents_table", 
+                locals: {current_user: @current_user, person_id: "set", current_view: "people"}
               
-              == partial "/elements/user_documents_table", 
-                  locals: {current_user: @current_user, person_id: "set", current_view: "people"}
-                
-              div.table-container
-                div.table-table style="display: block"
-                  div.table-cell-header
-                    h4.margin-bottom = "ACTIONS"
-                  .table-row-body  
+            div.table-container
+              div.table-table style="display: block"
+                div.table-cell-header
+                  h4.margin-bottom = "ACTIONS"
+                .table-row-body  
+                  a.table-cell-body.menu-link[
+                    data-form-target="tableSettingsButton"
+                    data-turbo-action="advance" 
+                    href="/people/table/settings"] = "Edit Table Columns"
+                - if @current_user.usertype!="guest"  
+                  .table-row-body 
                     a.table-cell-body.menu-link[
-                      data-form-target="tableSettingsButton" 
-                      href="/people/table/settings" 
-                      data-turbo-frame="editor_frame"] Edit Table Columns
-                  - if @current_user.usertype!="guest"  
-                    .table-row-body 
-                      a.table-cell-body.menu-link href="/people/edit_field" Edit Field Value
-                  - if @current_user.admin?  
-                    .table-row-body 
-                      a.table-cell-body.menu-link[
-                        href="/people/set/add_year"] 
-                        |Add Year to All Selected People
-            
-            .row.u-text-center style="margin-top: 2rem"
-              button.button-primary.no-margin data-action="click->modal#close_modal" cancel
+                      data-turbo-action="advance"
+                      href="/people/edit_field"] = "Edit Field Value"
+                - if @current_user.admin?  
+                  .table-row-body 
+                    a.table-cell-body.menu-link[
+                      data-turbo-action="advance"
+                      href="/people/set/add_year"] = "Add Year to All Selected People"
+          
+          .row.u-text-center style="margin-top: 2rem"
+            button.button-primary.no-margin data-action="click->modal#close_modal" cancel
 
-        
-      /-------------------------------------------------------------------------
-      / CLIPBOARD MODAL
-      /-------------------------------------------------------------------------
-      .row[
-        data-modal-modal-id-param="clipboard" 
-        data-action="keydown.ctrl+c@window->modal#open_modal"]
-
-        .modal.hidden-frame data-modal-id="clipboard"  data-clipboard-target="modal" 
-          .modal-content.u-text-center
-            
-            h5.u-text-center = "Data to copy"
-            
-            textarea#copy_field.modal-copy-area[
-              isTrusted="true" 
-              rows="4" 
-              cols="20" 
-              data-clipboard-target="copyField"]
-            
-            .columns.two.offset-by-five   
-              button.button-primary data-action="click->modal#close_modal" close
       
+    /-------------------------------------------------------------------------
+    / CLIPBOARD MODAL
+    /-------------------------------------------------------------------------
+    .row[
+      data-modal-modal-id-param="clipboard" 
+      data-action="keydown.ctrl+c@window->modal#open_modal"]
 
-      /-------------------------------------------------------------------------
-      // PEOPLE TABLE
-      /-------------------------------------------------------------------------
-      .row
-        turbo-frame id="people_table" src="/people/table"
+      .modal.hidden-frame data-modal-id="clipboard"  data-clipboard-target="modal" 
+        .modal-content.u-text-center
+          
+          h5.u-text-center = "Data to copy"
+          
+          textarea#copy_field.modal-copy-area[
+            isTrusted="true" 
+            rows="4" 
+            cols="20" 
+            data-clipboard-target="copyField"]
+          
+          .columns.two.offset-by-five   
+            button.button-primary data-action="click->modal#close_modal" close
+    
+
+    /-------------------------------------------------------------------------
+    // PEOPLE TABLE
+    /-------------------------------------------------------------------------
+    .row
+      turbo-frame id="people_table" src="/people/table"

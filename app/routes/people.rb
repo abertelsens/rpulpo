@@ -11,7 +11,7 @@ DEFAULT_PEOPLE_FILTER = "cb"
 get '/people' do
 	@current_user = get_current_user
 	get_last_query_variables :people
-	partial :"frame/people"
+	slim :"frame/people"
 end
 
 # renders the table of people
@@ -38,7 +38,7 @@ get '/people/table/settings' do
 	@current_user 	= get_current_user
 	@table_settings = get_last_table_settings :people
 	@origin 				= "people"
-	partial :"form/table_settings"
+	slim :"form/table_settings"
 end
 
 # renders the table of after perfroming a search.
@@ -54,7 +54,7 @@ end
 get '/person/:id' do
 	@current_user = get_current_user
   @person 			= Person.find params[:id]
-  partial :"view/person"
+  slim :"view/person"
 end
 
 get '/person/:person_id/permit' do
@@ -66,7 +66,11 @@ get '/person/:id/general' do
 	@current_user = get_current_user
 	@person 			= new_id? ? nil : Person.find(params[:id])
 	locals = params[:origin].present? ? {origin: params[:origin], ceremony: params[:ceremony]} : nil
-	partial :"form/person/general", locals: locals
+	slim :"form/person/general", locals: locals
+end
+
+get '/person/:id/photo' do
+	send_file File.join(settings.public_folder, "photos/#{params[:id]}.jpg")
 end
 
 # renders a form of a single person view
@@ -76,25 +80,25 @@ get '/person/:id/:module' do
 	klass 				= Object.const_get(params[:module].classify)
 	@object 			= new_id? ? nil : klass.find_by(person_id: @person.id)
 	locals 				= params[:origin].present? ? {origin: params[:origin], ceremony: params[:ceremony]} : nil
-	partial :"form/person/#{params[:module]}", locals: locals
+	slim :"form/person/#{params[:module]}", locals: locals
 end
 
 get '/crs_record/table' do
 	@data = CrsRecord.get_ceremony_info(params[:ceremony]) 	if params[:ceremony].present?
 	@data = CrsRecord.get_phase_info(params[:phase]) 				if params[:phase].present?
-	partial "table/ceremony"
+	partial :"table/ceremony"
 end
 
 # renders a single person view
 get '/crs_records' do
 	@ceremony = params[:ceremony] if params[:ceremony].present?
-	partial :"frame/crs_records"
+	slim :"frame/crs_records"
 end
 
 # renders a single person view
 get '/guests' do
 	@current_user = get_current_user
-	partial :"frame/simple_template",  locals: {title: "GUESTS", model_name: "guest", table_name: "guests" }
+	slim :"frame/simple_template",  locals: {title: "GUESTS", model_name: "guest", table_name: "guests" }
 end
 
 # renders a single person view
@@ -102,14 +106,13 @@ get '/guests/table' do
 	@table_settings = TableSettings.get(:guests_default)
   @objects = Person.where(ctr: "guest")
 	@decorator = PersonDecorator.new(table_settings: @table_settings)
-	#ObjectDecorator.new(table_settings: @table_settings)
-  partial :"table/simple_template"
+	partial :"table/simple_template"
 end
 
 # renders a single person view
 get '/guest/:id' do
 	@object = (params[:id]=="new" ? nil : Person.find(params[:id]))
-	partial :"form/guest"
+	slim :"form/guest"
 end
 
 post '/guest/:id' do
@@ -156,7 +159,7 @@ post '/person/:id/general' do
 			Person.find(params[:id]).destroy
 			redirect :"/people"
 	end
-	partial :"view/person"
+	redirect :"person/#{@person.id}"
 end
 
 # Validates if the params received are valid for updating or creating an entity object.
@@ -177,7 +180,7 @@ post '/person/:person_id/:module/:id' do
 	object = params[:id]=="new" ? nil : klass.find(params[:id])
 	object.nil? ? (klass.create params.except("id")) : (object.update params) if save?
 	if (params[:origin].present? && params[:origin]="crs_ceremonies") then redirect "/crs_records?ceremony=#{params[:ceremony]}"
-	else partial :"view/person"
+	else redirect :"person/#{@person.id}"
 	end
 end
 
@@ -199,7 +202,7 @@ get '/people/:id/document/:doc_id/template_variables' do
 	@document = Document.find params[:doc_id]
 	@template_variables = @document.get_template_variables
 	@set = params[:id]
-	partial :'form/report'
+	slim :'form/report'
 end
 
 
@@ -253,42 +256,39 @@ end
 # shows the form to edit a field of all the people in the set
 get '/people/edit_field' do
 	@people = get_current_people_set
-	partial :"form/set_field"
+	slim :"form/set_field"
 end
 
 # render the partial containing the input field to bulk edit
 get '/people/field/:attribute_name' do
 	@attribute = TableSettings.get_attribute(params[:attribute_name])
-	partial :"elements/person_field"
+	slim :"elements/person_field"
 end
 
 # commits the changes to the people set
 # the method table.classify.constantize get the class given the table name.
 post '/people/edit_field' do
-	@current_user = get_current_user
 	@people = get_current_people_set
 	table, field = params[:attribute_id].split(".")
 
 	# simply return if no value was received as a parameter
-	return partial :"frame/people" if params[field].strip.blank?
+	redirect "/people" if params[field].strip.blank?
 
 	if table=="people" then @people.update_all(field => params[field])
 	else table.classify.constantize.where(person_id: @people.pluck(:id)).update_all(field => params[field])
 	end
-	partial :"frame/people"
+	redirect "/people"
 end
 
 # adds one year to each of the people that match the current query
 get '/people/set/add_year' do
 	@current_user = get_current_user
 	@people = get_current_people_set
-	partial :"form/add_year"
+	slim :"form/add_year"
 end
 
 # adds one year to each of the people that match the current query
 post '/people/set/add_year' do
-	@current_user = get_current_user
-	@people = get_current_people_set
 	get_current_people_set.each {|person|  person.add_year } if params["commit"]=="save"
-	partial :"frame/people"
+	redirect "/people"
 end

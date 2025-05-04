@@ -1,187 +1,184 @@
 - entities = Entity.get_all
 - mail_users = User.mail_users 
 
-turbo-frame id="main_frame"  
 
-  .container.container-frame data-controller="search mail form"
+.container.container-frame data-controller="search mail form"
 
-    
+  form.form-inline[
+    method="GET"
+    data-controller="search"
+    action="/mail/search"
+    data-turbo-frame="mails_table"
+    aria-label="Search" 
+    name="q" 
+    data-action="input->search#submit \
+    keydown.ctrl+a@window->frame#add"]
+
+    .row
       
-    form.form-inline[
-      method="GET"
-      data-controller="search"
-      action="/mail/search"
-      data-turbo-frame="mails_table"
-      aria-label="Search" 
-      name="q" 
-      data-action="input->search#submit \
-      keydown.ctrl+a@window->frame#add"]
-
-      .row
+      .columns.twelve
         
-        .columns.twelve
+        // -----------------------------------------------------------------------------------
+        // HEADER
+        // -----------------------------------------------------------------------------------   
+        .row.header-frame.margin-top
           
-          // -----------------------------------------------------------------------------------
-          // HEADER
-          // -----------------------------------------------------------------------------------   
-          .row.header-frame.margin-top
+          
+          .flex-columns.u-full-width.flex-center 
             
-            
-            .flex-columns.u-full-width.flex-center 
+            .flex-center style="gap: 4rem"
+              .flex-center
+                img.cb-icon src="img/cb_icon.jpg"
+                h3.no-margin  CORREO CAVABIANCA
+
+              .flex-right style="gap: .4rem; flex: 1"
               
-              .flex-center style="gap: 4rem"
-                .flex-center
-                  img.cb-icon src="img/cb_icon.jpg"
-                  h3.no-margin  CORREO CAVABIANCA
+                a.button.button-secondary.button-small.no-margin[
+                  data-turbo-frame="mails_table" 
+                  href="/mail/mark_as_read"
+                  title="marks all the mail as read"]
+                  i.fa-solid.fa-envelope-circle-check style="font-size:small"
 
-                .flex-right style="gap: .4rem; flex: 1"
-                
-                  a.button.button-secondary.button-small.no-margin[
-                    data-turbo-frame="mails_table" 
-                    href="/mail/mark_as_read"
-                    title="marks all the mail as read"]
-                    i.fa-solid.fa-envelope-circle-check style="font-size:small"
-
-                  a.button.button-secondary.button-small.no-margin[
-                    data-action="click->mail#openProtocolModal"
-                    title="assigns a protocol to a new mail"]
-                    i.fa-solid.fa-lock style="font-size:small"
-              
+                a.button.button-secondary.button-small.no-margin[
+                  data-action="click->mail#openProtocolModal"
+                  title="assigns a protocol to a new mail"]
+                  i.fa-solid.fa-lock style="font-size:small"
             
+          
 
-                  - if @current_user.admin?
-                    button.button-secondary.button-danger.button-small.no-margin[
-                      data-mail-target="deleteYearButton" 
-                      data-action="click->mail#confirmYearDelete"
-                      title="deletes all the mail for the current year"]
+                - if @current_user.admin?
+                  button.button-secondary.button-danger.button-small.no-margin[
+                    data-mail-target="deleteYearButton" 
+                    data-action="click->mail#confirmYearDelete"
+                    title="deletes all the mail for the current year"]
 
-                      i.fa-solid.fa-trash style="font-size:small"
-                      
+                    i.fa-solid.fa-trash style="font-size:small"
+                    
 
-                  a.button.button-success.button-small.no-margin[
-                    href="/mail/new" 
-                    data-turbo-frame="main_frame"
-                    data-form-target="newButton"
-                    title="adds a new entry"]
-                    i.fa-solid.fa-plus style="font-size:small"
+                a.button.button-success.button-small.no-margin[
+                  href="/mail/new" 
+                  data-turbo-frame="main_frame"
+                  data-form-target="newButton"
+                  title="adds a new entry"]
+                  i.fa-solid.fa-plus style="font-size:small"
 
-          // -----------------------------------------------------------------------------------
-          // MAIL SEARCH FILTERS
-          // ----------------------------------------------------------------------------------- 
-          .row.flex-bottom style="padding: 0 10rem"
-            .container.search-filters.flex-center.flex-wrap.flex-columns 
-              div
-                label.no-margin.u-text-left ctr
-                select.no-margin[
-                  data-mail-target="entity" 
-                  name="entity" 
-                  data-action="change->search#submit"]
+        // -----------------------------------------------------------------------------------
+        // MAIL SEARCH FILTERS
+        // ----------------------------------------------------------------------------------- 
+        .row.flex-bottom style="padding: 0 10rem"
+          .container.search-filters.flex-center.flex-wrap.flex-columns 
+            div
+              label.no-margin.u-text-left ctr
+              select.no-margin[
+                data-mail-target="entity" 
+                name="entity" 
+                data-action="change->search#submit"]
 
-                    option selected=(@mails_query[:entity].blank?) value="" all
-                    - entities.each do |entity|
-                      option  selected=(@mails_query[:entity].to_i==entity.id) value=entity.id = entity.sigla 
-              div    
-                label.no-margin.u-text-left tipo
-                select.no-margin data-mail-target="direction" name="direction" data-action="change->search#submit"
-                  option selected=(@mails_query[:direction].blank?) value="" = "all"
-                  - Mail.directions.each do |direction|
-                    option selected=(!@mails_query[:direction].blank? && @mails_query[:direction].to_i==direction[1]) value=direction[1] = direction[0]
-              
-              div 
-                label.no-margin.u-text-left año
-                select.no-margin data-mail-target="year" name="year" data-action="change->search#submit"
-                  option selected=(@mails_query[:year].blank?) value="" all
-                  - Mail.get_years.each do |year|
-                    option selected=(@mails_query[:year].to_i==year) value=year = year
-                
-              div.no-margin.u-full-width.xlong-field
-                label.no-margin.u-text-left asunto
-                input#search_string.no-margin.u-full-width.xlong-field[
-                  data-mail-target="search_field" 
-                  autofocus="autofocus" 
-                  type="search" 
-                  data-people-target="search_field" 
-                  autocomplete="off" 
-                  placeholder="Buscar por asunto o protocolo" 
-                  name="q" 
-                  data-action="input->search#submit" 
-                  value=@mails_query[:q]]
-                
-              div 
-                label.no-margin.u-text-left status
-                select.no-margin id="multiple" name="mail_status" data-mail-target="mail_status" data-action="change->search#submit"
-                  option selected=(@mails_query[:mail_status].blank?) value="" all
-                  - Mail.mail_statuses.each do |st|  
-                    option selected=(@mails_query[:mail_status]==st[0]) value=st[0] = st[0].humanize.downcase
-              
-              div 
-                label.no-margin.u-text-left asignado
-                select.no-margin id="assigned" name="assigned" data-mail-target="assigned" data-action="change->search#submit"
-                  option selected=(@mails_query[:assigned].blank?) value="" all
-                  - mail_users.each do |user|  
-                    option selected=(@mails_query[:assigned].to_i==user.id) value=user.id = user.uname
-
-          .row.margin-left.margin-right 
-            turbo-frame data-mail-target="mailsTable" id="mails_table"  src="/mails/table"
-
-    // -----------------------------------------------------------------------------------
-    // MODAL FORM TO ASSIGN A PROTOCOL
-    // ----------------------------------------------------------------------------------- 
-  
-    
-    form.form-inline method="GET" action="/mail/assign_protocol" 
-      .modal.hidden-frame data-mail-target="protocolModal" data-action="keydown.esc@window->mail#closeProtocolModal"
-        .row
-          .modal-content style="min-width: 800px"
-            
-            .row.modal-rowfmail
-              h4.u-text-center Reservar Protocolo
-            
-            .row.margin-top
-              .columns.three
-                label ctr
-                select.medium-field data-mail-target="entity" name="entity"
+                  option selected=(@mails_query[:entity].blank?) value="" all
                   - entities.each do |entity|
-                    option selected=selected=(entity.sigla=="cg") value=entity.id = entity.sigla 
-              
+                    option  selected=(@mails_query[:entity].to_i==entity.id) value=entity.id = entity.sigla 
+            div    
+              label.no-margin.u-text-left tipo
+              select.no-margin data-mail-target="direction" name="direction" data-action="change->search#submit"
+                option selected=(@mails_query[:direction].blank?) value="" = "all"
+                - Mail.directions.each do |direction|
+                  option selected=(!@mails_query[:direction].blank? && @mails_query[:direction].to_i==direction[1]) value=direction[1] = direction[0]
             
-              .columns.nine
-                label asunto
-                input.u-full-width.u-text-left type="text" name="topic" placeholder="asunto"
+            div 
+              label.no-margin.u-text-left año
+              select.no-margin data-mail-target="year" name="year" data-action="change->search#submit"
+                option selected=(@mails_query[:year].blank?) value="" all
+                - Mail.get_years.each do |year|
+                  option selected=(@mails_query[:year].to_i==year) value=year = year
               
-            .row.center-align
-              button.button-primary formnovalidate="true" type="submit" name="commit" OK 
-              button.button-secondary data-action="click->mail#closeProtocolModal" cancel
+            div.no-margin.u-full-width.xlong-field
+              label.no-margin.u-text-left asunto
+              input#search_string.no-margin.u-full-width.xlong-field[
+                data-mail-target="search_field" 
+                autofocus="autofocus" 
+                type="search" 
+                data-people-target="search_field" 
+                autocomplete="off" 
+                placeholder="Buscar por asunto o protocolo" 
+                name="q" 
+                data-action="input->search#submit" 
+                value=@mails_query[:q]]
+              
+            div 
+              label.no-margin.u-text-left status
+              select.no-margin id="multiple" name="mail_status" data-mail-target="mail_status" data-action="change->search#submit"
+                option selected=(@mails_query[:mail_status].blank?) value="" all
+                - Mail.mail_statuses.each do |st|  
+                  option selected=(@mails_query[:mail_status]==st[0]) value=st[0] = st[0].humanize.downcase
+            
+            div 
+              label.no-margin.u-text-left asignado
+              select.no-margin id="assigned" name="assigned" data-mail-target="assigned" data-action="change->search#submit"
+                option selected=(@mails_query[:assigned].blank?) value="" all
+                - mail_users.each do |user|  
+                  option selected=(@mails_query[:assigned].to_i==user.id) value=user.id = user.uname
 
-    /----------------------------------------------------------------------------------------------------------------
-    / DELETE CONFIRMATION MODAL FORM
-    /---------------------------------------------------------------------------------------------------------------
-    
-    .modal.hidden-frame data-mail-target="deleteYearModal" tabindex="1"
-      .modal-content
-        .row           
-          // header
-          h4
-            i.fa-solid.fa-triangle-exclamation
-            |&nbspConfirm Delete
+        .row.margin-left.margin-right 
+          turbo-frame data-mail-target="mailsTable" id="mails_table"  src="/mails/table"
+
+  // -----------------------------------------------------------------------------------
+  // MODAL FORM TO ASSIGN A PROTOCOL
+  // ----------------------------------------------------------------------------------- 
+
+  
+  form.form-inline method="GET" action="/mail/assign_protocol" 
+    .modal.hidden-frame data-mail-target="protocolModal" data-action="keydown.esc@window->mail#closeProtocolModal"
+      .row
+        .modal-content style="min-width: 800px"
+          
+          .row.modal-rowfmail
+            h4.u-text-center Reservar Protocolo
+          
+          .row.margin-top
+            .columns.three
+              label ctr
+              select.medium-field data-mail-target="entity" name="entity"
+                - entities.each do |entity|
+                  option selected=selected=(entity.sigla=="cg") value=entity.id = entity.sigla 
+            
+          
+            .columns.nine
+              label asunto
+              input.u-full-width.u-text-left type="text" name="topic" placeholder="asunto"
+            
+          .row.center-align
+            button.button-primary formnovalidate="true" type="submit" name="commit" OK 
+            button.button-secondary data-action="click->mail#closeProtocolModal" cancel
+
+  /----------------------------------------------------------------------------------------------------------------
+  / DELETE CONFIRMATION MODAL FORM
+  /---------------------------------------------------------------------------------------------------------------
+  
+  .modal.hidden-frame data-mail-target="deleteYearModal" tabindex="1"
+    .modal-content
+      .row           
+        // header
+        h4
+          i.fa-solid.fa-triangle-exclamation
+          |&nbspConfirm Delete
+      
+      //message
+      .row.u-text-center.margin-top
+        p  = "Are you sure you want to delete all mails of this year. All related data will be erased."
+        p = "This action cannot be undone!"
+      .row.center-align.margin-top
         
-        //message
-        .row.u-text-center.margin-top
-          p  = "Are you sure you want to delete all mails of this year. All related data will be erased."
-          p = "This action cannot be undone!"
-        .row.center-align.margin-top
-          
-          //delete button
-          a.button.button-danger[
-            data-action="click->mail#deleteYearCommit"
-            href="/mail/delete_year?year"
-          ] delete 
-          
-          // cancel button
-          a.button.button-secondary[
-            autofocus="true" 
-            data-action="click->mail#deleteYearModalClose" 
-          ] cancel	
+        //delete button
+        a.button.button-danger[
+          data-action="click->mail#deleteYearCommit"
+          href="/mail/delete_year?year"
+        ] delete 
+        
+        // cancel button
+        a.button.button-secondary[
+          autofocus="true" 
+          data-action="click->mail#deleteYearModalClose" 
+        ] cancel	
 
       
 

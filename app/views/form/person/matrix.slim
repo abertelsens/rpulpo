@@ -66,7 +66,8 @@ turbo-frame id="main_frame"
 			.row.flex-center.flex-columns
 
 				button.button-primary[
-					type="submit"
+					data-turbo-action="advance"
+    			type="submit"
 					tabindex="-1"  
 					name="commit" 
 					value="save"
@@ -76,7 +77,8 @@ turbo-frame id="main_frame"
 					
 				
 				a.button.button-secondary[
-					formnovalidate="true" 
+					data-turbo-action="advance"
+    			formnovalidate="true" 
 					tabindex="-1" 
 					data-form-target="cancelButton" 
 					href=(@person ? "/person/#{@person.id}" : "/people")

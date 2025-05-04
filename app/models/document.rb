@@ -75,12 +75,7 @@ class Document < ActiveRecord::Base
 			end
 
 			# the name of the template did not change, but a new file was provided
-			if(params[:template]!=nil)
-				FileUtils.cp(params[:template][:tempfile], get_full_path)
-				#self.template_variables = Document.has_template_variables?(File.read params[:template][:tempfile])
-				#self.save
-			end
-
+			FileUtils.cp(params[:template][:tempfile], get_full_path) if(params[:template]!=nil)
 		end
 
 		update_result
@@ -118,9 +113,7 @@ class Document < ActiveRecord::Base
 	# checks whether the source has template variables. Template variables are wrapped in double dolar signs
 	# i.e. $$myvariable$$
 	def self.has_template_variables?(source)
-		#!source.scan(/\$\$\S*\$\$/).empty?
-		#!source.scan(/\$\$\S*\$\$/).empty?\
-		puts "checking if file has template variables. returning #{!source.scan(/pulpo.\w*/).empty?}"
+		#puts "checking if file has template variables. returning #{!source.scan(/pulpo.\w*/).empty?}"
 		!source.scan(/pulpo.\S*/).empty?
 	end
 
@@ -135,7 +128,6 @@ class Document < ActiveRecord::Base
 			a = var.split(".")
 			[a[1],a[2]]
 		end
-			#var.gsub("pulpo.",""
 	end
 
 	def can_be_deleted?

@@ -7,6 +7,7 @@ turbo-frame id="velas_table"
        
       - @objects.each.with_index do |object, index|
         a.table-row-body[
+          data-turbo-action="advance"
           href="/vela/#{object.id}" 
           data-turbo-frame="main_frame"
           tabindex=-1

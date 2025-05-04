@@ -10,7 +10,7 @@
 get '/rooms' do
 	@current_user = get_current_user
 	get_last_query_variables :rooms
-  partial :"frame/rooms"
+  slim :"frame/rooms"
 end
 
 # renders the table of people
@@ -35,7 +35,7 @@ end
 # renders a single document view
 get '/room/:id' do
     @object = (params[:id]=="new" ? nil : Room.find(params[:id]))
-    partial :"form/room"
+    slim :"form/room"
 end
 
 # renders the table of after perfroming a search.
@@ -60,7 +60,7 @@ get '/rooms/table/settings' do
 	@current_user 	= get_current_user
 	@table_settings = get_last_table_settings :rooms
 	@origin 				= "rooms"
-	partial :"form/table_settings"
+	slim :"form/table_settings"
 end
 
 # -----------------------------------------------------------------------------------------

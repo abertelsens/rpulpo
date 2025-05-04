@@ -20,7 +20,7 @@ require_rel '../decorators'
 
 # renders the entities frame
 get '/entities' do
-	partial :"frame/simple_template",  locals: { title: "ENTITIES", model_name: "entity" }
+	slim :"frame/simple_template",  locals: { title: "ENTITIES", model_name: "entity" }
 end
 
 # renders the table of entities
@@ -35,8 +35,7 @@ end
 # renders a single entity form
 get '/entity/:id' do
 	@object = (params[:id]=="new" ? nil : Entity.find(params[:id]))
-	partial :"form/entity"
-	#partial :"form/entity_tw"
+	slim :"form/entity"
 end
 
 # --------------------------------------------------------------------------------------

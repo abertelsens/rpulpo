@@ -58,10 +58,7 @@ html
     /!--------------------------------------------------------------------------
     
     turbo-frame id="nav_bar" src="/elements/navbar"
-      
-    /!--------------------------------------------------------------------------
-    / MAIN FRAME
-    /!--------------------------------------------------------------------------
-
-    - if !@current_user.nil? 
-      turbo-frame id="main_frame" src=(@current_user.mail_user? ? "/mails" : "/people")
+    turbo-frame id="main_frame"  
+ 
+    
+      == yield  

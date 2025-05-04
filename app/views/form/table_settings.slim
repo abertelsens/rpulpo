@@ -2,89 +2,90 @@
 // FORM for Personal Information about a person
 /*****************************************************************************************************
 
-turbo-frame id="main_frame"
 
-	- action = (locals[:table].nil? ? "/#{@origin}/table/settings" : "/#{locals[:table]}/table/settings")
+- action = (locals[:table].nil? ? "/#{@origin}/table/settings" : "/#{locals[:table]}/table/settings")
 
-	.container.container-frame data-controller="form" 
-	
-		form[
-			action=action 
-			method="POST" 
-			data-controller="table-settings"
-			data-form-target="form"
-			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
-			]
-			
-			/----------------------------------------------------------------------------------------------------------------
-			// FORM HEADER
-			//----------------------------------------------------------------------------------------------------------------
-			.row.u-text-center
-				h3 = "TABLE SETTINGS"
-				
-			.row.u-text-center
-				.columns.six.alert.offset-by-three
-					i.fa-solid.fa-circle-info
-					|&nbspSelect the fields you would like to see in the table.
-			/----------------------------------------------------------------------------------------------------------------
-			//DOCUMENT FRAME
-			//----------------------------------------------------------------------------------------------------------------
-			.row
-				- table_all = TableSettings.get(:people_all)
-				.columns.twelve style="display: flex; justify-content: center;"
-					table
-						tr
-							td style="vertical-align: top"
-								.row style="text-align: left" 
-									h5 style="margin-bottom: 0" = @table_settings.main_table.upcase
-								
-								- table_all.get_attributes(@table_settings.main_table).each do |att|
-									.row.u-full-width
-										a.button.ts.button-seconday.u-full-width[
-											class=((@table_settings.include? att.field) ? "active" : "") 
-											data-table-settings-target="attributeButton"
-											data-table-settings-id-param=att.field  
-											data-action="click->table-settings#update"] = att.name.humanize
-									
-									&hidden.u-full-width[
-										name=att.field 
-										value=(@table_settings.include? att.field).to_s
-									]
+.container.container-frame data-controller="form" 
+
+	form[
+		action=action 
+		method="POST" 
+		data-turbo-action="advance"
+		data-controller="table-settings"
+		data-form-target="form"
+		data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
+		]
 		
-							- @table_settings.related_tables.each do |rel_table|
-								- if @current_user.is_table_allowed?(rel_table)
-									td style="vertical-align: top"
-										.row style="text-align: left"
-											h5.margin-left  style="margin-bottom: 0" = rel_table.humanize.upcase
-											- table_all.get_attributes(rel_table).each do |att|
-												.row.u-full-width
-													.columns.twelve.margin-left 
-														a.button.ts.button-secondary.u-full-width[
-															class=((@table_settings.include? att.field) ? "active" : "") 
-															data-table-settings-target="attributeButton" 
-															data-table-settings-id-param=att.field 
-															data-action="click->table-settings#update"
-														] = att.name.humanize
-														&hidden.u-full-width name=att.field value=(@table_settings.include? att.field).to_s
+		/----------------------------------------------------------------------------------------------------------------
+		// FORM HEADER
+		//----------------------------------------------------------------------------------------------------------------
+		.row.u-text-center
+			h3 = "TABLE SETTINGS"
+			
+		.row.u-text-center
+			.columns.six.alert.offset-by-three
+				i.fa-solid.fa-circle-info
+				|&nbspSelect the fields you would like to see in the table.
+		/----------------------------------------------------------------------------------------------------------------
+		//DOCUMENT FRAME
+		//----------------------------------------------------------------------------------------------------------------
+		.row
+			- table_all = TableSettings.get(:people_all)
+			.columns.twelve style="display: flex; justify-content: center;"
+				table
+					tr
+						td style="vertical-align: top"
+							.row style="text-align: left" 
+								h5 style="margin-bottom: 0" = @table_settings.main_table.upcase
+							
+							- table_all.get_attributes(@table_settings.main_table).each do |att|
+								.row.u-full-width
+									a.button.ts.button-seconday.u-full-width[
+										class=((@table_settings.include? att.field) ? "active" : "") 
+										data-table-settings-target="attributeButton"
+										data-table-settings-id-param=att.field  
+										data-action="click->table-settings#update"] = att.name.humanize
+								
+								&hidden.u-full-width[
+									name=att.field 
+									value=(@table_settings.include? att.field).to_s
+								]
+	
+						- @table_settings.related_tables.each do |rel_table|
+							- if @current_user.is_table_allowed?(rel_table)
+								td style="vertical-align: top"
+									.row style="text-align: left"
+										h5.margin-left  style="margin-bottom: 0" = rel_table.humanize.upcase
+										- table_all.get_attributes(rel_table).each do |att|
+											.row.u-full-width
+												.columns.twelve.margin-left 
+													a.button.ts.button-secondary.u-full-width[
+														class=((@table_settings.include? att.field) ? "active" : "") 
+														data-table-settings-target="attributeButton" 
+														data-table-settings-id-param=att.field 
+														data-action="click->table-settings#update"
+													] = att.name.humanize
+													&hidden.u-full-width name=att.field value=(@table_settings.include? att.field).to_s
 
 
-			/----------------------------------------------------------------------------------------------------------------
-			// FORM BUTTONS
-			//----------------------------------------------------------------------------------------------------------------
-			.row.center-align
-					button.button-primary[
-						data-form-target="submitButton" 
-						type="submit" 
-						name="commit" 
-						value="save"] save
-					
-					a.button.button-secondary[
-						formnovalidate="true" 
-						tabindex="-1" 
-						data-form-target="cancelButton" 
-						href="/#{@origin}"
-						title="esc"
-						] cancel	 
+		/----------------------------------------------------------------------------------------------------------------
+		// FORM BUTTONS
+		//----------------------------------------------------------------------------------------------------------------
+		.row.center-align
+				button.button-primary[
+					data-form-target="submitButton" 
+					type="submit" 
+					name="commit" 
+					value="save"] save
+				
+				a.button.button-secondary[
+					formnovalidate="true"
+					data-turbo-action="advance" 
+					tabindex="-1" 
+					data-form-target="cancelButton" 
+					href="/#{@origin}"
+					title="esc"
+					] cancel	 
 
-					//a.button.button-secondary formnovalidate="true" href="/#{@origin}" cancel
-					
+				//a.button.button-secondary formnovalidate="true" href="/#{@origin}" cancel
+				

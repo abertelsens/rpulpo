@@ -12,24 +12,43 @@ turbo-frame id="turnos_frame"
 
 
   .container.container-frame data-controller="drag" data-drag-velaid=@vela.id  
-    // People without an assigned turno
+    
+    // PEORSONAS QUE NO TIENEN TURNO ASIGNADO
     .columns.five.free-people data-action="dragover->drag#dragover dragleave->drag#dragleave"
       h4.u-text-center = "SIN ASIGNAR" 
       - @vela.get_free_rooms.each do |room|
-        .row.room data-drag-target="person" draggable="true" data-person-id=room.person&.id  data-room-id=room.id data-action="drop->drag#drop dragover->drag#dragover dragstart->drag#dragstart dragenter->drag#dragenter"
-          .columns.eight draggable="false" = room.person&.short_name
+        .row.room[
+          data-drag-target="person" 
+          draggable="true" 
+          data-person-id=room.person.id  
+          data-room-id=room.id 
+          data-action="drop->drag#drop dragover->drag#dragover dragstart->drag#dragstart dragenter->drag#dragenter"]
+          .columns.eight draggable="false" = room.person.short_name
           .columns.four draggable="false" = room.room
 
-    // Turnos
+    // TURNOSD
     .columns.six.offset-by-one 
       h4.u-text-center = "TURNOS"
       - previous_time = nil
       - @turnos.each_with_index do |turno, turno_index|  
-        .row.turno data-drag-turno=turno.id  draggable="false" data-action="dragover->drag#dragover dragleave->drag#dragleave"
-          .columns.four draggable="false" data-turno-id=turno.id data-action="drop->drag#drop dragover->drag#dragover dragstart->drag#dragstart dragenter->drag#dragenter" data-drag-target="turno" = "#{turno.start_time.strftime("%H:%M")} - #{turno.end_time.strftime("%H:%M")}"
+        .row.turno[
+          data-drag-turno=turno.id 
+           draggable="false" 
+           data-action="dragover->drag#dragover dragleave->drag#dragleave"]
+          .columns.four[
+            draggable="false" 
+            data-turno-id=turno.id 
+            data-action="drop->drag#drop dragover->drag#dragover dragstart->drag#dragstart dragenter->drag#dragenter" 
+            data-drag-target="turno"] = "#{turno.start_time.strftime("%H:%M")} - #{turno.end_time.strftime("%H:%M")}"
           .columns.eight 
             - turno.rooms.each do |room|  
-              .row.room data-drag-target="room" draggable="true" data-turno-id=turno.id data-room-id=room.id data-action="drop->drag#drop dragover->drag#dragover dragstart->drag#dragstart dragenter->drag#dragenter"
+              .row.room[
+                data-drag-target="room" 
+                draggable="true" 
+                data-turno-id=turno.id 
+                data-room-id=room.id 
+                data-action="drop->drag#drop dragover->drag#dragover dragstart->drag#dragstart dragenter->drag#dragenter"]
+                
                 .columns.six draggable="false" = room.person&.short_name
                 .columns.four draggable="false"  = room.room
               

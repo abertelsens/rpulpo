@@ -27,13 +27,10 @@ require 'sinatra/reloader'
 require 'sinatra/prawn'
 require_relative 'sinatra_helpers'  # helpers for the sinatra controllers
 require 'require_all'
-#require_rel 'sinatra/htmlescape'
 
 # include all the models defined in the 'app/models' directory
 require_rel 'models'
 require_rel 'utils'
-
-#C:\Ruby32-x64\bin
 
 # include all the routes defined in the 'app/routes' directory
 require_rel 'routes'
@@ -43,11 +40,11 @@ require_rel 'decorators'
 include ActiveRecord
 include Utils
 
-#---------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------
 # DB SETUP
-#---------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------
 
-puts Rainbow("PULPO: Starting Configuration").yellow
+log "PULPO: Starting Configuration"
 
 # In order to avoid printing to the console in each request uncomment the following line
 # ActiveRecord::Base.logger = nil
@@ -64,15 +61,15 @@ ENV["DB_ENV"] ||= 'development'
 # load the connection settings file and open the connection
 connection_details = YAML::load(File.open('config/database.yaml'))
 
-puts Rainbow("PULPO: Loaded Database connection with environment #{ENV["DB_ENV"]}").yellow
-puts Rainbow(connection_details[ENV["DB_ENV"]]).yellow
+log "PULPO: Loaded Database connection with environment #{ENV["DB_ENV"]}"
+log connection_details[ENV["DB_ENV"]]
 
 # establish the connection
 ActiveRecord::Base.establish_connection(connection_details[ENV["DB_ENV"]])
 
-#---------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------
 # SINATRA SETUP
-#---------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------
 
 # enables sinatra sessions to allow access control for different user sessions
 enable :sessions
@@ -83,13 +80,12 @@ enable :sessions
 SINATRA_LOG_LEVEL = 2
 
 
-#---------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------
 # SLIM SETUP
-#
 # Slim is a rendering engine that helps to create html pages via templates with some
 # embedded ruby code.
 # For more info see https://slim-template.github.io/
-#---------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------
 
 Slim::Engine.disable_option_validator!
 
@@ -104,9 +100,9 @@ Slim::Engine.set_options shortcut:
 
 set :partial_template_engine, :slim
 
-#---------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------
 # GENERAL ROUTES
-#---------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------
 
 # We define a method that is called before any route is processed
 # In this case we tell sinatra to call the print_controller_log method defined in the 'sinatra_helpers'
@@ -118,7 +114,8 @@ end
 # renders the main page
 get '/' do
 	@current_user = get_current_user
-	@current_user ? (slim :layout) : (redirect '/login')
+	redirect '/login' if !@current_user
+	redirect (@current_user.mail_user? ? "/mails" : "/people")
 end
 
 get '/elements/navbar' do
@@ -145,7 +142,12 @@ get '/logout' do
 end
 
 post '/login' do
-	@user = User.authenticate params[:uname], params[:password]
+	redirect '/login?auth_error=true' if params[:uname].strip.empty?
+
+	username = params[:uname].strip
+  password = params[:password].to_s unless params[:password].nil?
+
+	@user = User.authenticate username, password
 	@auth_error = @user==false
 	if @user
 		cookies[:current_user_id] = @user.id    #sets the current_user_id in the cookies
@@ -156,22 +158,20 @@ post '/login' do
 end
 
 post '/login/check_credentials' do
-	@user = User.authenticate params[:uname], params[:password]
+
+	return {result: false}.to_json if params[:uname].strip.empty?
+
+	username = params[:uname].strip
+  password = params[:password].to_s unless params[:password].nil?
+	@user = User.authenticate username, password
+
 	result = @user!=false
 	cookies[:current_user_id] = @user.id if result    #sets the current_user_id in the cookies
 	return {result: result}.to_json
 end
 
-
 # make sure there is at least one admin user.
-User.ensure_admin_user	#make sure there is at least one admin user.
+User.ensure_admin_user	# make sure there is at least one admin user.
+
 # Credentials of the first admin user.
-
-puts Rainbow("PULPO: admin #{User.admin[0].to_s}").yellow
-
-# make sure all people have a picture.
-#Person.all.each do |person|
-#	has_photo = (File.exist?("app/public/photos/#{person.id}.jpg"))
-#	puts "#{person.short_name} did not have a photo" unless has_photo
-#	FileUtils.cp_r("app/public/img/avatar.jpg", "app/public/photos/#{person.id}.jpg", remove_destination: false) unless has_photo
-#end
+log "PULPO: admin #{User.admin[0].to_s}"

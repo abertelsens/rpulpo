@@ -76,7 +76,6 @@ module Utils
 	end
 
 	def complete_latin_date(date)
-		puts "got date #{date}"
 		return "" if date.nil?
 		date = date.strftime("%-d-%m-%Y") if date.is_a? Date
 		date_array = date.split("-")
@@ -88,7 +87,7 @@ module Utils
 	def roman_month_date(date)
 		date_array = date.split("-")
 		year = date_array[2].to_i < 1000 ? "20#{date_array[2]}" : date_array[2]
-		"#{date_array[0]}-#{MONTHS_ROMAN[date_array[1].to_i-1].downcase}-#{year}}"
+		"#{date_array[0]}-#{MONTHS_ROMAN[date_array[1].to_i-1]}-#{year}"
 	end
 
 end

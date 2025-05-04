@@ -2,173 +2,173 @@
 / FORM for an Entity
 /----------------------------------------------------------------------------------------------------------------
 
-turbo-frame id="main_frame"
   
-	- model_name = "permit"
-	- table_name = "permits"
-	- back_url = (origin.nil? ? "" : "?origin=#{origin}")
+- model_name = "permit"
+- table_name = "permits"
+- back_url = (origin.nil? ? "" : "?origin=#{origin}")
 
 
-	/ Center the form in the screen and ajust its size.
-	.container.screen-box.xx-large-form data-controller="form" 
+/ Center the form in the screen and ajust its size.
+.container.screen-box.xx-large-form data-controller="form" 
+	
+	form[
+		action="/#{model_name}/#{(@object.nil? ? "new" : @object.id)}#{back_url}"
+		method="POST"
+		autocomplete="one-time-code"
+		data-controller="form-validator"
+		data-form-target="form"
+		data-action="keydown.ctrl+d@window->form#delete \
+			keydown.esc@window->form#escape \
+			keydown.ctrl+enter@window->form#enter"]
+
+		/----------------------------------------------------------------------------------------------------------------
+		/ FORM HEADER
+		/----------------------------------------------------------------------------------------------------------------
 		
-		form[
-			action="/#{model_name}/#{(@object.nil? ? "new" : @object.id)}#{back_url}"
-			method="POST"
-			autocomplete="one-time-code"
-			data-controller="form-validator"
-			data-form-target="form"
-			data-action="keydown.ctrl+d@window->form#delete \
-				keydown.esc@window->form#escape \
-				keydown.ctrl+enter@window->form#enter"]
+		.row.u-text-center
+			- has_photo = (@person && File.exist?("app/public/photos/#{@person.id}.jpg"))	
+			img.person-photo.small [
+				src= (has_photo ? "/person/#{@person.id}/photo?v=#{rand(1..1000)}" : "avatar.jpg")]
 
-			/----------------------------------------------------------------------------------------------------------------
-			/ FORM HEADER
-			/----------------------------------------------------------------------------------------------------------------
+		.row.u-text-center
+			h3 = "QUESTURA: #{@person.short_name}"
 			
-			.row.u-text-center
-				- has_photo =  (@person && File.exist?("app/public/photos/#{@person.id}.jpg"))
-				img.person-photo.small[
-					id="photo_image" 
-					src= "photos/#{(has_photo ? "#{@person.id}.jpg?v=#{rand(1..1000)}" : "avatar.jpg")}"]
+		/----------------------------------------------------------------------------------------------------------------
+		/ FORM FIELDS
+		/----------------------------------------------------------------------------------------------------------------
 
-			.row.u-text-center
-				h3 = "QUESTURA: #{@person.short_name}"
-				
-			/----------------------------------------------------------------------------------------------------------------
-			/ FORM FIELDS
-			/----------------------------------------------------------------------------------------------------------------
-
-			fieldset data-form-target="fieldset"
-				
-				.row
-					.columns.two.offset-by-one
-						div.table-container
-						div.table-table style="display: block"
-							div.table-cell-header
-								h4.u-text-left = "Documents"
-							- docs = @current_user.get_documents_of_module("permit")
-							- docs.each do |doc|
-								.table-row-body  
-									a.table-cell-body.menu-link[
-									href="/people/#{@person.id}/document/#{doc.id}"
-									target=(doc&.engine=="excel" ? "_self" : "_blank")] = doc&.name
-
-					.columns.eight
-						.row
-
-							&hidden@person_id value=@person.id
-
-							.columns.four.offset-by-one
-								label for="citizenship" citadinanza
-								&text@citizenship.u-full-width[
-									tabindex=1 
-									readonly 
-									onfocus="this.removeAttribute('readonly');" 
-									autocomplete="one-time-code"
-									value=@object&.citizenship]
-
-							.columns.two
-								label for="passport" passaporto
-								&text@passport.u-full-width[
-									readonly 
-									onfocus="this.removeAttribute('readonly');" 
-									autocomplete="one-time-code"
-									value=@object&.passport]
-						
-							.columns.two.two
-								label for="passport_expiration" scadenza passaporto
-								&date@passport_expiration.u-full-width value=@object&.passport_expiration
-
-							.columns.two
-								label for="permit_expiration" scandenza permesso
-								&date@object_expiration.u-full-width value=@object&.permit_expiration
-
-						.row
-
-							.columns.two.offset-by-one
-								label for="pac" PaC (fatta)
-								&date@pac.u-full-width value=@object&.pac
-						
-							.columns.two
-								label for="pac_signature" PaC (firmata)
-								&date@pac_signature.u-full-width value=@object&.pac_signature
-
-							.columns.two
-								label for="pac_validation" PaC (vidimata)
-								&date@pac_validation.u-full-width value=@object&.pac_validation
-						
-
-							.columns.two
-								label for="pusc_certificate_request" cert. PUSC (richiesto)
-								&date@pusc_certificate_request.u-full-width value=@object&.pusc_certificate_requested
-
-							.columns.two
-								label for="pusc_certificate_received" cert. PUSC (ritirato)
-								&date@pusc_certificate_received.u-full-width value=@object&.pusc_certificate_received
-
-						.row
-							.columns.two.offset-by-one
-								label for="permit_appointment" appunt. ispettorato
-								&date@object_appointment.u-full-width value=@object&.permit_appointment
-
-							.columns.two
-								label for="residence_notes" appunt. impronte
-								&date@object_fingerprints.u-full-width value=@object&.permit_fingerprints
-							
-							.columns.six
-								label for="notes" osservazioni
-								&text@notes.u-full-width value=@object&.notes
-
-				
-
-			/----------------------------------------------------------------------------------------------------------------
-			/ ERROR FRAME
-			/----------------------------------------------------------------------------------------------------------------		
+		fieldset data-form-target="fieldset"
 			
 			.row
-				.hidden-alert.alert.alert-warning.u-full-width data-form-validator-target="errorFrame"
+				.columns.two.offset-by-one
+					div.table-container
+					div.table-table style="display: block"
+						div.table-cell-header
+							h4.u-text-left = "Documents"
+						- docs = @current_user.get_documents_of_module("permit")
+						- docs.each do |doc|
+							.table-row-body  
+								a.table-cell-body.menu-link[
+								href="/people/#{@person.id}/document/#{doc.id}"
+								target=(doc&.engine=="excel" ? "_self" : "_blank")] = doc&.name
 
-			/----------------------------------------------------------------------------------------------------------------
-			// FORM BUTTONS
-			//----------------------------------------------------------------------------------------------------------------
-			.row.flex-center.flex-columns
-				- if (@object && (!(@object.respond_to? :can_be_deleted?) || @object&.can_be_deleted?))
-					a.button.button-secondary[
-						data-keys-target="deleteButton" 
-						tabindex="-1" 
-						data-form-target="deleteButton"
-						data-action="click->form#open_modal"
-						title="ctrl+d"
-						] delete  
-				
-				button.button-primary[
-					type="submit"
-					tabindex="-1" 
-					name="commit" 
-					value="save"
-					data-form-target="submitButton"
-					data-form-validator-target="submitButton"
-					title="ctrl+enter"
-					] save
+				.columns.eight
+					.row
+
+						&hidden@person_id value=@person.id
+
+						.columns.four.offset-by-one
+							label for="citizenship" citadinanza
+							&text@citizenship.u-full-width[
+								tabindex=1 
+								readonly 
+								onfocus="this.removeAttribute('readonly');" 
+								autocomplete="one-time-code"
+								value=@object&.citizenship]
+
+						.columns.two
+							label for="passport" passaporto
+							&text@passport.u-full-width[
+								readonly 
+								onfocus="this.removeAttribute('readonly');" 
+								autocomplete="one-time-code"
+								value=@object&.passport]
 					
-				
-				button.button-secondary[
-					formnovalidate="true" 
-					tabindex="-1" 
-					name="commit" 
-					value="cancel"
-					data-form-target="cancelButton" 
-					href="/#{table_name}"
-					title="esc"
-					] cancel
+						.columns.two.two
+							label for="passport_expiration" scadenza passaporto
+							&date@passport_expiration.u-full-width value=@object&.passport_expiration
 
-			/----------------------------------------------------------------------------------------------------------------
-			/ DELETE CONFIRMATION MODAL FORM
-			/---------------------------------------------------------------------------------------------------------------
+						.columns.two
+							label for="permit_expiration" scandenza permesso
+							&date@object_expiration.u-full-width value=@object&.permit_expiration
+
+					.row
+
+						.columns.two.offset-by-one
+							label for="pac" PaC (fatta)
+							&date@pac.u-full-width value=@object&.pac
+					
+						.columns.two
+							label for="pac_signature" PaC (firmata)
+							&date@pac_signature.u-full-width value=@object&.pac_signature
+
+						.columns.two
+							label for="pac_validation" PaC (vidimata)
+							&date@pac_validation.u-full-width value=@object&.pac_validation
+					
+
+						.columns.two
+							label for="pusc_certificate_request" cert. PUSC (richiesto)
+							&date@pusc_certificate_request.u-full-width value=@object&.pusc_certificate_requested
+
+						.columns.two
+							label for="pusc_certificate_received" cert. PUSC (ritirato)
+							&date@pusc_certificate_received.u-full-width value=@object&.pusc_certificate_received
+
+					.row
+						.columns.two.offset-by-one
+							label for="permit_appointment" appunt. ispettorato
+							&date@object_appointment.u-full-width value=@object&.permit_appointment
+
+						.columns.two
+							label for="residence_notes" appunt. impronte
+							&date@object_fingerprints.u-full-width value=@object&.permit_fingerprints
+						
+						.columns.six
+							label for="notes" osservazioni
+							&text@notes.u-full-width value=@object&.notes
+
 			
-			== partial :"elements/delete_modal", locals: {model_name: model_name}
+
+		/----------------------------------------------------------------------------------------------------------------
+		/ ERROR FRAME
+		/----------------------------------------------------------------------------------------------------------------		
+		
+		.row
+			.hidden-alert.alert.alert-warning.u-full-width data-form-validator-target="errorFrame"
+
+		/----------------------------------------------------------------------------------------------------------------
+		// FORM BUTTONS
+		//----------------------------------------------------------------------------------------------------------------
+		.row.flex-center.flex-columns
+			- if (@object && (!(@object.respond_to? :can_be_deleted?) || @object&.can_be_deleted?))
+				a.button.button-secondary[
+					data-keys-target="deleteButton" 
+					tabindex="-1" 
+					data-form-target="deleteButton"
+					data-action="click->form#open_modal"
+					title="ctrl+d"
+					] delete  
+			
+			button.button-primary[
+				data-turbo-action="advance"
+				type="submit"
+				tabindex="-1" 
+				name="commit" 
+				value="save"
+				data-form-target="submitButton"
+				data-form-validator-target="submitButton"
+				title="ctrl+enter"
+				] save
+				
+			
+			button.button-secondary[
+				data-turbo-action="advance"
+				formnovalidate="true" 
+				tabindex="-1" 
+				name="commit" 
+				value="cancel"
+				data-form-target="cancelButton" 
+				href="/#{table_name}"
+				title="esc"
+				] cancel
+
+		/----------------------------------------------------------------------------------------------------------------
+		/ DELETE CONFIRMATION MODAL FORM
+		/---------------------------------------------------------------------------------------------------------------
+		
+		== partial :"elements/delete_modal", locals: {model_name: model_name}
 
 
-			.row style="margin-top:4rem"	
+		.row style="margin-top:4rem"	
 				

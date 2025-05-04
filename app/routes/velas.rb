@@ -8,7 +8,7 @@
 # renders the documents frame
 get '/velas' do
   @current_user = get_current_user
-  partial :"frame/simple_template",  locals: {title: "VELAS AL SANTÍSIMO", model_name: "vela", table_name: "velas" }
+  slim :"frame/simple_template",  locals: {title: "VELAS AL SANTÍSIMO", model_name: "vela", table_name: "velas" }
 end
 
 # renders the table of documents
@@ -17,7 +17,6 @@ get '/velas/table' do
   @objects = Vela.all
   partial :"table/velas"
 end
-
 
 post '/vela/:id/turnos/update' do
   @vela = Vela.find(params[:id])
@@ -44,7 +43,7 @@ end
 get '/vela/:id' do
   @object = (params[:id]=="new" ? Vela.create_new : Vela.find(params[:id]))
   @object.build_turnos if @object.turnos.empty?
-  partial :"form/vela"
+  slim :"form/vela"
 end
 
 # -----------------------------------------------------------------------------------------

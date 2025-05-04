@@ -181,18 +181,19 @@ class Mail < ActiveRecord::Base
 
 		entities = protocol_string.match(/(?<e1>[a-zA-Z]+\+*)\s*-*\s*(?<e2>[a-zA-Z]*\+*)/)
 
-		if entities.nil? # nota del cg. No tiene ningun tipo de entidad.
-			data["entity"]="cg"
-			data["direction"]="entrada"
-		elsif entities[:e2].blank? && entities[:e1]=="crs+" #nota de salida del crs+ al cg
-			data["entity"]="cg"
-			data["direction"]="salida"
-		elsif entities["e1"]=="crs+"
-			data["entity"]=entities[:e2]
-			data["direction"]="salida"
-		elsif entities["e2"]=="crs+"
-			data["entity"]=entities[:e1]
-			data["direction"]="entrada"
+		case
+		when entities.nil? # No entity present, default to "cg"
+			data["entity"] = "cg"
+			data["direction"] = "entrada"
+		when entities[:e2].blank? && entities[:e1] == "crs+" # Outgoing from "crs+" to "cg"
+			data["entity"] = "cg"
+			data["direction"] = "salida"
+		when entities[:e1] == "crs+" # General outgoing from "crs+"
+			data["entity"] = entities[:e2]
+			data["direction"] = "salida"
+		when entities[:e2] == "crs+" # General incoming to "crs+"
+			data["entity"] = entities[:e1]
+			data["direction"] = "entrada"
 		else
 			return error
 		end
@@ -217,7 +218,6 @@ class Mail < ActiveRecord::Base
 		current_files = mail_files.pluck(:name)
 		(current_files - files).each {|file| MailFile.find_by(mail: self, name: file).destroy }
 		(files - current_files).each {|file| MailFile.create_from_file(file, self) }
-		#puts "found related files #{mail_files.inspect}"
 		mail_files.nil? ? [] : mail_files.to_a.sort{|f1, f2| Mail.file_sort(f1,f2)}
 	end
 
@@ -240,8 +240,6 @@ class Mail < ActiveRecord::Base
 	def get_sources_directory
 		base = "#{BASE_PATH}/#{entity.nil? ? "" : entity.path}"
 		dir_path =  "#{base}/#{entity.nil? ? "" :  entity.sigla}/#{(direction=="entrada" ? "ENTRADAS" : "SALIDAS")}/#{date.year}"
-		puts "got dir"
-		p dir_path
 		(File.directory?(dir_path) ? dir_path : false)
 	end
 
@@ -265,19 +263,27 @@ class Mail < ActiveRecord::Base
 	end
 
 	def self.search(params)
-		condition1 = "topic ILIKE '%#{params[:q]}%'" unless params[:q].nil?
-		condition2 = "protocol ILIKE '%#{params[:q]}%'" unless params[:q].nil?
-		sets = []
-		sets[0] = params[:q].blank? ? Mail.includes(:entity, :assigned_users).all : Mail.includes(:entity).where(condition1)
-		sets[0] = params[:q].blank? ? Mail.includes(:entity, :assigned_users).all : Mail.includes(:entity).where(condition1).or(Mail.includes(:entity).where(condition2))
-		sets[1] = (params[:year].blank? ? nil : Mail.with_year(params[:year].to_i))
-		sets[2] = (params[:direction].blank? ? nil : Mail.with_direction(params[:direction]))
-		sets[3] = (params[:entity].blank? ? nil : Mail.with_entity(params[:entity]))
-		sets[4] = (params[:mail_status].blank? ? nil : Mail.with_status(params[:mail_status]))
-		sets[5] = (params[:assigned].blank? ? nil : Mail.is_assigned_to(params[:assigned]))
-		sets.inject{ |res, set| (set.nil? ? res : res.merge(set)) }
-	end
+		query = Mail.includes(:entity, :assigned_users)
 
+		if params[:q].present?
+			search_term = "%#{params[:q]}%"
+			query = query.where("topic ILIKE ? OR protocol ILIKE ?", search_term, search_term)
+		end
+
+		filters = {
+			year: ->(val) { Mail.with_year(val.to_i) },
+			direction: ->(val) { Mail.with_direction(val) },
+			entity: ->(val) { Mail.with_entity(val) },
+			mail_status: ->(val) { Mail.with_status(val) },
+			assigned: ->(val) { Mail.is_assigned_to(val) }
+		}
+
+		filters.each do |key, scope|
+			query = query.merge(scope.call(params[key])) if params[key].present?
+		end
+
+		query
+	end
 
 	def draft_writer(user)
 		WordWriter.new(self, user)

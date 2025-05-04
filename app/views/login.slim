@@ -18,7 +18,7 @@ script type="module"
 
 script type="module" src="javascript/application.js"
 
-/! Load all Stimulus Controllers
+/! Load the login stimulus controllers
 - Dir.glob("app/public/javascript/controllers/login_controller.js").each do |controller|  
   - controller.slice!("app/public/")
   script type="module" src=controller
@@ -37,6 +37,7 @@ html
     link rel="stylesheet" href="/css/normalize.css"
     link rel="stylesheet" href="/css/skeleton.css"
     link rel="stylesheet" href="/css/pulpo.css"
+    link rel="stylesheet" href="/css/login.css"
     
 
   body
@@ -46,15 +47,14 @@ html
       form action="/login" data-login-target="form" method="POST" 
     
         .login-box
+          
           img src="img/cb_icon.jpg"
-    
           h3 PULPO CAVABIANCA
     
           .row
             label for="uname" user name or email
-            input@uname.u-full-width[
+            &text@uname.u-full-width[
               autofocus 
-              type="text" 
               required]
           
           .row.margin-top 
@@ -69,7 +69,10 @@ html
               name="commit" 
               value="login"] login
           
-          <p style="font-size: .9rem">If you live in Cavabianca you can log in as <em>guest</em> just using your email and leaving the password field empty.
+          p
+            | If you live in Cavabianca you can log in 
+            | as <em>guest</em> just using your email 
+            | (and leaving the password field empty).
     
           .row.margin-top 
             .alert.alert-error class=(@auth_error ? "" : "hidden-alert") data-login-target="errorFrame" LOGIN FAILED!

@@ -34,55 +34,37 @@ Stimulus.register("login", class extends Controller {
   static targets = ["errorFrame", "form", "submitButton"]
   warning_html = "<i class='fa-solid fa-triangle-exclamation'></i>"
   
-  connect() {
-    console.log("Stimulus Controller Connected: login");
-  }
+  connect() { console.log("Stimulus Controller Connected: login");}
 
   login(event) {
     event.preventDefault(); //prevent the form from being submitted    
-    console.log("validating form...")
+    //console.log("validating form...")
     var form = this.formTarget
     fetch(`${form.action}/check_credentials`, {
       method: 'post',
-      body:  new FormData(form),
+      body:   new FormData(form),
       })
-      .then(res =>  res.json())
-      .then(out =>  { this.handle_response(out) })
-      .catch(err => { throw err });
+      .then(res   => res.json())
+      .then(out   => { this.handle_response(out) })
+      .catch(err  => { throw err });
     }
   
   handle_response(validation_data)
   {
-    console.log(`result ${validation_data.result}`)
-    if(validation_data!=false) {
-      
-      //there was a validation problem
-      if(!validation_data.result) {           
-        if (this.hasErrorFrameTarget){ 
-          this.show_frame(this.errorFrameTarget)
-        }
-        if (this.hasSubmitButtonTarget) { 
-          //this.submitButtonTarget.disabled=true
-        }
-        else {
-          console.log("form/validator: no submit button defined as target")
-        }
-      }
-      else {
-        if (this.hasSubmitButtonTarget) { 
-          //this.submitButtonTarget.disabled=false
-          this.formTarget.requestSubmit()
-        }
-        if (this.hasErrorFrameTarget){ 
-          this.hide_frame(this.errorFrameTarget)
-        }
-      }  
+    if (validation_data==false) {return;}
+    
+    //there was a validation problem
+    if(!validation_data.result) {           
+      if (this.hasErrorFrameTarget) {this.show_frame(this.errorFrameTarget)}
     }
+    else {
+      if (this.hasSubmitButtonTarget) { this.formTarget.requestSubmit()}
+      if (this.hasErrorFrameTarget){ this.hide_frame(this.errorFrameTarget)}
+    }  
+    
   }
   
-  hide_frame(frame) {
-    frame.classList.add('hidden-alert')
-  }
+  hide_frame(frame) { frame.classList.add('hidden-alert') }
   
   show_frame(frame) {
     console.log("activationg frame")
