@@ -33,11 +33,7 @@ end
 # renders a single entity form
 get '/entity/:id' do
 	@object = (params[:id]=="new" ? nil : Entity.find(params[:id]))
-<<<<<<< HEAD
 	slim :"form/entity"
-=======
-	partial :"form/entity"
->>>>>>> fcf5891b4c3c3f17ac632c091514bc8b8648e4e7
 end
 
 # --------------------------------------------------------------------------------------
