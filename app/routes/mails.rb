@@ -29,14 +29,9 @@ end
 
 get '/mails' do
 	@current_user = get_current_user
-<<<<<<< HEAD
 	@mails_query = session["mails_table_query"]
 	@mails_query = DEFAULT_MAIL_QUERY if @mails_query.nil?
 	slim :"frame/mails"
-=======
-	@mails_query ||= session["mails_table_query"] || DEFAULT_MAIL_QUERY
-	partial :"frame/mails"
->>>>>>> fcf5891b4c3c3f17ac632c091514bc8b8648e4e7
 end
 
 # renders the table of people
