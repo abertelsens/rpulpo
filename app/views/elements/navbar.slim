@@ -33,11 +33,7 @@ turbo-frame id="nav_bar"
               i.fa-solid.fa-envelope
               | &nbspCorreo
           
-          - if (@allowed_modules.include? "matrix")
-            a.button.menu-item tabindex="-1" data-turbo-action="advance" data-turbo-frame="main_frame" href='/matrix' 
-              i.fa-solid.fa-house
-              | &nbspMatrix
-
+          
         // elements of the nav bar aligned to the right. The flex 1 property will set the with of the 
         // element to fill all the remaining space
         .flex-right style="flex: 1"

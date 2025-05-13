@@ -18,8 +18,8 @@ TAB = "\u0009".encode('utf-8')
 class Mail < ActiveRecord::Base
 
 	BASE_DIR					= "app/public"
-	BALDAS_BASE_DIR 	= OS.windows? ? "L:/Usuarios/sect/CORREO/BALDAS" : "/mnt/sect/CORREO/BALDAS"
-	BASE_PATH 				= OS.windows? ? "L:/Usuarios/sect" :  "/mnt/sect"
+	BALDAS_BASE_DIR 	= OS.windows? ? "L:/Usuarios/sect/CORREO" : "/mnt/sect/CORREO"
+	BASE_PATH 				= OS.windows? ? "L:/Usuarios/sect/CORREO" :  "/mnt/sect/CORREO"
 	CRSC 							= "crs+"
 	DEFAULT_PROTOCOL 	= "crs+ XX/XX"
 

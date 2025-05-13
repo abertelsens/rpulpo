@@ -52,6 +52,7 @@ end
 
 get '/mail/:id/document_links' do
 	@object = Mail.find(params[:id])
+	puts "mail object #{@object.inspect}"
 	@related_files = @object.find_related_files
 	@references = @object.refs
 	@answers = @object.ans
