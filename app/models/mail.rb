@@ -241,6 +241,7 @@ class Mail < ActiveRecord::Base
 	def get_sources_directory
 		puts "gettings sources dir. Base path"
 		base = "#{BASE_PATH}/#{entity.nil? ? "" : entity.path}"
+		base = base.sub(/\/\z/, '')
 		puts base
 		dir_path =  "#{base}/#{entity.nil? ? "" :  entity.sigla}/#{(direction=="entrada" ? "ENTRADAS" : "SALIDAS")}/#{date.year}"
 		puts dir_path
