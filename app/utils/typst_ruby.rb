@@ -33,6 +33,7 @@ class TypstRuby
   end
 
   def initialize(file_path=nil)
+    puts "Initializing TypstRuby"
     if !TypstRuby.assert?
       puts "Typst compiler not found in the system. Please install it and try again."
       return nil
