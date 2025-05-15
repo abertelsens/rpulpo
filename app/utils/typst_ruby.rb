@@ -33,7 +33,7 @@ class TypstRuby
   end
 
   def initialize(file_path=nil)
-    puts "Initializing TypstRuby"
+    #puts "Initializing TypstRuby"
     if !TypstRuby.assert?
       puts "Typst compiler not found in the system. Please install it and try again."
       return nil
@@ -55,10 +55,10 @@ class TypstRuby
 
     File.open(input_file, 'w') { |f| f.write data }
 
-    puts "compiling #{TYPST_CMD} compile --root #{TYPST_ROOT} #{input_file} #{output_file}"
+    #puts "compiling #{TYPST_CMD} compile --root #{TYPST_ROOT} #{input_file} #{output_file}"
     begin
       res = system "#{TYPST_CMD} compile --root #{TYPST_ROOT} #{input_file} #{output_file}"
-      puts "res #{res}"
+      #puts "res #{res}"
       res ? output_file : nil
     rescue => error
       puts "Typst Ruby: failed to convert document: #{error.message}"

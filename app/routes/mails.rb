@@ -52,7 +52,7 @@ end
 
 get '/mail/:id/document_links' do
 	@object = Mail.find(params[:id])
-	puts "mail object #{@object.inspect}"
+	#puts "mail object #{@object.inspect}"
 	@related_files = @object.find_related_files
 	@references = @object.refs
 	@answers = @object.ans
@@ -155,7 +155,7 @@ get '/mail_file/:id' do
 	# if it is not a pdf or a word file we try to open it via the file system.
 	else
 		begin
-			puts "trying to get file #{@object.get_path} from filesystem"
+			#puts "trying to get file #{@object.get_path} from filesystem"
 			#system %{cmd /c "start \"#{@object.get_path}\""}
 			system('start', '', @object.get_path)
 		rescue

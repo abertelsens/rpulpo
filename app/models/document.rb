@@ -82,8 +82,8 @@ class Document < ActiveRecord::Base
 	end
 
 	def update_template_file(file)
-		puts "cp #{file} #{get_full_path}"
-			FileUtils.cp file, get_full_path
+		#puts "cp #{file} #{get_full_path}"
+		FileUtils.cp file, get_full_path
 	end
 
 	def get_full_path
@@ -124,7 +124,7 @@ class Document < ActiveRecord::Base
 	def get_template_variables
 		#File.read(get_full_path).scan(/pulpo.\w*/).map{ |var| var.gsub("pulpo.","")}
 		File.read(get_full_path).scan(/pulpo.\w*[.]*[\w\-\:()]*/).map do |var|
-			puts "fournd var #{var}"
+			#puts "fournd var #{var}"
 			a = var.split(".")
 			[a[1],a[2]]
 		end

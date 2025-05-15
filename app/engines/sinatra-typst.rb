@@ -24,14 +24,14 @@ module Tilt
   class TypstTemplate < Template
 
     def evaluate(scope, locals, &block)
-      puts "scope #{scope}"
-      puts "locals #{locals}"
+      #puts "scope #{scope}"
+      #puts "locals #{locals}"
 
       typst_writer = TypstWriter.new (Document.find(locals[:doc_id]))
       data = typst_writer.write locals
-      puts "got data #{data}"
+      #puts "got data #{data}"
       output = Tilt::ERBTemplate.new{data}.evaluate scope, locals
-      puts "got ooutput #{output}"
+      #puts "got ooutput #{output}"
       TypstRuby.new.compile(output)
     end
 

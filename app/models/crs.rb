@@ -66,7 +66,7 @@ class CrsRecord < ActiveRecord::Base
 	end
 
 	def self.get_phase_info(phase)
-		puts "got phase variable #{phase}"
+		#puts "got phase variable #{phase}"
 		{
 			"has_date"	=>	false,
 			"people" 		=> 	Person.phase(phase).pluck(:id, :short_name),

@@ -232,19 +232,19 @@ class Mail < ActiveRecord::Base
 	# @prot_num 	[String]: 	the numerical part of the protocol
 	# @returns 		[Boolean]: 	whether there is a match
 	def self.matches_file(file_name, prot_num)
-		puts "looking for march of #{file_name} and #{prot_num}"
+		#puts "looking for march of #{file_name} and #{prot_num}"
 		return false if (file_name[0]=="." || file_name[0]=="~")	# skip temporary or hidden files that
 		match = /\d+/.match(file_name)
 		match.nil? ? false : (match[0].to_i == prot_num)
 	end
 
 	def get_sources_directory
-		puts "gettings sources dir. Base path"
+		#puts "gettings sources dir. Base path"
 		base = "#{BASE_PATH}/#{entity.nil? ? "" : entity.path}"
 		base = base.sub(/\/\z/, '')
-		puts base
+		#puts base
 		dir_path =  "#{base}/#{entity.nil? ? "" :  entity.sigla}/#{(direction=="entrada" ? "ENTRADAS" : "SALIDAS")}/#{date.year}"
-		puts dir_path
+		#puts dir_path
 		(File.directory?(dir_path) ? dir_path : false)
 	end
 

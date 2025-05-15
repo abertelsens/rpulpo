@@ -3,7 +3,7 @@
 class PermitDecorator < ObjectDecorator
 
   def get_value(entity, table, field)
-    puts "looking for #{table}.#{field} in #{entity}"
+    #puts "looking for #{table}.#{field} in #{entity}"
     begin
       case table
         when "people", "person"     then    entity[field]             unless entity.nil?

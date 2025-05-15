@@ -215,10 +215,10 @@ end
 	# updates the google sheets with the info of the people
 	def update_gsheet
 		attributes =  		%w(celebration dinning_room meal notes_ao_meal)
-		puts Person.by_celebration.pluck(:celebration)
+		#puts Person.by_celebration.pluck(:celebration)
 		decorator = ARDecorator.new(Person.by_celebration, :boolean_checkmark, :default_date)
 		values = decorator.get_attribute attributes
-		puts "updating values #{values}"
+		#puts "updating values #{values}"
 		GSheets.new(:celebrations).update_sheet values
 	end
 
@@ -258,8 +258,8 @@ end
         points:         points
       }
     end
-		puts people_available.inspect
-		puts people_with_assignments.inspect
+		#puts people_available.inspect
+		#puts people_with_assignments.inspect
 	end
 
 	# get the person period that defines the availabily of a person for a given day_schedule
