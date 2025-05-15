@@ -1,60 +1,28 @@
-/!=============================================================================
-/! FONTS
-/!=============================================================================
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Open+Sans:wght@400;600&family=Rubik:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-/! Load Fontawesome
-script src="https://kit.fontawesome.com/4f55c9eacf.js" crossorigin="anonymous"
-
-html
-  head
-    meta charset="utf-8"
-    meta http-equiv="x-ua-compatible" content="ie=edge"
-    title Pulpo Cavabianca
-    meta name="description" content=""
-    meta name="viewport" content="width=device-width, initial-scale=1"
-
-    //==================================================================================================
-    //STYLESHEETS
-    //==================================================================================================
-    link rel="stylesheet" href="/css/normalize.css"
-    link rel="stylesheet" href="/css/skeleton.css"
-    link rel="stylesheet" href="/css/menu_styles.css"
-    link rel="stylesheet" href="/css/pulpo.css"
-  
-  body
     
-    //==================================================================================================
-    // NAVIGATION BAR
-    //==================================================================================================
-    turbo-frame#whole_screen
-    
-      div.row.u-text-center style="margin-top: 100px"
+div.row.u-text-center style="margin-top: 100px"
 
-				form action="/people/#{@set}/document/#{@document.id}" method="POST"
-					.columns.four.offset-by-four
-						.container
-							.row.u-text-center
-								.columns.twelve
-									h4 style="margin-bottom:30px" = "DOCUMENT: #{@document.name}"
-									p = "We need some additonal values to produce the documents."
-									p = "Fill in the information below"
-							.row.u-text-center style="margin-top:30px"
-								- @template_variables.each do |var|
-									.columns.six.offset-by-three.u-text-center
-										label = "#{var[0].humanize} #{var[1]&.humanize}"
-										input.u-full-width  type="text" required=true name=var[0]
-								
-								/----------------------------------------------------------------------------------------------------------------
-								//BUTTONS
-								//----------------------------------------------------------------------------------------------------------------
-							
-							row.center-align
-								button#save_btn.button-primary type="submit" name="commit" value="save" data-validate-target="submit_btn" Submit  			
-								a.button.button-secondary formnovalidate="true" data-report-target="cancel_btn" onClick="javascript:window.close('','_parent','');" CLOSE
+  form action="/people/#{@set}/document/#{@document.id}" method="POST"
+    .columns.four.offset-by-four
+      .container
+        .row.u-text-center
+          .columns.twelve
+            h4 style="margin-bottom:30px" = "DOCUMENT: #{@document.name}"
+            p = "We need some additonal values to produce the documents."
+            p = "Fill in the information below"
+        .row.u-text-center style="margin-top:30px"
+          - @template_variables.each do |var|
+            .columns.six.offset-by-three.u-text-center
+              label = "#{var[0].humanize} #{var[1]&.humanize}"
+              input.u-full-width  type="text" required=true name=var[0]
+          
+          /----------------------------------------------------------------------------------------------------------------
+          //BUTTONS
+          //----------------------------------------------------------------------------------------------------------------
+        
+        row.center-align
+          button#save_btn.button-primary type="submit" name="commit" value="save" data-validate-target="submit_btn" Submit  			
+          a.button.button-secondary formnovalidate="true" data-report-target="cancel_btn" onClick="javascript:window.close('','_parent','');" CLOSE
 
 
 
