@@ -58,6 +58,7 @@ class TypstRuby
     puts "compiling #{TYPST_CMD} compile --root #{TYPST_ROOT} #{input_file} #{output_file}"
     begin
       res = system "#{TYPST_CMD} compile --root #{TYPST_ROOT} #{input_file} #{output_file}"
+      puts "res #{res}"
       res ? output_file : nil
     rescue => error
       puts "Typst Ruby: failed to convert document: #{error.message}"
