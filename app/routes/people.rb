@@ -237,6 +237,7 @@ post '/people/:id/document/:doc_id' do
 	case document.engine
 	when "typst"
 		puts "using typst"
+		puts "sending #{typst document.get_full_path, locals: params}"
 		send_file (typst document.get_full_path, locals: params)
 
 	when "prawn"
