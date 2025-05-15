@@ -54,6 +54,7 @@ class TypstRuby
 
     File.open(input_file, 'w') { |f| f.write data }
 
+    puts "compiling #{TYPST_CMD} compile --root #{TYPST_ROOT} #{input_file} #{output_file}"
     begin
       res = system "#{TYPST_CMD} compile --root #{TYPST_ROOT} #{input_file} #{output_file}"
       res ? output_file : nil

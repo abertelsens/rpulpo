@@ -228,6 +228,7 @@ end
 
 
 post '/people/:id/document/:doc_id' do
+	puts "generating doc"
 	content_type :pdf
 
 	document = Document.find(params[:doc_id])
@@ -235,6 +236,7 @@ post '/people/:id/document/:doc_id' do
 
 	case document.engine
 	when "typst"
+		puts "using typst"
 		send_file (typst document.get_full_path, locals: params)
 
 	when "prawn"
