@@ -237,8 +237,9 @@ post '/people/:id/document/:doc_id' do
 	case document.engine
 	when "typst"
 		puts "using typst"
-		puts "sending #{typst document.get_full_path, locals: params}"
-		send_file (typst document.get_full_path, locals: params)
+		res = typst document.get_full_path, locals: params
+		puts "sending #{res}"
+		send_file res
 
 	when "prawn"
 		settings = { page_size: 'A4', page_layout: :portrait, margin: [78, 78, 78, 78] }
