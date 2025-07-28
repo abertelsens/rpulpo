@@ -74,6 +74,7 @@ class GSheets
   # @param settings [Object] the settings for the table
   # @param collection [Array] the collection of objects to be written to the sheet
   # @param decorator [Object] the decorator to format the objects
+=begin
   def update_sheet(values)
     range = calculate_range(values)
     value_range = Google::Apis::SheetsV4::ValueRange.new(values: values)
@@ -98,10 +99,8 @@ class GSheets
       puts Rainbow("GSHEETS: An error occurred: #{e.message}").orange
     end
   end
-
   private
 
-=begin
   # Prepare the values to be written to the Google Sheet
   # @param settings [Object] the settings for the table
   # @param collection [Array] the collection of objects to be written to the sheet
@@ -114,7 +113,7 @@ class GSheets
     values = collection.map { |object| decorator.to_array(object) }
     @sheet[:headers] ? [headers] + values : values
   end
-=end
+
 
   def calculate_range(array)
     #puts "calculating range x:#{@sheet[:x_offset]} y:#{@sheet[:y_offset]}"
@@ -135,5 +134,6 @@ class GSheets
     # Construct the range string
     "#{@sheet[:sheet_name]}!#{start_col_letter}#{start_row}:#{end_col_letter}#{end_row}"
   end
+=end
 
 end #class end

@@ -16,7 +16,7 @@
 class Room < ActiveRecord::Base
 
 
-	@@gsheet_update_request = nil
+	#@@gsheet_update_request = nil
 
 	# a room belongs to a person but the association can be nil if the room is empty.
 	belongs_to 	    :person
@@ -42,7 +42,7 @@ class Room < ActiveRecord::Base
 	enum :bathroom,  {individual: 0, común: 1}
 
 	# after updating a room we also update the information in the gsheets that the ao has.
-	after_save      :update_gsheet_async
+	# after_save      :update_gsheet_async
 
 	def self.create_from_params(params)
 		Room.create Room.prepare_params params
@@ -77,6 +77,7 @@ class Room < ActiveRecord::Base
 	# GSHEETS
 	# --------------------------------------------------------------------------------------------------------------------
 	# updates the google sheets with the info of the roooms
+=begin
 	def update_gsheet
 		puts Rainbow("updating gsheet. Inside thread").orange
 		if Time.now - @@gsheet_update_request > 5
@@ -84,20 +85,21 @@ class Room < ActiveRecord::Base
 			attributes =  		%w(person.clothes house room person.status) << is_guest << "person.notes_ao_room"
 			decorator = ARDecorator.new(Room.in_use.order('people.clothes'), :boolean_checkmark)
 			values = decorator.get_attribute attributes
-			GSheets.new(:rooms_by_clothes).update_sheet values
+			#GSheets.new(:rooms_by_clothes).update_sheet values
 
 			attributes =  		%w(house room person.clothes person.status) << is_guest << "person.notes_ao_room"
 			decorator = ARDecorator.new(Room.in_use.order(:house, :room), :boolean_checkmark)
 			values = decorator.get_attribute attributes
-			GSheets.new(:rooms_by_house).update_sheet values
-			puts Rainbow("finishes updating").orange
-			@@gsheet_update_request = nil
+			#GSheets.new(:rooms_by_house).update_sheet values
+			#puts Rainbow("finishes updating").orange
+			#@@gsheet_update_request = nil
 		else
 			puts Rainbow("sleeping").orange
 			sleep 5
 			update_gsheet
 		end
 	end
+
 
 	# creates ta new thread used to update the google sheets asynchronously. Thus pulpo needs not to wait till the
 	# request to gsheets is completed.
@@ -108,5 +110,6 @@ class Room < ActiveRecord::Base
 		@@gsheet_update_request = Time.now
 		Thread.new { update_gsheet }
 	end
+=end
 
 end     #class end
