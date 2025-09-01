@@ -20,7 +20,7 @@ require_relative '../models/table_settings'
 class PulpoQuery
 
 	AND_DELIMITERS = [' AND ', ' and ']
-	OR_DELIMETERS = [' ', 'OR', 'or']
+	OR_DELIMETERS = [' ', ' OR ', ' or ']
 
 	SETTINGS_FILE_PATH 	= "app/settings/query_settings.yaml"
 	SETTINGS_YAML 			= YAML.load_file(SETTINGS_FILE_PATH)
