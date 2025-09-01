@@ -67,6 +67,7 @@ class User < ActiveRecord::Base
 	end
 
 	def get_modules_ids module_params
+		return [] if module_params==nil
 		module_params.keys.select{|key| module_params[key]=="allowed"}
 	end
 
