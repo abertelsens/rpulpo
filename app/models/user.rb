@@ -19,7 +19,7 @@ class User < ActiveRecord::Base
 	# the matching mails tables as deleted as well.
 	has_many	:unread_mails, 			dependent: :destroy
 	has_many	:assigned_mails, 		dependent: :destroy
-	has_many 	:module_users, 			dependent: :destroy
+	has_many 	:module_users, 			class_name: "ModuleUser", dependent: :destroy
 	has_many 	:pulpo_modules, 		:through => :module_users
 	has_many 	:documents, 				:through => :pulpo_modules
 
