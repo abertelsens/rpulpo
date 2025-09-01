@@ -29,7 +29,7 @@ class PulpoQuery
 	ATTRIBUTES 					= TableSettings.get_all_attributes
 
 	def initialize(query_string, table_settings=nil)
-		#puts "query_string:#{query_string} table_settings: #{table_settings.inspect}"
+		puts "query_string:#{query_string} table_settings: #{table_settings.inspect}"
 		@order =		 	table_settings.nil? ? [] : table_settings.get_order
 		@main_table = table_settings.nil? ? [] : table_settings.main_table
 		@tables = 		table_settings.nil? ? [] : table_settings.get_tables
@@ -128,7 +128,7 @@ class AttributeQuery
 
 		att = TableSettings.get_attribute_by_name(@att_name)
 		table, field_name = att.field.split(".")
-		#puts Rainbow("searching @att_name: #{@att_name.inspect}. Got @main table: #{@main_table} @models: #{@models} #{att} table:#{att.table} field:#{att.field} type:#{att.type} att.value #{@att_value}" ).yellow
+		puts Rainbow("searching @att_name: #{@att_name.inspect}. Got @main table: #{@main_table} @models: #{@models} #{att} table:#{att.table} field:#{att.field} type:#{att.type} att.value #{@att_value}" ).yellow
 
 		condition = case att.type
 			when "string" then	"#{att.field} ILIKE '%#{@att_value}%'"

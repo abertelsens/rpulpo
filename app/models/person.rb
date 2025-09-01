@@ -273,7 +273,7 @@ end
 
 	# finds all the people that have assignmnets that clash with the given task schedule
 	def self.people_with_assignments(day_schedule, task_schedule)
-		tas = TaskAssignment.where(day_schedule: day_schedule).select{|ta| ta.clashes_with_task? task_schedule}.map{|ta| ta.person_id}
+		TaskAssignment.where(day_schedule: day_schedule).select{|ta| ta.clashes_with_task? task_schedule}.map{|ta| ta.person_id}
 	end
 
 
