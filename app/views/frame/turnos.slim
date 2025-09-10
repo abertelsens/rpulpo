@@ -13,7 +13,7 @@ turbo-frame id="turnos_frame"
   .container.container-frame data-controller="drag" data-drag-velaid=@vela.id  
     
     // PEORSONAS QUE NO TIENEN TURNO ASIGNADO
-    .columns.five.free-people data-action="dragover->drag#dragover dragleave->drag#dragleave"
+    .columns.five.free-people data-action="drop->drag#drop dragover->drag#dragover dragleave->drag#dragleave"
       h4.u-text-center = "SIN ASIGNAR" 
       - @vela.get_free_rooms.each do |room|
         .row.room[
