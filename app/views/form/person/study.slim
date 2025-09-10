@@ -2,113 +2,110 @@
 // FORM for Personal Information about a person
 /*****************************************************************************************************
 
-
-  	
 .container.x-large-form.screen-box  data-controller="form" 
 
-	form#personForm[
-		action="/person/#{@person.id}/study/#{(@object.nil? ? "new" : @object.id)}" 
-		method="POST" 
-		data-form-target="form"
-		data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
-	]
+    form#personForm[
+        action="/person/#{@person.id}/study/#{(@object.nil? ? "new" : @object.id)}" 
+        method="POST" 
+        data-form-target="form"
+        data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
+    ]
 
-		/----------------------------------------------------------------------------------------------------------------
-		// FORM HEADER
-		//----------------------------------------------------------------------------------------------------------------
-		.row.u-text-center
-			- has_photo = (@person && File.exist?("app/public/photos/#{@person.id}.jpg"))	
-			img.person-photo.small [
-				src= (has_photo ? "/person/#{@person.id}/photo?v=#{rand(1..1000)}" : "avatar.jpg")]
-				
-		.row.u-text-center
-			h3 = "#{@person.short_name} - Estudios"
-					
-			
-		/----------------------------------------------------------------------------------------------------------------
-		//PERSONAL FRAME
-		//----------------------------------------------------------------------------------------------------------------
+        /----------------------------------------------------------------------------------------------------------------
+        // FORM HEADER
+        //----------------------------------------------------------------------------------------------------------------
+        .row.u-text-center
+            - has_photo = (@person && File.exist?("app/public/photos/#{@person.id}.jpg"))	
+            img.person-photo.small [
+                src= (has_photo ? "/person/#{@person.id}/photo?v=#{rand(1..1000)}" : "avatar.jpg")]
+                
+        .row.u-text-center
+            h3 = "#{@person.short_name} - Estudios"
+                    
+            
+        /----------------------------------------------------------------------------------------------------------------
+        //PERSONAL FRAME
+        //----------------------------------------------------------------------------------------------------------------
 
-		.row
-			.columns.two
-				h5 Civiles
-			.columns.ten
-				.row
-					.columns.eight
-						label.tooltip for="civil_studies" estudios civiles
-							<i class="fa-sharp fa-regular fa-circle-question"></i>
-							<span class="tooltiptext">Ej: Licenciatura Química (Federal University of Technology, Minna)</span>
-						&text.u-full-width name="civil_studies" value=@object&.civil_studies
-						
-					.columns.four
-						label.tooltip for="studies_name" carrera
-							<i class="fa-sharp fa-regular fa-circle-question"></i>
-							<span class="tooltiptext">Ej: Matemáticas</span>
-						&text.u-full-width name="studies_name" value=@object&.studies_name
-				.row
-					.columns.six
-						label.tooltip for="degree" título
-							<i class="fa-sharp fa-regular fa-circle-question"></i>
-							<span class="tooltiptext">Ej: Abogado, Ingeniero Mecánico</span>
-						&text.u-full-width name="degree" value=@object&.degree
-					.columns.six
-						label.tooltip for="profesional_experience" experiencia profesional y en la labor
-							<i class="fa-sharp fa-regular fa-circle-question"></i>
-							<span class="tooltiptext">Ej: Trabajó 3 años en una revista y ha sido sd de un ctr de sr</span>
-						&text.u-full-width name="profesional_experience" value=@object&.profesional_experience
-		.row
-			.columns.two
-				h5 Eclesiásticos
-			.columns.ten
-				.row
-					.columns.two
-						label.tooltip for="year_of_studies" año
-							<i class="fa-sharp fa-regular fa-circle-question"></i>
-							<span class="tooltiptext">Ej: 1T, 2C, DT</span>
-						&text.u-full-width name="year_of_studies" value=@object&.year_of_studies
-					.columns.two
-						label.tooltip for="faculty" facultad
-							<i class="fa-sharp fa-regular fa-circle-question"></i>
-							<span class="tooltiptext">Ej: Teología, Filosofía</span>
-						&text.u-full-width name="faculty" value=@object&.faculty
-					.columns.four
-						label.tooltip for="status" status
-							<i class="fa-sharp fa-regular fa-circle-question"></i>
-							<span class="tooltiptext">Ej: Acabados (uden 2020)</span>
-						&text.u-full-width name="status" value=@object&.status
-					.columns.two	
-						label for="licence" licenciatura (año)
-						&text.u-full-width name="licence" value=@object&.licence
-					.columns.two
-						label for="doctorate" doctorado (año)
-						&text.u-full-width name="doctorate" value=@object&.doctorate
-				.row
-					.columns.twelve
-						label for="thesis" título tesis doctoral
-						&text.u-full-width name="thesis" value=@object&.thesis
+        .row
+            .columns.two
+                h5 Civiles
+            .columns.ten
+                .row
+                    .columns.eight
+                        label.tooltip for="civil_studies" estudios civiles
+                            <i class="fa-sharp fa-regular fa-circle-question"></i>
+                            <span class="tooltiptext">Ej: Licenciatura Química (Federal University of Technology, Minna)</span>
+                        &text.u-full-width name="civil_studies" value=@object&.civil_studies autocomplete="off"
+                        
+                    .columns.four
+                        label.tooltip for="studies_name" carrera
+                            <i class="fa-sharp fa-regular fa-circle-question"></i>
+                            <span class="tooltiptext">Ej: Matemáticas</span>
+                        &text.u-full-width name="studies_name" value=@object&.studies_name autocomplete="off"
+                .row
+                    .columns.six
+                        label.tooltip for="degree" título
+                            <i class="fa-sharp fa-regular fa-circle-question"></i>
+                            <span class="tooltiptext">Ej: Abogado, Ingeniero Mecánico</span>
+                        &text.u-full-width name="degree" value=@object&.degree autocomplete="off"
+                    .columns.six
+                        label.tooltip for="profesional_experience" experiencia profesional y en la labor
+                            <i class="fa-sharp fa-regular fa-circle-question"></i>
+                            <span class="tooltiptext">Ej: Trabajó 3 años en una revista y ha sido sd de un ctr de sr</span>
+                        &text.u-full-width name="profesional_experience" value=@object&.profesional_experience autocomplete="off"
+        .row
+            .columns.two
+                h5 Eclesiásticos
+            .columns.ten
+                .row
+                    .columns.two
+                        label.tooltip for="year_of_studies" año
+                            <i class="fa-sharp fa-regular fa-circle-question"></i>
+                            <span class="tooltiptext">Ej: 1T, 2C, DT</span>
+                        &text.u-full-width name="year_of_studies" value=@object&.year_of_studies autocomplete="off"
+                    .columns.two
+                        label.tooltip for="faculty" facultad
+                            <i class="fa-sharp fa-regular fa-circle-question"></i>
+                            <span class="tooltiptext">Ej: Teología, Filosofía</span>
+                        &text.u-full-width name="faculty" value=@object&.faculty autocomplete="off"
+                    .columns.four
+                        label.tooltip for="status" status
+                            <i class="fa-sharp fa-regular fa-circle-question"></i>
+                            <span class="tooltiptext">Ej: Acabados (uden 2020)</span>
+                        &text.u-full-width name="status" value=@object&.status autocomplete="off"
+                    .columns.two	
+                        label for="licence" licenciatura (año)
+                        &text.u-full-width name="licence" value=@object&.licence autocomplete="off"
+                    .columns.two
+                        label for="doctorate" doctorado (año)
+                        &text.u-full-width name="doctorate" value=@object&.doctorate autocomplete="off"
+                .row
+                    .columns.twelve
+                        label for="thesis" título tesis doctoral
+                        &text.u-full-width name="thesis" value=@object&.thesis autocomplete="off"
 
-		/----------------------------------------------------------------------------------------------------------------
-		// FORM BUTTONS
-		//----------------------------------------------------------------------------------------------------------------
-		.row.flex-center.flex-columns
+        /----------------------------------------------------------------------------------------------------------------
+        // FORM BUTTONS
+        //----------------------------------------------------------------------------------------------------------------
+        .row.flex-center.flex-columns
 
-			button.button-primary[
-				data-turbo-action="advance"
-				type="submit"
-				tabindex="-1"  
-				name="commit" 
-				value="save"
-				data-form-target="submitButton"
-				title="ctrl+enter"
-				] save
-				
-			
-			a.button.button-secondary[
-				data-turbo-action="advance"
-				formnovalidate="true" 
-				tabindex="-1" 
-				data-form-target="cancelButton" 
-				href=(@person ? "/person/#{@person.id}" : "/people")
-				title="esc"
-				] cancel
-			
+            button.button-primary[
+                data-turbo-action="advance"
+                type="submit"
+                tabindex="-1"  
+                name="commit" 
+                value="save"
+                data-form-target="submitButton"
+                title="ctrl+enter"
+                ] save
+                
+            
+            a.button.button-secondary[
+                data-turbo-action="advance"
+                formnovalidate="true" 
+                tabindex="-1" 
+                data-form-target="cancelButton" 
+                href=(@person ? "/person/#{@person.id}" : "/people")
+                title="esc"
+                ] cancel
