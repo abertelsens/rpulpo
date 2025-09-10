@@ -41,3 +41,8 @@ case "$1" in
 
   *)
     # ---- HELP ----
+    # If the user didn’t pass a valid argument
+    echo "Usage: $0 {start|stop}"
+    exit 1
+    ;;
+esac
