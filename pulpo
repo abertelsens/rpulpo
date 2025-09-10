@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# This script controls the Puma server for your Sinatra app.
+# Usage:
+#   ./pulpo start   → start Puma
+#   ./pulpo stop    → stop Puma
+
+case "$1" in
+  start)
+    # ---- START ----
+    echo "Pulpo: starting Puma..."
+
+    # Run Puma on port 2948 in production mode
+    # - nohup allows the process to keep running even if you log out
+    # - > /dev/null 2>&1 redirects all output (stdout + stderr) to /dev/null
+    # - & puts the process in the background
+    nohup puma -p 2948 -e production > /dev/null 2>&1 &
+
+    echo "Pulpo: Puma started!"
+    ;;
+  
+  stop)
+    # ---- STOP ----
+    # Find Puma process ID (PID):
+    # - ps aux lists all processes
+    # - grep puma filters lines containing "puma"
+    # - grep -v grep removes the grep process itself from results
+    # - awk '{print $2}' extracts the second column (the PID)
+    PID=$(ps aux | grep puma | grep -v grep | awk '{print $2}')
+
+    if [ -z "$PID" ]; then
+      # If no PID was found, Puma is not running
+      echo "Pulpo: No Puma process found."
+    else
+      # Kill the Puma process
+      echo "Pulpo: Stopping Puma (PID: $PID)..."
+      kill -9 $PID
+      echo "Pulpo: Puma stopped."
+    fi
+    ;;
+
+  *)
+    # ---- HELP ----
