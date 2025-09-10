@@ -21,7 +21,7 @@ turbo-frame id="turnos_frame"
           draggable="true" 
           data-person-id=room.person.id  
           data-room-id=room.id 
-          data-action="drop->drag#drop dragover->drag#dragover dragstart->drag#dragstart dragenter->drag#dragenter dblclick->drag#delete"]
+          data-action="drop->drag#drop dragover->drag#dragover dragstart->drag#dragstart dragenter->drag#dragenter"]
           .columns.eight draggable="false" = room.person.short_name
           .columns.four draggable="false" = room.room
 
@@ -46,7 +46,7 @@ turbo-frame id="turnos_frame"
                 draggable="true" 
                 data-turno-id=turno.id 
                 data-room-id=room.id 
-                data-action="drop->drag#drop dragover->drag#dragover dragstart->drag#dragstart dragenter->drag#dragenter dblclick->drag#delete"]
+                data-action="drop->drag#drop dragover->drag#dragover dragstart->drag#dragstart dragenter->drag#dragenter"]
                 
                 .columns.six draggable="false" = room.person&.short_name
                 .columns.four draggable="false"  = room.room
