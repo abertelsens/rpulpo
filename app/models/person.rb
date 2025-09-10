@@ -38,13 +38,13 @@ class Person < ActiveRecord::Base
 	has_one :permit, 						dependent: :destroy
 	has_one :room
 
-	has_many :tasks_available, 	:through => :matrix
-	has_many :turnos
+	#has_many :tasks_available, 	:through => :matrix
+	#has_many :turnos
 
 	# matrix associations
-	has_many :task_assignments, dependent: :destroy
-	has_many :person_periods, 	dependent: :destroy
-	has_many :period_points, 		dependent: :destroy
+	#has_many :task_assignments, dependent: :destroy
+	#has_many :person_periods, 	dependent: :destroy
+	#has_many :period_points, 		dependent: :destroy
 
 	# -----------------------------------------------------------------------------------------
 	# VALIDATIONS
