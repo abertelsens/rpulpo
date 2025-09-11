@@ -52,7 +52,7 @@ attributes:
     bulk_edit: true
   - id: "people.clothes"
     name: "clothes"
-    type: "integer"
+    type: "string"
     order: "NONE"
     css_class: "medium-field u-text-center"
   - id: "people.arrival"
