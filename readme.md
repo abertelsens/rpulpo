@@ -1,3 +1,4 @@
+test
 
 bundle exec ruby .\app\main.rb -o 0.0.0.0 -p 2948 -e production
 bundle exec puma -p 4567
