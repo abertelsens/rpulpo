@@ -2,42 +2,63 @@
 
 # Repositories
 
-El código de Pulpo está en: http://gerbil.cavabianca.org/gitlab/abs/rpulpo. El branch se llama master
+El código de Pulpo está en un hub local en los servidores de Cavabianca. La dirección es: http://gerbil.cavabianca.org/gitlab/abs/rpulpo. El branch se llama `master`
 
-Para bajar el código a tú maquina local por primera vez:
+Para bajar el código a tu maquina local por primera vez:
 
-´git clone http://gerbil.cavabianca.org/gitlab/abs/rpulpo´
+```shell
+git clone http://gerbil.cavabianca.org/gitlab/abs/rpulpo
+```
 
-Una vez que hayas hecho los cambios necesarios se pude subir el código a gerbil 
+Esto creará un direcotorio llamado rpulpo dentro del directorio acutal en el que estabas.
 
+Una vez que hayas hecho los cambios necesarios, corregir errores, etc, se pude subir el código a `gerbil`.
+
+Antes de hacerlo te recomiendo que veas qué remote reps están definidos. Si ejecutas
+
+```shell
+git remote -v
+```
+
+verás los repositorios definidos. Probablemente verás algo así como
+
+```shell
+origin	http://gerbil.cavabianca.org/gitlab/abs/rpulpo (fetch)
+origin	http://gerbil.cavabianca.org/gitlab/abs/rpulpo (push)
+```
+
+Esto quiere decir que tu repositorio remoto se llama origin y su dirección es `http://gerbil.cavabianca.org/gitlab/abs/rpulpo`
+
+```shell
 git add .
 git commit -m "mejoras increibles"
-git push upstream
+git push origin
+```
 
-Para implementar la nueva versión hay que conectarsr via ssh a Minerva e ir al directorio rpulpo
+Si todo va bien tu código ya está en gerbil. Lo ideal sería acceder a la direacción para comprobar que efectivamente los cambios se ha acturalizado. Ahora lo que tenemos que hacer es bajarlos a `minerva` que es la máquina virtual en la que corre pulpo.
+
+
+Conectarsr via ssh a Minerva e ir al directorio rpulpo. El password de `administrador@minerva.cavabianca.org` es `29giu48$` 
+
+```shell
 ssh administrador@minerva.cavabianca.org
-29giu48$
+cd rpulpo
+```
 
-En /home/administrador/rpulpo
+Si ejecutas  
 
-git pull upstream master
-
-
-
+```shell
 git remote -v
-origin	https://github.com/abertelsens/rpulpo.git (fetch)
-origin	https://github.com/abertelsens/rpulpo.git (push)
-upstream	http://gerbil.cavabianca.org/gitlab/abs/rpulpo (fetch)
-upstream	http://gerbil.cavabianca.org/gitlab/abs/rpulpo (push)
+```
+
+probablemente verás dos repositorios definidos. Uno es el de `gerbil`. El otro es el repositorio enn `github` de Alejandro Bertelsen que es quien programó pulpo. Si quiere que él arregle algo, puedes contactralo (alejanddrobertelsen@gmail.com) y subir el código a su repositorio para que lo pueda ver. Tendrás que hacer
 
 
-Para bajar el código a tú maquina local por primera vez:
+```shell
+git push origin 
+```
 
-´git clone http://gerbil.cavabianca.org/gitlab/abs/rpulpo´
-
-
-
-
+o el nombre que tenga el repositorio remoto. Por eso vale la pena revisarlo antes.
 
 
 # DB Management
