@@ -1,16 +1,44 @@
-test
+# Pulpo
 
-bundle exec ruby .\app\main.rb -o 0.0.0.0 -p 2948 -e production
-bundle exec puma -p 4567
+# Repositories
 
-http://localhost:4567/
+El código de Pulpo está en: http://gerbil.cavabianca.org/gitlab/abs/rpulpo. El branch se llama master
+
+Para bajar el código a tú maquina local por primera vez:
+
+´git clone http://gerbil.cavabianca.org/gitlab/abs/rpulpo´
+
+Una vez que hayas hecho los cambios necesarios se pude subir el código a gerbil 
+
+git add .
+git commit -m "mejoras increibles"
+git push upstream
+
+Para implementar la nueva versión hay que conectarsr via ssh a Minerva e ir al directorio rpulpo
+ssh administrador@minerva.cavabianca.org
+29giu48$
+
+En /home/administrador/rpulpo
+
+git pull upstream master
 
 
 
-bundle exec puma -C "./config/puma.rb"
+git remote -v
+origin	https://github.com/abertelsens/rpulpo.git (fetch)
+origin	https://github.com/abertelsens/rpulpo.git (push)
+upstream	http://gerbil.cavabianca.org/gitlab/abs/rpulpo (fetch)
+upstream	http://gerbil.cavabianca.org/gitlab/abs/rpulpo (push)
 
 
-git branch test
+Para bajar el código a tú maquina local por primera vez:
+
+´git clone http://gerbil.cavabianca.org/gitlab/abs/rpulpo´
+
+
+
+
+
 
 # DB Management
 
