@@ -24,6 +24,7 @@
       //delete button
       button.button-danger[
         data-turbo-action="advance"
+        data-action="keydown.enter->form#blockEnter"
         formnovalidate="true" 
         type="submit"
         name="commit"

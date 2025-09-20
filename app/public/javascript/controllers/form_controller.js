@@ -25,6 +25,7 @@ Stimulus.register("form", class extends Controller {
   }
 
   blockEnter(event) {
+    console.log("Enter key blocked in modal");
     event.preventDefault();
     event.stopPropagation();
     // Optionally, you can show a message or just silently block
