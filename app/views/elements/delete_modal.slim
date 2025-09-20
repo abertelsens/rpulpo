@@ -14,6 +14,13 @@
       p   = "This action cannot be undone!"
     .row.center-align.margin-top
       
+      // cancel button
+      a.button.button-secondary[
+        data-form-target="modalCancelButton" 
+        autofocus="true" 
+        data-action="click->form#close_modal" 
+      ] cancel
+
       //delete button
       button.button-danger[
         data-turbo-action="advance"
@@ -23,10 +30,3 @@
         value="delete" 
         tabindex="-1"
       ] delete 
-      
-      // cancel button
-      a.button.button-secondary[
-        data-form-target="modalCancelButton" 
-        autofocus="true" 
-        data-action="click->form#close_modal" 
-      ] cancel
