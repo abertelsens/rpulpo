@@ -1,6 +1,6 @@
 / A modal form confirming the delete action on an object
 
-.modal.hidden-frame data-form-target="modal" tabindex="-1"
+.modal.hidden-frame data-form-target="modal" tabindex="-1" data-action="keydown.enter->form#blockEnter"
   .modal-content
     // header
     .row
@@ -29,4 +29,4 @@
         data-form-target="modalCancelButton" 
         autofocus="true" 
         data-action="click->form#close_modal" 
-      ] cancel	
+      ] cancel

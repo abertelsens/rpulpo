@@ -24,6 +24,13 @@ Stimulus.register("form", class extends Controller {
     this.submitButtonTarget.click(); // if we submit the form directly the commit parameter will not be submitted
   }
 
+  blockEnter(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    // Optionally, you can show a message or just silently block
+    return false;
+  }
+
   escape() {  
     if (!this.hasModalTarget) {
       this.cancelButtonTarget.click();
