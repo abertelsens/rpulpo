@@ -38,6 +38,7 @@ Stimulus.register("form", class extends Controller {
   }
 
   delete(event) {
+    if (!(event.ctrlKey && event.key === "d")) return;
     event.preventDefault();
     event.stopPropagation();   
     this.deleteButtonTarget.click();  
@@ -79,5 +80,4 @@ Stimulus.register("form", class extends Controller {
 
 
 })
-    
-    
+

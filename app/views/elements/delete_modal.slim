@@ -1,6 +1,6 @@
 / A modal form confirming the delete action on an object
 
-.modal.hidden-frame data-form-target="modal" tabindex="1"
+.modal.hidden-frame data-form-target="modal" tabindex="-1"
   .modal-content
     // header
     .row
@@ -21,6 +21,7 @@
         type="submit"
         name="commit"
         value="delete" 
+        tabindex="-1"
       ] delete 
       
       // cancel button
