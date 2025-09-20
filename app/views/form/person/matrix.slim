@@ -12,7 +12,9 @@ turbo-frame id="main_frame"
 			action="/person/#{@person.id}/matrix"
 			method="POST"
 			data-form-target="form"
-			data-action="keydown.ctrl+enter@window->form#enter keydown.esc@window->form#escape"
+			data-action="keydown.ctrl+enter@window->form#enter \
+			keydown.esc@window->form#escape \
+			keydown.enter@window->form#enter"
 		] 
 		
 			/-----------------------------------------------------------------------------------
